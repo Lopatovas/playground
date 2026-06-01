@@ -1,15 +1,51 @@
 # Adaptive Competitor Intelligence System
 
-A system for tracking competitor activities through automated source discovery, content ingestion, and signal extraction.
+A system that allows users to add any company as a competitor and receive continuously updated structured signals about meaningful public changes — pricing, hiring, product launches, and positioning shifts — derived from dynamically discovered sources on the internet.
+
+## How It Works
+
+```mermaid
+graph LR
+    A[Add Competitor] --> B[Discover Sources]
+    B --> C[Ingest Content]
+    C --> D[Extract Signals]
+    D --> E[Ranked Feed]
+    E --> F[User Feedback]
+    F -->|Improves ranking| E
+```
+
+**Five-layer pipeline:**
+
+1. **Entity Layer** — Manage your company and competitors
+2. **Source Discovery** — SearXNG-powered search finds pricing pages, blogs, job boards, news
+3. **Ingestion** — Fetch HTML, strip boilerplate, store clean text
+4. **Signal Extraction** — LLM (stubbed / Mistral-ready) detects pricing changes, feature launches, hiring spikes, positioning shifts
+5. **Intelligence Feed** — Ranked by relevance (confidence + recency + user feedback), filterable by type and time
+
+> See **[docs/architecture.md](docs/architecture.md)** for detailed diagrams covering the full system architecture, data pipeline, database schema, authentication flow, ranking algorithm, and background job architecture.
 
 ## Architecture
 
-- **Backend**: NestJS + TypeScript + Prisma ORM + BullMQ
-- **Frontend**: React + Vite + Tailwind CSS
-- **Database**: PostgreSQL
-- **Queue**: Redis + BullMQ
-- **Search**: SearXNG (self-hosted meta-search engine)
-- **LLM**: Stubbed (Mistral-ready interface)
+| Layer | Technology |
+|-------|-----------|
+| **Backend** | NestJS 11 + TypeScript + Prisma 7 |
+| **Frontend** | React 19 + Vite 8 + Tailwind CSS 4 |
+| **Database** | PostgreSQL 16 |
+| **Queue** | Redis 7 + BullMQ |
+| **Search** | SearXNG (self-hosted meta-search) |
+| **LLM** | Stubbed (Mistral-ready interface) |
+
+```mermaid
+graph TB
+    UI[React Frontend :5173] -->|Proxy /api| API[NestJS Backend :3000]
+    API --> PG[(PostgreSQL)]
+    API --> RD[(Redis)]
+    API -->|Discovery| SX[SearXNG]
+    RD --> W[BullMQ Workers]
+    W -->|Fetch| WEB[Public Web]
+    W -->|Analyze| LLM[LLM Service]
+    W --> PG
+```
 
 ## Quick Start
 
@@ -72,12 +108,17 @@ Frontend runs on http://localhost:5173 (proxies API calls to backend)
 
 ```bash
 cd backend
-npm test
+npm test          # 46 unit tests
+npm run test:e2e  # 31 integration tests (requires PostgreSQL + Redis)
 ```
+
+The integration test covers the complete user flow end-to-end: register, login, create entity, add competitor, suggest source, ingest documents, extract signals, view feed, submit feedback, mute/unmute, and cascading deletes.
 
 ## Project Structure
 
 ```
+├── docs/
+│   └── architecture.md    # Detailed architecture with Mermaid diagrams
 ├── backend/
 │   ├── src/
 │   │   ├── auth/          # JWT authentication
@@ -91,13 +132,19 @@ npm test
 │   │   ├── jobs/          # BullMQ processors
 │   │   ├── prisma/        # Database service
 │   │   └── common/        # Shared decorators/guards
-│   └── prisma/
-│       └── schema.prisma  # Database schema
+│   ├── prisma/
+│   │   └── schema.prisma  # Database schema
+│   └── test/
+│       └── full-flow.e2e-spec.ts  # Integration test
 ├── frontend/
 │   └── src/
 │       ├── api/           # API client
-│       ├── components/    # Reusable components
+│       ├── components/    # Layout, SignalCard
 │       ├── hooks/         # Auth context
-│       └── pages/         # Route pages
-└── docker-compose.yml
+│       └── pages/         # Dashboard, Entities, Feed, Signals, Login, Register
+└── docker-compose.yml     # PostgreSQL + Redis + SearXNG
 ```
+
+## Documentation
+
+- **[Architecture & Diagrams](docs/architecture.md)** — System overview, data pipeline, ERD, authentication flow, ranking algorithm, background jobs, module dependencies, and complete request trace
