@@ -1,0 +1,23 @@
+use_default_settings: true
+
+server:
+  secret_key: "competitor-intel-dev-key"
+  bind_address: "0.0.0.0"
+  port: 8080
+
+search:
+  formats:
+    - html
+    - json
+  autocomplete: ""
+
+engines:
+  - name: google
+    engine: google
+    shortcut: g
+  - name: duckduckgo
+    engine: duckduckgo
+    shortcut: ddg
+  - name: bing
+    engine: bing
+    shortcut: bi
