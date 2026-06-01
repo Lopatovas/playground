@@ -621,3 +621,81 @@ graph TD
 ```
 
 `PrismaModule` and `ConfigModule` are registered as global modules — all other modules can inject `PrismaService` and `ConfigService` without explicit imports.
+
+---
+
+## Observability
+
+### Structured Logging (Pino)
+
+All HTTP requests and application events are logged via [nestjs-pino](https://github.com/iamolegga/nestjs-pino) with structured JSON output.
+
+**Development** (pretty-printed, colorized, single-line):
+
+```
+[18:47:08] INFO: request completed {"req":{"method":"POST","url":"/api/auth/login"},"res":{"statusCode":201},"responseTime":52}
+```
+
+**Production** (raw JSON for log aggregation):
+
+```json
+{"level":30,"time":1717264028000,"msg":"request completed","req":{"method":"POST","url":"/api/auth/login"},"res":{"statusCode":201},"responseTime":52}
+```
+
+Configuration via environment variables:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `LOG_LEVEL` | `info` | Minimum log level: `trace`, `debug`, `info`, `warn`, `error`, `fatal` |
+| `NODE_ENV` | `development` | Set to `production` for raw JSON output (no pretty-printing) |
+
+Health check (`/health`) and Bull Board admin requests are excluded from request logging to reduce noise.
+
+### Swagger API Documentation
+
+Interactive API documentation is available at `/api/docs` when the server is running.
+
+```mermaid
+graph LR
+    DEV[Developer] -->|Browse| SW["/api/docs — Swagger UI"]
+    SW --> AUTH[Auth endpoints]
+    SW --> ENT[Entity endpoints]
+    SW --> SRC[Source endpoints]
+    SW --> SIG[Signal endpoints]
+    SW --> FEED[Feed endpoints]
+    SW --> FB[Feedback endpoints]
+    AUTH -->|"Try it out"| API[NestJS Backend]
+```
+
+Features:
+- **Try it out** — Execute API calls directly from the browser
+- **Persistent authorization** — Enter a JWT token once and it persists across requests
+- **Schema exploration** — View request/response schemas with examples for every DTO
+- **Grouped by tags** — Auth, Entities, Sources, Signals, Feed, Feedback
+
+### Bull Board (Queue Monitoring)
+
+BullMQ job queues are monitored via [Bull Board](https://github.com/felixmosh/bull-board) at `/admin/queues`.
+
+```mermaid
+graph TB
+    subgraph "Bull Board Dashboard"
+        SD["source-discovery queue"]
+        IN["ingestion queue"]
+        SE["signal-extraction queue"]
+    end
+
+    SD --> |View| SDM["Active / Waiting / Completed / Failed jobs"]
+    IN --> |View| INM["Active / Waiting / Completed / Failed jobs"]
+    SE --> |View| SEM["Active / Waiting / Completed / Failed jobs"]
+
+    SDM --> R[Retry failed jobs]
+    INM --> R
+    SEM --> R
+```
+
+Capabilities:
+- **Real-time view** of active, waiting, completed, and failed jobs per queue
+- **Job details** — Inspect payload, return value, error stack traces
+- **Retry/remove** — Manually retry failed jobs or clean completed ones
+- **Progress tracking** — See job progress for long-running operations

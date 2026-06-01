@@ -84,6 +84,14 @@ npm run dev
 
 Frontend runs on http://localhost:5173 (proxies API calls to backend)
 
+### Available dashboards
+
+| Dashboard | URL | Description |
+|-----------|-----|-------------|
+| **Swagger API Docs** | http://localhost:3000/api/docs | Interactive API documentation with try-it-out |
+| **Bull Board** | http://localhost:3000/admin/queues | Monitor BullMQ job queues, retries, failures |
+| **Frontend** | http://localhost:5173 | User-facing intelligence dashboard |
+
 ## API Endpoints
 
 | Method | Path | Description |
