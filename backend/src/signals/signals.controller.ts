@@ -24,7 +24,8 @@ export class SignalsController {
   }
 
   @Post('extract')
-  extractUnprocessed(@Query('entityId') entityId?: string) {
-    return this.signalsService.extractUnprocessed(entityId);
+  async extractUnprocessed(@Query('entityId') entityId?: string) {
+    const count = await this.signalsService.extractUnprocessed(entityId);
+    return { extracted: count };
   }
 }
