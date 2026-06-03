@@ -1,1 +1,49 @@
-# playground
+# AI Data Readiness Scanner
+
+A Dockerized Nest.js + React prototype for auditing whether CSV/XLSX business datasets are ready for AI usage.
+
+The scanner produces:
+
+- an overall AI readiness score from 0-100
+- sub-scores for data quality, privacy/compliance, schema clarity, AI usability and monitoring readiness
+- deterministic, traceable findings
+- a prioritized action plan
+- recurring scan comparison against previous scans for the same dataset name
+- an LLM adapter layer with Mistral as the first provider
+
+## Run with Docker
+
+```bash
+cp .env.example .env
+docker compose up --build
+```
+
+Open:
+
+- Web app: http://localhost:8080
+- API health: http://localhost:3000/health
+
+The Mistral API key is optional. Without it, the app uses deterministic report text. With `MISTRAL_API_KEY` set, Mistral can rewrite the summary/action plan using only aggregate findings, not raw uploaded rows.
+
+## Local development
+
+```bash
+npm install
+npm run dev:api
+npm run dev:web
+```
+
+## Architecture
+
+```text
+React web app
+  -> Nest.js API
+    -> file parser (CSV/XLSX)
+    -> deterministic profiler
+    -> risk detector
+    -> scoring engine
+    -> report generator
+    -> LLM adapter (Mistral first)
+```
+
+Raw uploaded rows are analyzed inside the API. The LLM adapter receives aggregate profiles, findings and score data only.

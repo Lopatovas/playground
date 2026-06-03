@@ -1,0 +1,431 @@
+:root {
+  color: #18212f;
+  background: #eef3f8;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app-shell {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 40px 24px 64px;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 24px;
+  align-items: stretch;
+  margin-bottom: 24px;
+}
+
+.hero h1 {
+  max-width: 760px;
+  margin: 8px 0;
+  font-size: clamp(40px, 6vw, 72px);
+  letter-spacing: -0.06em;
+  line-height: 0.95;
+}
+
+.hero-copy {
+  max-width: 760px;
+  color: #546179;
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+.hero-card,
+.panel {
+  border: 1px solid rgba(91, 111, 141, 0.2);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 24px 80px rgba(31, 47, 77, 0.08);
+}
+
+.hero-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 14px;
+  padding: 24px;
+}
+
+.hero-card span,
+.muted {
+  color: #657188;
+  line-height: 1.6;
+}
+
+.panel {
+  padding: 24px;
+}
+
+.grid {
+  display: grid;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.two-column {
+  grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+}
+
+.three-column {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.section-heading {
+  margin-bottom: 18px;
+}
+
+.section-heading h2,
+.profile-card h3,
+.action-list h3 {
+  margin: 0;
+}
+
+.eyebrow {
+  margin: 0;
+  color: #4d6eea;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.upload-panel {
+  display: grid;
+  gap: 16px;
+}
+
+label {
+  display: grid;
+  gap: 8px;
+  color: #374258;
+  font-weight: 700;
+}
+
+input,
+select {
+  width: 100%;
+  border: 1px solid #d8e0eb;
+  border-radius: 14px;
+  background: #fff;
+  color: #172033;
+  padding: 12px 14px;
+}
+
+.file-drop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 110px;
+  border: 1px dashed #98a8bf;
+  border-radius: 18px;
+  background: #f7faff;
+  color: #4d5b73;
+  text-align: center;
+}
+
+.file-drop input {
+  display: none;
+}
+
+button {
+  border: 0;
+  border-radius: 14px;
+  background: #4d6eea;
+  color: #fff;
+  padding: 13px 18px;
+  font-weight: 800;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.error {
+  margin: 0;
+  border-radius: 12px;
+  background: #fff0f0;
+  color: #ab2626;
+  padding: 12px;
+}
+
+.history-list {
+  display: grid;
+  gap: 10px;
+}
+
+.history-list button {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 16px;
+  border: 1px solid #dbe3ee;
+  background: #fff;
+  color: #18212f;
+  text-align: left;
+}
+
+.history-list small {
+  grid-column: 1 / -1;
+  color: #718096;
+}
+
+.empty-state {
+  border: 1px dashed #a8b7cd;
+  border-radius: 24px;
+  padding: 48px;
+  color: #657188;
+  text-align: center;
+}
+
+.report {
+  display: grid;
+  gap: 24px;
+}
+
+.score-hero {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 24px;
+  align-items: center;
+}
+
+.score-circle {
+  display: grid;
+  place-items: center;
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  background: #eef3f8;
+  text-align: center;
+}
+
+.score-circle strong {
+  font-size: 56px;
+  line-height: 0.9;
+}
+
+.score-circle small {
+  max-width: 120px;
+  color: #657188;
+}
+
+.metric-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.metric-card span {
+  color: #657188;
+}
+
+.metric-card strong {
+  font-size: 32px;
+}
+
+.comparison-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.comparison-row span,
+.comparison-row strong,
+.column-chips span {
+  border-radius: 999px;
+  background: #eef3f8;
+  padding: 8px 12px;
+}
+
+.score-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.score-bar {
+  display: grid;
+  gap: 10px;
+}
+
+.score-bar div:first-child {
+  display: flex;
+  justify-content: space-between;
+}
+
+.score-bar p {
+  margin: 0;
+  color: #657188;
+}
+
+.bar {
+  overflow: hidden;
+  height: 10px;
+  border-radius: 999px;
+  background: #e4eaf2;
+}
+
+.bar span {
+  display: block;
+  height: 100%;
+}
+
+.good {
+  background: #3dbb7f;
+}
+
+.warning {
+  background: #f4b640;
+}
+
+.bad {
+  background: #ef5b5b;
+}
+
+.action-list {
+  display: grid;
+  gap: 16px;
+}
+
+.action-list article {
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  gap: 14px;
+}
+
+.action-list article > strong {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: #18212f;
+  color: #fff;
+}
+
+.action-list p {
+  margin: 6px 0;
+  color: #4d5b73;
+}
+
+.action-list small {
+  color: #657188;
+}
+
+.risk-list {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding-left: 20px;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;
+}
+
+th,
+td {
+  border-bottom: 1px solid #e5ebf2;
+  padding: 12px;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  color: #657188;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.badge {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 6px 10px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.badge.critical {
+  background: #8f1d1d;
+}
+
+.badge.high {
+  background: #ef5b5b;
+}
+
+.badge.medium {
+  background: #f4b640;
+  color: #332307;
+}
+
+.badge.low {
+  background: #6b7c93;
+}
+
+.table-profile-grid {
+  display: grid;
+  gap: 18px;
+}
+
+.profile-card {
+  border: 1px solid #e2e9f2;
+  border-radius: 18px;
+  padding: 18px;
+}
+
+.profile-card p {
+  color: #657188;
+}
+
+.column-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+@media (max-width: 860px) {
+  .hero,
+  .two-column,
+  .three-column,
+  .score-hero,
+  .score-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .score-circle {
+    margin: 0 auto;
+  }
+}
