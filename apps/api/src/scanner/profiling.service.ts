@@ -184,7 +184,12 @@ function isEmailLike(value: string): boolean {
 }
 
 function isPhoneLike(value: string): boolean {
-  return /^\+?[0-9][0-9\s().-]{6,}$/.test(value);
+  if (/^\d{4}[-/]\d{1,2}[-/]\d{1,2}$/.test(value)) {
+    return false;
+  }
+
+  const digitCount = value.replace(/\D/g, "").length;
+  return digitCount >= 7 && /^\+?[0-9][0-9\s().-]{6,}$/.test(value);
 }
 
 function isIpLike(value: string): boolean {
