@@ -60,7 +60,7 @@ export class ScansService {
 
   async createScan(file: UploadedDatasetFile | undefined, options: CreateScanOptions): Promise<ScanReport> {
     if (!file) {
-      throw new BadRequestException("Upload a CSV, XLS or XLSX file using the 'file' field.");
+      throw new BadRequestException("Upload a CSV or XLSX file using the 'file' field.");
     }
 
     if (file.size === 0) {

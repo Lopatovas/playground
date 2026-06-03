@@ -14,7 +14,7 @@ The scanner produces:
 ## Run with Docker
 
 ```bash
-cp .env.example .env
+cp .env.sample .env
 docker compose up --build
 ```
 
@@ -32,6 +32,13 @@ npm install
 npm run dev:api
 npm run dev:web
 ```
+
+## Documentation
+
+- [Architecture](docs/architecture.md)
+- [Database and data model](docs/database-structure.md)
+- [Sample inputs and expected findings](docs/sample-inputs.md)
+- [API usage](docs/api.md)
 
 ## Architecture
 

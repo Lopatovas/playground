@@ -1,0 +1,4 @@
+customer_id,email,date_of_birth,flag,revenue
+1,person.one@example.com,1990-01-01,Y,100
+2,person.two@example.com,1985-05-20,N,250
+3,,,Y,
