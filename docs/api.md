@@ -102,3 +102,7 @@ A scan is compared with the most recent previous completed scan where `tenantId 
 - BullMQ queue dashboard: `GET /queues`
 
 The BullMQ dashboard is intended for POC/operator visibility into queued, active, completed and failed scan jobs.
+
+## Scoring docs
+
+The scoring algorithm, weights and current rule catalogue are documented in [scoring.md](scoring.md).

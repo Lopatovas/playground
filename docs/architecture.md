@@ -42,10 +42,10 @@ See [tenant-isolation.md](tenant-isolation.md).
 2. Web app sends `POST /scans/upload` with multipart form data and an `x-tenant-id` header.
 3. API validates the file and derives a dataset name.
 4. API persists a queued scan and uploaded file payload in Postgres for the POC.
-11. API enqueues a BullMQ `process-scan` job backed by Redis.
-12. React receives a queued report and polls until status becomes `completed` or `failed`.
-13. BullMQ worker loads the persisted upload and `FileParserService` parses the file into one or more table-like structures.
-11. `ProfilingService` computes deterministic table and column profiles:
+5. API enqueues a BullMQ `process-scan` job backed by Redis.
+6. React receives a queued report and polls until status becomes `completed` or `failed`.
+7. BullMQ worker loads the persisted upload and `FileParserService` parses the file into one or more table-like structures.
+8. `ProfilingService` computes deterministic table and column profiles:
    - row count
    - column count
    - duplicate row rate
@@ -54,11 +54,11 @@ See [tenant-isolation.md](tenant-isolation.md).
    - unique value percentages
    - PII signals
    - sample patterns
-12. `RiskDetectorService` converts profiles into traceable findings.
-13. `ScoringService` computes five sub-scores and the weighted overall readiness score.
-11. `ReportService` builds a layered report and compares with a previous scan for the same dataset name.
+9. `RiskDetectorService` converts profiles into traceable findings.
+10. `ScoringService` computes five sub-scores and the weighted overall readiness score.
+11. `ReportService` builds a layered report and compares with a previous scan for the same tenant and dataset name.
 12. `LlmService` optionally asks the configured provider to rewrite summary/action plan text.
-13. API returns a `ScanReport` JSON response to the web app.
+13. API persists the final report JSON and React renders the completed `ScanReport`.
 
 ## Deterministic-first principle
 
@@ -134,6 +134,8 @@ Raw values such as actual emails, phone numbers, names, addresses, or identifier
 
 ## Scoring model
 
+See [scoring.md](scoring.md) for the full scoring algorithm, rule catalogue, weights, traceability model and examples.
+
 The overall readiness score is a weighted average of five sub-scores:
 
 | Category | Weight |
@@ -154,9 +156,9 @@ The report is intentionally layered for mixed audiences:
 2. Score breakdown
 3. Top risks
 4. Prioritized action plan
-11. Technical findings table
-12. Data profile
-13. Previous scan comparison when available
+5. Technical findings table
+6. Data profile
+7. Previous scan comparison when available
 
 ## Current limitations
 
