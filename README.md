@@ -49,6 +49,7 @@ npm run dev:web
 - [Scoring system and algorithm](docs/scoring.md)
 - [Sample inputs and expected findings](docs/sample-inputs.md)
 - [API usage](docs/api.md)
+- [TODO / roadmap](docs/todo.md)
 
 ## Architecture
 
