@@ -30,7 +30,7 @@ x-tenant-id: company-x
 
 This scopes scan history, report reads and recurring comparison. In production this should be derived from authentication rather than typed manually.
 
-## Upload and scan a dataset
+## Upload and enqueue a dataset scan
 
 ```http
 POST /scans/upload
@@ -56,7 +56,7 @@ curl -fsS \
   http://localhost:3000/scans/upload
 ```
 
-Response shape:
+Response shape. Upload returns a queued report first; poll `GET /scans/:scanId/report` until `status` is `completed` or `failed`:
 
 ```ts
 interface ScanReport {
@@ -82,7 +82,7 @@ interface ScanReport {
 GET /scans
 ```
 
-Returns lightweight scan history items for the supplied `x-tenant-id` from the current API process memory.
+Returns lightweight scan history items for the supplied `x-tenant-id` from PostgreSQL.
 
 ## Get a report
 
@@ -94,4 +94,11 @@ Returns the same `ScanReport` shape produced by upload when the scan belongs to 
 
 ## Recurring comparison behavior
 
-A scan is compared with the most recent previous scan where `tenantId + datasetName` matches case-insensitively. In the current prototype, this comparison only works while the API process remains alive because persistence is in memory.
+A scan is compared with the most recent previous completed scan where `tenantId + datasetName` matches case-insensitively. This now works across API restarts because reports are persisted in PostgreSQL.
+
+## Operations endpoints
+
+- Swagger/OpenAPI UI: `GET /docs`
+- BullMQ queue dashboard: `GET /queues`
+
+The BullMQ dashboard is intended for POC/operator visibility into queued, active, completed and failed scan jobs.

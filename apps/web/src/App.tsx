@@ -28,6 +28,19 @@ export function App() {
     void refreshHistory(tenantId);
   }, [tenantId]);
 
+  useEffect(() => {
+    if (!report || (report.status !== "queued" && report.status !== "processing")) {
+      return;
+    }
+
+    const timer = window.setInterval(() => {
+      void loadScan(report.scanId, false);
+      void refreshHistory(tenantId);
+    }, 2000);
+
+    return () => window.clearInterval(timer);
+  }, [report?.scanId, report?.status, tenantId]);
+
   const criticalCount = useMemo(
     () => report?.findings.filter((finding) => finding.severity === "critical").length ?? 0,
     [report],
@@ -69,8 +82,8 @@ export function App() {
     }
   }
 
-  async function loadScan(scanId: string) {
-    setError(null);
+  async function loadScan(scanId: string, clearError = true) {
+    if (clearError) setError(null);
 
     try {
       setReport(await getScan(tenantId, scanId));
@@ -188,6 +201,7 @@ function ReportView({ report, criticalCount }: { report: ScanReport; criticalCou
         <div>
           <p className="eyebrow">Executive layer</p>
           <h2>{report.datasetName}</h2>
+          <p className="tenant-note">Tenant: <strong>{report.tenantId}</strong> · Status: <strong>{report.status}</strong></p>
           <p>{report.summary.businessImpact}</p>
         </div>
         <ScoreCircle score={report.overallScore} label="Overall readiness" />

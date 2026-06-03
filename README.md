@@ -9,6 +9,10 @@ The scanner produces:
 - deterministic, traceable findings
 - a prioritized action plan
 - recurring scan comparison against previous scans for the same dataset name
+- persisted scan state with PostgreSQL and Prisma
+- queued scan processing with BullMQ and Redis
+- BullMQ queue dashboard
+- Swagger/OpenAPI documentation
 - an LLM adapter layer with Mistral as the first provider
 
 ## Run with Docker
@@ -22,6 +26,8 @@ Open:
 
 - Web app: http://localhost:8080
 - API health: http://localhost:3000/health
+- Swagger docs: http://localhost:3000/docs
+- BullMQ dashboard: http://localhost:3000/queues
 
 The Mistral API key is optional. Without it, the app uses deterministic report text. With `MISTRAL_API_KEY` set, Mistral can rewrite the summary/action plan using only aggregate findings, not raw uploaded rows.
 
@@ -29,6 +35,8 @@ The Mistral API key is optional. Without it, the app uses deterministic report t
 
 ```bash
 npm install
+# Start Postgres and Redis locally, or use Docker Compose.
+npm run prisma:db:push -w @ai-readiness/api
 npm run dev:api
 npm run dev:web
 ```
@@ -47,6 +55,8 @@ npm run dev:web
 React web app
   -> Nest.js API
     -> file parser (CSV/XLSX)
+    -> Postgres/Prisma persisted queued scan
+    -> BullMQ/Redis worker
     -> deterministic profiler
     -> risk detector
     -> scoring engine

@@ -19,6 +19,8 @@ docs/           Product and technical documentation
 Browser
   -> React web app
     -> Nest.js API
+      -> Prisma/Postgres scan record
+      -> BullMQ/Redis scan job
       -> FileParserService
       -> ProfilingService
       -> RiskDetectorService
@@ -39,8 +41,11 @@ See [tenant-isolation.md](tenant-isolation.md).
 1. User uploads a CSV or XLSX file in the web app.
 2. Web app sends `POST /scans/upload` with multipart form data and an `x-tenant-id` header.
 3. API validates the file and derives a dataset name.
-4. `FileParserService` parses the file into one or more table-like structures.
-5. `ProfilingService` computes deterministic table and column profiles:
+4. API persists a queued scan and uploaded file payload in Postgres for the POC.
+11. API enqueues a BullMQ `process-scan` job backed by Redis.
+12. React receives a queued report and polls until status becomes `completed` or `failed`.
+13. BullMQ worker loads the persisted upload and `FileParserService` parses the file into one or more table-like structures.
+11. `ProfilingService` computes deterministic table and column profiles:
    - row count
    - column count
    - duplicate row rate
@@ -49,11 +54,11 @@ See [tenant-isolation.md](tenant-isolation.md).
    - unique value percentages
    - PII signals
    - sample patterns
-6. `RiskDetectorService` converts profiles into traceable findings.
-7. `ScoringService` computes five sub-scores and the weighted overall readiness score.
-8. `ReportService` builds a layered report and compares with a previous scan for the same dataset name.
-9. `LlmService` optionally asks the configured provider to rewrite summary/action plan text.
-10. API returns a `ScanReport` JSON response to the web app.
+12. `RiskDetectorService` converts profiles into traceable findings.
+13. `ScoringService` computes five sub-scores and the weighted overall readiness score.
+11. `ReportService` builds a layered report and compares with a previous scan for the same dataset name.
+12. `LlmService` optionally asks the configured provider to rewrite summary/action plan text.
+13. API returns a `ScanReport` JSON response to the web app.
 
 ## Deterministic-first principle
 
@@ -149,10 +154,17 @@ The report is intentionally layered for mixed audiences:
 2. Score breakdown
 3. Top risks
 4. Prioritized action plan
-5. Technical findings table
-6. Data profile
-7. Previous scan comparison when available
+11. Technical findings table
+12. Data profile
+13. Previous scan comparison when available
 
 ## Current limitations
 
-This PR is a prototype foundation. It currently uses in-memory scan storage inside `ScansService`. For production, use the database structure in [database-structure.md](database-structure.md), object storage for raw uploads, and background jobs for large files.
+This PR is a prototype foundation. It now persists scan state and reports in PostgreSQL via Prisma and processes scans through BullMQ. For production, replace DB-stored upload bytes with encrypted object storage, add auth-derived tenant context, and use migrations instead of `prisma db push`.
+
+## Operations UI
+
+- Swagger/OpenAPI: `/docs`
+- BullMQ dashboard: `/queues`
+
+Bull Board exposes waiting, active, completed and failed scan jobs for the `scan-processing` queue.

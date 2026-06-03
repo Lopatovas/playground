@@ -53,13 +53,13 @@ So if Company X and Company Y both scan a dataset called `player_activity`, thei
 
 ## Current prototype storage
 
-The prototype still stores reports in memory, but every `ScanReport` and `ScanListItem` now includes `tenantId` and service methods require tenant context.
+The prototype now persists scan records in PostgreSQL through Prisma. Every `ScanReport`, `ScanListItem`, and persisted `Scan` row includes `tenantId`; service and repository methods require tenant context.
 
 This creates the same boundary the database layer should enforce later.
 
 ## Production model
 
-In production, tenant context should come from authentication, not a user-editable header.
+For this POC, tenant context is a plain string header. In production, tenant context should come from authentication, not a user-editable header.
 
 Recommended approach:
 

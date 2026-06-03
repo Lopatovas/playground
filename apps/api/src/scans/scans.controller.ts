@@ -1,35 +1,62 @@
 import { BadRequestException, Body, Controller, Get, Headers, Param, Post, UploadedFile, UseInterceptors } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
+import { ApiBody, ApiConsumes, ApiHeader, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from "@nestjs/swagger";
 import type { ScanListItem, ScanReport } from "@ai-readiness/shared";
 import { ScansService, type UploadedDatasetFile } from "./scans.service.js";
 
 const maxUploadBytes = Number(process.env.MAX_UPLOAD_BYTES ?? 100 * 1024 * 1024);
 
+@ApiTags("scans")
 @Controller()
 export class ScansController {
   constructor(private readonly scansService: ScansService) {}
 
   @Get("health")
+  @ApiOperation({ summary: "Health check" })
+  @ApiOkResponse({ schema: { example: { status: "ok" } } })
   health(): { status: "ok" } {
     return { status: "ok" };
   }
 
   @Get("scans")
-  listScans(@Headers("x-tenant-id") tenantIdHeader?: string): ScanListItem[] {
+  @ApiOperation({ summary: "List scans for a tenant" })
+  @ApiHeader({ name: "x-tenant-id", required: true, description: "Tenant/company identifier for POC isolation." })
+  @ApiOkResponse({ description: "Tenant-scoped scan history." })
+  listScans(@Headers("x-tenant-id") tenantIdHeader?: string): Promise<ScanListItem[]> {
     return this.scansService.listScans(resolveTenantId(tenantIdHeader));
   }
 
   @Get("scans/:scanId")
-  getScan(@Headers("x-tenant-id") tenantIdHeader: string | undefined, @Param("scanId") scanId: string): ScanReport {
+  @ApiOperation({ summary: "Get a tenant-scoped scan report" })
+  @ApiHeader({ name: "x-tenant-id", required: true })
+  @ApiParam({ name: "scanId" })
+  getScan(@Headers("x-tenant-id") tenantIdHeader: string | undefined, @Param("scanId") scanId: string): Promise<ScanReport> {
     return this.scansService.getReport(resolveTenantId(tenantIdHeader), scanId);
   }
 
   @Get("scans/:scanId/report")
-  getReport(@Headers("x-tenant-id") tenantIdHeader: string | undefined, @Param("scanId") scanId: string): ScanReport {
+  @ApiOperation({ summary: "Get a tenant-scoped scan report" })
+  @ApiHeader({ name: "x-tenant-id", required: true })
+  @ApiParam({ name: "scanId" })
+  getReport(@Headers("x-tenant-id") tenantIdHeader: string | undefined, @Param("scanId") scanId: string): Promise<ScanReport> {
     return this.scansService.getReport(resolveTenantId(tenantIdHeader), scanId);
   }
 
   @Post("scans/upload")
+  @ApiOperation({ summary: "Upload a CSV/XLSX dataset and enqueue a readiness scan" })
+  @ApiHeader({ name: "x-tenant-id", required: true })
+  @ApiConsumes("multipart/form-data")
+  @ApiBody({
+    schema: {
+      type: "object",
+      required: ["file"],
+      properties: {
+        file: { type: "string", format: "binary" },
+        datasetName: { type: "string", example: "player_activity" },
+        audience: { type: "string", example: "mixed" },
+      },
+    },
+  })
   @UseInterceptors(
     FileInterceptor("file", {
       limits: { fileSize: maxUploadBytes },

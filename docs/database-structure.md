@@ -2,21 +2,30 @@
 
 ## Current prototype persistence
 
-The current PR keeps scan reports in memory inside `ScansService`:
+The current PR persists POC scan state through Prisma using the schema in `apps/api/prisma/schema.prisma`. Earlier versions kept scan reports in memory inside `ScansService`:
 
 ```ts
 private readonly reports = new Map<string, ScanReport>();
 private readonly scanOrder: string[] = [];
 ```
 
-This is enough for local prototype behavior and tests, but it means:
+The in-memory notes above are now historical context. Current POC behavior persists scans, reports and tenant-scoped history in PostgreSQL. Raw upload bytes are stored in the `Scan.fileBuffer` column only until processing completes, then cleared. Production should move raw uploads into encrypted object storage.
 
-- reports disappear when the API restarts
-- scan history is process-local
-- recurring comparison only works within the same runtime session
-- multi-user/tenant isolation is not persisted
+## Implemented Prisma schema
 
-Production should move these structures into PostgreSQL and object storage.
+The implemented POC schema is intentionally smaller than the long-term model below. It currently has one `Scan` table with:
+
+- tenant ID
+- dataset name
+- queued/processing/completed/failed status
+- original upload metadata
+- temporary upload bytes for the BullMQ worker
+- overall score
+- full report JSON
+- error message
+- timestamps
+
+See `apps/api/prisma/schema.prisma`.
 
 ## Conceptual model
 

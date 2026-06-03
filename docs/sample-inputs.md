@@ -47,7 +47,7 @@ curl -fsS \
   http://localhost:3000/scans/upload
 ```
 
-The second response should include a `comparison` object because the dataset name matches the first scan.
+Uploads return queued reports. Refresh/poll `GET /scans/:scanId/report` until both scans are completed. The second completed report should include a `comparison` object because the tenant and dataset name match the first scan.
 
 ## Expected findings for player-activity-risky.csv
 

@@ -28,17 +28,18 @@ describe("ScansController", () => {
     expect(controller.health()).toEqual({ status: "ok" });
   });
 
-  it("delegates list and report reads to ScansService", () => {
+  it("delegates list and report reads to ScansService", async () => {
     const scanReport = report();
     const service = {
-      listScans: vi.fn(() => [{ id: "scan-1", tenantId: "tenant-a", datasetName: "customers", status: "completed", createdAt: scanReport.createdAt }]),
-      getReport: vi.fn(() => scanReport),
+      listScans: vi.fn(async () => [{ id: "scan-1", tenantId: "tenant-a", datasetName: "customers", status: "completed", createdAt: scanReport.createdAt }]),
+      getReport: vi.fn(async () => scanReport),
       createScan: vi.fn(),
+      processScanJob: vi.fn(),
     } as unknown as ScansService;
     const controller = new ScansController(service);
 
-    expect(controller.listScans("tenant-a")).toEqual([{ id: "scan-1", tenantId: "tenant-a", datasetName: "customers", status: "completed", createdAt: scanReport.createdAt }]);
-    expect(controller.getReport("tenant-a", "scan-1")).toBe(scanReport);
+    await expect(controller.listScans("tenant-a")).resolves.toEqual([{ id: "scan-1", tenantId: "tenant-a", datasetName: "customers", status: "completed", createdAt: scanReport.createdAt }]);
+    await expect(controller.getReport("tenant-a", "scan-1")).resolves.toBe(scanReport);
     expect(service.listScans).toHaveBeenCalledWith("tenant-a");
     expect(service.getReport).toHaveBeenCalledWith("tenant-a", "scan-1");
   });
@@ -50,11 +51,12 @@ describe("ScansController", () => {
   });
 
   it("delegates uploads with dataset and audience options", async () => {
-    const scanReport = report({ scanId: "scan-upload" });
+    const scanReport = report({ scanId: "scan-upload", status: "queued", overallScore: 0 });
     const service = {
       listScans: vi.fn(),
       getReport: vi.fn(),
       createScan: vi.fn(async () => scanReport),
+      processScanJob: vi.fn(),
     } as unknown as ScansService;
     const controller = new ScansController(service);
     const file: UploadedDatasetFile = {
