@@ -37,6 +37,7 @@ npm run dev:web
 
 - [Architecture](docs/architecture.md)
 - [Database and data model](docs/database-structure.md)
+- [Tenant isolation](docs/tenant-isolation.md)
 - [Sample inputs and expected findings](docs/sample-inputs.md)
 - [API usage](docs/api.md)
 

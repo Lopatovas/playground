@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import type { ActionItem, ScanFinding, ScanListItem, ScanReport, ScoreBreakdown } from "@ai-readiness/shared";
 import { getScan, listScans, uploadScan } from "./api.js";
 
+const defaultTenantId = "demo-company";
+
 const audienceOptions = [
   { value: "mixed", label: "Mixed audience" },
   { value: "executive", label: "Executive" },
@@ -11,6 +13,7 @@ const audienceOptions = [
 ];
 
 export function App() {
+  const [tenantId, setTenantId] = useState(() => localStorage.getItem("tenantId") ?? defaultTenantId);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [datasetName, setDatasetName] = useState("");
   const [audience, setAudience] = useState("mixed");
@@ -20,17 +23,19 @@ export function App() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    void refreshHistory();
-  }, []);
+    localStorage.setItem("tenantId", tenantId);
+    setReport(null);
+    void refreshHistory(tenantId);
+  }, [tenantId]);
 
   const criticalCount = useMemo(
     () => report?.findings.filter((finding) => finding.severity === "critical").length ?? 0,
     [report],
   );
 
-  async function refreshHistory() {
+  async function refreshHistory(nextTenantId = tenantId) {
     try {
-      setScanHistory(await listScans());
+      setScanHistory(await listScans(nextTenantId));
     } catch {
       setScanHistory([]);
     }
@@ -49,13 +54,14 @@ export function App() {
 
     try {
       const nextReport = await uploadScan({
+        tenantId,
         file: selectedFile,
         datasetName: datasetName || selectedFile.name.replace(/\.[^.]+$/, ""),
         audience,
       });
 
       setReport(nextReport);
-      await refreshHistory();
+      await refreshHistory(tenantId);
     } catch (uploadError) {
       setError(uploadError instanceof Error ? uploadError.message : "Upload failed.");
     } finally {
@@ -67,7 +73,7 @@ export function App() {
     setError(null);
 
     try {
-      setReport(await getScan(scanId));
+      setReport(await getScan(tenantId, scanId));
     } catch (loadError) {
       setError(loadError instanceof Error ? loadError.message : "Could not load scan.");
     }
@@ -96,6 +102,16 @@ export function App() {
             <p className="eyebrow">Baseline or monthly scan</p>
             <h2>Upload dataset</h2>
           </div>
+
+          <label>
+            Company / tenant ID
+            <input
+              value={tenantId}
+              onChange={(event) => setTenantId(event.target.value)}
+              placeholder="e.g. company-x"
+              pattern="[a-zA-Z0-9._:-]+"
+            />
+          </label>
 
           <label>
             Dataset name
@@ -135,6 +151,7 @@ export function App() {
           <div className="section-heading">
             <p className="eyebrow">Recent scans</p>
             <h2>History</h2>
+            <p className="tenant-note">Scoped to <strong>{tenantId}</strong></p>
           </div>
           {scanHistory.length === 0 ? (
             <p className="muted">No scans yet. Upload a dataset to create the first baseline.</p>

@@ -16,6 +16,7 @@ export class ReportService {
 
   async buildReport(input: {
     scanId: string;
+    tenantId: string;
     datasetName: string;
     createdAt: string;
     completedAt: string;
@@ -40,6 +41,7 @@ export class ReportService {
 
     return {
       scanId: input.scanId,
+      tenantId: input.tenantId,
       datasetName: input.datasetName,
       status: "completed",
       createdAt: input.createdAt,

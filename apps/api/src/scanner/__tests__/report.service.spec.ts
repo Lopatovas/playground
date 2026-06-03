@@ -69,6 +69,7 @@ describe("ReportService", () => {
 
     const report = await service.buildReport({
       scanId: "scan-1",
+      tenantId: "tenant-a",
       datasetName: "customers",
       createdAt: "2026-06-03T00:00:00.000Z",
       completedAt: "2026-06-03T00:00:01.000Z",
@@ -81,6 +82,7 @@ describe("ReportService", () => {
 
     expect(report).toMatchObject({
       scanId: "scan-1",
+      tenantId: "tenant-a",
       datasetName: "customers",
       status: "completed",
       overallScore: 78,
@@ -117,6 +119,7 @@ describe("ReportService", () => {
 
     const report = await service.buildReport({
       scanId: "scan-2",
+      tenantId: "tenant-a",
       datasetName: "customers",
       createdAt: "2026-06-03T00:00:00.000Z",
       completedAt: "2026-06-03T00:00:01.000Z",

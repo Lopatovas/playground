@@ -97,6 +97,7 @@ export interface ScanComparison {
 
 export interface ScanReport {
   scanId: string;
+  tenantId: string;
   datasetName: string;
   status: ScanStatus;
   createdAt: string;
@@ -112,6 +113,7 @@ export interface ScanReport {
 
 export interface ScanListItem {
   id: string;
+  tenantId: string;
   datasetName: string;
   status: ScanStatus;
   createdAt: string;

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UploadedFile, UseInterceptors } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, Headers, Param, Post, UploadedFile, UseInterceptors } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import type { ScanListItem, ScanReport } from "@ai-readiness/shared";
 import { ScansService, type UploadedDatasetFile } from "./scans.service.js";
@@ -15,18 +15,18 @@ export class ScansController {
   }
 
   @Get("scans")
-  listScans(): ScanListItem[] {
-    return this.scansService.listScans();
+  listScans(@Headers("x-tenant-id") tenantIdHeader?: string): ScanListItem[] {
+    return this.scansService.listScans(resolveTenantId(tenantIdHeader));
   }
 
   @Get("scans/:scanId")
-  getScan(@Param("scanId") scanId: string): ScanReport {
-    return this.scansService.getReport(scanId);
+  getScan(@Headers("x-tenant-id") tenantIdHeader: string | undefined, @Param("scanId") scanId: string): ScanReport {
+    return this.scansService.getReport(resolveTenantId(tenantIdHeader), scanId);
   }
 
   @Get("scans/:scanId/report")
-  getReport(@Param("scanId") scanId: string): ScanReport {
-    return this.scansService.getReport(scanId);
+  getReport(@Headers("x-tenant-id") tenantIdHeader: string | undefined, @Param("scanId") scanId: string): ScanReport {
+    return this.scansService.getReport(resolveTenantId(tenantIdHeader), scanId);
   }
 
   @Post("scans/upload")
@@ -36,10 +36,25 @@ export class ScansController {
     }),
   )
   uploadScan(
+    @Headers("x-tenant-id") tenantIdHeader: string | undefined,
     @UploadedFile() file: UploadedDatasetFile | undefined,
     @Body("datasetName") datasetName?: string,
     @Body("audience") audience?: string,
   ): Promise<ScanReport> {
-    return this.scansService.createScan(file, { datasetName, audience });
+    return this.scansService.createScan(resolveTenantId(tenantIdHeader), file, { datasetName, audience });
   }
+}
+
+function resolveTenantId(tenantIdHeader: string | undefined): string {
+  const tenantId = tenantIdHeader?.trim();
+
+  if (!tenantId) {
+    throw new BadRequestException("Missing x-tenant-id header.");
+  }
+
+  if (tenantId.length > 80 || !/^[a-zA-Z0-9._:-]+$/.test(tenantId)) {
+    throw new BadRequestException("Invalid x-tenant-id header. Use 1-80 letters, numbers, dots, underscores, colons or hyphens.");
+  }
+
+  return tenantId.toLowerCase();
 }

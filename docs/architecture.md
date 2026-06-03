@@ -28,10 +28,16 @@ Browser
         -> MistralLlmProvider
 ```
 
+## Tenant boundary
+
+Scan endpoints require an `x-tenant-id` header. The API uses this tenant context when listing scans, reading reports and finding previous scans for recurring comparison. This prevents audits for Company X from mixing with Company Y, even when dataset names are identical.
+
+See [tenant-isolation.md](tenant-isolation.md).
+
 ## Scan flow
 
 1. User uploads a CSV or XLSX file in the web app.
-2. Web app sends `POST /scans/upload` with multipart form data.
+2. Web app sends `POST /scans/upload` with multipart form data and an `x-tenant-id` header.
 3. API validates the file and derives a dataset name.
 4. `FileParserService` parses the file into one or more table-like structures.
 5. `ProfilingService` computes deterministic table and column profiles:

@@ -38,6 +38,7 @@ describe("scanner pipeline", () => {
     const { scansService } = createScansService();
 
     const report = await scansService.createScan(
+      "tenant-a",
       {
         originalname: "players.csv",
         buffer: csvBuffer(
@@ -56,6 +57,7 @@ describe("scanner pipeline", () => {
     );
 
     expect(report.status).toBe("completed");
+    expect(report.tenantId).toBe("tenant-a");
     expect(report.overallScore).toBeGreaterThan(0);
     expect(report.overallScore).toBeLessThan(100);
     expect(report.scoreBreakdown).toHaveLength(5);
@@ -96,6 +98,7 @@ describe("scanner pipeline", () => {
     const { scansService, capturingLlm } = createScansService();
 
     await scansService.createScan(
+      "tenant-a",
       {
         originalname: "customers.csv",
         buffer: csvBuffer(
@@ -121,10 +124,74 @@ describe("scanner pipeline", () => {
     expect(serializedInput).not.toContain("+37060000000");
   });
 
+  it("isolates scan history, reports and comparison by tenant", async () => {
+    const { scansService } = createScansService();
+
+    const tenantAFirst = await scansService.createScan(
+      "tenant-a",
+      {
+        originalname: "shared.csv",
+        buffer: csvBuffer(
+          [
+            "player_id,email,status_old",
+            "1,a@example.com,active",
+            "1,a@example.com,active",
+            "2,b@example.com,active",
+          ].join("\n"),
+        ),
+        size: 100,
+        mimetype: "text/csv",
+      },
+      { datasetName: "shared_players", audience: "mixed" },
+    );
+
+    const tenantBScan = await scansService.createScan(
+      "tenant-b",
+      {
+        originalname: "shared.csv",
+        buffer: csvBuffer(
+          [
+            "player_id,email,created_at",
+            "1,c@example.com,2026-01-01",
+            "2,d@example.com,2026-01-02",
+          ].join("\n"),
+        ),
+        size: 100,
+        mimetype: "text/csv",
+      },
+      { datasetName: "shared_players", audience: "mixed" },
+    );
+
+    const tenantASecond = await scansService.createScan(
+      "tenant-a",
+      {
+        originalname: "shared.csv",
+        buffer: csvBuffer(
+          [
+            "player_id,email,created_at",
+            "1,,2026-01-01",
+            "2,,2026-01-02",
+          ].join("\n"),
+        ),
+        size: 100,
+        mimetype: "text/csv",
+      },
+      { datasetName: "shared_players", audience: "mixed" },
+    );
+
+    expect(scansService.listScans("tenant-a").map((scan) => scan.id)).toEqual([tenantASecond.scanId, tenantAFirst.scanId]);
+    expect(scansService.listScans("tenant-b").map((scan) => scan.id)).toEqual([tenantBScan.scanId]);
+    expect(scansService.getReport("tenant-a", tenantAFirst.scanId)).toBe(tenantAFirst);
+    expect(() => scansService.getReport("tenant-b", tenantAFirst.scanId)).toThrow();
+    expect(tenantASecond.comparison?.previousScanId).toBe(tenantAFirst.scanId);
+    expect(tenantASecond.comparison?.previousScanId).not.toBe(tenantBScan.scanId);
+  });
+
   it("compares recurring scans for the same dataset name", async () => {
     const { scansService } = createScansService();
 
     const firstReport = await scansService.createScan(
+      "tenant-a",
       {
         originalname: "monthly.csv",
         buffer: csvBuffer(
@@ -142,6 +209,7 @@ describe("scanner pipeline", () => {
     );
 
     const secondReport = await scansService.createScan(
+      "tenant-a",
       {
         originalname: "monthly.csv",
         buffer: csvBuffer(

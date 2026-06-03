@@ -32,12 +32,13 @@ export class ScansService {
     private readonly reportService: ReportService,
   ) {}
 
-  listScans(): ScanListItem[] {
+  listScans(tenantId: string): ScanListItem[] {
     return this.scanOrder
       .map((id) => this.reports.get(id))
-      .filter((report): report is ScanReport => Boolean(report))
+      .filter((report): report is ScanReport => report !== undefined && report.tenantId === tenantId)
       .map((report) => ({
         id: report.scanId,
+        tenantId: report.tenantId,
         datasetName: report.datasetName,
         status: report.status,
         createdAt: report.createdAt,
@@ -48,17 +49,17 @@ export class ScansService {
       .reverse();
   }
 
-  getReport(scanId: string): ScanReport {
+  getReport(tenantId: string, scanId: string): ScanReport {
     const report = this.reports.get(scanId);
 
-    if (!report) {
+    if (!report || report.tenantId !== tenantId) {
       throw new NotFoundException(`Scan ${scanId} was not found.`);
     }
 
     return report;
   }
 
-  async createScan(file: UploadedDatasetFile | undefined, options: CreateScanOptions): Promise<ScanReport> {
+  async createScan(tenantId: string, file: UploadedDatasetFile | undefined, options: CreateScanOptions): Promise<ScanReport> {
     if (!file) {
       throw new BadRequestException("Upload a CSV or XLSX file using the 'file' field.");
     }
@@ -70,7 +71,7 @@ export class ScansService {
     const scanId = randomUUID();
     const createdAt = new Date().toISOString();
     const datasetName = options.datasetName?.trim() || file.originalname.replace(/\.[^.]+$/, "");
-    const previousReport = this.findPreviousReport(datasetName);
+    const previousReport = this.findPreviousReport(tenantId, datasetName);
     const tables = await this.fileParser.parseFile(file.originalname, file.buffer);
     const profiles = this.profiler.profileTables(tables);
     const findings = this.riskDetector.detectFindings(profiles);
@@ -79,6 +80,7 @@ export class ScansService {
 
     const report = await this.reportService.buildReport({
       scanId,
+      tenantId,
       datasetName,
       createdAt,
       completedAt,
@@ -96,10 +98,13 @@ export class ScansService {
     return report;
   }
 
-  private findPreviousReport(datasetName: string): ScanReport | undefined {
+  private findPreviousReport(tenantId: string, datasetName: string): ScanReport | undefined {
     return [...this.scanOrder]
       .reverse()
       .map((id) => this.reports.get(id))
-      .find((report) => report?.datasetName.toLowerCase() === datasetName.toLowerCase());
+      .find(
+        (report) =>
+          report?.tenantId === tenantId && report.datasetName.toLowerCase() === datasetName.toLowerCase(),
+      );
   }
 }

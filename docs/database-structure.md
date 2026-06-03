@@ -351,9 +351,25 @@ create table audit_events (
 );
 ```
 
+## Tenant isolation requirements
+
+The database layer must enforce the same boundary as the current API service layer. Audits from Company X must never be selected, compared or returned for Company Y.
+
+Rules:
+
+- Every scan query must include `tenant_id`.
+- Dataset names are unique per tenant, not globally.
+- Previous-scan lookup must filter by `tenant_id + dataset_id`.
+- Report lookup must join or filter through `scans.tenant_id`.
+- Audit events must include `tenant_id`.
+
+The current schema proposal already places `tenant_id` on `datasets`, `scans` and `audit_events`.
+
 ## Recommended indexes
 
 ```sql
+create index datasets_tenant_name_idx on datasets(tenant_id, name);
+create index scans_tenant_dataset_created_at_idx on scans(tenant_id, dataset_id, created_at desc);
 create index scans_dataset_created_at_idx on scans(dataset_id, created_at desc);
 create index scans_tenant_status_idx on scans(tenant_id, status);
 create index findings_scan_severity_idx on findings(scan_id, severity);

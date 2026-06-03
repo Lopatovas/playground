@@ -29,6 +29,7 @@ Upload the risky baseline scan:
 
 ```bash
 curl -fsS \
+  -H 'x-tenant-id: company-x' \
   -F 'datasetName=player_activity' \
   -F 'audience=mixed' \
   -F 'file=@docs/sample-inputs/player-activity-risky.csv;type=text/csv' \
@@ -39,6 +40,7 @@ Upload the improved recurring scan using the same dataset name:
 
 ```bash
 curl -fsS \
+  -H 'x-tenant-id: company-x' \
   -F 'datasetName=player_activity' \
   -F 'audience=mixed' \
   -F 'file=@docs/sample-inputs/player-activity-improved.csv;type=text/csv' \

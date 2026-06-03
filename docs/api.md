@@ -20,6 +20,16 @@ Response:
 }
 ```
 
+## Tenant header
+
+All scan endpoints require a tenant header:
+
+```http
+x-tenant-id: company-x
+```
+
+This scopes scan history, report reads and recurring comparison. In production this should be derived from authentication rather than typed manually.
+
 ## Upload and scan a dataset
 
 ```http
@@ -39,6 +49,7 @@ Example:
 
 ```bash
 curl -fsS \
+  -H 'x-tenant-id: company-x' \
   -F 'datasetName=player_activity' \
   -F 'audience=mixed' \
   -F 'file=@docs/sample-inputs/player-activity-risky.csv;type=text/csv' \
@@ -50,6 +61,7 @@ Response shape:
 ```ts
 interface ScanReport {
   scanId: string;
+  tenantId: string;
   datasetName: string;
   status: "completed";
   createdAt: string;
@@ -70,7 +82,7 @@ interface ScanReport {
 GET /scans
 ```
 
-Returns lightweight scan history items from the current API process memory.
+Returns lightweight scan history items for the supplied `x-tenant-id` from the current API process memory.
 
 ## Get a report
 
@@ -78,8 +90,8 @@ Returns lightweight scan history items from the current API process memory.
 GET /scans/:scanId/report
 ```
 
-Returns the same `ScanReport` shape produced by upload.
+Returns the same `ScanReport` shape produced by upload when the scan belongs to the supplied `x-tenant-id`; otherwise returns 404.
 
 ## Recurring comparison behavior
 
-A scan is compared with the most recent previous scan where `datasetName` matches case-insensitively. In the current prototype, this comparison only works while the API process remains alive because persistence is in memory.
+A scan is compared with the most recent previous scan where `tenantId + datasetName` matches case-insensitively. In the current prototype, this comparison only works while the API process remains alive because persistence is in memory.

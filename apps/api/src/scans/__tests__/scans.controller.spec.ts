@@ -6,6 +6,7 @@ import type { ScansService, UploadedDatasetFile } from "../scans.service.js";
 function report(overrides: Partial<ScanReport> = {}): ScanReport {
   return {
     scanId: overrides.scanId ?? "scan-1",
+    tenantId: overrides.tenantId ?? "tenant-a",
     datasetName: overrides.datasetName ?? "customers",
     status: overrides.status ?? "completed",
     createdAt: overrides.createdAt ?? "2026-06-03T00:00:00.000Z",
@@ -30,16 +31,22 @@ describe("ScansController", () => {
   it("delegates list and report reads to ScansService", () => {
     const scanReport = report();
     const service = {
-      listScans: vi.fn(() => [{ id: "scan-1", datasetName: "customers", status: "completed", createdAt: scanReport.createdAt }]),
+      listScans: vi.fn(() => [{ id: "scan-1", tenantId: "tenant-a", datasetName: "customers", status: "completed", createdAt: scanReport.createdAt }]),
       getReport: vi.fn(() => scanReport),
       createScan: vi.fn(),
     } as unknown as ScansService;
     const controller = new ScansController(service);
 
-    expect(controller.listScans()).toEqual([{ id: "scan-1", datasetName: "customers", status: "completed", createdAt: scanReport.createdAt }]);
-    expect(controller.getReport("scan-1")).toBe(scanReport);
-    expect(service.listScans).toHaveBeenCalledOnce();
-    expect(service.getReport).toHaveBeenCalledWith("scan-1");
+    expect(controller.listScans("tenant-a")).toEqual([{ id: "scan-1", tenantId: "tenant-a", datasetName: "customers", status: "completed", createdAt: scanReport.createdAt }]);
+    expect(controller.getReport("tenant-a", "scan-1")).toBe(scanReport);
+    expect(service.listScans).toHaveBeenCalledWith("tenant-a");
+    expect(service.getReport).toHaveBeenCalledWith("tenant-a", "scan-1");
+  });
+
+  it("requires a tenant header", () => {
+    const controller = new ScansController({} as ScansService);
+
+    expect(() => controller.listScans(undefined)).toThrow("Missing x-tenant-id header.");
   });
 
   it("delegates uploads with dataset and audience options", async () => {
@@ -57,7 +64,7 @@ describe("ScansController", () => {
       mimetype: "text/csv",
     };
 
-    await expect(controller.uploadScan(file, "customers", "technical")).resolves.toBe(scanReport);
-    expect(service.createScan).toHaveBeenCalledWith(file, { datasetName: "customers", audience: "technical" });
+    await expect(controller.uploadScan("tenant-a", file, "customers", "technical")).resolves.toBe(scanReport);
+    expect(service.createScan).toHaveBeenCalledWith("tenant-a", file, { datasetName: "customers", audience: "technical" });
   });
 });
