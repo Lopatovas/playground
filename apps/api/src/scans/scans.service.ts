@@ -1,12 +1,13 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectQueue } from "@nestjs/bullmq";
 import type { Job, Queue } from "bullmq";
-import type { ScanListItem, ScanReport } from "@ai-readiness/shared";
+import type { ReportChatMessage, ReportChatResponse, ScanListItem, ScanReport } from "@ai-readiness/shared";
 import { FileParserService } from "../scanner/file-parser.service.js";
 import { ProfilingService } from "../scanner/profiling.service.js";
 import { RiskDetectorService } from "../scanner/risk-detector.service.js";
 import { ScoringService } from "../scanner/scoring.service.js";
 import { ReportService } from "../scanner/report.service.js";
+import { ReportChatService } from "../scanner/report-chat.service.js";
 import type { ScanRepositoryLike } from "./scans.repository.js";
 import { ScansRepository } from "./scans.repository.js";
 
@@ -42,6 +43,7 @@ export class ScansService {
     private readonly riskDetector: RiskDetectorService,
     private readonly scoring: ScoringService,
     private readonly reportService: ReportService,
+    private readonly reportChatService: ReportChatService,
     @InjectQueue(SCAN_QUEUE_NAME) private readonly scanQueue: Queue<ScanJobData>,
   ) {}
 
@@ -57,6 +59,16 @@ export class ScansService {
     }
 
     return report;
+  }
+
+  async chatAboutReport(
+    tenantId: string,
+    scanId: string,
+    message: string,
+    history: ReportChatMessage[] = [],
+  ): Promise<ReportChatResponse> {
+    const report = await this.getReport(tenantId, scanId);
+    return this.reportChatService.askAboutReport(report, message, history);
   }
 
   async createScan(tenantId: string, file: UploadedDatasetFile | undefined, options: CreateScanOptions): Promise<ScanReport> {

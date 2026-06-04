@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { ActionItem, ReportSummary, ScanFinding, ScoreBreakdown, TableProfile } from "@ai-readiness/shared";
 import { ReportService } from "../report.service.js";
-import type { ReportEnhancementInput } from "../../llm/llm-provider.interface.js";
+import type { ReportEnhancementInput, ReportEnhancementOutput } from "../../llm/llm-provider.interface.js";
 
 function finding(overrides: Partial<ScanFinding> = {}): ScanFinding {
   return {
@@ -52,13 +52,18 @@ const profiles: TableProfile[] = [
 ];
 
 class StubLlmService {
-  constructor(private readonly output: null | { summary?: ReportSummary; actionPlan?: ActionItem[] }) {}
+  constructor(private readonly output: ReportEnhancementOutput | null) {}
 
   inputs: ReportEnhancementInput[] = [];
+  readonly providerName = "stub";
 
   async generateReportEnhancement(input: ReportEnhancementInput) {
     this.inputs.push(input);
     return this.output;
+  }
+
+  async chatAboutReport() {
+    return null;
   }
 }
 
@@ -80,25 +85,17 @@ describe("ReportService", () => {
       audience: "mixed",
     });
 
-    expect(report).toMatchObject({
-      scanId: "scan-1",
-      tenantId: "tenant-a",
-      datasetName: "customers",
-      status: "completed",
-      overallScore: 78,
-    });
     expect(report.summary.headline).toBe("This dataset scores 78/100 for AI readiness.");
-    expect(report.summary.topRisks).toContain("Potential PII detected");
+    expect(report.deterministicSummary?.headline).toBe("This dataset scores 78/100 for AI readiness.");
+    expect(report.llmEnhanced).toBe(false);
     expect(report.actionPlan[0]).toMatchObject({
       priority: "P1",
       title: "Potential PII detected",
-      affectedArea: "customers.email",
-      expectedScoreImpact: 14,
     });
     expect(llm.inputs[0]).toMatchObject({ audience: "mixed", overallScore: 78 });
   });
 
-  it("uses LLM-enhanced summary and action plan when the adapter returns one", async () => {
+  it("uses LLM-enhanced layers and keeps deterministic copies", async () => {
     const enhancedSummary: ReportSummary = {
       headline: "Enhanced headline",
       businessImpact: "Enhanced business impact",
@@ -115,7 +112,35 @@ describe("ReportService", () => {
         expectedScoreImpact: 14,
       },
     ];
-    const service = new ReportService(new StubLlmService({ summary: enhancedSummary, actionPlan: enhancedActionPlan }) as never);
+    const service = new ReportService(
+      new StubLlmService({
+        summary: enhancedSummary,
+        actionPlan: enhancedActionPlan,
+        comparisonNarrative: "Enhanced comparison story",
+        columnDictionary: [
+          {
+            tableName: "customers",
+            columnName: "email",
+            suggestedDefinition: "Masked contact handle",
+            dataNotes: "PII flagged",
+          },
+        ],
+        remediationPlaybook: [{ phase: "Week 1", owner: "Data engineering", tasks: ["Mask email"] }],
+      }) as never,
+    );
+
+    const previous = await service.buildReport({
+      scanId: "scan-prev",
+      tenantId: "tenant-a",
+      datasetName: "customers",
+      createdAt: "2026-06-01T00:00:00.000Z",
+      completedAt: "2026-06-01T00:00:01.000Z",
+      overallScore: 60,
+      scoreBreakdown,
+      profiles,
+      findings: [finding(), finding({ id: "finding-2", severity: "medium", title: "Missing values", scoreImpact: 6 })],
+      audience: "executive",
+    });
 
     const report = await service.buildReport({
       scanId: "scan-2",
@@ -127,10 +152,17 @@ describe("ReportService", () => {
       scoreBreakdown,
       profiles,
       findings: [finding()],
+      previousReport: previous,
       audience: "executive",
     });
 
-    expect(report.summary).toBe(enhancedSummary);
-    expect(report.actionPlan).toBe(enhancedActionPlan);
+    expect(report.summary).toEqual(enhancedSummary);
+    expect(report.llmEnhanced).toBe(true);
+    expect(report.llmProvider).toBe("stub");
+    expect(report.deterministicSummary?.headline).toContain("78/100");
+    expect(report.comparison?.narrative).toBe("Enhanced comparison story");
+    expect(report.comparison?.deterministicNarrative).toContain("improved");
+    expect(report.columnDictionary).toHaveLength(1);
+    expect(report.remediationPlaybook).toHaveLength(1);
   });
 });

@@ -31,6 +31,24 @@ Open:
 
 The Mistral API key is optional. Without it, the app uses deterministic report text. With `MISTRAL_API_KEY` set, Mistral can rewrite the summary/action plan using only aggregate findings, not raw uploaded rows.
 
+## Share a throwaway link (Cloudflare quick tunnel)
+
+Temporary public URL, no DNS or tunnel token:
+
+```bash
+npm run tunnel:quick
+```
+
+Prints a `https://….trycloudflare.com` link (new each run). Details: [docs/cloudflare-tunnel.md](docs/cloudflare-tunnel.md).
+
+## Expose on your own domain (optional)
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.cloudflare.yml up -d --build
+```
+
+Requires `CLOUDFLARE_TUNNEL_TOKEN` + public URLs in `.env`. See [docs/cloudflare-tunnel.md](docs/cloudflare-tunnel.md).
+
 ## Local development
 
 ```bash
@@ -49,6 +67,7 @@ npm run dev:web
 - [Scoring system and algorithm](docs/scoring.md)
 - [Sample inputs and expected findings](docs/sample-inputs.md)
 - [API usage](docs/api.md)
+- [Cloudflare Tunnel](docs/cloudflare-tunnel.md)
 - [TODO / roadmap](docs/todo.md)
 
 ## Architecture

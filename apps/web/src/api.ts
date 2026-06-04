@@ -1,6 +1,8 @@
-import type { ScanListItem, ScanReport } from "@ai-readiness/shared";
+import type { ReportChatMessage, ReportChatResponse, ScanListItem, ScanReport } from "@ai-readiness/shared";
 
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:3000";
+const configuredBase = import.meta.env.VITE_API_BASE_URL;
+const apiBaseUrl =
+  configuredBase === undefined || configuredBase === "" ? "" : configuredBase.replace(/\/$/, "");
 
 export async function uploadScan(input: {
   tenantId: string;
@@ -34,6 +36,27 @@ export async function getScan(tenantId: string, scanId: string): Promise<ScanRep
     headers: tenantHeaders(tenantId),
   });
   return parseResponse<ScanReport>(response);
+}
+
+export async function chatAboutReport(input: {
+  tenantId: string;
+  scanId: string;
+  message: string;
+  history?: ReportChatMessage[];
+}): Promise<ReportChatResponse> {
+  const response = await fetch(`${apiBaseUrl}/scans/${input.scanId}/chat`, {
+    method: "POST",
+    headers: {
+      ...tenantHeaders(input.tenantId),
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      message: input.message,
+      history: input.history ?? [],
+    }),
+  });
+
+  return parseResponse<ReportChatResponse>(response);
 }
 
 function tenantHeaders(tenantId: string): HeadersInit {

@@ -4,6 +4,8 @@ dist
 .env.*
 !.env.example
 !.env.sample
+cloudflare/credentials.json
+cloudflare/config.yml
 .DS_Store
 npm-debug.log*
 coverage

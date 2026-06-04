@@ -9,6 +9,7 @@ import type {
   TableProfile,
 } from "@ai-readiness/shared";
 import { LlmService } from "../llm/llm.service.js";
+import { buildDeterministicComparisonNarrative } from "./comparison-narrative.js";
 
 @Injectable()
 export class ReportService {
@@ -27,17 +28,33 @@ export class ReportService {
     previousReport?: ScanReport;
     audience: string;
   }): Promise<ScanReport> {
-    const comparison = input.previousReport ? this.compareReports(input.previousReport, input) : undefined;
-    const deterministicSummary = this.buildSummary(input.overallScore, input.findings, comparison);
+    const comparisonBase = input.previousReport ? this.compareReports(input.previousReport, input) : undefined;
+    const deterministicComparisonNarrative = comparisonBase
+      ? buildDeterministicComparisonNarrative(comparisonBase)
+      : undefined;
+
+    const deterministicSummary = this.buildSummary(input.overallScore, input.findings, comparisonBase);
     const deterministicActionPlan = this.buildActionPlan(input.findings);
     const llmEnhancement = await this.llmService.generateReportEnhancement({
       audience: input.audience,
       overallScore: input.overallScore,
       scoreBreakdown: input.scoreBreakdown,
       findings: input.findings.slice(0, 12),
+      profiles: input.profiles,
       summary: deterministicSummary,
       actionPlan: deterministicActionPlan.slice(0, 8),
+      comparison: comparisonBase,
+      deterministicComparisonNarrative,
     });
+
+    const llmEnhanced = Boolean(llmEnhancement);
+    const comparison: ScanComparison | undefined = comparisonBase
+      ? {
+          ...comparisonBase,
+          deterministicNarrative: deterministicComparisonNarrative,
+          narrative: llmEnhancement?.comparisonNarrative ?? deterministicComparisonNarrative,
+        }
+      : undefined;
 
     return {
       scanId: input.scanId,
@@ -53,6 +70,13 @@ export class ReportService {
       profiles: input.profiles,
       findings: input.findings,
       comparison,
+      reportAudience: input.audience,
+      llmEnhanced,
+      llmProvider: llmEnhanced ? this.llmService.providerName : undefined,
+      deterministicSummary,
+      deterministicActionPlan,
+      columnDictionary: llmEnhancement?.columnDictionary,
+      remediationPlaybook: llmEnhancement?.remediationPlaybook,
     };
   }
 

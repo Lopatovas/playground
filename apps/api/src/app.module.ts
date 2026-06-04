@@ -12,6 +12,7 @@ import { ProfilingService } from "./scanner/profiling.service.js";
 import { RiskDetectorService } from "./scanner/risk-detector.service.js";
 import { ScoringService } from "./scanner/scoring.service.js";
 import { ReportService } from "./scanner/report.service.js";
+import { ReportChatService } from "./scanner/report-chat.service.js";
 import { LlmService } from "./llm/llm.service.js";
 import { MistralLlmProvider } from "./llm/mistral.provider.js";
 import { PrismaService } from "./prisma/prisma.service.js";
@@ -49,6 +50,7 @@ const bullBoardPath = process.env.BULL_BOARD_PATH ?? "/queues";
     RiskDetectorService,
     ScoringService,
     ReportService,
+    ReportChatService,
     LlmService,
     MistralLlmProvider,
   ],

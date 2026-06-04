@@ -1,7 +1,7 @@
 import { BadRequestException, Body, Controller, Get, Headers, Param, Post, UploadedFile, UseInterceptors } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { ApiBody, ApiConsumes, ApiHeader, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from "@nestjs/swagger";
-import type { ScanListItem, ScanReport } from "@ai-readiness/shared";
+import type { ReportChatRequest, ReportChatResponse, ScanListItem, ScanReport } from "@ai-readiness/shared";
 import { ScansService, type UploadedDatasetFile } from "./scans.service.js";
 
 const maxUploadBytes = Number(process.env.MAX_UPLOAD_BYTES ?? 100 * 1024 * 1024);
@@ -40,6 +40,18 @@ export class ScansController {
   @ApiParam({ name: "scanId" })
   getReport(@Headers("x-tenant-id") tenantIdHeader: string | undefined, @Param("scanId") scanId: string): Promise<ScanReport> {
     return this.scansService.getReport(resolveTenantId(tenantIdHeader), scanId);
+  }
+
+  @Post("scans/:scanId/chat")
+  @ApiOperation({ summary: "Ask questions about a completed scan report (LLM, report-scoped only)" })
+  @ApiHeader({ name: "x-tenant-id", required: true })
+  @ApiParam({ name: "scanId" })
+  chatAboutReport(
+    @Headers("x-tenant-id") tenantIdHeader: string | undefined,
+    @Param("scanId") scanId: string,
+    @Body() body: ReportChatRequest,
+  ): Promise<ReportChatResponse> {
+    return this.scansService.chatAboutReport(resolveTenantId(tenantIdHeader), scanId, body.message, body.history ?? []);
   }
 
   @Post("scans/upload")

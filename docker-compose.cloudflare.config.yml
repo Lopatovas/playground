@@ -1,0 +1,30 @@
+# Cloudflare Tunnel using a local config file (alternative to TUNNEL_TOKEN).
+#
+#   cp cloudflare/config.yml.example cloudflare/config.yml
+#   # place credentials JSON at cloudflare/credentials.json
+#   docker compose -f docker-compose.yml -f docker-compose.cloudflare.config.yml up -d --build
+
+services:
+  api:
+    environment:
+      WEB_ORIGIN: ${PUBLIC_WEB_URL:-https://app.yourdomain.com}
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        VITE_API_BASE_URL: ${PUBLIC_API_URL:-https://api.yourdomain.com}
+
+  cloudflared:
+    image: cloudflare/cloudflared:2024.12.2
+    restart: unless-stopped
+    command: tunnel --config /etc/cloudflared/config.yml run
+    volumes:
+      - ./cloudflare/config.yml:/etc/cloudflared/config.yml:ro
+      - ./cloudflare/credentials.json:/etc/cloudflared/credentials.json:ro
+    depends_on:
+      api:
+        condition: service_started
+      web:
+        condition: service_started

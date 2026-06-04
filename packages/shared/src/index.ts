@@ -16,6 +16,8 @@ export type FindingCategory =
   | "AI_USABILITY"
   | "MONITORING_READINESS";
 
+export type ReportAudience = "mixed" | "executive" | "technical" | "compliance" | "ai-implementation";
+
 export interface ColumnProfile {
   name: string;
   inferredType: string;
@@ -76,6 +78,19 @@ export interface ReportSummary {
   nextSteps: string[];
 }
 
+export interface ColumnDictionaryEntry {
+  tableName: string;
+  columnName: string;
+  suggestedDefinition: string;
+  dataNotes: string;
+}
+
+export interface RemediationPlaybookItem {
+  phase: string;
+  owner: string;
+  tasks: string[];
+}
+
 export interface ScanComparison {
   previousScanId: string;
   currentScanId: string;
@@ -93,6 +108,8 @@ export interface ScanComparison {
     medium: number;
     low: number;
   };
+  narrative?: string;
+  deterministicNarrative?: string;
 }
 
 export interface ScanReport {
@@ -109,6 +126,13 @@ export interface ScanReport {
   profiles: TableProfile[];
   findings: ScanFinding[];
   comparison?: ScanComparison;
+  reportAudience?: ReportAudience | string;
+  llmEnhanced?: boolean;
+  llmProvider?: string;
+  deterministicSummary?: ReportSummary;
+  deterministicActionPlan?: ActionItem[];
+  columnDictionary?: ColumnDictionaryEntry[];
+  remediationPlaybook?: RemediationPlaybookItem[];
 }
 
 export interface ScanListItem {
@@ -120,4 +144,19 @@ export interface ScanListItem {
   completedAt?: string;
   overallScore?: number;
   findingCount?: number;
+}
+
+export interface ReportChatMessage {
+  role: "user" | "assistant";
+  content: string;
+}
+
+export interface ReportChatRequest {
+  message: string;
+  history?: ReportChatMessage[];
+}
+
+export interface ReportChatResponse {
+  reply: string;
+  refused: boolean;
 }

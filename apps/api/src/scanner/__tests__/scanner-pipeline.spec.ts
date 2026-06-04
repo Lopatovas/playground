@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { FileParserService } from "../file-parser.service.js";
 import { ProfilingService } from "../profiling.service.js";
 import { ReportService } from "../report.service.js";
+import { ReportChatService } from "../report-chat.service.js";
 import { RiskDetectorService } from "../risk-detector.service.js";
 import { ScoringService } from "../scoring.service.js";
 import { SCAN_JOB_NAME, ScansService, type ScanJobData, type ScanQueueLike } from "../../scans/scans.service.js";
@@ -40,6 +41,7 @@ function createScansService(capturingLlm = new CapturingLlmService()) {
       new RiskDetectorService(),
       new ScoringService(),
       new ReportService(capturingLlm as never),
+      new ReportChatService(capturingLlm as never),
       queue as never,
     ),
     capturingLlm,

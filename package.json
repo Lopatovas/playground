@@ -13,6 +13,7 @@
     "dev:web": "npm run dev -w @ai-readiness/web",
     "typecheck": "npm run typecheck -w @ai-readiness/shared && npm run typecheck -w @ai-readiness/api && npm run typecheck -w @ai-readiness/web",
     "docker:up": "docker compose up --build",
+    "tunnel:quick": "bash scripts/quick-tunnel.sh",
     "test": "npm run test -w @ai-readiness/api"
   },
   "devDependencies": {

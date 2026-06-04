@@ -1,0 +1,26 @@
+# Ephemeral public URL via Cloudflare Quick Tunnel (*.trycloudflare.com).
+# No account token, no DNS, no custom domain. Link changes each run.
+#
+#   docker compose -f docker-compose.yml -f docker-compose.quicktunnel.yml up -d --build
+#   docker compose -f docker-compose.yml -f docker-compose.quicktunnel.yml logs -f cloudflared
+#
+# Or: npm run tunnel:quick
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        # Same-origin API calls through nginx → api (see apps/web/nginx.conf)
+        VITE_API_BASE_URL: ""
+
+  cloudflared:
+    image: cloudflare/cloudflared:2024.12.2
+    restart: unless-stopped
+    command: tunnel --no-autoupdate --url http://web:80
+    depends_on:
+      api:
+        condition: service_started
+      web:
+        condition: service_started

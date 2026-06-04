@@ -29,7 +29,7 @@ services:
     build:
       context: .
       dockerfile: apps/api/Dockerfile
-    command: sh -c "npx prisma db push --schema apps/api/prisma/schema.prisma && npm run start -w @ai-readiness/api"
+    command: sh -c "npm run prisma:db:push -w @ai-readiness/api && npm run start -w @ai-readiness/api"
     environment:
       NODE_ENV: production
       PORT: 3000
