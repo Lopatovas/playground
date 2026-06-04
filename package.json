@@ -1,0 +1,24 @@
+{
+  "name": "ai-data-readiness-scanner",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build -w @ai-readiness/shared && npm run build -w @ai-readiness/api && npm run build -w @ai-readiness/web",
+    "dev": "npm run dev -w @ai-readiness/api",
+    "dev:api": "npm run dev -w @ai-readiness/api",
+    "dev:web": "npm run dev -w @ai-readiness/web",
+    "typecheck": "npm run typecheck -w @ai-readiness/shared && npm run typecheck -w @ai-readiness/api && npm run typecheck -w @ai-readiness/web",
+    "docker:up": "docker compose up --build",
+    "tunnel:quick": "bash scripts/quick-tunnel.sh",
+    "test": "npm run test -w @ai-readiness/api"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8"
+  }
+}

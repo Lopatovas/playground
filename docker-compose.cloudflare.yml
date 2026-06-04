@@ -1,0 +1,31 @@
+# Optional overlay: expose web + API through Cloudflare Tunnel (cloudflared).
+#
+# Usage:
+#   cp .env.sample .env   # set CLOUDFLARE_TUNNEL_TOKEN + public URLs
+#   docker compose -f docker-compose.yml -f docker-compose.cloudflare.yml up -d --build
+#
+# See docs/cloudflare-tunnel.md for Zero Trust setup steps.
+
+services:
+  api:
+    environment:
+      WEB_ORIGIN: ${PUBLIC_WEB_URL:-http://localhost:8080}
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        VITE_API_BASE_URL: ${PUBLIC_API_URL:-http://localhost:3000}
+
+  cloudflared:
+    image: cloudflare/cloudflared:2024.12.2
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN:?Set CLOUDFLARE_TUNNEL_TOKEN in .env — see docs/cloudflare-tunnel.md}
+    depends_on:
+      api:
+        condition: service_started
+      web:
+        condition: service_started

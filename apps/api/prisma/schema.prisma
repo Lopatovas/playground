@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ScanStatus {
+  queued
+  processing
+  completed
+  failed
+}
+
+model Scan {
+  id              String     @id @default(uuid())
+  tenantId        String
+  datasetName     String
+  status          ScanStatus @default(queued)
+  audience        String     @default("mixed")
+  originalFileName String?
+  contentType     String?
+  sizeBytes       Int?
+  fileBuffer      Bytes?
+  overallScore    Int?
+  report          Json?
+  errorMessage    String?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  completedAt     DateTime?
+
+  @@index([tenantId, createdAt])
+  @@index([tenantId, datasetName, createdAt])
+  @@index([tenantId, status])
+}

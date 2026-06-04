@@ -1,0 +1,17 @@
+# Optional: config-file mode instead of TUNNEL_TOKEN.
+# 1. cloudflared tunnel create ai-readiness-scanner
+# 2. cloudflared tunnel route dns ai-readiness-scanner app.yourdomain.com
+# 3. cloudflared tunnel route dns ai-readiness-scanner api.yourdomain.com
+# 4. Copy credentials JSON to cloudflare/credentials.json
+# 5. cp cloudflare/config.yml.example cloudflare/config.yml and edit hostnames
+# 6. Use docker-compose.cloudflare.config.yml
+
+tunnel: REPLACE_WITH_TUNNEL_UUID
+credentials-file: /etc/cloudflared/credentials.json
+
+ingress:
+  - hostname: app.yourdomain.com
+    service: http://web:80
+  - hostname: api.yourdomain.com
+    service: http://api:3000
+  - service: http_status:404

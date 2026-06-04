@@ -1,0 +1,6 @@
+player_id,email_masked,signup_date,current_status,revenue,created_at
+1001,hash_001,2026-01-01,active,145.75,2026-06-01T00:00:00Z
+1002,hash_002,2026-01-15,blocked,0,2026-06-01T00:00:00Z
+1003,hash_003,2026-02-14,active,82.50,2026-06-02T10:15:00Z
+1004,hash_004,2026-02-20,active,310.00,2026-06-02T11:00:00Z
+1005,hash_005,2026-03-01,active,55.00,2026-06-03T09:30:00Z

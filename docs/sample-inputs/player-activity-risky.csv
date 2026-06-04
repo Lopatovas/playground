@@ -1,0 +1,6 @@
+player_id,email,phone,signup_date,status_old,revenue,notes
+1001,alice@example.com,+37060000000,2026-01-01,active,120.50,VIP player asked about bonus limits
+1002,bob@example.com,+37060000001,,blocked,0,
+1002,bob@example.com,+37060000001,,blocked,0,
+1003,,+37060000002,2026-02-14,active,75.25,Potential duplicate account
+1004,dana@example.com,,2026-02-20,,310.00,
