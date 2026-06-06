@@ -1,0 +1,8 @@
+# Example config for a central Cabinet sync job.
+
+projects:
+  - name: Example Project
+    repo: owner/repo
+    branch: main
+    summaryPath: docs/cabinet-summary.md
+    cabinetPath: projects/example-project.md
