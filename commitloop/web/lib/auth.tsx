@@ -30,10 +30,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
   const refreshUser = useCallback(async () => {
-    setStatus((current) =>
-      current === "authenticated" ? "authenticated" : "loading",
-    );
-
     try {
       const nextUser = await api.me();
       setUser(nextUser);
@@ -52,8 +48,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    void refreshUser();
-  }, [refreshUser]);
+    let cancelled = false;
+
+    async function loadUser() {
+      try {
+        const nextUser = await api.me();
+        if (cancelled) return;
+        setUser(nextUser);
+        setStatus("authenticated");
+      } catch {
+        if (cancelled) return;
+        setUser(null);
+        setStatus("anonymous");
+      }
+    }
+
+    void loadUser();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const value = useMemo(
     () => ({ status, user, setUser, refreshUser, clearAuth }),

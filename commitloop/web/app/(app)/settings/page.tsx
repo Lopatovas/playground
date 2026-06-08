@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
@@ -8,15 +8,10 @@ import { useAuth } from "@/lib/auth";
 export default function SettingsPage() {
   const router = useRouter();
   const { setUser, user } = useAuth();
-  const [owner, setOwner] = useState("");
-  const [name, setName] = useState("");
+  const [owner, setOwner] = useState(() => user?.repo?.owner ?? "");
+  const [name, setName] = useState(() => user?.repo?.name ?? "");
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
-
-  useEffect(() => {
-    setOwner(user?.repo?.owner ?? "");
-    setName(user?.repo?.name ?? "");
-  }, [user?.repo?.name, user?.repo?.owner]);
 
   async function saveRepo(e: FormEvent) {
     e.preventDefault();
@@ -113,7 +108,9 @@ export default function SettingsPage() {
             </div>
           </div>
           {error ? (
-            <p style={{ color: "var(--danger)", fontSize: "0.9rem" }}>{error}</p>
+            <p style={{ color: "var(--danger)", fontSize: "0.9rem" }}>
+              {error}
+            </p>
           ) : null}
           <button className="btn btn-primary" type="submit" disabled={saving}>
             {saving ? "Saving…" : "Save repository"}
