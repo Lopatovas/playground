@@ -3,11 +3,13 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Markdown } from "@/components/markdown";
+import { AssignmentChecklist } from "@/components/assignment-checklist";
+import { AssignmentContentCard } from "@/components/assignment-content-card";
+import { AssignmentStepTabs } from "@/components/assignment-step-tabs";
+import { LoadingState } from "@/components/loading-state";
+import { RepoLink } from "@/components/repo-link";
 import { api, type Assignment } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
-
-const STEPS = ["lesson", "sandbox", "project"] as const;
 
 export default function AssignmentPage() {
   const router = useRouter();
@@ -30,7 +32,7 @@ export default function AssignmentPage() {
     };
   }, [router]);
 
-  async function selectStep(step: (typeof STEPS)[number]) {
+  async function selectStep(step: Assignment["step"]) {
     setBusy(true);
     try {
       setAssignment(await api.setStep(step));
@@ -60,7 +62,7 @@ export default function AssignmentPage() {
   }
 
   if (!assignment) {
-    return <div style={{ padding: "2rem 0" }}>Loading…</div>;
+    return <LoadingState />;
   }
 
   const content =
@@ -73,7 +75,10 @@ export default function AssignmentPage() {
   return (
     <>
       <p style={{ marginBottom: "1rem" }}>
-        <Link href="/home" style={{ color: "var(--muted)", fontSize: "0.9rem" }}>
+        <Link
+          href="/home"
+          style={{ color: "var(--muted)", fontSize: "0.9rem" }}
+        >
           ← Home
         </Link>
       </p>
@@ -82,68 +87,25 @@ export default function AssignmentPage() {
         {assignment.stage.title}
       </h1>
 
-      <div className="tabs">
-        {STEPS.map((step) => (
-          <button
-            key={step}
-            type="button"
-            className={`tab ${assignment.step === step ? "active" : ""}`}
-            disabled={busy}
-            onClick={() => selectStep(step)}
-          >
-            {step === "lesson"
-              ? "Lesson"
-              : step === "sandbox"
-                ? "Sandbox"
-                : "Project"}
-          </button>
-        ))}
-      </div>
+      <AssignmentStepTabs
+        activeStep={assignment.step}
+        busy={busy}
+        onSelect={selectStep}
+      />
 
-      <div className="card" style={{ marginBottom: "1rem" }}>
-        <Markdown source={content} />
-      </div>
+      <AssignmentContentCard source={content} />
 
-      {assignment.step === "project" && assignment.checklist.length > 0 ? (
-        <div className="card" style={{ marginBottom: "1rem" }}>
-          <h3 style={{ marginTop: 0 }}>Checklist</h3>
-          <ul className="checklist">
-            {assignment.checklist.map((item) => (
-              <li key={item.id}>
-                <input
-                  type="checkbox"
-                  checked={item.done}
-                  disabled={busy}
-                  onChange={(e) => toggle(item.id, e.target.checked)}
-                />
-                <span>{item.label}</span>
-              </li>
-            ))}
-          </ul>
-          {assignment.allChecklistDone ? (
-            <button
-              type="button"
-              className="btn btn-primary"
-              style={{ marginTop: "1rem" }}
-              disabled={busy}
-              onClick={advance}
-            >
-              Advance to next stage
-            </button>
-          ) : null}
-        </div>
+      {assignment.step === "project" ? (
+        <AssignmentChecklist
+          allDone={assignment.allChecklistDone}
+          busy={busy}
+          items={assignment.checklist}
+          onAdvance={advance}
+          onToggle={toggle}
+        />
       ) : null}
 
-      {user?.repo ? (
-        <a
-          className="btn btn-ghost"
-          href={`https://github.com/${user.repo.owner}/${user.repo.name}`}
-          target="_blank"
-          rel="noreferrer"
-        >
-          Open repo on GitHub →
-        </a>
-      ) : null}
+      {user?.repo ? <RepoLink repo={user.repo} /> : null}
     </>
   );
 }

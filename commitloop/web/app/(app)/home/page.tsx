@@ -1,8 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { AssignmentSummaryCard } from "@/components/assignment-summary-card";
+import { CommitmentSetupCard } from "@/components/commitment-setup-card";
+import { LoadingState } from "@/components/loading-state";
 import { StreakPanel } from "@/components/streak-panel";
 import { api, type Assignment, type StreakStats } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
@@ -39,37 +41,28 @@ export default function HomePage() {
   }, [router, user?.repo]);
 
   if (!assignment) {
-    return <div style={{ padding: "2rem 0" }}>Loading…</div>;
+    return <LoadingState />;
   }
 
   return (
     <>
       <div className="home-grid">
-        <div className="card">
-          <div className="label">Today&apos;s assignment</div>
-          <h2 style={{ margin: "0.5rem 0 0.25rem" }}>{assignment.stage.title}</h2>
-          <p style={{ color: "var(--muted)", margin: "0 0 1rem" }}>
-            Step: {assignment.stepLabel}
-          </p>
-          <p style={{ margin: "0 0 1.25rem" }}>{assignment.summary}</p>
-          <Link className="btn btn-primary" href="/assignment">
-            Continue assignment
-          </Link>
-        </div>
+        <AssignmentSummaryCard assignment={assignment} />
 
         {streak ? (
           <StreakPanel stats={streak} repo={repo ?? undefined} />
         ) : (
-          <div className="card">
-            <div className="label">Commitment</div>
-            <p style={{ color: "var(--muted)" }}>
-              <Link href="/settings">Connect a repo</Link> to track your streak.
-            </p>
-          </div>
+          <CommitmentSetupCard />
         )}
       </div>
 
-      <p style={{ marginTop: "1.25rem", color: "var(--muted)", fontSize: "0.9rem" }}>
+      <p
+        style={{
+          marginTop: "1.25rem",
+          color: "var(--muted)",
+          fontSize: "0.9rem",
+        }}
+      >
         {assignment.nextHint}
       </p>
     </>

@@ -3,9 +3,14 @@
 import { useEffect, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { AppHeader } from "@/components/app-header";
+import { LoadingState } from "@/components/loading-state";
 import { useAuth } from "@/lib/auth";
 
-export default function ProtectedAppLayout({ children }: { children: ReactNode }) {
+export default function ProtectedAppLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const router = useRouter();
   const { clearAuth, status, user } = useAuth();
 
@@ -17,8 +22,8 @@ export default function ProtectedAppLayout({ children }: { children: ReactNode }
 
   if (status !== "authenticated" || !user) {
     return (
-      <div className="container" style={{ padding: "3rem 0" }}>
-        Loading…
+      <div className="container">
+        <LoadingState variant="page" />
       </div>
     );
   }
