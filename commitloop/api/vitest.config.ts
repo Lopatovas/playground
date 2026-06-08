@@ -9,7 +9,8 @@ export default defineConfig({
       include: ["src/**/*.ts"],
       exclude: [
         "src/**/*.test.ts",
-        "src/test-helpers.ts",
+        "src/test/helpers.ts",
+        "src/test/test-session.routes.ts",
         "src/index.ts",
       ],
       thresholds: {

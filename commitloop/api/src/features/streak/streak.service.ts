@@ -14,7 +14,7 @@ export type StreakStats = {
   recentDays: CommitDay[];
 };
 
-type GitHubCommit = {
+export type GitHubCommit = {
   commit: {
     author: { date: string };
     message: string;
@@ -104,47 +104,4 @@ export function computeStreak(commits: GitHubCommit[]): StreakStats {
     lastActivityDate: sortedDays.at(-1) ?? null,
     recentDays,
   };
-}
-
-export async function fetchRepoCommits(
-  token: string,
-  owner: string,
-  repo: string,
-  sinceDays = 90,
-): Promise<GitHubCommit[]> {
-  const since = new Date();
-  since.setUTCDate(since.getUTCDate() - sinceDays);
-
-  const url = new URL(
-    `https://api.github.com/repos/${owner}/${repo}/commits`,
-  );
-  url.searchParams.set("since", since.toISOString());
-  url.searchParams.set("per_page", "100");
-
-  const commits: GitHubCommit[] = [];
-  let page = 1;
-
-  while (page <= 5) {
-    url.searchParams.set("page", String(page));
-    const res = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/vnd.github+json",
-        "X-GitHub-Api-Version": "2022-11-28",
-      },
-    });
-
-    if (!res.ok) {
-      const body = await res.text();
-      throw new Error(`GitHub API ${res.status}: ${body}`);
-    }
-
-    const batch = (await res.json()) as GitHubCommit[];
-    if (batch.length === 0) break;
-    commits.push(...batch);
-    if (batch.length < 100) break;
-    page += 1;
-  }
-
-  return commits;
 }

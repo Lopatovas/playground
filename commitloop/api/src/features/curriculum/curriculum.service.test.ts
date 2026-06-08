@@ -5,7 +5,7 @@ import {
   nextStageSlug,
   stepLabel,
   TRACK_1_STAGES,
-} from "./curriculum.js";
+} from "./curriculum.service.js";
 
 describe("curriculum", () => {
   it("lists track 1 stages", () => {

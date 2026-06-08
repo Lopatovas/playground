@@ -4,7 +4,7 @@ import {
   nextStageSlug,
   stepLabel,
   type Step,
-} from "./curriculum.js";
+} from "../curriculum/curriculum.service.js";
 
 export type ChecklistState = Record<string, boolean>;
 
@@ -33,8 +33,7 @@ export function buildAssignment(
     done: Boolean(checklistState[item.id]),
   }));
 
-  const allDone =
-    checklist.length > 0 && checklist.every((item) => item.done);
+  const allDone = checklist.length > 0 && checklist.every((item) => item.done);
 
   let nextHint = "";
   if (currentStep === "lesson") {
@@ -84,5 +83,10 @@ function firstLineForStep(
       : step === "sandbox"
         ? stage.sandbox
         : stage.project;
-  return text.split("\n").find((l) => l.trim() && !l.startsWith("#"))?.trim() ?? stage.goal;
+  return (
+    text
+      .split("\n")
+      .find((l) => l.trim() && !l.startsWith("#"))
+      ?.trim() ?? stage.goal
+  );
 }

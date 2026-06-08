@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 
 const CONTENT_ROOT = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
-  "../../content",
+  "../../../../content",
 );
 
 export type Step = "lesson" | "sandbox" | "project";
@@ -16,7 +16,11 @@ export type StageMeta = {
 };
 
 export const TRACK_1_STAGES: StageMeta[] = [
-  { slug: "stage-0-onboarding", title: "Stage 0 — Onboarding", available: true },
+  {
+    slug: "stage-0-onboarding",
+    title: "Stage 0 — Onboarding",
+    available: true,
+  },
   {
     slug: "stage-1-git-fundamentals",
     title: "Stage 1 — Git Fundamentals",
@@ -32,7 +36,11 @@ export const TRACK_1_STAGES: StageMeta[] = [
     title: "Stage 3 — System Structure",
     available: false,
   },
-  { slug: "stage-4-deployment", title: "Stage 4 — Deployment", available: false },
+  {
+    slug: "stage-4-deployment",
+    title: "Stage 4 — Deployment",
+    available: false,
+  },
   { slug: "stage-5-testing", title: "Stage 5 — Testing", available: false },
   {
     slug: "stage-6-expansion",
@@ -48,10 +56,7 @@ function readStageFile(slug: string): string | null {
 }
 
 function section(md: string, heading: string): string {
-  const re = new RegExp(
-    `## ${heading}\\s*\\n([\\s\\S]*?)(?=\\n## |$)`,
-    "i",
-  );
+  const re = new RegExp(`## ${heading}\\s*\\n([\\s\\S]*?)(?=\\n## |$)`, "i");
   return re.exec(md)?.[1]?.trim() ?? "";
 }
 
@@ -63,7 +68,10 @@ function firstParagraph(text: string): string {
   return lines.slice(0, 3).join(" ").slice(0, 280);
 }
 
-function parseChecklist(md: string, stageSlug: string): { id: string; label: string }[] {
+function parseChecklist(
+  md: string,
+  stageSlug: string,
+): { id: string; label: string }[] {
   const block = section(md, "Checklist");
   if (!block) return [];
 

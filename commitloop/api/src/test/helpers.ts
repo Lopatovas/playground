@@ -3,7 +3,8 @@ import { fileURLToPath } from "node:url";
 import { PrismaClient } from "@prisma/client";
 import type { Express } from "express";
 import request from "supertest";
-import { createApp, type AppConfig } from "./app.js";
+import { createApp } from "../app.js";
+import type { AppConfig } from "../config/env.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -13,7 +14,7 @@ export const testConfig: AppConfig = {
   githubClientSecret: "",
   githubCallbackUrl: "http://localhost:3001/auth/github/callback",
   sessionSecret: "test-secret",
-  contentRoot: path.resolve(__dirname, "../../content"),
+  contentRoot: path.resolve(__dirname, "../../../content"),
 };
 
 export function createTestPrisma() {
@@ -26,11 +27,14 @@ export function createTestApp(prisma: PrismaClient): Express {
   return createApp(prisma, testConfig);
 }
 
-export async function seedUser(prisma: PrismaClient, overrides?: {
-  currentStage?: string;
-  currentStep?: string;
-  checklistState?: string;
-}) {
+export async function seedUser(
+  prisma: PrismaClient,
+  overrides?: {
+    currentStage?: string;
+    currentStep?: string;
+    checklistState?: string;
+  },
+) {
   return prisma.user.create({
     data: {
       githubId: Math.floor(Math.random() * 1_000_000_000),

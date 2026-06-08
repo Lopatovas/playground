@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { computeStreak, fetchRepoCommits } from "./streak.js";
+import { computeStreak } from "./streak.service.js";
 
 function commit(date: string, message = "work") {
   return { commit: { author: { date: `${date}T12:00:00Z` }, message } };
@@ -37,10 +37,7 @@ describe("computeStreak", () => {
   });
 
   it("counts consecutive-day streak ending yesterday", () => {
-    const stats = computeStreak([
-      commit("2025-06-06"),
-      commit("2025-06-07"),
-    ]);
+    const stats = computeStreak([commit("2025-06-06"), commit("2025-06-07")]);
     expect(stats.activeToday).toBe(false);
     expect(stats.missedToday).toBe(true);
     expect(stats.currentStreak).toBe(2);
@@ -83,49 +80,5 @@ describe("computeStreak", () => {
       Array.from({ length: 7 }, (_, i) => commit("2025-06-08", `msg-${i}`)),
     );
     expect(stats.recentDays[0]?.messages).toHaveLength(5);
-  });
-});
-
-describe("fetchRepoCommits", () => {
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
-  it("paginates until an empty page", async () => {
-    const page1 = Array.from({ length: 100 }, () => commit("2025-06-01"));
-    const page2 = [commit("2025-06-02")];
-
-    vi.stubGlobal(
-      "fetch",
-      vi
-        .fn()
-        .mockResolvedValueOnce({
-          ok: true,
-          json: async () => page1,
-        })
-        .mockResolvedValueOnce({
-          ok: true,
-          json: async () => page2,
-        }),
-    );
-
-    const commits = await fetchRepoCommits("token", "owner", "repo");
-    expect(commits).toHaveLength(101);
-    expect(fetch).toHaveBeenCalledTimes(2);
-  });
-
-  it("throws when GitHub returns an error", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockResolvedValue({
-        ok: false,
-        status: 403,
-        text: async () => "forbidden",
-      }),
-    );
-
-    await expect(fetchRepoCommits("token", "owner", "repo")).rejects.toThrow(
-      "GitHub API 403",
-    );
   });
 });

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildAssignment, parseChecklistState } from "./assignment.js";
+import { buildAssignment, parseChecklistState } from "./assignment.service.js";
 
 describe("parseChecklistState", () => {
   it("parses valid JSON", () => {
