@@ -1,0 +1,22 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  githubId     Int      @unique
+  username     String
+  avatarUrl    String?
+  accessToken  String
+  repoOwner    String?
+  repoName     String?
+  trackId      String   @default("track-1")
+  currentStage String   @default("stage-0")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
