@@ -2,8 +2,8 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
-import { RepoSettingsForm } from "@/components/repo-settings-form";
-import { SettingsDetails } from "@/components/settings-details";
+import { RepoSettingsForm } from "@/features/settings/repo-settings-form";
+import { SettingsDetails } from "@/features/settings/settings-details";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 

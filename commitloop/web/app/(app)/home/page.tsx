@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AssignmentSummaryCard } from "@/components/assignment-summary-card";
-import { CommitmentSetupCard } from "@/components/commitment-setup-card";
 import { LoadingState } from "@/components/loading-state";
 import { StreakPanel } from "@/components/streak-panel";
+import { AssignmentSummaryCard } from "@/features/assignment/assignment-summary-card";
+import { CommitmentSetupCard } from "@/features/dashboard/commitment-setup-card";
 import { api, type Assignment, type StreakStats } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 

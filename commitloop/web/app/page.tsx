@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { LandingFeatureGrid } from "@/components/landing-feature-grid";
 import { PublicHeader } from "@/components/public-header";
+import { LandingFeatureGrid } from "@/features/landing/landing-feature-grid";
 import { api } from "@/lib/api";
 
 export default function LandingPage() {

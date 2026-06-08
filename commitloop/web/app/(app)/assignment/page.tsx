@@ -3,11 +3,11 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AssignmentChecklist } from "@/components/assignment-checklist";
-import { AssignmentContentCard } from "@/components/assignment-content-card";
-import { AssignmentStepTabs } from "@/components/assignment-step-tabs";
 import { LoadingState } from "@/components/loading-state";
-import { RepoLink } from "@/components/repo-link";
+import { AssignmentChecklist } from "@/features/assignment/assignment-checklist";
+import { AssignmentContentCard } from "@/features/assignment/assignment-content-card";
+import { AssignmentStepTabs } from "@/features/assignment/assignment-step-tabs";
+import { RepoLink } from "@/features/repo/repo-link";
 import { api, type Assignment } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 

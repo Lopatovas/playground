@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { AppHeader } from "@/components/app-header";
 import { PublicHeader } from "@/components/public-header";
-import { TrackStageList } from "@/components/track-stage-list";
+import { TrackStageList } from "@/features/curriculum/track-stage-list";
 import { api, type Assignment } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 
