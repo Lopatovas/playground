@@ -15,8 +15,10 @@ model User {
   accessToken  String
   repoOwner    String?
   repoName     String?
-  trackId      String   @default("track-1")
-  currentStage String   @default("stage-0")
-  createdAt    DateTime @default(now())
+  trackId         String   @default("track-1")
+  currentStage    String   @default("stage-0-onboarding")
+  currentStep     String   @default("lesson")
+  checklistState  String   @default("{}")
+  createdAt       DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }

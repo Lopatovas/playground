@@ -1,0 +1,18 @@
+{
+  "name": "commitloop",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "workspaces": ["api", "web"],
+  "scripts": {
+    "lint": "npm run lint -w @commitloop/api && npm run lint -w @commitloop/web",
+    "format": "npm run format -w @commitloop/api && npm run format -w @commitloop/web",
+    "format:write": "npm run format:write -w @commitloop/api && npm run format:write -w @commitloop/web",
+    "typecheck": "npm run typecheck -w @commitloop/api && npm run typecheck -w @commitloop/web",
+    "test": "npm run test -w @commitloop/api && npm run test -w @commitloop/web",
+    "test:coverage": "npm run test:coverage -w @commitloop/api && npm run test:coverage -w @commitloop/web",
+    "build": "npm run build -w @commitloop/api && npm run build -w @commitloop/web",
+    "ci": "npm run typecheck && npm run lint && npm run test:coverage && npm run build"
+  }
+}

@@ -6,6 +6,13 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src",
+    "format": "prettier --check .",
+    "format:write": "prettier --write .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate"
   },
@@ -18,13 +25,22 @@
     "express-session": "^1.18.1"
   },
   "devDependencies": {
+    "@eslint/js": "^9.28.0",
     "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.18",
     "@types/express": "^5.0.2",
     "@types/express-session": "^1.18.1",
     "@types/node": "^22.15.21",
+    "@types/supertest": "^6.0.3",
+    "@vitest/coverage-v8": "^3.2.3",
+    "eslint": "^9.28.0",
+    "eslint-config-prettier": "^10.1.5",
+    "prettier": "^3.5.3",
     "prisma": "^6.9.0",
+    "supertest": "^7.1.1",
     "tsx": "^4.19.4",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.33.1",
+    "vitest": "^3.2.3"
   }
 }

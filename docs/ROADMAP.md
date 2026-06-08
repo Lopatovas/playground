@@ -26,21 +26,23 @@ Prove the wedge: **people will show up daily when GitHub is watched and curricul
 
 ## In progress
 
-- [ ] npm install + verify local run
-- [ ] GitHub OAuth app credentials ( **needs you** — 5 min at github.com/settings/developers)
+- [x] Architecture locked → [ARCHITECTURE.md](./ARCHITECTURE.md)
+- [x] Wireframes approved → [WIREFRAMES.md](./WIREFRAMES.md)
+- [x] Next.js web + assignment-first home
+- [x] Assignment API + checklist progress
+- [ ] GitHub OAuth credentials ( **needs you** — 5 min)
+- [ ] Deploy to commitloop.dev
 
 ---
 
-## Next up (agent-owned)
+## Next up
 
-| Priority | Task | Why |
-|----------|------|-----|
-| P0 | Deploy landing to `commitloop.dev` | Park the name, look real |
-| P1 | Stage 2–4 curriculum content | Enough to run a real student for a month |
-| P1 | Assignment checklists in dashboard | "What do I do today?" without Notion |
-| P2 | Mentor view (inactive students list) | Accountability for cohort 1 |
-| P3 | Track picker on signup | Track 1 vs Track 2 |
-| P3 | Discord link + cohort entity | When first students appear |
+| Priority | Task |
+|----------|------|
+| P1 | Stage 2–4 curriculum markdown |
+| P2 | Mentor view (inactive students) |
+| P2 | Postgres + production env |
+| P3 | Payments / founding cohort |
 
 ---
 

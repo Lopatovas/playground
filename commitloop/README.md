@@ -4,44 +4,63 @@
 
 Accountability-first engineering apprenticeship. GitHub is the source of truth.
 
-- [Product docs](../docs/positioning.md)
+- [Architecture](../docs/ARCHITECTURE.md)
+- [Wireframes](../docs/WIREFRAMES.md)
 - [Curriculum](../docs/curriculum.md)
-- [Platform spec](../docs/platform.md)
 - [Roadmap](../docs/ROADMAP.md)
 
-## What's built
+## Stack
 
-| Piece | Status |
-|-------|--------|
-| Landing page | ✅ |
-| GitHub OAuth + connect repo | ✅ |
-| Streak dashboard | ✅ |
-| Track 1 curriculum (Stage 0–1) | ✅ |
-| Assignments / mentor view | 🔜 |
+| Layer | Tech |
+|-------|------|
+| Web | Next.js 15 (App Router) → Vercel |
+| API | Express + Prisma + SQLite (dev) → Postgres (prod) |
+| Content | Markdown in `content/track-1/` |
 
 ## Quick start
 
 ```bash
-# 1. Copy env and add GitHub OAuth app credentials
 cp .env.example .env
-# Create OAuth app: https://github.com/settings/developers
-# Callback URL: http://localhost:3001/auth/github/callback
+# GitHub OAuth app → callback http://localhost:3001/auth/github/callback
 
-# 2. API
-cd api && npm install && npx prisma migrate dev && npm run dev
-
-# 3. Web (separate terminal)
+cd api && npm install && npx prisma migrate deploy && npm run dev
 cd web && npm install && npm run dev
 ```
 
-- Web: http://localhost:5173
+- Web: http://localhost:3000
 - API: http://localhost:3001
 
-## Spin out to new repo
+## App routes
 
-This folder + `docs/` (curriculum, platform, positioning) is the seed. When ready:
+| Route | Purpose |
+|-------|---------|
+| `/` | Landing |
+| `/home` | Assignment + streak (primary dashboard) |
+| `/assignment` | Lesson / Sandbox / Project tabs + checklist |
+| `/curriculum` | Track 1 stage map |
+| `/settings` | GitHub repo link |
+
+## API highlights
+
+- `GET /assignment/current` — today's focus
+- `POST /assignment/checklist` — toggle checklist items
+- `POST /assignment/advance` — next stage when checklist complete
+- `GET /streak` — GitHub commit accountability
+
+## Quality
+
+From `commitloop/`:
 
 ```bash
-git clone -b project/commitloop <playground-url> commitloop
-# Or copy commitloop/ and docs/ into a fresh repo
+npm run ci          # typecheck + lint + coverage + build
+npm run test        # unit + integration tests
+npm run lint        # ESLint (api + web)
+npm run format      # Prettier check
 ```
+
+| Package | Tests | Lint |
+|---------|-------|------|
+| `api/` | Vitest + Supertest (SQLite test DB) | ESLint 9 + typescript-eslint |
+| `web/` | Vitest + Testing Library | `eslint-config-next` |
+
+CI runs on pushes to `commitloop/**` via GitHub Actions.
