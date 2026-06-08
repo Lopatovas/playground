@@ -3,26 +3,31 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AppHeader } from "@/components/app-header";
 import { Markdown } from "@/components/markdown";
-import { api, type Assignment, type User } from "@/lib/api";
+import { api, type Assignment } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
 
 const STEPS = ["lesson", "sandbox", "project"] as const;
 
 export default function AssignmentPage() {
   const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
+  const { user } = useAuth();
   const [assignment, setAssignment] = useState<Assignment | null>(null);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
+    let cancelled = false;
+
     api
-      .me()
-      .then(async (u) => {
-        setUser(u);
-        setAssignment(await api.assignment());
+      .assignment()
+      .then((nextAssignment) => {
+        if (!cancelled) setAssignment(nextAssignment);
       })
       .catch(() => router.push("/"));
+
+    return () => {
+      cancelled = true;
+    };
   }, [router]);
 
   async function selectStep(step: (typeof STEPS)[number]) {
@@ -54,12 +59,8 @@ export default function AssignmentPage() {
     }
   }
 
-  if (!user || !assignment) {
-    return (
-      <div className="container" style={{ padding: "3rem 0" }}>
-        Loading…
-      </div>
-    );
+  if (!assignment) {
+    return <div style={{ padding: "2rem 0" }}>Loading…</div>;
   }
 
   const content =
@@ -70,9 +71,7 @@ export default function AssignmentPage() {
         : assignment.content.project;
 
   return (
-    <div className="container" style={{ padding: "1rem 0 3rem" }}>
-      <AppHeader user={user} />
-
+    <>
       <p style={{ marginBottom: "1rem" }}>
         <Link href="/home" style={{ color: "var(--muted)", fontSize: "0.9rem" }}>
           ← Home
@@ -135,7 +134,7 @@ export default function AssignmentPage() {
         </div>
       ) : null}
 
-      {user.repo ? (
+      {user?.repo ? (
         <a
           className="btn btn-ghost"
           href={`https://github.com/${user.repo.owner}/${user.repo.name}`}
@@ -145,6 +144,6 @@ export default function AssignmentPage() {
           Open repo on GitHub →
         </a>
       ) : null}
-    </div>
+    </>
   );
 }

@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AppHeader } from "@/components/app-header";
-import { api, type Assignment, type User } from "@/lib/api";
+import { api, type Assignment } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
 
 export default function CurriculumPage() {
-  const [user, setUser] = useState<User | null>(null);
+  const { clearAuth, status, user } = useAuth();
   const [track, setTrack] = useState<Assignment["track"]>([]);
 
   useEffect(() => {
@@ -14,16 +15,13 @@ export default function CurriculumPage() {
       .trackStages()
       .then((data) => setTrack(data.stages))
       .catch(() => {});
-
-    api
-      .me()
-      .then(setUser)
-      .catch(() => setUser(null));
   }, []);
 
   return (
     <div className="container" style={{ padding: "1rem 0 3rem" }}>
-      {user ? <AppHeader user={user} /> : (
+      {status === "authenticated" && user ? (
+        <AppHeader user={user} onLogout={clearAuth} />
+      ) : (
         <header className="app-header">
           <Link href="/" className="logo">
             CommitLoop

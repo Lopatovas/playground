@@ -3,47 +3,47 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AppHeader } from "@/components/app-header";
 import { StreakPanel } from "@/components/streak-panel";
-import { api, type Assignment, type StreakStats, type User } from "@/lib/api";
+import { api, type Assignment, type StreakStats } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
 
 export default function HomePage() {
   const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
+  const { user } = useAuth();
   const [assignment, setAssignment] = useState<Assignment | null>(null);
   const [streak, setStreak] = useState<StreakStats | null>(null);
   const [repo, setRepo] = useState<{ owner: string; name: string } | null>(
     null,
   );
+
   useEffect(() => {
-    api
-      .me()
-      .then(async (u) => {
-        setUser(u);
-        const [a, s] = await Promise.all([api.assignment(), api.streak()]);
-        setAssignment(a);
-        if (s.configured && s.stats) {
-          setStreak(s.stats);
-          setRepo(s.repo ?? u.repo);
-        } else if (!u.repo) {
+    let cancelled = false;
+
+    Promise.all([api.assignment(), api.streak()])
+      .then(([nextAssignment, nextStreak]) => {
+        if (cancelled) return;
+
+        setAssignment(nextAssignment);
+        if (nextStreak.configured && nextStreak.stats) {
+          setStreak(nextStreak.stats);
+          setRepo(nextStreak.repo ?? user?.repo ?? null);
+        } else if (!user?.repo) {
           router.push("/settings");
         }
       })
       .catch(() => router.push("/"));
-  }, [router]);
 
-  if (!user || !assignment) {
-    return (
-      <div className="container" style={{ padding: "3rem 0" }}>
-        Loading…
-      </div>
-    );
+    return () => {
+      cancelled = true;
+    };
+  }, [router, user?.repo]);
+
+  if (!assignment) {
+    return <div style={{ padding: "2rem 0" }}>Loading…</div>;
   }
 
   return (
-    <div className="container" style={{ padding: "1rem 0 3rem" }}>
-      <AppHeader user={user} />
-
+    <>
       <div className="home-grid">
         <div className="card">
           <div className="label">Today&apos;s assignment</div>
@@ -72,6 +72,6 @@ export default function HomePage() {
       <p style={{ marginTop: "1.25rem", color: "var(--muted)", fontSize: "0.9rem" }}>
         {assignment.nextHint}
       </p>
-    </div>
+    </>
   );
 }

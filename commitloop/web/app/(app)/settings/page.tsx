@@ -2,36 +2,29 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AppHeader } from "@/components/app-header";
-import { api, type User } from "@/lib/api";
+import { api } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
 
 export default function SettingsPage() {
   const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
+  const { setUser, user } = useAuth();
   const [owner, setOwner] = useState("");
   const [name, setName] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    api
-      .me()
-      .then((u) => {
-        setUser(u);
-        if (u.repo) {
-          setOwner(u.repo.owner);
-          setName(u.repo.name);
-        }
-      })
-      .catch(() => router.push("/"));
-  }, [router]);
+    setOwner(user?.repo?.owner ?? "");
+    setName(user?.repo?.name ?? "");
+  }, [user?.repo?.name, user?.repo?.owner]);
 
   async function saveRepo(e: FormEvent) {
     e.preventDefault();
     setSaving(true);
     setError(null);
     try {
-      await api.setRepo(owner, name);
+      const { repo } = await api.setRepo(owner, name);
+      setUser((current) => (current ? { ...current, repo } : current));
       router.push("/home");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save");
@@ -40,19 +33,11 @@ export default function SettingsPage() {
     }
   }
 
-  if (!user) {
-    return (
-      <div className="container" style={{ padding: "3rem 0" }}>
-        Loading…
-      </div>
-    );
-  }
-
   const rows = [
-    { label: "GitHub", value: `@${user.username}`, action: null },
+    { label: "GitHub", value: `@${user?.username}`, action: null },
     {
       label: "Project repo",
-      value: user.repo ? `${user.repo.owner} / ${user.repo.name}` : "Not set",
+      value: user?.repo ? `${user.repo.owner} / ${user.repo.name}` : "Not set",
       action: null,
     },
     { label: "Track", value: "Track 1 — Fundamentals", action: null },
@@ -64,9 +49,7 @@ export default function SettingsPage() {
   ];
 
   return (
-    <div className="container" style={{ padding: "1rem 0 3rem" }}>
-      <AppHeader user={user} />
-
+    <>
       <h1 style={{ marginBottom: "1.5rem" }}>Settings</h1>
 
       <div className="card" style={{ marginBottom: "1.5rem" }}>
@@ -137,6 +120,6 @@ export default function SettingsPage() {
           </button>
         </form>
       </div>
-    </div>
+    </>
   );
 }

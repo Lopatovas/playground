@@ -4,7 +4,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { api, type User } from "@/lib/api";
 
-export function AppHeader({ user }: { user: User }) {
+export function AppHeader({
+  user,
+  onLogout,
+}: {
+  user: User;
+  onLogout?: () => void;
+}) {
   const router = useRouter();
 
   return (
@@ -26,7 +32,12 @@ export function AppHeader({ user }: { user: User }) {
           type="button"
           className="btn btn-ghost"
           style={{ padding: "0.4rem 0.75rem", fontSize: "0.85rem" }}
-          onClick={() => api.logout().then(() => router.push("/"))}
+          onClick={() =>
+            api.logout().then(() => {
+              onLogout?.();
+              router.push("/");
+            })
+          }
         >
           Log out
         </button>
