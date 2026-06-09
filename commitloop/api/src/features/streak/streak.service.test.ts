@@ -44,10 +44,33 @@ describe("computeStreak", () => {
     expect(stats.longestStreak).toBe(2);
   });
 
-  it("resets current streak when last commit is older than yesterday", () => {
+  it("resets current streak when a weekday gap has no commit", () => {
     const stats = computeStreak([commit("2025-06-05")]);
     expect(stats.currentStreak).toBe(0);
     expect(stats.missedToday).toBe(true);
+  });
+
+  it("counts weekend gaps without breaking streak", () => {
+    vi.setSystemTime(new Date("2025-06-10T15:00:00Z"));
+
+    const stats = computeStreak([
+      commit("2025-06-06"),
+      commit("2025-06-09"),
+      commit("2025-06-10"),
+    ]);
+
+    expect(stats.currentStreak).toBe(3);
+    expect(stats.longestStreak).toBe(3);
+    expect(stats.activeToday).toBe(true);
+  });
+
+  it("does not extend current streak across a missed weekday", () => {
+    vi.setSystemTime(new Date("2025-06-10T15:00:00Z"));
+
+    const stats = computeStreak([commit("2025-06-06"), commit("2025-06-09")]);
+
+    expect(stats.currentStreak).toBe(0);
+    expect(stats.longestStreak).toBe(2);
   });
 
   it("computes longest streak across a gap", () => {

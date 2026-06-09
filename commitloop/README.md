@@ -52,7 +52,7 @@ Protected routes live under `app/(app)/` with a shared auth layout.
 - `POST /assignment/step` — switch lesson / sandbox / project
 - `POST /assignment/checklist` — toggle checklist items
 - `POST /assignment/advance` — next stage when checklist complete
-- `GET /streak` — GitHub commit accountability
+- `GET /streak` — GitHub commit accountability (all branches, deduped by SHA)
 - `GET /tracks/track-1/stages` — stage map with progress
 
 ## Project layout

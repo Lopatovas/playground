@@ -136,16 +136,42 @@ a:hover {
 }
 
 .heat {
+  position: relative;
   width: 24px;
   height: 24px;
   border-radius: 4px;
   border: 1px solid var(--border);
   background: var(--surface-2);
+  cursor: default;
+}
+
+.heat[data-tooltip]:hover::after,
+.heat[data-tooltip]:focus-visible::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.35rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--text);
+  color: var(--surface);
+  font-size: 0.75rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 10;
 }
 
 .heat.on {
   background: #b7e4c7;
   border-color: var(--accent);
+}
+
+.heat.miss {
+  background: #f5d0d0;
+  border-color: var(--danger);
 }
 
 .heat.today {
