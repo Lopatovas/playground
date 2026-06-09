@@ -14,13 +14,7 @@ export type StreakStats = {
   recentDays: CommitDay[];
 };
 
-export type GitHubCommit = {
-  sha?: string;
-  commit: {
-    author: { date: string };
-    message: string;
-  };
-};
+import type { GitHubCommit } from "../../clients/github.client.js";
 
 function toDateKey(iso: string): string {
   return iso.slice(0, 10);

@@ -59,6 +59,7 @@ Protected routes live under `app/(app)/` with a shared auth layout.
 
 ```
 commitloop/
+  architecture/         # Deterministic structure + import boundary tests
   api/src/features/     # Domain routes + services
   api/src/clients/      # GitHub client (mockable)
   web/app/(app)/        # Protected pages
@@ -72,7 +73,8 @@ commitloop/
 From `commitloop/`:
 
 ```bash
-npm run ci              # typecheck + lint + coverage + build
+npm run arch:check      # architecture boundary tests (run before adding features)
+npm run ci              # arch:check + typecheck + lint + coverage + build
 npm run test            # unit + integration tests
 npm run lint            # ESLint (api + web)
 npm run format          # Prettier check

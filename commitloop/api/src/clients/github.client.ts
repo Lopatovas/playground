@@ -1,4 +1,10 @@
-import type { GitHubCommit } from "../features/streak/streak.service.js";
+export type GitHubCommit = {
+  sha?: string;
+  commit: {
+    author: { date: string };
+    message: string;
+  };
+};
 
 export type GitHubClient = {
   exchangeCodeForToken: (params: {

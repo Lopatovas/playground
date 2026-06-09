@@ -135,18 +135,38 @@ Wireframes: [WIREFRAMES.md](./WIREFRAMES.md) — **implemented in v0**.
 
 ---
 
+## Architecture gates
+
+Deterministic checks prevent layer drift as the platform grows. Run from `commitloop/`:
+
+```bash
+npm run arch:check   # structure + import boundary tests
+npm run ci           # arch:check + typecheck + lint + coverage + build
+```
+
+| Gate | What it enforces |
+|------|------------------|
+| `architecture/` tests | API feature registry, router mounting in `app.ts` only, service/route/client layer boundaries, known feature domains, no Next.js `app/api/`, protected routes under `(app)/`, web cross-feature import ban, API client usage only in pages/lib/header |
+| ESLint (api) | Services cannot import Express or `*.routes`; clients/middleware/config cannot import `features/` |
+| ESLint (web) | `features/` cannot import `app/`; shared `components/` cannot import `features/` (except `app-header`) |
+
+**Adding a feature:** create `api/src/features/<name>/` + register in `architecture/src/paths.ts` (`API_FEATURES`). For web UI, add `web/features/<name>/` + register `WEB_FEATURES`. Cross-feature service deps require an explicit allowlist entry in `ALLOWED_CROSS_FEATURE_SERVICE_IMPORTS`.
+
+---
+
 ## Quality
 
 From `commitloop/`:
 
 ```bash
-npm run ci    # typecheck + eslint + coverage + build
+npm run ci    # arch:check + typecheck + eslint + coverage + build
 ```
 
 | Package | Tests | Lint |
 |---------|-------|------|
-| `api/` | Vitest + Supertest (41 tests) | ESLint 9 + typescript-eslint |
-| `web/` | Vitest + Testing Library (26 tests) | ESLint 9 flat config (`eslint.config.mjs`) |
+| `architecture/` | Vitest structure gates | — |
+| `api/` | Vitest + Supertest | ESLint 9 + typescript-eslint |
+| `web/` | Vitest + Testing Library | ESLint 9 flat config (`eslint.config.mjs`) |
 
 CI: `.github/workflows/commitloop-ci.yml` on pushes to `commitloop/**`.
 
