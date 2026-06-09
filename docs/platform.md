@@ -217,13 +217,13 @@ Mentor View:
 
 ### Must Have
 
-- Authentication
-- Student profiles
-- GitHub integration
-- Curriculum pages
-- Assignment pages
-- Progress dashboard
-- Discord links
+- Authentication ✅
+- Student profiles ✅
+- GitHub integration ✅
+- Curriculum pages ✅
+- Assignment pages ✅
+- Assignment-first home + streak panel ✅
+- Discord links (env var ready)
 
 ---
 

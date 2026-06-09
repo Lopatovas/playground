@@ -5,7 +5,7 @@
     "dev": "next dev --port 3000",
     "build": "next build",
     "start": "next start --port 3000",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "rm -rf .next && tsc --noEmit",
     "lint": "eslint .",
     "format": "prettier --check .",
     "format:write": "prettier --write .",

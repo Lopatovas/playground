@@ -1,6 +1,6 @@
 # CommitLoop — Wireframes (v0)
 
-**Status:** Draft for iteration — not final UI.
+**Status:** Locked and implemented (v0). Polish later; structure matches shipped app.
 
 Design intent: **calm, tool-like, human.** A student opens this to know what to do today and whether they showed up. Not a bootcamp ad. Not an AI product.
 
@@ -84,10 +84,10 @@ Layout: **assignment card dominates left (2/3), streak panel right (1/3).**
 └──────────────────────────────────────────────────────────────┘
 ```
 
-**Open questions for you:**
-- [ ] Show all 3 loop steps (Lesson / Sandbox / Project) as tabs on the card?
-- [ ] "Continue" goes to full assignment page or expands inline?
-- [ ] Streak heatmap: 7 days or 14?
+**Decisions (implemented):**
+- [x] Lesson / Sandbox / Project as tabs on assignment page
+- [x] "Continue assignment" → full `/assignment` page
+- [x] Streak heatmap: 7 days visible on home panel
 
 ---
 
@@ -172,14 +172,12 @@ Dashed — not v0. List of students, red row = missed today, link to repo.
 
 ---
 
-## Iteration checklist
+## Locked decisions
 
-Reply with preferences or sketch changes:
+1. **Home layout** — assignment left / streak right ✅
+2. **Assignment tabs** — Lesson | Sandbox | Project on one page ✅
+3. **Light vs dark** — default light ✅
+4. **Nav** — top bar only ✅
+5. **Tone** — tool-like, not bootcamp ad ✅
 
-1. **Home layout** — assignment left / streak right OK?
-2. **Assignment tabs** — Lesson | Sandbox | Project on one page?
-3. **Light vs dark** — default light?
-4. **Nav** — top bar only, or left sidebar for app?
-5. **Anything that feels too "startup" or too "bootcamp"?**
-
-When wireframes lock → implement in Next.js per [ARCHITECTURE.md](./ARCHITECTURE.md).
+Implemented in Next.js 16 per [ARCHITECTURE.md](./ARCHITECTURE.md).

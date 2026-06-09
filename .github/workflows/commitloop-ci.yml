@@ -32,6 +32,9 @@ jobs:
       - name: Generate Prisma client
         run: npm run db:generate -w @commitloop/api
 
+      - name: Clean stale Next.js types
+        run: rm -rf web/.next
+
       - name: Typecheck
         run: npm run typecheck
 
