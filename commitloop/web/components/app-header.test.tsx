@@ -7,6 +7,7 @@ const push = vi.fn();
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push }),
+  usePathname: () => "/home",
 }));
 
 vi.mock("@/lib/api", () => ({
@@ -38,6 +39,7 @@ describe("AppHeader", () => {
       "href",
       "/home",
     );
+    expect(screen.getByRole("button", { name: "Menu" })).toBeInTheDocument();
     expect(screen.getByText("@dev")).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "Log out" }));

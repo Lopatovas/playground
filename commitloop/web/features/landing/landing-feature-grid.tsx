@@ -1,13 +1,16 @@
 const FEATURES = [
   {
+    num: "1",
     title: "The loop",
     body: "Lesson → Sandbox → Project. Every concept lands in your codebase.",
   },
   {
+    num: "2",
     title: "One project",
     body: "No resets. Refactors and migrations count as progress.",
   },
   {
+    num: "3",
     title: "GitHub truth",
     body: "Streaks and activity come from real commits on your repo.",
   },
@@ -15,19 +18,13 @@ const FEATURES = [
 
 export function LandingFeatureGrid() {
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-        gap: "1rem",
-        marginTop: "3rem",
-      }}
-    >
+    <div className="landing-features">
       {FEATURES.map((feature) => (
-        <div className="card" key={feature.title}>
-          <h3 style={{ marginTop: 0 }}>{feature.title}</h3>
-          <p style={{ color: "var(--muted)", margin: 0 }}>{feature.body}</p>
-        </div>
+        <article className="landing-feature card" key={feature.title}>
+          <span className="landing-feature__num">{feature.num}</span>
+          <h3>{feature.title}</h3>
+          <p>{feature.body}</p>
+        </article>
       ))}
     </div>
   );

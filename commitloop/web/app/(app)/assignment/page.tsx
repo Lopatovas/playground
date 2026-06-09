@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { LoadingState } from "@/components/loading-state";
 import { AssignmentChecklist } from "@/features/assignment/assignment-checklist";
+import { AssignmentPageSkeleton } from "@/features/assignment/assignment-page-skeleton";
 import { AssignmentContentCard } from "@/features/assignment/assignment-content-card";
 import { AssignmentStepTabs } from "@/features/assignment/assignment-step-tabs";
 import { RepoLink } from "@/features/repo/repo-link";
@@ -62,7 +62,7 @@ export default function AssignmentPage() {
   }
 
   if (!assignment) {
-    return <LoadingState />;
+    return <AssignmentPageSkeleton />;
   }
 
   const content =

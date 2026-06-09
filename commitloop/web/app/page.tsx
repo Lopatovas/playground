@@ -1,47 +1,83 @@
 import Link from "next/link";
 import { PublicHeader } from "@/components/public-header";
-import { LandingFeatureGrid } from "@/features/landing/landing-feature-grid";
+import { LandingCompare } from "@/features/landing/landing-compare";
+import { LandingCtaBand } from "@/features/landing/landing-cta-band";
+import { LandingFaq } from "@/features/landing/landing-faq";
+import { LandingFooter } from "@/features/landing/landing-footer";
+import { LandingHowItWorks } from "@/features/landing/landing-how-it-works";
+import { LandingOutcomes } from "@/features/landing/landing-outcomes";
+import { LandingPreview } from "@/features/landing/landing-preview";
+import { LandingProblem } from "@/features/landing/landing-problem";
+import { LandingTrustBar } from "@/features/landing/landing-trust-bar";
 import { api } from "@/lib/api";
 
 export default function LandingPage() {
+  const loginUrl = api.githubLoginUrl();
+
   return (
     <>
-      <PublicHeader className="container" style={{ padding: "1.25rem 0" }} />
+      <PublicHeader
+        className="container landing-header"
+        actions={
+          <>
+            <Link className="landing-header__nav" href="/curriculum">
+              Curriculum
+            </Link>
+            <a className="landing-header__nav landing-header__nav--anchor" href="#how-it-works">
+              How it works
+            </a>
+            <a className="landing-header__nav landing-header__nav--anchor" href="#faq">
+              FAQ
+            </a>
+            <a className="btn btn-primary landing-header__cta" href={loginUrl}>
+              Sign in with GitHub
+            </a>
+          </>
+        }
+      />
 
-      <main className="container" style={{ padding: "2.5rem 0 4rem" }}>
-        <p className="label">Accountability-first apprenticeship</p>
-        <h1
-          style={{
-            fontSize: "clamp(2rem, 4.5vw, 3rem)",
-            lineHeight: 1.15,
-            maxWidth: "14ch",
-            margin: "0.75rem 0 1rem",
-            letterSpacing: "-0.02em",
-          }}
-        >
-          Build one real app. Show up every day.
-        </h1>
-        <p
-          style={{
-            color: "var(--muted)",
-            maxWidth: "48ch",
-            fontSize: "1.1rem",
-          }}
-        >
-          One evolving project. Daily commits. GitHub is the record — not watch
-          time.
-        </p>
+      <main>
+        <section className="landing-hero">
+          <div className="container landing-hero__inner">
+            <div className="landing-hero__copy">
+              <p className="label landing-hero__eyebrow">
+                Accountability-first apprenticeship
+              </p>
+              <h1 className="landing-hero__title">
+                Stop collecting courses.
+                <span> Ship one real app.</span>
+              </h1>
+              <p className="landing-hero__lede">
+                Daily assignments. GitHub-verified commits. One evolving
+                project — so your profile proves you can build, not just watch.
+              </p>
 
-        <div style={{ display: "flex", gap: "0.75rem", marginTop: "1.75rem" }}>
-          <a className="btn btn-primary" href={api.githubLoginUrl()}>
-            Connect GitHub
-          </a>
-          <Link className="btn btn-ghost" href="/curriculum">
-            View curriculum
-          </Link>
-        </div>
+              <div className="landing-hero__actions">
+                <a className="btn btn-primary btn-lg" href={loginUrl}>
+                  Connect GitHub — free
+                </a>
+                <Link className="btn btn-ghost" href="/curriculum">
+                  Preview curriculum
+                </Link>
+              </div>
 
-        <LandingFeatureGrid />
+              <p className="landing-hero__risk">
+                No credit card · Track 1 live · ~2 min to start
+              </p>
+            </div>
+
+            <LandingPreview />
+          </div>
+        </section>
+
+        <LandingTrustBar />
+        <LandingProblem />
+        <LandingHowItWorks />
+        <LandingOutcomes />
+        <LandingCompare />
+        <LandingFaq />
+        <LandingCtaBand loginUrl={loginUrl} />
+        <LandingFooter loginUrl={loginUrl} />
       </main>
     </>
   );

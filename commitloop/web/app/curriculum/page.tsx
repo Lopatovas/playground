@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { AppHeader } from "@/components/app-header";
 import { PublicHeader } from "@/components/public-header";
 import { TrackStageList } from "@/features/curriculum/track-stage-list";
+import { TrackStageListSkeleton } from "@/features/curriculum/track-stage-list-skeleton";
 import { api, type Assignment } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 
@@ -31,7 +32,11 @@ export default function CurriculumPage() {
         Stages 0–1 available. More stages ship as we build.
       </p>
 
-      <TrackStageList stages={track} />
+      {track === null ? (
+        <TrackStageListSkeleton />
+      ) : (
+        <TrackStageList stages={track} />
+      )}
     </div>
   );
 }

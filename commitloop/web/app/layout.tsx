@@ -21,6 +21,11 @@ export const metadata: Metadata = {
     "Accountability-first engineering apprenticeship. One loop. One project. Every day.",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
+
 export default function RootLayout({
   children,
 }: {

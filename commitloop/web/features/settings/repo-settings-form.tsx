@@ -24,13 +24,7 @@ export function RepoSettingsForm({
         CommitLoop tracks commits on this repo for your streak.
       </p>
       <form onSubmit={onSubmit}>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "1rem",
-          }}
-        >
+        <div className="repo-form__grid">
           <div className="field">
             <label htmlFor="owner">Owner</label>
             <input

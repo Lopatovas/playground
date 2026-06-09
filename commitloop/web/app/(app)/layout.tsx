@@ -3,7 +3,7 @@
 import { useEffect, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { AppHeader } from "@/components/app-header";
-import { LoadingState } from "@/components/loading-state";
+import { PageLoader } from "@/components/page-loader";
 import { useAuth } from "@/lib/auth";
 
 export default function ProtectedAppLayout({
@@ -23,7 +23,7 @@ export default function ProtectedAppLayout({
   if (status !== "authenticated" || !user) {
     return (
       <div className="container">
-        <LoadingState variant="page" />
+        <PageLoader variant="page" label="Signing in" />
       </div>
     );
   }

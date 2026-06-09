@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { LoadingState } from "@/components/loading-state";
 import { StreakPanel } from "@/components/streak-panel";
 import { AssignmentSummaryCard } from "@/features/assignment/assignment-summary-card";
 import { CommitmentSetupCard } from "@/features/dashboard/commitment-setup-card";
+import { HomePageSkeleton } from "@/features/dashboard/home-page-skeleton";
 import { api, type Assignment, type StreakStats } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 
@@ -41,7 +41,7 @@ export default function HomePage() {
   }, [router, user?.repo]);
 
   if (!assignment) {
-    return <LoadingState />;
+    return <HomePageSkeleton />;
   }
 
   return (

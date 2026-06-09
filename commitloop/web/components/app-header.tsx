@@ -1,8 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
+import { Logo } from "@/components/logo";
 import { api, type User } from "@/lib/api";
+
+const NAV = [
+  { href: "/home", label: "Home" },
+  { href: "/assignment", label: "Assignment" },
+  { href: "/curriculum", label: "Curriculum" },
+  { href: "/settings", label: "Settings" },
+] as const;
 
 export function AppHeader({
   user,
@@ -12,26 +21,45 @@ export function AppHeader({
   onLogout?: () => void;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <header className="app-header">
-      <Link href="/home" className="logo">
-        CommitLoop
-      </Link>
-      <nav>
-        <Link href="/home">Home</Link>
-        <Link href="/assignment">Assignment</Link>
-        <Link href="/curriculum">Curriculum</Link>
-        <Link href="/settings">Settings</Link>
-      </nav>
-      <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-        <span style={{ fontSize: "0.85rem", color: "var(--muted)" }}>
-          @{user.username}
-        </span>
+      <div className="app-header__brand">
+        <Logo href="/home" />
         <button
           type="button"
-          className="btn btn-ghost"
-          style={{ padding: "0.4rem 0.75rem", fontSize: "0.85rem" }}
+          className="app-header__menu-btn"
+          aria-expanded={menuOpen}
+          aria-controls="app-nav"
+          onClick={() => setMenuOpen((open) => !open)}
+        >
+          {menuOpen ? "Close" : "Menu"}
+        </button>
+      </div>
+
+      <nav
+        id="app-nav"
+        className={`app-header__nav${menuOpen ? " is-open" : ""}`}
+      >
+        {NAV.map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            aria-current={pathname === item.href ? "page" : undefined}
+            onClick={() => setMenuOpen(false)}
+          >
+            {item.label}
+          </Link>
+        ))}
+      </nav>
+
+      <div className="app-header__user">
+        <span className="app-header__username">@{user.username}</span>
+        <button
+          type="button"
+          className="btn btn-ghost app-header__logout"
           onClick={() =>
             api.logout().then(() => {
               onLogout?.();

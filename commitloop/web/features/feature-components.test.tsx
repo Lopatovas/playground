@@ -1,8 +1,15 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
-import { LoadingState } from "@/components/loading-state";
 import { PublicHeader } from "@/components/public-header";
+import { HomePageSkeleton } from "./dashboard/home-page-skeleton";
+import { LandingCompare } from "./landing/landing-compare";
+import { LandingFaq } from "./landing/landing-faq";
+import { LandingHowItWorks } from "./landing/landing-how-it-works";
+import { LandingOutcomes } from "./landing/landing-outcomes";
+import { LandingPreview } from "./landing/landing-preview";
+import { LandingProblem } from "./landing/landing-problem";
+import { LandingTrustBar } from "./landing/landing-trust-bar";
 import { AssignmentChecklist } from "./assignment/assignment-checklist";
 import { AssignmentContentCard } from "./assignment/assignment-content-card";
 import { AssignmentStepTabs } from "./assignment/assignment-step-tabs";
@@ -37,11 +44,11 @@ const assignment: Assignment = {
 };
 
 describe("extracted page components", () => {
-  it("renders public header and loading states", () => {
+  it("renders public header and dashboard skeleton", () => {
     render(
       <>
         <PublicHeader />
-        <LoadingState />
+        <HomePageSkeleton />
       </>,
     );
 
@@ -49,7 +56,35 @@ describe("extracted page components", () => {
       "href",
       "/",
     );
-    expect(screen.getByText("Loading…")).toBeInTheDocument();
+    expect(
+      screen.getByLabelText("Loading dashboard"),
+    ).toBeInTheDocument();
+  });
+
+  it("renders landing sections", () => {
+    render(
+      <>
+        <LandingTrustBar />
+        <LandingPreview />
+        <LandingProblem />
+        <LandingHowItWorks />
+        <LandingOutcomes />
+        <LandingCompare />
+        <LandingFaq />
+      </>,
+    );
+
+    expect(screen.getByText("GitHub")).toBeInTheDocument();
+    expect(screen.getByText("Today's assignment")).toBeInTheDocument();
+    expect(screen.getByText("You don't need another course.")).toBeInTheDocument();
+    expect(screen.getByText("Three moves. One loop.")).toBeInTheDocument();
+    expect(screen.getByText("Know exactly what to do today")).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", {
+        name: "Built for execution, not consumption.",
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Is this a bootcamp or video course?")).toBeInTheDocument();
   });
 
   it("renders dashboard cards", () => {
