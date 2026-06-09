@@ -1,12 +1,14 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AppHeader } from "@/components/app-header";
-import { api, type Assignment, type User } from "@/lib/api";
+import { PublicHeader } from "@/components/public-header";
+import { TrackStageList } from "@/features/curriculum/track-stage-list";
+import { api, type Assignment } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
 
 export default function CurriculumPage() {
-  const [user, setUser] = useState<User | null>(null);
+  const { clearAuth, status, user } = useAuth();
   const [track, setTrack] = useState<Assignment["track"]>([]);
 
   useEffect(() => {
@@ -14,21 +16,14 @@ export default function CurriculumPage() {
       .trackStages()
       .then((data) => setTrack(data.stages))
       .catch(() => {});
-
-    api
-      .me()
-      .then(setUser)
-      .catch(() => setUser(null));
   }, []);
 
   return (
     <div className="container" style={{ padding: "1rem 0 3rem" }}>
-      {user ? <AppHeader user={user} /> : (
-        <header className="app-header">
-          <Link href="/" className="logo">
-            CommitLoop
-          </Link>
-        </header>
+      {status === "authenticated" && user ? (
+        <AppHeader user={user} onLogout={clearAuth} />
+      ) : (
+        <PublicHeader />
       )}
 
       <h1 style={{ margin: "0 0 0.5rem" }}>Track 1 — Fundamentals</h1>
@@ -36,26 +31,7 @@ export default function CurriculumPage() {
         Stages 0–1 available. More stages ship as we build.
       </p>
 
-      <div className="card">
-        {track.map((stage) => (
-          <div key={stage.slug} className="stage-row">
-            <span>{stage.status === "locked" ? "○" : "●"}</span>
-            <span
-              style={{
-                color: stage.status === "locked" ? "var(--muted)" : "inherit",
-                fontWeight: stage.status === "current" ? 600 : 400,
-              }}
-            >
-              {stage.title}
-            </span>
-            <span
-              className={`pill pill-${stage.status}`}
-            >
-              {stage.status}
-            </span>
-          </div>
-        ))}
-      </div>
+      <TrackStageList stages={track} />
     </div>
   );
 }

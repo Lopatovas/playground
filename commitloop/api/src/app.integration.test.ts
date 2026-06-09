@@ -12,13 +12,13 @@ import {
   vi,
 } from "vitest";
 import request from "supertest";
-import { buildAssignment } from "./assignment.js";
+import { buildAssignment } from "./features/assignment/assignment.service.js";
 import {
   createTestApp,
   createTestPrisma,
   loginAgent,
   seedUser,
-} from "./test-helpers.js";
+} from "./test/helpers.js";
 
 const apiRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -113,9 +113,9 @@ describe("API integration", () => {
       .send({ itemId, done: true })
       .expect(200);
 
-    expect(res.body.checklist.find((c: { id: string }) => c.id === itemId)?.done).toBe(
-      true,
-    );
+    expect(
+      res.body.checklist.find((c: { id: string }) => c.id === itemId)?.done,
+    ).toBe(true);
   });
 
   it("blocks advance until checklist is complete", async () => {

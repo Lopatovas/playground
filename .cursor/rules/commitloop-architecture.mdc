@@ -1,0 +1,35 @@
+---
+description: CommitLoop architecture boundaries and where code belongs
+globs: commitloop/**/*
+alwaysApply: false
+---
+
+# CommitLoop architecture
+
+Read `docs/architecture.md` before adding features. Run `npm run arch:check` from `commitloop/`.
+
+## API (`commitloop/api/src/`)
+
+- **features/{name}/** — `{name}.routes.ts` (HTTP) + `{name}.service.ts` (pure logic)
+- **clients/** — external APIs (GitHub); no imports from `features/`
+- **middleware/**, **config/** — infrastructure only; no `features/` imports
+- **app.ts** — only file that mounts routers via `create*Router`
+- Services must not import Express or route modules
+- Cross-feature service imports require allowlist in `architecture/src/paths.ts`
+
+## Web (`commitloop/web/`)
+
+- **app/(app)/** — protected pages (`home`, `assignment`, `settings`)
+- **app/** — public pages only (`/`, `/curriculum`)
+- **features/{domain}/** — domain UI; no imports from `app/` or other features
+- **components/** — shared presentational UI; no `features/` imports (except `app-header.tsx`)
+- **lib/api.ts** + **lib/auth.tsx** — only API/session layer; pages compose features + call `api.*`
+- **No** `app/api/` routes — domain logic stays in Express
+
+## Adding a feature
+
+1. API: `features/<name>/<name>.routes.ts` + service if needed → register in `API_FEATURES`
+2. Web: `features/<name>/` components → register in `WEB_FEATURES`
+3. Mount router in `api/src/app.ts`
+4. Add page under `app/(app)/` or compose in existing page
+5. Run `npm run arch:check && npm run ci`

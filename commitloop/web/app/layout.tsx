@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Mono, Source_Sans_3 } from "next/font/google";
+import { Providers } from "./providers";
 import "./globals.css";
 
 const sourceSans = Source_Sans_3({
@@ -27,7 +28,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${sourceSans.variable} ${ibmPlexMono.variable}`}>
-      <body>{children}</body>
+      <body>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }
