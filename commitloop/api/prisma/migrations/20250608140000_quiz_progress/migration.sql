@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN "quizState" TEXT NOT NULL DEFAULT '{}';
+ALTER TABLE "User" ADD COLUMN "quizPassed" BOOLEAN NOT NULL DEFAULT false;

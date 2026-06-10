@@ -7,7 +7,7 @@ CommitLoop is organized as **multiple curriculum tracks**. Each track is a compl
 Every track shares the same execution model:
 
 - One evolving project per student (no resets)
-- Lesson → Sandbox Task → Project Implementation
+- Lesson → Sandbox → **Quiz** → Project Implementation
 - Git from Day 1
 - One meaningful commit per day
 - GitHub as the source of truth
@@ -74,9 +74,122 @@ Introduce the concept. Explain why it exists and where it is used. Short, practi
 
 Practice in isolation. Small scope, disposable, focused on one skill.
 
-### 3. Project Implementation
+### 3. Comprehension Quiz
+
+Structured questions that verify understanding before project work. Students must meet the pass threshold (default **80%**) to unlock the Project step. Wrong answers show explanations — a teaching moment, not just a red X. Quizzes are graded **server-side**; correct answers are never sent to the client before submission.
+
+### 4. Project Implementation
 
 Apply inside the student's evolving project. Must integrate with previous work. No restarting allowed.
+
+### 5. Checklist → Advance
+
+Verifiable deliverables for the stage (manual ticks in v1; GitHub verification later). When all checklist items are done, the student advances to the next stage. Quiz state resets on stage advance.
+
+---
+
+## Content format (Track 1 — implemented)
+
+Curriculum is stored as **hybrid JSON + Markdown** under `commitloop/content/`. Theory stays pleasant to author in Markdown; quizzes and checklists need typed structure in JSON.
+
+### Why hybrid?
+
+| Pure Markdown | Pure JSON | Hybrid (chosen) |
+|---------------|-----------|-----------------|
+| Great for long prose | Painful for multi-page theory | Markdown for `lesson.md`, `sandbox.md`, `project.md` |
+| Brittle to parse quiz semantics | Easy for quizzes/checklists | JSON for `stage.json` (quiz, checklist, metadata) |
+| No schema contract | Hard to review diffs on prose | Zod validation + `npm run content:check` in CI |
+
+### Directory layout (per track)
+
+```
+commitloop/content/
+  track-1/
+    track.json                 # track manifest — stage list + availability
+    stage-0-onboarding/
+      stage.json               # goal, checklist, quiz
+      lesson.md                # theory (UI: Lesson tab)
+      sandbox.md               # isolated practice (UI: Sandbox tab)
+      project.md               # apply in repo (UI: Project tab)
+    stage-1-git-fundamentals/
+      stage.json
+      lesson.md
+      sandbox.md
+      project.md
+    _template/                 # copy-paste starter for new stages
+```
+
+Stage discovery is **data-driven**: read `track.json`, not a hardcoded TypeScript array.
+
+### `track.json` (track manifest)
+
+Lists stages in order and whether each is available to students:
+
+```json
+{
+  "id": "track-1",
+  "title": "Fundamentals",
+  "subtitle": "Full-stack fundamentals",
+  "stages": [
+    { "slug": "stage-0-onboarding", "order": 0, "available": true },
+    { "slug": "stage-1-git-fundamentals", "order": 1, "available": true },
+    { "slug": "stage-2-end-to-end", "order": 2, "available": false }
+  ]
+}
+```
+
+Set `"available": false` until content is ready to ship.
+
+### `stage.json` (metadata + quiz + checklist)
+
+```json
+{
+  "slug": "stage-1-git-fundamentals",
+  "title": "Stage 1 — Git Fundamentals",
+  "goal": "Develop daily engineering habits.",
+  "nextStage": "stage-2-end-to-end",
+  "checklist": [
+    { "id": "structure", "label": "Project structure committed" },
+    { "id": "gitignore", "label": ".gitignore in place" }
+  ],
+  "quiz": {
+    "passScore": 0.8,
+    "questions": [
+      {
+        "id": "git-add",
+        "prompt": "What does `git add` do?",
+        "choices": [
+          { "id": "a", "text": "Stages changes for the next commit" },
+          { "id": "b", "text": "Pushes to GitHub" },
+          { "id": "c", "text": "Creates a new branch" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "add updates the index; push sends commits to remote."
+      }
+    ]
+  }
+}
+```
+
+### Markdown files (prose only)
+
+| File | UI tab | Purpose |
+|------|--------|---------|
+| `lesson.md` | Lesson | Concise concept + why it matters |
+| `sandbox.md` | Sandbox | Isolated practice instructions |
+| `project.md` | Project | Apply in the evolving student repo |
+
+No headings required inside `.md` files — filenames define role.
+
+### Authoring workflow
+
+1. Copy `content/track-1/_template/` → `stage-N-your-slug/`
+2. Edit `stage.json` — goal, checklist ids, quiz questions
+3. Write `lesson.md`, `sandbox.md`, `project.md`
+4. Add the stage to `track.json` with `"available": false` until ready
+5. Run `npm run content:check` from `commitloop/`
+
+Technical details: [commitloop/README.md](../commitloop/README.md#authoring-curriculum-content).
 
 ---
 
@@ -146,7 +259,7 @@ Unit, integration, and end-to-end tests added to the existing application.
 
 ### Stage 6 — Expansion Loop
 
-Evolve continuously: auth, authorization, relationships, search, pagination, file uploads, refactoring. Each topic follows Lesson → Sandbox → Project.
+Evolve continuously: auth, authorization, relationships, search, pagination, file uploads, refactoring. Each topic follows Lesson → Sandbox → Quiz → Project.
 
 ---
 
@@ -360,7 +473,7 @@ Tracks are added as the platform matures. Candidates:
 | **Testing & Quality** | TDD, E2E, performance, reliability | Cross-cutting; pairs with any track |
 | **AI-Assisted Development** | LLM tooling, agents, production AI features | Standalone or after any other track |
 
-Each future track follows the same rules: one evolving project per track, Lesson → Sandbox → Project, no mid-track resets.
+Each future track follows the same rules: one evolving project per track, Lesson → Sandbox → Quiz → Project, no mid-track resets. Same hybrid content format per track.
 
 ---
 
@@ -369,4 +482,4 @@ Each future track follows the same rules: one evolving project per track, Lesson
 1. **Within a track:** one repo, one product, no resets. Refactors and migrations count.
 2. **Between tracks:** new repo per track. Tracks do not share prerequisites — enroll in any track directly.
 3. **No prescribed order.** Track 1 and Track 2 are parallel paths, not a sequence.
-4. **CommitLoop loop** applies uniformly — only the content and stack change per track.
+4. **CommitLoop loop** applies uniformly — Lesson → Sandbox → Quiz → Project — only the content and stack change per track.

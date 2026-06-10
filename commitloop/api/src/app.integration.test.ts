@@ -35,7 +35,7 @@ describe("API integration", () => {
       env: { ...process.env, DATABASE_URL: process.env.DATABASE_URL },
       stdio: "pipe",
     });
-  });
+  }, 60_000);
 
   beforeEach(async () => {
     await prisma.user.deleteMany();
@@ -105,6 +105,7 @@ describe("API integration", () => {
       "stage-0-onboarding",
       "project",
       "{}",
+      true,
     )!;
     const itemId = assignment.checklist[0]!.id;
 
@@ -131,6 +132,7 @@ describe("API integration", () => {
       "stage-0-onboarding",
       "project",
       "{}",
+      true,
     )!;
     const checklistState = JSON.stringify(
       Object.fromEntries(assignment.checklist.map((item) => [item.id, true])),
@@ -138,12 +140,14 @@ describe("API integration", () => {
     const user = await seedUser(prisma, {
       currentStep: "project",
       checklistState,
+      quizPassed: true,
     });
     const agent = await loginAgent(app, user.id);
 
     const res = await agent.post("/assignment/advance").expect(200);
     expect(res.body.stage.slug).toBe("stage-1-git-fundamentals");
     expect(res.body.step).toBe("lesson");
+    expect(res.body.quizPassed).toBe(false);
     expect(res.body.allChecklistDone).toBe(false);
   });
 
@@ -155,11 +159,91 @@ describe("API integration", () => {
     expect(res.body).toEqual({ configured: false, stats: null });
   });
 
-  it("GET /curriculum/track-1 lists markdown stages", async () => {
+  it("GET /curriculum/track-1 lists hybrid stage content", async () => {
     const res = await request(app).get("/curriculum/track-1");
     expect(res.status).toBe(200);
     expect(res.body.stages.length).toBeGreaterThanOrEqual(2);
-    expect(res.body.stages[0]).toHaveProperty("content");
+    expect(res.body.stages[0]).toHaveProperty("lesson");
+    expect(res.body.stages[0]).toHaveProperty("sandbox");
+    expect(res.body.stages[0]).not.toHaveProperty("content");
+  });
+
+  it("blocks project step until quiz is passed", async () => {
+    const user = await seedUser(prisma);
+    const agent = await loginAgent(app, user.id);
+
+    await agent
+      .post("/assignment/step")
+      .send({ step: "project" })
+      .expect(400);
+  });
+
+  it("does not expose quiz answers before submission", async () => {
+    const user = await seedUser(prisma, { currentStep: "quiz" });
+    const agent = await loginAgent(app, user.id);
+
+    const res = await agent.get("/assignment/current").expect(200);
+
+    for (const question of res.body.quiz.questions) {
+      expect(question).not.toHaveProperty("correctChoiceId");
+      expect(question).not.toHaveProperty("explanation");
+    }
+  });
+
+  it("returns quiz failure with explanations when answers are wrong", async () => {
+    const user = await seedUser(prisma, { currentStep: "quiz" });
+    const agent = await loginAgent(app, user.id);
+    const assignment = buildAssignment(
+      "track-1",
+      "stage-0-onboarding",
+      "quiz",
+      "{}",
+      false,
+    )!;
+
+    const answers = Object.fromEntries(
+      assignment.quiz.questions.map((q) => [q.id, "b"]),
+    );
+
+    const res = await agent
+      .post("/assignment/quiz")
+      .send({ answers })
+      .expect(200);
+
+    expect(res.body.quizResult.passed).toBe(false);
+    expect(res.body.quizPassed).toBe(false);
+    expect(res.body.step).toBe("quiz");
+    expect(
+      res.body.quizResult.results.some(
+        (r: { correct: boolean; explanation: string }) =>
+          !r.correct && r.explanation.length > 0,
+      ),
+    ).toBe(true);
+  });
+
+  it("submits quiz and unlocks project on pass", async () => {
+    const user = await seedUser(prisma, { currentStep: "quiz" });
+    const agent = await loginAgent(app, user.id);
+    const assignment = buildAssignment(
+      "track-1",
+      "stage-0-onboarding",
+      "quiz",
+      "{}",
+      false,
+    )!;
+
+    const answers = Object.fromEntries(
+      assignment.quiz.questions.map((q) => [q.id, "a"]),
+    );
+
+    const res = await agent
+      .post("/assignment/quiz")
+      .send({ answers })
+      .expect(200);
+
+    expect(res.body.quizResult.passed).toBe(true);
+    expect(res.body.quizPassed).toBe(true);
+    expect(res.body.step).toBe("project");
   });
 
   it("GET /me returns the authenticated profile", async () => {

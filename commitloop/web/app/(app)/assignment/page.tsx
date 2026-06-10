@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { AssignmentChecklist } from "@/features/assignment/assignment-checklist";
 import { AssignmentPageSkeleton } from "@/features/assignment/assignment-page-skeleton";
 import { AssignmentContentCard } from "@/features/assignment/assignment-content-card";
+import { AssignmentQuiz } from "@/features/assignment/assignment-quiz";
 import { AssignmentStepTabs } from "@/features/assignment/assignment-step-tabs";
 import { RepoLink } from "@/features/repo/repo-link";
 import { api, type Assignment } from "@/lib/api";
@@ -61,6 +62,17 @@ export default function AssignmentPage() {
     }
   }
 
+  async function submitQuiz(answers: Record<string, string>) {
+    setBusy(true);
+    try {
+      const response = await api.submitQuiz(answers);
+      setAssignment(response);
+      return response.quizResult ?? null;
+    } finally {
+      setBusy(false);
+    }
+  }
+
   if (!assignment) {
     return <AssignmentPageSkeleton />;
   }
@@ -70,7 +82,9 @@ export default function AssignmentPage() {
       ? assignment.content.lesson
       : assignment.step === "sandbox"
         ? assignment.content.sandbox
-        : assignment.content.project;
+        : assignment.step === "project"
+          ? assignment.content.project
+          : "";
 
   return (
     <>
@@ -90,10 +104,19 @@ export default function AssignmentPage() {
       <AssignmentStepTabs
         activeStep={assignment.step}
         busy={busy}
+        canAccessProject={assignment.canAccessProject}
         onSelect={selectStep}
       />
 
-      <AssignmentContentCard source={content} />
+      {assignment.step === "quiz" ? (
+        <AssignmentQuiz
+          assignment={assignment}
+          busy={busy}
+          onSubmit={submitQuiz}
+        />
+      ) : (
+        <AssignmentContentCard source={content} />
+      )}
 
       {assignment.step === "project" ? (
         <AssignmentChecklist

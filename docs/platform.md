@@ -39,14 +39,19 @@ Content format (per unit, all tracks):
 
 Lesson
 → Sandbox Task
+→ Comprehension Quiz (must pass to unlock Project)
 → Project Implementation
+→ Checklist → advance
 
-Curriculum content stored as:
+Curriculum content stored as **hybrid JSON + Markdown**:
 
-- Markdown
-- Version controlled
-- Modular
-- Organized by track and stage/phase
+- `track.json` — track manifest (stage list, availability)
+- Per-stage folder: `stage.json` (goal, checklist, quiz) + `lesson.md`, `sandbox.md`, `project.md`
+- Version controlled under `commitloop/content/`
+- Validated with Zod + `npm run content:check` in CI
+- `_template/` for authoring new stages
+
+See `docs/curriculum.md` for full content structure.
 
 Students enroll in one track at a time. Platform must support:
 
@@ -63,17 +68,25 @@ Each curriculum unit contains:
 
 #### Lesson
 
-Theory and explanation
+Theory and explanation (`lesson.md`)
 
 #### Sandbox Task
 
-Small isolated exercise
+Small isolated exercise (`sandbox.md`)
+
+#### Comprehension Quiz
+
+Structured questions from `stage.json`. Server-side grading. Project tab locked until pass threshold met (default 80%). Retry with explanations on wrong answers.
 
 #### Project Implementation
 
-Apply concept inside personal project
+Apply concept inside personal project (`project.md`)
 
-Assignments are linked to curriculum progression.
+#### Checklist
+
+Verifiable deliverables from `stage.json`. Manual ticks in v1. Advance to next stage when complete.
+
+Assignments are linked to curriculum progression. User progress stores `currentStep`, `checklistState`, `quizState`, and `quizPassed` (reset on stage advance).
 
 ---
 

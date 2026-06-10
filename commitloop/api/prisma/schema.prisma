@@ -19,6 +19,8 @@ model User {
   currentStage    String   @default("stage-0-onboarding")
   currentStep     String   @default("lesson")
   checklistState  String   @default("{}")
+  quizState       String   @default("{}")
+  quizPassed      Boolean  @default(false)
   createdAt       DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }

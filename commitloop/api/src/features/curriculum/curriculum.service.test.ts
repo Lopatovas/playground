@@ -2,27 +2,31 @@ import { describe, expect, it } from "vitest";
 import {
   getStageContent,
   getTrackOverview,
+  getTrackStages,
+  gradeQuiz,
   nextStageSlug,
+  sanitizeQuizForClient,
   stepLabel,
-  TRACK_1_STAGES,
 } from "./curriculum.service.js";
 
 describe("curriculum", () => {
-  it("lists track 1 stages", () => {
-    expect(TRACK_1_STAGES.length).toBeGreaterThanOrEqual(2);
-    expect(TRACK_1_STAGES[0]?.slug).toBe("stage-0-onboarding");
+  it("lists track 1 stages from track.json", () => {
+    const stages = getTrackStages("track-1");
+    expect(stages.length).toBeGreaterThanOrEqual(2);
+    expect(stages[0]?.slug).toBe("stage-0-onboarding");
   });
 
-  it("loads stage markdown content", () => {
-    const stage = getStageContent("stage-0-onboarding");
+  it("loads hybrid stage content", () => {
+    const stage = getStageContent("track-1", "stage-0-onboarding");
     expect(stage).not.toBeNull();
     expect(stage!.title).toContain("Onboarding");
     expect(stage!.lesson).toContain("GitHub");
     expect(stage!.checklist.length).toBeGreaterThan(0);
+    expect(stage!.quiz.questions.length).toBeGreaterThan(0);
   });
 
-  it("returns null for missing stage file", () => {
-    expect(getStageContent("stage-does-not-exist")).toBeNull();
+  it("returns null for missing stage folder", () => {
+    expect(getStageContent("track-1", "stage-does-not-exist")).toBeNull();
   });
 
   it("marks current and complete stages in overview", () => {
@@ -41,15 +45,51 @@ describe("curriculum", () => {
   });
 
   it("advances to next available stage", () => {
-    expect(nextStageSlug("stage-0-onboarding")).toBe(
+    expect(nextStageSlug("track-1", "stage-0-onboarding")).toBe(
       "stage-1-git-fundamentals",
     );
-    expect(nextStageSlug("stage-1-git-fundamentals")).toBeNull();
+    expect(nextStageSlug("track-1", "stage-1-git-fundamentals")).toBeNull();
   });
 
   it("labels steps for display", () => {
     expect(stepLabel("lesson")).toBe("Lesson");
     expect(stepLabel("sandbox")).toBe("Sandbox Task");
+    expect(stepLabel("quiz")).toBe("Quiz");
     expect(stepLabel("project")).toBe("Project Implementation");
+  });
+
+  it("grades quiz server-side", () => {
+    const stage = getStageContent("track-1", "stage-1-git-fundamentals")!;
+    const answers = Object.fromEntries(
+      stage.quiz.questions.map((q) => [q.id, q.correctChoiceId]),
+    );
+
+    const graded = gradeQuiz(stage, answers);
+    expect(graded.passed).toBe(true);
+    expect(graded.score).toBe(1);
+  });
+
+  it("fails quiz below pass threshold and returns explanations", () => {
+    const stage = getStageContent("track-1", "stage-1-git-fundamentals")!;
+    const answers = Object.fromEntries(
+      stage.quiz.questions.map((q) => [q.id, "b"]),
+    );
+
+    const graded = gradeQuiz(stage, answers);
+    expect(graded.passed).toBe(false);
+    expect(graded.score).toBeLessThan(stage.quiz.passScore);
+    expect(graded.results.some((r) => !r.correct && r.explanation)).toBe(true);
+  });
+
+  it("strips correct answers for client-safe quiz payload", () => {
+    const stage = getStageContent("track-1", "stage-0-onboarding")!;
+    const clientQuiz = sanitizeQuizForClient(stage);
+
+    expect(clientQuiz.passScore).toBe(stage.quiz.passScore);
+    expect(clientQuiz.questions).toHaveLength(stage.quiz.questions.length);
+    for (const question of clientQuiz.questions) {
+      expect(question).not.toHaveProperty("correctChoiceId");
+      expect(question).not.toHaveProperty("explanation");
+    }
   });
 });

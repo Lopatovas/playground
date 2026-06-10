@@ -1,0 +1,14 @@
+{
+  "id": "track-1",
+  "title": "Fundamentals",
+  "subtitle": "Full-stack fundamentals",
+  "stages": [
+    { "slug": "stage-0-onboarding", "order": 0, "available": true },
+    { "slug": "stage-1-git-fundamentals", "order": 1, "available": true },
+    { "slug": "stage-2-end-to-end", "order": 2, "available": false },
+    { "slug": "stage-3-structure", "order": 3, "available": false },
+    { "slug": "stage-4-deployment", "order": 4, "available": false },
+    { "slug": "stage-5-testing", "order": 5, "available": false },
+    { "slug": "stage-6-expansion", "order": 6, "available": false }
+  ]
+}

@@ -1,13 +1,11 @@
-import fs from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import {
+  getStageContentForTrack,
+  listTrackStageRefs,
+  loadTrackManifest,
+} from "../../content/track-loader.js";
+import type { LoadedStage } from "../../content/schemas.js";
 
-const CONTENT_ROOT = path.resolve(
-  path.dirname(fileURLToPath(import.meta.url)),
-  "../../../../content",
-);
-
-export type Step = "lesson" | "sandbox" | "project";
+export type Step = "lesson" | "sandbox" | "quiz" | "project";
 
 export type StageMeta = {
   slug: string;
@@ -15,103 +13,41 @@ export type StageMeta = {
   available: boolean;
 };
 
-export const TRACK_1_STAGES: StageMeta[] = [
-  {
-    slug: "stage-0-onboarding",
-    title: "Stage 0 — Onboarding",
-    available: true,
-  },
-  {
-    slug: "stage-1-git-fundamentals",
-    title: "Stage 1 — Git Fundamentals",
-    available: true,
-  },
-  {
-    slug: "stage-2-end-to-end",
-    title: "Stage 2 — First End-to-End System",
-    available: false,
-  },
-  {
-    slug: "stage-3-structure",
-    title: "Stage 3 — System Structure",
-    available: false,
-  },
-  {
-    slug: "stage-4-deployment",
-    title: "Stage 4 — Deployment",
-    available: false,
-  },
-  { slug: "stage-5-testing", title: "Stage 5 — Testing", available: false },
-  {
-    slug: "stage-6-expansion",
-    title: "Stage 6 — Expansion Loop",
-    available: false,
-  },
-];
+export function getTrackStages(trackId: string): StageMeta[] {
+  const track = loadTrackManifest(trackId);
+  if (!track) return [];
 
-function readStageFile(slug: string): string | null {
-  const file = path.join(CONTENT_ROOT, "track-1", `${slug}.md`);
-  if (!fs.existsSync(file)) return null;
-  return fs.readFileSync(file, "utf-8");
+  return listTrackStageRefs(trackId).map((stage) => ({
+    slug: stage.slug,
+    title: getStageContent(trackId, stage.slug)?.title ?? stage.slug,
+    available: stage.available,
+  }));
 }
 
-function section(md: string, heading: string): string {
-  const re = new RegExp(`## ${heading}\\s*\\n([\\s\\S]*?)(?=\\n## |$)`, "i");
-  return re.exec(md)?.[1]?.trim() ?? "";
-}
+export function getStageContent(
+  trackId: string,
+  slug: string,
+): LoadedStage | null {
+  const track = loadTrackManifest(trackId);
+  if (!track) return null;
 
-function firstParagraph(text: string): string {
-  const lines = text
-    .split("\n")
-    .map((l) => l.trim())
-    .filter((l) => l && !l.startsWith("#"));
-  return lines.slice(0, 3).join(" ").slice(0, 280);
-}
+  const stageRef = track.stages.find((s) => s.slug === slug);
+  if (!stageRef?.available) return null;
 
-function parseChecklist(
-  md: string,
-  stageSlug: string,
-): { id: string; label: string }[] {
-  const block = section(md, "Checklist");
-  if (!block) return [];
-
-  return block
-    .split("\n")
-    .map((line) => line.match(/^- \[ \] (.+)$/))
-    .filter(Boolean)
-    .map((m, i) => ({
-      id: `${stageSlug}:${i}`,
-      label: m![1]!,
-    }));
-}
-
-export function getStageContent(slug: string) {
-  const md = readStageFile(slug);
-  if (!md) return null;
-
-  const title = md.match(/^#\s+(.+)$/m)?.[1] ?? slug;
-  const goal = md.match(/\*\*Goal:\*\*\s*(.+)/)?.[1] ?? "";
-
-  return {
-    slug,
-    title,
-    goal,
-    lesson: section(md, "Lesson"),
-    sandbox: section(md, "Sandbox Task"),
-    project: section(md, "Project Implementation"),
-    checklist: parseChecklist(md, slug),
-    projectSummary: firstParagraph(section(md, "Project Implementation")),
-  };
+  return getStageContentForTrack(trackId, slug);
 }
 
 export function getTrackOverview(trackId: string, currentStage: string) {
-  if (trackId !== "track-1") return [];
+  const stages = listTrackStageRefs(trackId);
+  if (stages.length === 0) return [];
 
-  const currentIdx = TRACK_1_STAGES.findIndex((s) => s.slug === currentStage);
+  const currentIdx = stages.findIndex((s) => s.slug === currentStage);
 
-  return TRACK_1_STAGES.map((stage, i) => {
+  return stages.map((stage, i) => {
+    const content = getStageContent(trackId, stage.slug);
     let status: "complete" | "current" | "locked" = "locked";
-    if (!stage.available) {
+
+    if (!stage.available || !content) {
       status = "locked";
     } else if (stage.slug === currentStage) {
       status = "current";
@@ -119,22 +55,81 @@ export function getTrackOverview(trackId: string, currentStage: string) {
       status = "complete";
     }
 
-    return { ...stage, status };
+    return {
+      slug: stage.slug,
+      title: content?.title ?? stage.slug,
+      available: stage.available,
+      status,
+    };
   });
 }
 
-export function nextStageSlug(current: string): string | null {
-  const idx = TRACK_1_STAGES.findIndex((s) => s.slug === current);
+export function nextStageSlug(
+  trackId: string,
+  current: string,
+): string | null {
+  const stages = listTrackStageRefs(trackId);
+  const idx = stages.findIndex((s) => s.slug === current);
   if (idx < 0) return null;
-  const next = TRACK_1_STAGES[idx + 1];
-  return next?.available ? next.slug : null;
+
+  const next = stages[idx + 1];
+  if (!next?.available) return null;
+
+  return getStageContent(trackId, next.slug) ? next.slug : null;
 }
 
 export function stepLabel(step: Step): string {
   const labels: Record<Step, string> = {
     lesson: "Lesson",
     sandbox: "Sandbox Task",
+    quiz: "Quiz",
     project: "Project Implementation",
   };
   return labels[step];
+}
+
+export function sanitizeQuizForClient(stage: LoadedStage) {
+  return {
+    passScore: stage.quiz.passScore,
+    questions: stage.quiz.questions.map((question) => ({
+      id: question.id,
+      prompt: question.prompt,
+      choices: question.choices,
+    })),
+  };
+}
+
+export function gradeQuiz(
+  stage: LoadedStage,
+  answers: Record<string, string>,
+): {
+  score: number;
+  passed: boolean;
+  results: {
+    questionId: string;
+    correct: boolean;
+    explanation: string;
+  }[];
+} {
+  const questions = stage.quiz.questions;
+  const results = questions.map((question) => {
+    const chosen = answers[question.id];
+    const correct = chosen === question.correctChoiceId;
+    return {
+      questionId: question.id,
+      correct,
+      explanation: question.explanation,
+    };
+  });
+
+  const score =
+    questions.length === 0
+      ? 0
+      : results.filter((r) => r.correct).length / questions.length;
+
+  return {
+    score,
+    passed: score >= stage.quiz.passScore,
+    results,
+  };
 }

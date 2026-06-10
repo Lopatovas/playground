@@ -21,6 +21,8 @@ Prove the wedge: **people will show up daily when GitHub is watched and curricul
 - [x] GitHub OAuth + repo linking
 - [x] Streak dashboard (current / longest / 7-day heatmap)
 - [x] Track 1 curriculum content (Stage 0–1)
+- [x] Hybrid curriculum content system (JSON + Markdown, `content:check`)
+- [x] Comprehension quiz gates Project step (server-side grading)
 - [x] Architecture locked → [ARCHITECTURE.md](./ARCHITECTURE.md)
 - [x] Wireframes approved + implemented → [WIREFRAMES.md](./WIREFRAMES.md)
 - [x] Next.js 16 web + assignment-first home
@@ -42,7 +44,7 @@ Prove the wedge: **people will show up daily when GitHub is watched and curricul
 
 | Priority | Task |
 |----------|------|
-| P1 | Stage 2–4 curriculum markdown |
+| P1 | Stage 2–4 curriculum content (hybrid format; flip `available` in `track.json`) |
 | P2 | Mentor view (inactive students) |
 | P2 | Postgres + production env |
 | P3 | Payments / founding cohort |

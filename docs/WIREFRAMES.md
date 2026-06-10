@@ -43,6 +43,7 @@ Open the interactive version: **CommitLoop Wireframes** canvas in the IDE (besid
 │  │ The loop    │ │ One project │ │ GitHub is   │            │
 │  │ Lesson →    │ │ No resets   │ │ the record  │            │
 │  │ Sandbox →   │ │             │ │             │            │
+│  │ Quiz →      │ │             │ │             │            │
 │  │ Project     │ │             │ │             │            │
 │  └─────────────┘ └─────────────┘ └─────────────┘            │
 └──────────────────────────────────────────────────────────────┘
@@ -79,13 +80,15 @@ Layout: **assignment card dominates left (2/3), streak panel right (1/3).**
 │  │ [ Continue assignment ]            │ │                │ │
 │  └────────────────────────────────────┘ └────────────────┘ │
 │                                                              │
-│  Up next: Sandbox — practice git in a scratch folder         │
+│  Up next: Quiz — check your understanding                    │
 │                                                              │
 └──────────────────────────────────────────────────────────────┘
 ```
 
 **Decisions (implemented):**
-- [x] Lesson / Sandbox / Project as tabs on assignment page
+- [x] Lesson / Sandbox / Quiz / Project as tabs on assignment page
+- [x] Project tab locked until quiz passed
+- [x] `nextHint` on home reflects current step (e.g. "Up next: Quiz")
 - [x] "Continue assignment" → full `/assignment` page
 - [x] Streak heatmap: 7 days visible on home panel
 
@@ -99,7 +102,8 @@ Layout: **assignment card dominates left (2/3), streak panel right (1/3).**
 ┌──────────────────────────────────────────────────────────────┐
 │  ← Home    Stage 1 — Git Fundamentals                        │
 ├──────────────────────────────────────────────────────────────┤
-│  [ Lesson ]  [ Sandbox ]  [ Project ]     ← active tab       │
+│  [ Lesson ]  [ Sandbox ]  [ Quiz ]  [ Project ]  ← active   │
+│                              (Project locked until quiz pass)│
 ├──────────────────────────────────────────────────────────────┤
 │                                                              │
 │  Project Implementation                                      │
@@ -122,6 +126,29 @@ Layout: **assignment card dominates left (2/3), streak panel right (1/3).**
 **Notes:**
 - Lesson content collapsed by default on Project tab — execution first
 - Checkboxes are self-report for v0; GitHub verifies commits separately
+
+### Quiz tab (implemented)
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│  [ Lesson ]  [ Sandbox ]  [ Quiz ]  [ Project ]              │
+├──────────────────────────────────────────────────────────────┤
+│  Comprehension check                                         │
+│                                                              │
+│  ○ What does `git add` do?                                   │
+│    ○ Stages changes for the next commit                      │
+│    ○ Pushes to GitHub                                        │
+│    ○ Creates a new branch                                    │
+│                                                              │
+│  [ Submit quiz ]                                             │
+│                                                              │
+│  On fail: score + explanations per wrong question            │
+│  On pass: Project tab unlocks; step advances to project       │
+└──────────────────────────────────────────────────────────────┘
+```
+
+- Quiz questions from `stage.json`; prose stays in `.md` files
+- Grading is server-side only
 
 ---
 
@@ -175,7 +202,7 @@ Dashed — not v0. List of students, red row = missed today, link to repo.
 ## Locked decisions
 
 1. **Home layout** — assignment left / streak right ✅
-2. **Assignment tabs** — Lesson | Sandbox | Project on one page ✅
+2. **Assignment tabs** — Lesson | Sandbox | Quiz | Project on one page ✅
 3. **Light vs dark** — default light ✅
 4. **Nav** — top bar only ✅
 5. **Tone** — tool-like, not bootcamp ad ✅

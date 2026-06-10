@@ -34,6 +34,9 @@ const assignment: Assignment = {
   summary: "Create your repo and make the first commit.",
   checklist: [],
   allChecklistDone: false,
+  quiz: { passScore: 0.8, questions: [] },
+  quizPassed: false,
+  canAccessProject: false,
   nextHint: "Up next",
   content: {
     lesson: "Lesson",
@@ -121,6 +124,7 @@ describe("extracted page components", () => {
       <AssignmentStepTabs
         activeStep="lesson"
         busy={false}
+        canAccessProject
         onSelect={onSelect}
       />,
     );

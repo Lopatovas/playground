@@ -42,13 +42,35 @@ export type StreakStats = {
   recentDays: { date: string; count: number; messages: string[] }[];
 };
 
+export type QuizQuestion = {
+  id: string;
+  prompt: string;
+  choices: { id: string; text: string }[];
+};
+
+export type QuizResult = {
+  score: number;
+  passed: boolean;
+  results: {
+    questionId: string;
+    correct: boolean;
+    explanation: string;
+  }[];
+};
+
 export type Assignment = {
   stage: { slug: string; title: string; goal: string };
-  step: "lesson" | "sandbox" | "project";
+  step: "lesson" | "sandbox" | "quiz" | "project";
   stepLabel: string;
   summary: string;
   checklist: { id: string; label: string; done: boolean }[];
   allChecklistDone: boolean;
+  quiz: {
+    passScore: number;
+    questions: QuizQuestion[];
+  };
+  quizPassed: boolean;
+  canAccessProject: boolean;
   nextHint: string;
   content: { lesson: string; sandbox: string; project: string };
   track: {
@@ -57,6 +79,10 @@ export type Assignment = {
     available: boolean;
     status: "complete" | "current" | "locked";
   }[];
+};
+
+export type AssignmentWithQuizResult = Assignment & {
+  quizResult?: QuizResult;
 };
 
 export const api = {
@@ -75,10 +101,15 @@ export const api = {
       stats: StreakStats | null;
     }>("/streak"),
   assignment: () => apiRequest<Assignment>("/assignment/current"),
-  setStep: (step: "lesson" | "sandbox" | "project") =>
+  setStep: (step: Assignment["step"]) =>
     apiRequest<Assignment>("/assignment/step", {
       method: "POST",
       body: JSON.stringify({ step }),
+    }),
+  submitQuiz: (answers: Record<string, string>) =>
+    apiRequest<AssignmentWithQuizResult>("/assignment/quiz", {
+      method: "POST",
+      body: JSON.stringify({ answers }),
     }),
   toggleChecklist: (itemId: string, done: boolean) =>
     apiRequest<Assignment>("/assignment/checklist", {

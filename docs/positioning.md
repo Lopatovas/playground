@@ -12,7 +12,7 @@ CommitLoop is not a bootcamp and not an LMS. It is a system that helps students 
 
 Every concept follows the same loop:
 
-**Lesson → Sandbox → Project Implementation**
+**Lesson → Sandbox → Quiz → Project Implementation**
 
 GitHub is the source of truth. Progress is measured by real commits, assignment completion, and project evolution — not video watch time.
 
@@ -133,7 +133,7 @@ The problem isn't missing content. It's missing **accountability**.
 ### Solution (3 bullets)
 
 1. **One project. No resets.** Every concept integrates into your app — a booking system, finance tracker, or whatever domain you choose.
-2. **The CommitLoop.** Lesson → Sandbox → Project. Learn it, practice it, ship it in your codebase.
+2. **The CommitLoop.** Lesson → Sandbox → Quiz → Project. Learn it, practice it, prove you got it, ship it in your codebase.
 3. **GitHub doesn't lie.** One meaningful commit per day. Mentors see your activity. Streaks measure execution, not motivation.
 
 ### Proof points (use as earned)
@@ -162,7 +162,7 @@ The problem isn't missing content. It's missing **accountability**.
 
 ### Launch sequence (90 days)
 
-1. **Weeks 1–2:** Landing page + waitlist at commitloop.dev. Lead magnet: "The CommitLoop: why Lesson → Sandbox → Project beats tutorials."
+1. **Weeks 1–2:** Landing page + waitlist at commitloop.dev. Lead magnet: "The CommitLoop: why Lesson → Sandbox → Quiz → Project beats tutorials."
 2. **Weeks 3–6:** Build MVP (auth, GitHub integration, curriculum Stage 0–2, mentor dashboard). Recruit 2–3 mentors from network.
 3. **Weeks 7–8:** Private beta with 5–10 students. Stress-test accountability rules and mentor load.
 4. **Weeks 9–12:** Open founding cohort (20 seats). Close waitlist with clear start date and refund policy.

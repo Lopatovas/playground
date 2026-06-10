@@ -2,15 +2,25 @@ import {
   getStageContent,
   getTrackOverview,
   nextStageSlug,
+  sanitizeQuizForClient,
   stepLabel,
   type Step,
 } from "../curriculum/curriculum.service.js";
 
 export type ChecklistState = Record<string, boolean>;
+export type QuizState = Record<string, string>;
 
 export function parseChecklistState(json: string): ChecklistState {
   try {
     return JSON.parse(json) as ChecklistState;
+  } catch {
+    return {};
+  }
+}
+
+export function parseQuizState(json: string): QuizState {
+  try {
+    return JSON.parse(json) as QuizState;
   } catch {
     return {};
   }
@@ -21,8 +31,9 @@ export function buildAssignment(
   currentStage: string,
   currentStep: Step,
   checklistJson: string,
+  quizPassed: boolean,
 ) {
-  const stage = getStageContent(currentStage);
+  const stage = getStageContent(trackId, currentStage);
   if (!stage) {
     return null;
   }
@@ -34,18 +45,23 @@ export function buildAssignment(
   }));
 
   const allDone = checklist.length > 0 && checklist.every((item) => item.done);
+  const canAccessProject = quizPassed;
 
   let nextHint = "";
   if (currentStep === "lesson") {
     nextHint = "Up next: Sandbox — practice in isolation";
   } else if (currentStep === "sandbox") {
-    nextHint = "Up next: Project — apply it in your codebase";
+    nextHint = "Up next: Quiz — check your understanding";
+  } else if (currentStep === "quiz") {
+    nextHint = quizPassed
+      ? "Up next: Project — apply it in your codebase"
+      : "Pass the quiz to unlock the project step";
   } else if (!allDone) {
     nextHint = "Finish the checklist, then advance to the next stage";
   } else {
-    const next = nextStageSlug(currentStage);
+    const next = nextStageSlug(trackId, currentStage);
     nextHint = next
-      ? `Ready for ${getStageContent(next)?.title ?? "next stage"}`
+      ? `Ready for ${getStageContent(trackId, next)?.title ?? "next stage"}`
       : "Stage complete — more content coming soon";
   }
 
@@ -63,6 +79,9 @@ export function buildAssignment(
         : firstLineForStep(stage, currentStep),
     checklist,
     allChecklistDone: allDone,
+    quiz: sanitizeQuizForClient(stage),
+    quizPassed,
+    canAccessProject,
     nextHint,
     content: {
       lesson: stage.lesson,
@@ -82,7 +101,9 @@ function firstLineForStep(
       ? stage.lesson
       : step === "sandbox"
         ? stage.sandbox
-        : stage.project;
+        : step === "quiz"
+          ? "Answer every question. You need 80% or higher to unlock the project step."
+          : stage.project;
   return (
     text
       .split("\n")

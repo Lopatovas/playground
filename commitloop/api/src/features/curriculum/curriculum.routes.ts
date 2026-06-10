@@ -3,6 +3,8 @@ import path from "node:path";
 import type { PrismaClient } from "@prisma/client";
 import { Router } from "express";
 import type { AppConfig } from "../../config/env.js";
+import { loadStageContent } from "../../content/stage-loader.js";
+import { listTrackStageRefs } from "../../content/track-loader.js";
 import { getTrackOverview } from "./curriculum.service.js";
 
 export function createCurriculumRouter({
@@ -15,7 +17,9 @@ export function createCurriculumRouter({
   const router = Router();
 
   router.get("/tracks/:trackId/stages", async (req, res) => {
-    if (req.params.trackId !== "track-1") {
+    const trackId = req.params.trackId;
+    const trackDir = path.join(config.contentRoot, trackId);
+    if (!fs.existsSync(trackDir)) {
       res.status(404).json({ error: "Track not found" });
       return;
     }
@@ -29,34 +33,37 @@ export function createCurriculumRouter({
     }
 
     res.json({
-      trackId: "track-1",
-      stages: getTrackOverview("track-1", currentStage),
+      trackId,
+      stages: getTrackOverview(trackId, currentStage),
     });
   });
 
   router.get("/curriculum/:trackId", (req, res) => {
-    const trackDir = path.join(config.contentRoot, req.params.trackId);
+    const trackId = req.params.trackId;
+    const trackDir = path.join(config.contentRoot, trackId);
     if (!fs.existsSync(trackDir)) {
       res.status(404).json({ error: "Track not found" });
       return;
     }
 
-    const stages = fs
-      .readdirSync(trackDir)
-      .filter((f) => f.endsWith(".md"))
-      .sort()
-      .map((filename) => {
-        const slug = filename.replace(/\.md$/, "");
-        const content = fs.readFileSync(path.join(trackDir, filename), "utf-8");
-        const titleMatch = content.match(/^#\s+(.+)$/m);
-        return {
-          slug,
-          title: titleMatch?.[1] ?? slug,
-          content,
-        };
-      });
+    const stages = listTrackStageRefs(trackId)
+      .map((stageRef) => {
+        const loaded = loadStageContent(trackId, stageRef.slug);
+        if (!loaded) return null;
 
-    res.json({ trackId: req.params.trackId, stages });
+        return {
+          slug: stageRef.slug,
+          title: loaded.title,
+          goal: loaded.goal,
+          available: stageRef.available,
+          lesson: loaded.lesson,
+          sandbox: loaded.sandbox,
+          project: loaded.project,
+        };
+      })
+      .filter(Boolean);
+
+    res.json({ trackId, stages });
   });
 
   return router;

@@ -28,8 +28,9 @@ Decisions from product validation. Last updated: 2026-06-09.
                                  │
                     ┌────────────┼────────────┐
                     ▼            ▼            ▼
-              GitHub API    Markdown content   (future)
-              OAuth       (track-1/*.md)      Mobile app
+              GitHub API    Hybrid content     (future)
+              OAuth       (track.json +        Mobile app
+                           stage folders)
 ```
 
 **Why split:** Web ships fast on Vercel. API stays a stable JSON surface for a future React Native / Expo app without coupling to Next.js server routes.
@@ -46,6 +47,7 @@ api/src/
   index.ts                  # bootstrap + listen
   config/env.ts             # env → AppConfig
   clients/github.client.ts  # GitHub OAuth + API (injectable in tests)
+  content/                  # track/stage loaders, Zod schemas, content:check
   middleware/
     auth.ts                 # requireAuth
     session.ts              # express-session
@@ -54,10 +56,10 @@ api/src/
     health/                 # GET /health
     auth/                   # GitHub OAuth, logout
     user/                   # GET /me
-    assignment/             # current, step, checklist, advance
+    assignment/             # current, step, quiz, checklist, advance
     repo/                   # POST /repo
     streak/                 # GET /streak
-    curriculum/             # tracks, raw markdown
+    curriculum/             # tracks, hybrid stage content
   test/                     # integration test helpers
 ```
 
@@ -79,11 +81,12 @@ REST JSON. Version prefix when mobile ships: `/v1/...`
 | `POST /repo` | Link project repository |
 | `GET /streak` | Accountability stats |
 | `GET /tracks/:trackId/stages` | Stage map with progress status |
-| `GET /curriculum/:trackId` | Raw markdown stages |
-| `GET /assignment/current` | Today's focus (stage + step + checklist) |
-| `POST /assignment/step` | Switch lesson / sandbox / project tab |
+| `GET /curriculum/:trackId` | Hybrid stage content (lesson/sandbox/project + metadata) |
+| `GET /assignment/current` | Today's focus (stage + step + quiz + checklist) |
+| `POST /assignment/step` | Switch lesson / sandbox / quiz / project tab (project blocked if quiz not passed) |
+| `POST /assignment/quiz` | Submit quiz answers; server grades; unlocks project on pass |
 | `POST /assignment/checklist` | Toggle checklist item |
-| `POST /assignment/advance` | Move to next stage when checklist complete |
+| `POST /assignment/advance` | Move to next stage when checklist complete (resets quiz state) |
 
 **Future (mobile):** `POST /auth/token` or session exchange; same endpoints with `Authorization: Bearer`.
 
@@ -99,7 +102,7 @@ commitloop/web/
     (app)/                    # Protected route group
       layout.tsx              # Auth gate + AppHeader
       home/page.tsx           # Assignment + streak
-      assignment/page.tsx     # Lesson / Sandbox / Project tabs
+      assignment/page.tsx     # Lesson / Sandbox / Quiz / Project tabs
       settings/page.tsx       # Repo link
     providers.tsx             # AuthProvider wrapper
     layout.tsx                # Root layout + fonts
@@ -141,7 +144,7 @@ Deterministic checks prevent layer drift as the platform grows. Run from `commit
 
 ```bash
 npm run arch:check   # structure + import boundary tests
-npm run ci           # arch:check + typecheck + lint + coverage + build
+npm run ci           # arch:check + content:check + typecheck + lint + coverage + build
 ```
 
 | Gate | What it enforces |
@@ -159,7 +162,7 @@ npm run ci           # arch:check + typecheck + lint + coverage + build
 From `commitloop/`:
 
 ```bash
-npm run ci    # arch:check + typecheck + eslint + coverage + build
+npm run ci    # arch:check + content:check + typecheck + eslint + coverage + build
 ```
 
 | Package | Tests | Lint |
@@ -180,8 +183,9 @@ CI: `.github/workflows/commitloop-ci.yml` on pushes to `commitloop/**`.
 |------|--------|
 | GitHub OAuth + repo linking | ✅ |
 | Assignment-first home + streak panel | ✅ |
-| Assignment tabs + checklist + advance | ✅ |
-| Track 1 curriculum (Stage 0–1) | ✅ |
+| Assignment tabs + quiz gate + checklist + advance | ✅ |
+| Hybrid curriculum content system (Stage 0–1) | ✅ |
+| `content:check` validation in CI | ✅ |
 | Feature-based API + web architecture | ✅ |
 | Tests + coverage thresholds | ✅ |
 

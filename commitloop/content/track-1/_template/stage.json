@@ -1,0 +1,26 @@
+{
+  "slug": "stage-N-slug",
+  "title": "Stage N — Title",
+  "goal": "One sentence outcome for this stage.",
+  "nextStage": "stage-next-slug",
+  "checklist": [
+    { "id": "deliverable-one", "label": "First deliverable committed" },
+    { "id": "deliverable-two", "label": "Second deliverable committed" }
+  ],
+  "quiz": {
+    "passScore": 0.8,
+    "questions": [
+      {
+        "id": "concept-one",
+        "prompt": "Question that checks understanding of today's concept?",
+        "choices": [
+          { "id": "a", "text": "Correct answer" },
+          { "id": "b", "text": "Plausible distractor" },
+          { "id": "c", "text": "Another distractor" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Short teaching note shown when the answer is wrong."
+      }
+    ]
+  }
+}

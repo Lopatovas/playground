@@ -1,0 +1,40 @@
+{
+  "slug": "stage-0-onboarding",
+  "title": "Stage 0 — Onboarding",
+  "goal": "Enter a working engineering environment.",
+  "nextStage": "stage-1-git-fundamentals",
+  "checklist": [
+    { "id": "repo-created", "label": "GitHub repo created" },
+    { "id": "repo-cloned", "label": "Repo cloned locally" },
+    { "id": "readme-domain", "label": "README describes your project domain" },
+    { "id": "first-commit", "label": "First commit pushed" },
+    { "id": "repo-linked", "label": "Repo linked in CommitLoop dashboard" }
+  ],
+  "quiz": {
+    "passScore": 0.8,
+    "questions": [
+      {
+        "id": "source-of-truth",
+        "prompt": "What is the source of truth for your progress on CommitLoop?",
+        "choices": [
+          { "id": "a", "text": "Your GitHub repository commits" },
+          { "id": "b", "text": "Watch time on lesson videos" },
+          { "id": "c", "text": "Self-reported checkboxes only" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "CommitLoop reads your repo activity. Commits are the receipt."
+      },
+      {
+        "id": "one-repo",
+        "prompt": "How many evolving project repos do you maintain per track?",
+        "choices": [
+          { "id": "a", "text": "One — no resets mid-track" },
+          { "id": "b", "text": "A new repo every stage" },
+          { "id": "c", "text": "As many portfolio clones as you want" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "One repo grows for the whole track. Refactors and migrations count."
+      }
+    ]
+  }
+}

@@ -101,6 +101,12 @@ describe("api client", () => {
       "POST",
     ],
     [
+      "submitQuiz",
+      () => api.submitQuiz({ q1: "a" }),
+      "/assignment/quiz",
+      "POST",
+    ],
+    [
       "toggleChecklist",
       () => api.toggleChecklist("item-1", true),
       "/assignment/checklist",

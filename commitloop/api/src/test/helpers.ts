@@ -33,6 +33,7 @@ export async function seedUser(
     currentStage?: string;
     currentStep?: string;
     checklistState?: string;
+    quizPassed?: boolean;
   },
 ) {
   return prisma.user.create({
@@ -43,6 +44,7 @@ export async function seedUser(
       currentStage: overrides?.currentStage ?? "stage-0-onboarding",
       currentStep: overrides?.currentStep ?? "lesson",
       checklistState: overrides?.checklistState ?? "{}",
+      quizPassed: overrides?.quizPassed ?? false,
     },
   });
 }
