@@ -6,12 +6,22 @@ import { useState } from "react";
 import { Logo } from "@/components/logo";
 import { api, type User } from "@/lib/api";
 
-const NAV = [
-  { href: "/home", label: "Home" },
-  { href: "/assignment", label: "Assignment" },
-  { href: "/curriculum", label: "Curriculum" },
-  { href: "/settings", label: "Settings" },
-] as const;
+function buildNav(isMentor: boolean) {
+  const items = [
+    { href: "/home", label: "Home" },
+    { href: "/assignment", label: "Assignment" },
+    { href: "/curriculum", label: "Curriculum" },
+    { href: "/settings", label: "Settings" },
+  ] as const;
+
+  if (!isMentor) return items;
+
+  return [
+    ...items.slice(0, 3),
+    { href: "/mentor", label: "Mentor" },
+    ...items.slice(3),
+  ] as const;
+}
 
 export function AppHeader({
   user,
@@ -43,7 +53,7 @@ export function AppHeader({
         id="app-nav"
         className={`app-header__nav${menuOpen ? " is-open" : ""}`}
       >
-        {NAV.map((item) => (
+        {buildNav(user.isMentor).map((item) => (
           <Link
             key={item.href}
             href={item.href}

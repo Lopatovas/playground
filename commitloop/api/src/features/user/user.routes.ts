@@ -1,7 +1,9 @@
 import type { PrismaClient } from "@prisma/client";
 import { Router } from "express";
+import type { AppConfig } from "../../config/env.js";
+import { isMentorGithubId } from "../../config/env.js";
 
-export function createUserRouter(prisma: PrismaClient) {
+export function createUserRouter(prisma: PrismaClient, config: AppConfig) {
   const router = Router();
 
   router.get("/me", async (req, res) => {
@@ -29,6 +31,7 @@ export function createUserRouter(prisma: PrismaClient) {
       trackId: user.trackId,
       currentStage: user.currentStage,
       currentStep: user.currentStep,
+      isMentor: isMentorGithubId(user.githubId, config.mentorGithubIds),
     });
   });
 

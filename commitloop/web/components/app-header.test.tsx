@@ -31,6 +31,7 @@ describe("AppHeader", () => {
           trackId: "track-1",
           currentStage: "stage-0-onboarding",
           currentStep: "lesson",
+          isMentor: false,
         }}
       />,
     );
@@ -45,5 +46,27 @@ describe("AppHeader", () => {
     await user.click(screen.getByRole("button", { name: "Log out" }));
     expect(api.logout).toHaveBeenCalled();
     expect(push).toHaveBeenCalledWith("/");
+  });
+
+  it("shows mentor navigation for mentors", () => {
+    render(
+      <AppHeader
+        user={{
+          id: "1",
+          username: "mentor",
+          avatarUrl: null,
+          repo: null,
+          trackId: "track-1",
+          currentStage: "stage-0-onboarding",
+          currentStep: "lesson",
+          isMentor: true,
+        }}
+      />,
+    );
+
+    expect(screen.getByRole("link", { name: "Mentor" })).toHaveAttribute(
+      "href",
+      "/mentor",
+    );
   });
 });

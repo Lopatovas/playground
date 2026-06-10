@@ -7,7 +7,26 @@ export type AppConfig = {
   githubCallbackUrl: string;
   sessionSecret: string;
   contentRoot: string;
+  mentorGithubIds: Set<number>;
 };
+
+export function parseMentorGithubIds(raw: string | undefined): Set<number> {
+  if (!raw?.trim()) return new Set();
+
+  return new Set(
+    raw
+      .split(",")
+      .map((part) => Number(part.trim()))
+      .filter((id) => Number.isFinite(id) && id > 0),
+  );
+}
+
+export function isMentorGithubId(
+  githubId: number,
+  mentorGithubIds: Set<number>,
+): boolean {
+  return mentorGithubIds.has(githubId);
+}
 
 export function loadAppConfig({
   apiPort,
@@ -25,5 +44,6 @@ export function loadAppConfig({
       `http://localhost:${apiPort}/auth/github/callback`,
     sessionSecret: process.env.SESSION_SECRET ?? "dev-only-change-me",
     contentRoot: path.resolve(rootDir, "../../content"),
+    mentorGithubIds: parseMentorGithubIds(process.env.MENTOR_GITHUB_IDS),
   };
 }

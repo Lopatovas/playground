@@ -118,6 +118,12 @@ describe("api client", () => {
       "/assignment/advance",
       "POST",
     ],
+    [
+      "mentorStudents",
+      () => api.mentorStudents(),
+      "/mentor/students",
+      "GET",
+    ],
   ] as const)("calls %s", async (_name, call, path, method) => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,

@@ -193,9 +193,27 @@ Linear list, not a gamified skill tree.
 
 ---
 
-## Screen 6 — Mentor view (later)
+## Screen 6 — Mentor view (v1 in progress)
 
-Dashed — not v0. List of students, red row = missed today, link to repo.
+**Job:** Ops at a glance — who needs attention?
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│  CommitLoop          Mentor                    @you  [⚙]   │
+├──────────────────────────────────────────────────────────────┤
+│  Students                                                    │
+│                                                              │
+│  Student          Stage / Step      Streak  Today   Repo     │
+│  ─────────────────────────────────────────────────────────── │
+│  @alice           S1 · sandbox        12     ✓      repo →   │
+│  @bob             S0 · project         0     ✗      repo →   │  ← missed
+│  @carol           S1 · lesson          —     —      —        │  ← no repo
+│                                                              │
+└──────────────────────────────────────────────────────────────┘
+```
+
+- Access: `MENTOR_GITHUB_IDS` allowlist; `/mentor` nav link when `isMentor`
+- Spec: [MENTOR_VIEW.md](./MENTOR_VIEW.md)
 
 ---
 

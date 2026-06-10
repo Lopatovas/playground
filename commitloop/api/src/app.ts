@@ -8,6 +8,7 @@ import { createAssignmentRouter } from "./features/assignment/assignment.routes.
 import { createAuthRouter } from "./features/auth/auth.routes.js";
 import { createCurriculumRouter } from "./features/curriculum/curriculum.routes.js";
 import { createHealthRouter } from "./features/health/health.routes.js";
+import { createMentorRouter } from "./features/mentor/mentor.routes.js";
 import { createRepoRouter } from "./features/repo/repo.routes.js";
 import { createStreakRouter } from "./features/streak/streak.routes.js";
 import { createUserRouter } from "./features/user/user.routes.js";
@@ -39,10 +40,11 @@ export function createApp(
 
   app.use(createHealthRouter());
   app.use(createAuthRouter({ config, github, prisma }));
-  app.use(createUserRouter(prisma));
+  app.use(createUserRouter(prisma, config));
   app.use(createAssignmentRouter(prisma));
   app.use(createRepoRouter({ github, prisma }));
   app.use(createStreakRouter({ github, prisma }));
+  app.use(createMentorRouter({ config, github, prisma }));
   app.use(createCurriculumRouter({ config, prisma }));
   app.use(errorHandler);
 

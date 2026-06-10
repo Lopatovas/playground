@@ -327,6 +327,68 @@ describe("API integration", () => {
     expect(res.body.stats.totalCommits).toBe(1);
   });
 
+  it("GET /me includes isMentor for allowlisted GitHub ids", async () => {
+    const mentor = await seedUser(prisma, { githubId: 900001 });
+    const student = await seedUser(prisma, { githubId: 900002 });
+    const mentorAgent = await loginAgent(app, mentor.id);
+    const studentAgent = await loginAgent(app, student.id);
+
+    const mentorRes = await mentorAgent.get("/me").expect(200);
+    const studentRes = await studentAgent.get("/me").expect(200);
+
+    expect(mentorRes.body.isMentor).toBe(true);
+    expect(studentRes.body.isMentor).toBe(false);
+  });
+
+  it("GET /mentor/students requires mentor access", async () => {
+    const student = await seedUser(prisma, { githubId: 900002 });
+    const agent = await loginAgent(app, student.id);
+
+    await agent.get("/mentor/students").expect(403);
+  });
+
+  it("GET /mentor/students returns roster for mentors", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => [
+          {
+            commit: {
+              author: { date: "2025-06-08T10:00:00Z" },
+              message: "daily work",
+            },
+          },
+        ],
+      }),
+    );
+
+    await seedUser(prisma, {
+      githubId: 900010,
+      username: "cohort-student",
+      repoOwner: "cohort-student",
+      repoName: "app",
+    });
+    const mentor = await seedUser(prisma, { githubId: 900001 });
+    const agent = await loginAgent(app, mentor.id);
+
+    const res = await agent.get("/mentor/students").expect(200);
+    expect(res.body.students.length).toBeGreaterThanOrEqual(1);
+    expect(
+      res.body.students.find(
+        (s: { username: string }) => s.username === "cohort-student",
+      ),
+    ).toMatchObject({
+      currentStage: "stage-0-onboarding",
+      repoUrl: "https://github.com/cohort-student/app",
+    });
+    expect(
+      res.body.students.every(
+        (s: { username: string }) => s.username !== mentor.username,
+      ),
+    ).toBe(true);
+  });
+
   it("GET /tracks/track-1/stages reflects user progress when logged in", async () => {
     const user = await seedUser(prisma, {
       currentStage: "stage-1-git-fundamentals",

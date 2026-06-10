@@ -174,17 +174,21 @@ Platform should support increasing workflow sophistication.
 
 ### 7. Mentor System
 
+**v1 (in progress):** [MENTOR_VIEW.md](./MENTOR_VIEW.md)
+
 Mentors can:
 
-- View student progress
-- View GitHub activity
-- Review selected PRs
-- Respond to questions
+- View student roster with stage, step, quiz status
+- View GitHub activity (active today, missed today, streak)
+- Open student repos from the dashboard
 
-Mentors should not:
+Mentors should not (platform enforces by scope, not UI alone):
 
 - Write code for students
 - Complete assignments
+- Edit curriculum in-app (git-based authoring)
+
+**Later:** PR review links, accountability warnings, student lock/unlock.
 
 ---
 

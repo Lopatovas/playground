@@ -30,6 +30,28 @@ export type User = {
   trackId: string;
   currentStage: string;
   currentStep: string;
+  isMentor: boolean;
+};
+
+export type MentorStudent = {
+  id: string;
+  username: string;
+  avatarUrl: string | null;
+  trackId: string;
+  currentStage: string;
+  stageTitle: string;
+  currentStep: string;
+  quizPassed: boolean;
+  repo: { owner: string; name: string } | null;
+  repoUrl: string | null;
+  streak: {
+    configured: boolean;
+    activeToday: boolean;
+    missedToday: boolean;
+    currentStreak: number;
+    lastActivityDate: string | null;
+  } | null;
+  attention: "ok" | "missed_today" | "no_repo" | "inactive";
 };
 
 export type StreakStats = {
@@ -123,5 +145,7 @@ export const api = {
       trackId: string;
       stages: Assignment["track"];
     }>("/tracks/track-1/stages"),
+  mentorStudents: () =>
+    apiRequest<{ students: MentorStudent[] }>("/mentor/students"),
   githubLoginUrl: () => `${API_URL}/auth/github`,
 };

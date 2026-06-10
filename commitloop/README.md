@@ -8,6 +8,7 @@ Accountability-first engineering apprenticeship. GitHub is the source of truth.
 - [Wireframes](../docs/WIREFRAMES.md)
 - [Curriculum](../docs/curriculum.md)
 - [Roadmap](../docs/ROADMAP.md)
+- [Mentor view](../docs/MENTOR_VIEW.md)
 
 ## Stack
 
@@ -43,6 +44,7 @@ npm run dev -w @commitloop/web    # :3000
 | `/home` | Required | Assignment + streak (primary dashboard) |
 | `/assignment` | Required | Lesson / Sandbox / Quiz / Project + checklist |
 | `/settings` | Required | GitHub repo link |
+| `/mentor` | Mentor only | Student roster + GitHub activity |
 
 Protected routes live under `app/(app)/` with a shared auth layout.
 
@@ -54,6 +56,7 @@ Protected routes live under `app/(app)/` with a shared auth layout.
 - `POST /assignment/checklist` — toggle checklist items
 - `POST /assignment/advance` — next stage when checklist complete
 - `GET /streak` — GitHub commit accountability (all branches, deduped by SHA)
+- `GET /mentor/students` — mentor roster + activity (allowlisted GitHub ids)
 - `GET /tracks/track-1/stages` — stage map with progress
 
 ## Project layout

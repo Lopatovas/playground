@@ -1,6 +1,6 @@
 # CommitLoop — Architecture
 
-Decisions from product validation. Last updated: 2026-06-09.
+Decisions from product validation. Last updated: 2026-06-10.
 
 ---
 
@@ -59,6 +59,7 @@ api/src/
     assignment/             # current, step, quiz, checklist, advance
     repo/                   # POST /repo
     streak/                 # GET /streak
+    mentor/                 # GET /mentor/students (mentor allowlist)
     curriculum/             # tracks, hybrid stage content
   test/                     # integration test helpers
 ```
@@ -87,6 +88,9 @@ REST JSON. Version prefix when mobile ships: `/v1/...`
 | `POST /assignment/quiz` | Submit quiz answers; server grades; unlocks project on pass |
 | `POST /assignment/checklist` | Toggle checklist item |
 | `POST /assignment/advance` | Move to next stage when checklist complete (resets quiz state) |
+| `GET /mentor/students` | Student roster + streak snapshot (mentor allowlist only) |
+
+`GET /me` includes `isMentor` when the user's GitHub id is in `MENTOR_GITHUB_IDS`.
 
 **Future (mobile):** `POST /auth/token` or session exchange; same endpoints with `Authorization: Bearer`.
 
@@ -104,6 +108,7 @@ commitloop/web/
       home/page.tsx           # Assignment + streak
       assignment/page.tsx     # Lesson / Sandbox / Quiz / Project tabs
       settings/page.tsx       # Repo link
+      mentor/page.tsx         # Mentor ops roster (mentors only)
     providers.tsx             # AuthProvider wrapper
     layout.tsx                # Root layout + fonts
   components/                 # Shared UI (header, markdown, streak panel)
@@ -114,6 +119,7 @@ commitloop/web/
     landing/
     repo/
     settings/
+    mentor/
   lib/
     api.ts                    # fetch wrapper → Express API
     auth.tsx                  # AuthProvider + useAuth
@@ -121,7 +127,7 @@ commitloop/web/
 
 - **No API routes in Next.js** for domain logic — all data via Express
 - **Public pages:** `/`, `/curriculum`
-- **Protected pages:** `/home`, `/assignment`, `/settings` (via `(app)/layout.tsx`)
+- **Protected pages:** `/home`, `/assignment`, `/settings`, `/mentor` (via `(app)/layout.tsx`)
 - Auth: cookie session from API (`credentials: "include"`)
 
 ---
@@ -187,15 +193,17 @@ CI: `.github/workflows/commitloop-ci.yml` on pushes to `commitloop/**`.
 | Hybrid curriculum content system (Stage 0–1) | ✅ |
 | `content:check` validation in CI | ✅ |
 | Feature-based API + web architecture | ✅ |
-| Tests + coverage thresholds | ✅ |
+| Tests (103) + coverage thresholds | ✅ |
+| Mentor view v1 | ✅ |
 
 ---
 
 ## Next up
 
-1. GitHub OAuth credentials (user blocker)
-2. Stage 2–4 curriculum content
-3. Deploy API + web to commitloop.dev
-4. Mentor inactive view
+See [ROADMAP.md](./ROADMAP.md) and [MENTOR_VIEW.md](./MENTOR_VIEW.md).
 
-**Not now:** Track 2, payments, mobile app, AI mentor.
+1. Accountability gate (warnings → lockout)
+3. Stage 2+ curriculum (content agent)
+4. Deploy API + web to commitloop.dev
+
+**Not now:** Track 2, payments, mobile app, AI mentor, in-app CMS.

@@ -12,6 +12,7 @@ export const API_FEATURES = [
   "auth",
   "curriculum",
   "health",
+  "mentor",
   "repo",
   "streak",
   "user",
@@ -22,11 +23,17 @@ export const WEB_FEATURES = [
   "curriculum",
   "dashboard",
   "landing",
+  "mentor",
   "repo",
   "settings",
 ] as const;
 
-export const PROTECTED_WEB_ROUTES = ["home", "assignment", "settings"] as const;
+export const PROTECTED_WEB_ROUTES = [
+  "home",
+  "assignment",
+  "settings",
+  "mentor",
+] as const;
 
 export const API_SRC_ROOT_ALLOWLIST = new Set([
   "api/src/app.ts",
@@ -36,6 +43,8 @@ export const API_SRC_ROOT_ALLOWLIST = new Set([
 
 export const ALLOWED_CROSS_FEATURE_SERVICE_IMPORTS = new Set([
   "api/src/features/assignment/assignment.service.ts->api/src/features/curriculum/curriculum.service.ts",
+  "api/src/features/mentor/mentor.service.ts->api/src/features/curriculum/curriculum.service.ts",
+  "api/src/features/mentor/mentor.service.ts->api/src/features/streak/streak.service.ts",
 ]);
 
 export const ALLOWED_API_CALLERS = new Set([

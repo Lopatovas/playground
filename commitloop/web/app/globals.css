@@ -1623,3 +1623,52 @@ a:hover {
     font-size: 0.8rem;
   }
 }
+
+.mentor-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.mentor-table th,
+.mentor-table td {
+  padding: 0.75rem 0.5rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.mentor-table th {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.mentor-table__student {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mentor-table__avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+}
+
+.mentor-row--alert {
+  background: color-mix(in srgb, var(--danger) 8%, transparent);
+}
+
+.mentor-badge {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.mentor-badge--alert {
+  color: var(--danger);
+}

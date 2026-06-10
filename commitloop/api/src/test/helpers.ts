@@ -5,6 +5,7 @@ import type { Express } from "express";
 import request from "supertest";
 import { createApp } from "../app.js";
 import type { AppConfig } from "../config/env.js";
+import { parseMentorGithubIds } from "../config/env.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -15,6 +16,7 @@ export const testConfig: AppConfig = {
   githubCallbackUrl: "http://localhost:3001/auth/github/callback",
   sessionSecret: "test-secret",
   contentRoot: path.resolve(__dirname, "../../../content"),
+  mentorGithubIds: parseMentorGithubIds(process.env.MENTOR_GITHUB_IDS),
 };
 
 export function createTestPrisma() {
@@ -24,27 +26,37 @@ export function createTestPrisma() {
 }
 
 export function createTestApp(prisma: PrismaClient): Express {
-  return createApp(prisma, testConfig);
+  return createApp(prisma, {
+    ...testConfig,
+    mentorGithubIds: parseMentorGithubIds(process.env.MENTOR_GITHUB_IDS),
+  });
 }
 
 export async function seedUser(
   prisma: PrismaClient,
   overrides?: {
+    githubId?: number;
+    username?: string;
     currentStage?: string;
     currentStep?: string;
     checklistState?: string;
     quizPassed?: boolean;
+    repoOwner?: string;
+    repoName?: string;
   },
 ) {
   return prisma.user.create({
     data: {
-      githubId: Math.floor(Math.random() * 1_000_000_000),
-      username: "test-user",
+      githubId:
+        overrides?.githubId ?? Math.floor(Math.random() * 1_000_000_000),
+      username: overrides?.username ?? "test-user",
       accessToken: "test-token",
       currentStage: overrides?.currentStage ?? "stage-0-onboarding",
       currentStep: overrides?.currentStep ?? "lesson",
       checklistState: overrides?.checklistState ?? "{}",
       quizPassed: overrides?.quizPassed ?? false,
+      repoOwner: overrides?.repoOwner,
+      repoName: overrides?.repoName,
     },
   });
 }

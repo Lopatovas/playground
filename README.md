@@ -10,3 +10,4 @@ Accountability-first engineering apprenticeship — active project in `commitloo
 - [docs/curriculum.md](docs/curriculum.md) — tracks, learning loop, content format
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — system design
 - [docs/ROADMAP.md](docs/ROADMAP.md) — what's done / next
+- [docs/MENTOR_VIEW.md](docs/MENTOR_VIEW.md) — mentor ops + ship bar
