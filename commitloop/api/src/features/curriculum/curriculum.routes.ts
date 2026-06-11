@@ -5,7 +5,11 @@ import { Router } from "express";
 import type { AppConfig } from "../../config/env.js";
 import { loadStageContent } from "../../content/stage-loader.js";
 import { listTrackStageRefs } from "../../content/track-loader.js";
-import { getTrackOverview } from "./curriculum.service.js";
+import {
+  getTrackOverview,
+  sanitizeLessonForClient,
+  sanitizeSandboxForClient,
+} from "./curriculum.service.js";
 
 export function createCurriculumRouter({
   config,
@@ -55,9 +59,11 @@ export function createCurriculumRouter({
           slug: stageRef.slug,
           title: loaded.title,
           goal: loaded.goal,
+          summary: loaded.summary,
+          estimatedMinutes: loaded.estimatedMinutes,
           available: stageRef.available,
-          lesson: loaded.lesson,
-          sandbox: loaded.sandbox,
+          lesson: sanitizeLessonForClient(loaded),
+          sandbox: sanitizeSandboxForClient(loaded),
           project: loaded.project,
         };
       })

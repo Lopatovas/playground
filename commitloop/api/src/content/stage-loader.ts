@@ -3,6 +3,7 @@ import path from "node:path";
 import { stageDir } from "./paths.js";
 import {
   stageManifestSchema,
+  type LoadedSandboxStep,
   type LoadedStage,
   type StageManifest,
 } from "./schemas.js";
@@ -16,7 +17,7 @@ function firstParagraph(text: string): string {
   const lines = text
     .split("\n")
     .map((l) => l.trim())
-    .filter((l) => l && !l.startsWith("#"));
+    .filter((l) => l && !l.startsWith("#") && !l.startsWith("```"));
   return lines.slice(0, 3).join(" ").slice(0, 280);
 }
 
@@ -52,19 +53,43 @@ export function loadStageContent(
   if (!manifest) return null;
 
   const dir = stageDir(trackId, slug);
-  const lesson = readMd(path.join(dir, "lesson.md"));
-  const sandbox = readMd(path.join(dir, "sandbox.md"));
-  const project = readMd(path.join(dir, "project.md"));
 
-  if (!lesson || !sandbox || !project) {
-    return null;
+  const pages = manifest.lesson.pages.map((page) => ({
+    id: page.id,
+    title: page.title,
+    body: readMd(path.join(dir, page.file)),
+  }));
+  if (pages.some((page) => !page.body)) return null;
+
+  const steps: LoadedSandboxStep[] = manifest.sandbox.steps.map((step) => ({
+    id: step.id,
+    title: step.title,
+    body: readMd(path.join(dir, step.file)),
+    checkpoint: step.checkpoint,
+  }));
+  if (steps.some((step) => !step.body)) return null;
+
+  let intro: string | undefined;
+  if (manifest.sandbox.intro) {
+    intro = readMd(path.join(dir, manifest.sandbox.intro));
+    if (!intro) return null;
   }
 
+  const project = readMd(path.join(dir, "project.md"));
+  if (!project) return null;
+
   return {
-    ...manifest,
-    lesson,
-    sandbox,
+    slug: manifest.slug,
+    title: manifest.title,
+    goal: manifest.goal,
+    summary: manifest.summary,
+    estimatedMinutes: manifest.estimatedMinutes,
+    nextStage: manifest.nextStage,
+    lesson: { pages },
+    sandbox: { intro, steps },
     project,
     projectSummary: firstParagraph(project),
+    checklist: manifest.checklist,
+    quiz: manifest.quiz,
   };
 }

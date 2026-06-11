@@ -1,14 +1,101 @@
 {
   "slug": "stage-0-onboarding",
   "title": "Stage 0 — Onboarding",
-  "goal": "Enter a working engineering environment.",
+  "goal": "Enter a working engineering environment and ship your first commit.",
+  "summary": "Set up GitHub, your tools, and your project repo. Ship a real first commit.",
+  "estimatedMinutes": 90,
   "nextStage": "stage-1-git-fundamentals",
+  "lesson": {
+    "pages": [
+      {
+        "id": "how-commitloop-works",
+        "title": "How CommitLoop works",
+        "file": "lesson/01-how-commitloop-works.md"
+      },
+      {
+        "id": "tools-of-the-trade",
+        "title": "Tools of the trade",
+        "file": "lesson/02-tools-of-the-trade.md"
+      },
+      {
+        "id": "choose-your-project",
+        "title": "Choose your project",
+        "file": "lesson/03-choose-your-project.md"
+      }
+    ]
+  },
+  "sandbox": {
+    "intro": "sandbox/00-intro.md",
+    "steps": [
+      {
+        "id": "check-git",
+        "title": "Confirm Git is installed",
+        "file": "sandbox/01-check-git.md",
+        "checkpoint": {
+          "kind": "text",
+          "prompt": "Which command prints the installed Git version?",
+          "placeholder": "git ...",
+          "accept": ["git --version", "git -v", "git version"],
+          "explanation": "`git --version` prints the installed version. If it errors, Git is not installed yet."
+        }
+      },
+      {
+        "id": "identity",
+        "title": "Tell Git who you are",
+        "file": "sandbox/02-identity.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "Why does Git need your name and email?",
+          "choices": [
+            { "id": "a", "text": "To stamp every commit with an author" },
+            { "id": "b", "text": "To log you into GitHub automatically" },
+            { "id": "c", "text": "To encrypt your repository" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Git records the configured name/email as the author of each commit. It is identity metadata, not authentication."
+        }
+      },
+      {
+        "id": "first-commit",
+        "title": "Make your first commit",
+        "file": "sandbox/03-first-commit.md",
+        "checkpoint": {
+          "kind": "text",
+          "prompt": "After staging a file, which command saves it as a snapshot with a message?",
+          "placeholder": "git commit ...",
+          "accept": [
+            "git commit -m",
+            "git commit -m \"message\"",
+            "git commit",
+            "git commit -m 'message'"
+          ],
+          "explanation": "`git commit -m \"...\"` records a snapshot of the staged changes with a message describing them."
+        }
+      },
+      {
+        "id": "push",
+        "title": "Push to GitHub",
+        "file": "sandbox/04-push.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "What does `git push` actually do?",
+          "choices": [
+            { "id": "a", "text": "Uploads your local commits to the remote on GitHub" },
+            { "id": "b", "text": "Saves your changes locally" },
+            { "id": "c", "text": "Downloads the latest code from GitHub" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "`git push` sends commits that exist locally up to the remote. `git pull` is the download direction; `git commit` saves locally."
+        }
+      }
+    ]
+  },
   "checklist": [
-    { "id": "repo-created", "label": "GitHub repo created" },
-    { "id": "repo-cloned", "label": "Repo cloned locally" },
-    { "id": "readme-domain", "label": "README describes your project domain" },
-    { "id": "first-commit", "label": "First commit pushed" },
-    { "id": "repo-linked", "label": "Repo linked in CommitLoop dashboard" }
+    { "id": "repo-created", "label": "GitHub repository created for your project" },
+    { "id": "repo-cloned", "label": "Repository cloned to your machine" },
+    { "id": "readme-domain", "label": "README describes your project domain in your own words" },
+    { "id": "first-commit", "label": "First commit pushed to GitHub" },
+    { "id": "repo-linked", "label": "Repository linked in your CommitLoop dashboard" }
   ],
   "quiz": {
     "passScore": 0.8,
@@ -18,22 +105,44 @@
         "prompt": "What is the source of truth for your progress on CommitLoop?",
         "choices": [
           { "id": "a", "text": "Your GitHub repository commits" },
-          { "id": "b", "text": "Watch time on lesson videos" },
+          { "id": "b", "text": "Time spent watching lesson videos" },
           { "id": "c", "text": "Self-reported checkboxes only" }
         ],
         "correctChoiceId": "a",
-        "explanation": "CommitLoop reads your repo activity. Commits are the receipt."
+        "explanation": "CommitLoop reads your real repo activity. Commits are the receipt — not intentions or watch time."
       },
       {
         "id": "one-repo",
-        "prompt": "How many evolving project repos do you maintain per track?",
+        "prompt": "How many project repositories do you maintain for a single track?",
         "choices": [
-          { "id": "a", "text": "One — no resets mid-track" },
-          { "id": "b", "text": "A new repo every stage" },
-          { "id": "c", "text": "As many portfolio clones as you want" }
+          { "id": "a", "text": "One — it evolves for the whole track, no resets" },
+          { "id": "b", "text": "A brand-new repo for every stage" },
+          { "id": "c", "text": "As many throwaway clones as you like" }
         ],
         "correctChoiceId": "a",
-        "explanation": "One repo grows for the whole track. Refactors and migrations count."
+        "explanation": "One repository grows across the entire track. Refactors and migrations are progress, not restarts."
+      },
+      {
+        "id": "git-vs-github",
+        "prompt": "What is the difference between Git and GitHub?",
+        "choices": [
+          { "id": "a", "text": "Git is the version-control tool on your machine; GitHub hosts repositories online" },
+          { "id": "b", "text": "They are two names for the same program" },
+          { "id": "c", "text": "Git is a website; GitHub is a desktop app" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Git runs locally and tracks history. GitHub is a hosting service for Git repositories plus collaboration features."
+      },
+      {
+        "id": "commit-meaning",
+        "prompt": "What is a commit?",
+        "choices": [
+          { "id": "a", "text": "A saved snapshot of your project at a point in time, with a message" },
+          { "id": "b", "text": "A copy of your files uploaded to the cloud" },
+          { "id": "c", "text": "A request to merge code" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "A commit is an immutable snapshot plus metadata (author, message, parent). It is the atom of Git history."
       }
     ]
   }

@@ -7,6 +7,18 @@ import type { LoadedStage } from "../../content/schemas.js";
 
 export type Step = "lesson" | "sandbox" | "quiz" | "project";
 
+export type ClientCheckpoint =
+  | {
+      kind: "choice";
+      prompt: string;
+      choices: { id: string; text: string }[];
+    }
+  | {
+      kind: "text";
+      prompt: string;
+      placeholder?: string;
+    };
+
 export type StageMeta = {
   slug: string;
   title: string;
@@ -97,6 +109,76 @@ export function sanitizeQuizForClient(stage: LoadedStage) {
       choices: question.choices,
     })),
   };
+}
+
+export function sanitizeLessonForClient(stage: LoadedStage) {
+  return {
+    pages: stage.lesson.pages.map((page) => ({
+      id: page.id,
+      title: page.title,
+      body: page.body,
+    })),
+  };
+}
+
+function clientCheckpoint(
+  checkpoint: NonNullable<LoadedStage["sandbox"]["steps"][number]["checkpoint"]>,
+): ClientCheckpoint {
+  if (checkpoint.kind === "choice") {
+    return {
+      kind: "choice",
+      prompt: checkpoint.prompt,
+      choices: checkpoint.choices,
+    };
+  }
+  return {
+    kind: "text",
+    prompt: checkpoint.prompt,
+    placeholder: checkpoint.placeholder,
+  };
+}
+
+export function sanitizeSandboxForClient(stage: LoadedStage) {
+  return {
+    intro: stage.sandbox.intro,
+    steps: stage.sandbox.steps.map((step) => ({
+      id: step.id,
+      title: step.title,
+      body: step.body,
+      checkpoint: step.checkpoint ? clientCheckpoint(step.checkpoint) : undefined,
+    })),
+  };
+}
+
+function normalizeText(value: string): string {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[`'"]/g, "")
+    .replace(/\s+/g, " ");
+}
+
+export function gradeSandboxCheckpoint(
+  stage: LoadedStage,
+  stepId: string,
+  answer: string,
+): { correct: boolean; explanation: string } | null {
+  const step = stage.sandbox.steps.find((s) => s.id === stepId);
+  if (!step?.checkpoint) return null;
+
+  const checkpoint = step.checkpoint;
+  if (checkpoint.kind === "choice") {
+    return {
+      correct: answer === checkpoint.correctChoiceId,
+      explanation: checkpoint.explanation,
+    };
+  }
+
+  const normalized = normalizeText(answer);
+  const correct = checkpoint.accept.some(
+    (accepted) => normalizeText(accepted) === normalized,
+  );
+  return { correct, explanation: checkpoint.explanation };
 }
 
 export function gradeQuiz(

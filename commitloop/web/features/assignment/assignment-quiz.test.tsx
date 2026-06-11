@@ -40,7 +40,11 @@ function quizAssignment(overrides?: Partial<Assignment>): Assignment {
     quizPassed: false,
     canAccessProject: false,
     nextHint: "Pass the quiz to unlock the project step",
-    content: { lesson: "", sandbox: "", project: "" },
+    content: {
+      lesson: { pages: [] },
+      sandbox: { steps: [] },
+      project: "",
+    },
     track: [],
     ...overrides,
   };

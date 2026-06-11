@@ -4,6 +4,7 @@ import { requireAuth } from "../../middleware/auth.js";
 import {
   getStageContent,
   gradeQuiz,
+  gradeSandboxCheckpoint,
   nextStageSlug,
   type Step,
 } from "../curriculum/curriculum.service.js";
@@ -123,6 +124,39 @@ export function createAssignmentRouter(prisma: PrismaClient) {
         results: graded.results,
       },
     });
+  });
+
+  router.post("/assignment/sandbox-check", requireAuth, async (req, res) => {
+    const { stepId, answer } = req.body as {
+      stepId?: string;
+      answer?: string;
+    };
+    if (!stepId || typeof answer !== "string") {
+      res.status(400).json({ error: "stepId and answer required" });
+      return;
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: req.session.userId },
+    });
+    if (!user) {
+      res.status(401).json({ error: "User not found" });
+      return;
+    }
+
+    const stage = getStageContent(user.trackId, user.currentStage);
+    if (!stage) {
+      res.status(404).json({ error: "Stage not found" });
+      return;
+    }
+
+    const result = gradeSandboxCheckpoint(stage, stepId, answer);
+    if (!result) {
+      res.status(404).json({ error: "Checkpoint not found" });
+      return;
+    }
+
+    res.json(result);
   });
 
   router.post("/assignment/checklist", requireAuth, async (req, res) => {

@@ -39,8 +39,8 @@ const assignment: Assignment = {
   canAccessProject: false,
   nextHint: "Up next",
   content: {
-    lesson: "Lesson",
-    sandbox: "Sandbox",
+    lesson: { pages: [{ id: "intro", title: "Intro", body: "Lesson" }] },
+    sandbox: { steps: [{ id: "step-1", title: "Step 1", body: "Sandbox" }] },
     project: "Project",
   },
   track: [],

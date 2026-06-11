@@ -9,6 +9,24 @@ export type ContentValidationIssue = {
   message: string;
 };
 
+function checkDuplicateIds(
+  ids: string[],
+  manifestPath: string,
+  label: string,
+  issues: ContentValidationIssue[],
+) {
+  const seen = new Set<string>();
+  for (const id of ids) {
+    if (seen.has(id)) {
+      issues.push({
+        path: manifestPath,
+        message: `duplicate ${label} "${id}"`,
+      });
+    }
+    seen.add(id);
+  }
+}
+
 export function validateAllContent(): ContentValidationIssue[] {
   const issues: ContentValidationIssue[] = [];
 
@@ -46,40 +64,59 @@ export function validateAllContent(): ContentValidationIssue[] {
         if (!stage.available) continue;
 
         const dir = stageDir(trackId, stage.slug);
-        for (const file of ["stage.json", "lesson.md", "sandbox.md", "project.md"]) {
-          if (!fs.existsSync(path.join(dir, file))) {
-            issues.push({
-              path: dir,
-              message: `available stage missing ${file}`,
-            });
-          }
+        const manifestPath = path.join(dir, "stage.json");
+        if (!fs.existsSync(manifestPath)) {
+          issues.push({
+            path: dir,
+            message: "available stage missing stage.json",
+          });
+          continue;
         }
 
         try {
           const manifest = loadStageManifest(trackId, stage.slug);
           if (!manifest) continue;
 
-          const checklistIds = new Set<string>();
-          for (const item of manifest.checklist) {
-            if (checklistIds.has(item.id)) {
+          const requiredFiles = [
+            "project.md",
+            ...manifest.lesson.pages.map((page) => page.file),
+            ...manifest.sandbox.steps.map((step) => step.file),
+            ...(manifest.sandbox.intro ? [manifest.sandbox.intro] : []),
+          ];
+
+          for (const file of requiredFiles) {
+            if (!fs.existsSync(path.join(dir, file))) {
               issues.push({
-                path: path.join(dir, "stage.json"),
-                message: `duplicate checklist id "${item.id}"`,
+                path: dir,
+                message: `available stage missing ${file}`,
               });
             }
-            checklistIds.add(item.id);
           }
 
-          const questionIds = new Set<string>();
-          for (const question of manifest.quiz.questions) {
-            if (questionIds.has(question.id)) {
-              issues.push({
-                path: path.join(dir, "stage.json"),
-                message: `duplicate quiz question id "${question.id}"`,
-              });
-            }
-            questionIds.add(question.id);
-          }
+          checkDuplicateIds(
+            manifest.lesson.pages.map((page) => page.id),
+            manifestPath,
+            "lesson page id",
+            issues,
+          );
+          checkDuplicateIds(
+            manifest.sandbox.steps.map((step) => step.id),
+            manifestPath,
+            "sandbox step id",
+            issues,
+          );
+          checkDuplicateIds(
+            manifest.checklist.map((item) => item.id),
+            manifestPath,
+            "checklist id",
+            issues,
+          );
+          checkDuplicateIds(
+            manifest.quiz.questions.map((question) => question.id),
+            manifestPath,
+            "quiz question id",
+            issues,
+          );
         } catch (error) {
           issues.push({
             path: dir,

@@ -6,7 +6,9 @@ import { useRouter } from "next/navigation";
 import { AssignmentChecklist } from "@/features/assignment/assignment-checklist";
 import { AssignmentPageSkeleton } from "@/features/assignment/assignment-page-skeleton";
 import { AssignmentContentCard } from "@/features/assignment/assignment-content-card";
+import { AssignmentLesson } from "@/features/assignment/assignment-lesson";
 import { AssignmentQuiz } from "@/features/assignment/assignment-quiz";
+import { AssignmentSandbox } from "@/features/assignment/assignment-sandbox";
 import { AssignmentStepTabs } from "@/features/assignment/assignment-step-tabs";
 import { RepoLink } from "@/features/repo/repo-link";
 import { api, type Assignment } from "@/lib/api";
@@ -77,15 +79,6 @@ export default function AssignmentPage() {
     return <AssignmentPageSkeleton />;
   }
 
-  const content =
-    assignment.step === "lesson"
-      ? assignment.content.lesson
-      : assignment.step === "sandbox"
-        ? assignment.content.sandbox
-        : assignment.step === "project"
-          ? assignment.content.project
-          : "";
-
   return (
     <>
       <p style={{ marginBottom: "1rem" }}>
@@ -108,15 +101,29 @@ export default function AssignmentPage() {
         onSelect={selectStep}
       />
 
+      {assignment.step === "lesson" ? (
+        <AssignmentLesson pages={assignment.content.lesson.pages} />
+      ) : null}
+
+      {assignment.step === "sandbox" ? (
+        <AssignmentSandbox
+          intro={assignment.content.sandbox.intro}
+          steps={assignment.content.sandbox.steps}
+          onCheck={api.checkSandbox}
+        />
+      ) : null}
+
       {assignment.step === "quiz" ? (
         <AssignmentQuiz
           assignment={assignment}
           busy={busy}
           onSubmit={submitQuiz}
         />
-      ) : (
-        <AssignmentContentCard source={content} />
-      )}
+      ) : null}
+
+      {assignment.step === "project" ? (
+        <AssignmentContentCard source={assignment.content.project} />
+      ) : null}
 
       {assignment.step === "project" ? (
         <AssignmentChecklist

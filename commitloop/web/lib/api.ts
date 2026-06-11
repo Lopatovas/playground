@@ -70,6 +70,36 @@ export type QuizQuestion = {
   choices: { id: string; text: string }[];
 };
 
+export type LessonPage = {
+  id: string;
+  title: string;
+  body: string;
+};
+
+export type SandboxCheckpoint =
+  | {
+      kind: "choice";
+      prompt: string;
+      choices: { id: string; text: string }[];
+    }
+  | {
+      kind: "text";
+      prompt: string;
+      placeholder?: string;
+    };
+
+export type SandboxStep = {
+  id: string;
+  title: string;
+  body: string;
+  checkpoint?: SandboxCheckpoint;
+};
+
+export type SandboxCheckResult = {
+  correct: boolean;
+  explanation: string;
+};
+
 export type QuizResult = {
   score: number;
   passed: boolean;
@@ -94,7 +124,11 @@ export type Assignment = {
   quizPassed: boolean;
   canAccessProject: boolean;
   nextHint: string;
-  content: { lesson: string; sandbox: string; project: string };
+  content: {
+    lesson: { pages: LessonPage[] };
+    sandbox: { intro?: string; steps: SandboxStep[] };
+    project: string;
+  };
   track: {
     slug: string;
     title: string;
@@ -132,6 +166,11 @@ export const api = {
     apiRequest<AssignmentWithQuizResult>("/assignment/quiz", {
       method: "POST",
       body: JSON.stringify({ answers }),
+    }),
+  checkSandbox: (stepId: string, answer: string) =>
+    apiRequest<SandboxCheckResult>("/assignment/sandbox-check", {
+      method: "POST",
+      body: JSON.stringify({ stepId, answer }),
     }),
   toggleChecklist: (itemId: string, done: boolean) =>
     apiRequest<Assignment>("/assignment/checklist", {

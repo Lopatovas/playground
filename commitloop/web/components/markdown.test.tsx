@@ -35,4 +35,25 @@ describe("Markdown", () => {
     render(<Markdown source={"Use `git status` today."} />);
     expect(screen.getByText("git status").tagName).toBe("CODE");
   });
+
+  it("renders GFM tables", () => {
+    render(
+      <Markdown
+        source={"| Command | Use |\n| --- | --- |\n| `git add` | stage |"} />,
+    );
+
+    expect(screen.getByRole("table")).toBeInTheDocument();
+    expect(
+      screen.getByRole("columnheader", { name: "Command" }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("cell", { name: "stage" })).toBeInTheDocument();
+  });
+
+  it("renders links that open in a new tab", () => {
+    render(<Markdown source={"See [the docs](https://example.com)."} />);
+
+    const link = screen.getByRole("link", { name: "the docs" });
+    expect(link).toHaveAttribute("href", "https://example.com");
+    expect(link).toHaveAttribute("target", "_blank");
+  });
 });

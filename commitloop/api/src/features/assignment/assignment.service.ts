@@ -2,7 +2,9 @@ import {
   getStageContent,
   getTrackOverview,
   nextStageSlug,
+  sanitizeLessonForClient,
   sanitizeQuizForClient,
+  sanitizeSandboxForClient,
   stepLabel,
   type Step,
 } from "../curriculum/curriculum.service.js";
@@ -84,30 +86,36 @@ export function buildAssignment(
     canAccessProject,
     nextHint,
     content: {
-      lesson: stage.lesson,
-      sandbox: stage.sandbox,
+      lesson: sanitizeLessonForClient(stage),
+      sandbox: sanitizeSandboxForClient(stage),
       project: stage.project,
     },
     track: getTrackOverview(trackId, currentStage),
   };
 }
 
+function firstMeaningfulLine(text: string, fallback: string): string {
+  return (
+    text
+      .split("\n")
+      .find((l) => l.trim() && !l.startsWith("#") && !l.startsWith("```"))
+      ?.trim() ?? fallback
+  );
+}
+
 function firstLineForStep(
   stage: NonNullable<ReturnType<typeof getStageContent>>,
   step: Step,
 ): string {
-  const text =
-    step === "lesson"
-      ? stage.lesson
-      : step === "sandbox"
-        ? stage.sandbox
-        : step === "quiz"
-          ? "Answer every question. You need 80% or higher to unlock the project step."
-          : stage.project;
-  return (
-    text
-      .split("\n")
-      .find((l) => l.trim() && !l.startsWith("#"))
-      ?.trim() ?? stage.goal
-  );
+  if (step === "quiz") {
+    return "Answer every question. You need 80% or higher to unlock the project step.";
+  }
+  if (step === "project") {
+    return firstMeaningfulLine(stage.project, stage.goal);
+  }
+  if (step === "sandbox") {
+    const source = stage.sandbox.intro ?? stage.sandbox.steps[0]?.body ?? "";
+    return firstMeaningfulLine(source, stage.goal);
+  }
+  return firstMeaningfulLine(stage.lesson.pages[0]?.body ?? "", stage.goal);
 }

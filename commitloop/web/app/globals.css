@@ -244,23 +244,323 @@ a:hover {
   margin: 0.75rem 0;
 }
 
+.markdown h2 {
+  margin: 1.5rem 0 0.6rem;
+  font-size: 1.2rem;
+  letter-spacing: -0.01em;
+}
+
+.markdown h3 {
+  margin: 1.25rem 0 0.5rem;
+  font-size: 1.02rem;
+}
+
+.markdown h4 {
+  margin: 1rem 0 0.4rem;
+  font-size: 0.92rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+
+.markdown > *:first-child {
+  margin-top: 0;
+}
+
 .markdown ul,
 .markdown ol {
   padding-left: 1.25rem;
+  margin: 0.6rem 0;
+}
+
+.markdown li {
+  margin: 0.3rem 0;
+}
+
+.markdown li > ul,
+.markdown li > ol {
+  margin: 0.3rem 0;
 }
 
 .markdown pre {
-  background: var(--surface-2);
-  padding: 0.75rem 1rem;
-  border-radius: 6px;
+  background: #1f1d1a;
+  color: #f3f1ec;
+  padding: 0.85rem 1rem;
+  border-radius: 8px;
   overflow-x: auto;
   font-family: var(--mono);
-  font-size: 0.85rem;
+  font-size: 0.83rem;
+  line-height: 1.5;
+  margin: 0.85rem 0;
+}
+
+.markdown pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+  font-size: inherit;
 }
 
 .markdown code {
   font-family: var(--mono);
-  font-size: 0.9em;
+  font-size: 0.86em;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.05rem 0.3rem;
+}
+
+.markdown a {
+  color: var(--git-on-border);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.markdown blockquote {
+  margin: 0.85rem 0;
+  padding: 0.5rem 0 0.5rem 1rem;
+  border-left: 3px solid var(--git-on-border);
+  background: var(--surface-2);
+  border-radius: 0 6px 6px 0;
+  color: var(--text);
+}
+
+.markdown blockquote p {
+  margin: 0.25rem 0;
+}
+
+.markdown hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 1.5rem 0;
+}
+
+.markdown__table-wrap {
+  overflow-x: auto;
+  margin: 0.85rem 0;
+}
+
+.markdown table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.markdown th,
+.markdown td {
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.markdown th {
+  background: var(--surface-2);
+  font-weight: 600;
+}
+
+.markdown strong {
+  font-weight: 600;
+}
+
+/* —— Lesson (multi-page) —— */
+
+.lesson__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.lesson__nav-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.4rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.lesson__nav-item:hover {
+  color: var(--text);
+}
+
+.lesson__nav-item.is-active {
+  border-color: var(--accent);
+  color: var(--text);
+  font-weight: 600;
+}
+
+.lesson__nav-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  background: var(--surface-2);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+}
+
+.lesson__nav-item.is-active .lesson__nav-num {
+  background: var(--accent);
+  color: #fff;
+}
+
+.lesson__page-head {
+  margin-bottom: 0.5rem;
+}
+
+.lesson__controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.lesson__done-hint {
+  font-size: 0.88rem;
+  color: var(--git-on-border);
+  font-weight: 600;
+}
+
+/* —— Sandbox (interactive stepper) —— */
+
+.sandbox__intro {
+  margin-bottom: 1rem;
+}
+
+.sandbox__progress {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.85rem;
+}
+
+.sandbox__dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.sandbox__dot {
+  width: 1.85rem;
+  height: 1.85rem;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.sandbox__dot--active {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.sandbox__dot--done {
+  background: var(--git-on);
+  border-color: var(--git-on-border);
+  color: var(--git-on-border);
+}
+
+.sandbox__step {
+  margin-bottom: 1rem;
+}
+
+.sandbox__check {
+  margin-top: 1.25rem;
+  padding: 1rem 1.15rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-2);
+}
+
+.sandbox__check-prompt {
+  margin: 0 0 0.75rem;
+  font-weight: 600;
+}
+
+.sandbox__choices {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.sandbox__choice {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  cursor: pointer;
+}
+
+.sandbox__text-input {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-family: var(--mono);
+  font-size: 0.9rem;
+}
+
+.sandbox__check-btn {
+  margin-top: 0.85rem;
+}
+
+.sandbox__feedback {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin-top: 0.85rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.sandbox__feedback--ok {
+  background: var(--git-on);
+  border: 1px solid var(--git-on-border);
+  color: var(--git-on-border);
+}
+
+.sandbox__feedback--no {
+  background: #f5d0d0;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+}
+
+.sandbox__feedback span {
+  color: var(--text);
+}
+
+.sandbox__controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.sandbox__complete {
+  border-color: var(--git-on-border);
 }
 
 .stage-row {
