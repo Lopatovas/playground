@@ -20,7 +20,8 @@ describe("curriculum", () => {
     const stage = getStageContent("track-1", "stage-0-onboarding");
     expect(stage).not.toBeNull();
     expect(stage!.title).toContain("Onboarding");
-    expect(stage!.lesson).toContain("GitHub");
+    const lessonText = stage!.lesson.pages.map((p) => p.body).join("\n");
+    expect(lessonText).toContain("GitHub");
     expect(stage!.checklist.length).toBeGreaterThan(0);
     expect(stage!.quiz.questions.length).toBeGreaterThan(0);
   });
@@ -33,7 +34,7 @@ describe("curriculum", () => {
     const overview = getTrackOverview("track-1", "stage-1-git-fundamentals");
     const stage0 = overview.find((s) => s.slug === "stage-0-onboarding");
     const stage1 = overview.find((s) => s.slug === "stage-1-git-fundamentals");
-    const stage2 = overview.find((s) => s.slug === "stage-2-end-to-end");
+    const stage2 = overview.find((s) => s.slug === "stage-2-frontend");
 
     expect(stage0?.status).toBe("complete");
     expect(stage1?.status).toBe("current");
@@ -48,7 +49,9 @@ describe("curriculum", () => {
     expect(nextStageSlug("track-1", "stage-0-onboarding")).toBe(
       "stage-1-git-fundamentals",
     );
-    expect(nextStageSlug("track-1", "stage-1-git-fundamentals")).toBeNull();
+    expect(nextStageSlug("track-1", "stage-1-git-fundamentals")).toBe(
+      "stage-2-frontend",
+    );
   });
 
   it("labels steps for display", () => {

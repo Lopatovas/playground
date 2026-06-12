@@ -91,13 +91,14 @@ describe("mentor service", () => {
 describe("buildMentorRoster", () => {
   it("sorts students by attention priority", async () => {
     const { buildMentorRoster } = await import("./mentor.service.js");
+    const today = new Date().toISOString().slice(0, 10);
     const github = {
       fetchRepoCommits: vi
         .fn()
         .mockResolvedValueOnce([
           {
             commit: {
-              author: { date: "2026-06-10T10:00:00Z" },
+              author: { date: `${today}T10:00:00Z` },
               message: "work",
             },
           },
@@ -121,6 +122,7 @@ describe("buildMentorRoster", () => {
 
     expect(roster[0]?.username).toBe("alice");
     expect(roster[0]?.attention).toBe("inactive");
+    expect(roster[1]?.username).toBe("student");
     expect(roster[1]?.attention).toBe("ok");
   });
 });

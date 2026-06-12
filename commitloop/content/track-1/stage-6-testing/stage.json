@@ -1,0 +1,189 @@
+{
+  "slug": "stage-6-testing",
+  "title": "Stage 6 — Testing",
+  "goal": "Add automated tests so refactors and deploys don't break your app silently.",
+  "summary": "Unit tests for business logic, integration tests for HTTP endpoints, and a mindset for what to test first.",
+  "estimatedMinutes": 210,
+  "nextStage": "stage-7-expansion",
+  "lesson": {
+    "pages": [
+      {
+        "id": "why-test",
+        "title": "Why tests exist",
+        "file": "lesson/01-why-test.md"
+      },
+      {
+        "id": "unit-tests",
+        "title": "Unit tests: pure logic",
+        "file": "lesson/02-unit-tests.md"
+      },
+      {
+        "id": "integration-tests",
+        "title": "Integration tests: HTTP + app",
+        "file": "lesson/03-integration-tests.md"
+      },
+      {
+        "id": "what-to-test",
+        "title": "What to test first",
+        "file": "lesson/04-what-to-test.md"
+      },
+      {
+        "id": "tests-in-ci",
+        "title": "Tests in CI",
+        "file": "lesson/05-tests-in-ci.md"
+      }
+    ]
+  },
+  "sandbox": {
+    "intro": "sandbox/00-intro.md",
+    "steps": [
+      {
+        "id": "arrange-act-assert",
+        "title": "Arrange, act, assert",
+        "file": "sandbox/01-arrange-act-assert.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "In a unit test, what does the \"assert\" step do?",
+          "choices": [
+            { "id": "a", "text": "Checks the outcome matches what you expected" },
+            { "id": "b", "text": "Sets up the database" },
+            { "id": "c", "text": "Deploys to production" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Arrange sets up inputs, act runs the code under test, assert verifies the result."
+        }
+      },
+      {
+        "id": "test-service-not-http",
+        "title": "Test services without HTTP",
+        "file": "sandbox/02-test-service-not-http.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "You want to test validation rules for creating a workout. Best layer to test directly?",
+          "choices": [
+            { "id": "a", "text": "The service function — no HTTP server needed" },
+            { "id": "b", "text": "Only the React button click handler" },
+            { "id": "c", "text": "The CSS file" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Service-layer unit tests are fast and pinpoint business rules without spinning up Express."
+        }
+      },
+      {
+        "id": "supertest",
+        "title": "HTTP integration tests",
+        "file": "sandbox/03-supertest.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "An integration test hits POST /workouts and expects 201. What is it verifying?",
+          "choices": [
+            { "id": "a", "text": "The full HTTP stack: routing, middleware, handler, and response status" },
+            { "id": "b", "text": "Only that JSON.parse works" },
+            { "id": "c", "text": "That GitHub Actions is installed" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Integration tests exercise real routes against a test app instance — closer to how clients call you."
+        }
+      },
+      {
+        "id": "bad-input-test",
+        "title": "Test the sad path",
+        "file": "sandbox/04-bad-input-test.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "Why write a test that POSTs invalid data and expects 400?",
+          "choices": [
+            { "id": "a", "text": "So validation can't regress when someone refactors the route" },
+            { "id": "b", "text": "Tests must only cover happy paths" },
+            { "id": "c", "text": "400 responses don't matter in production" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Sad-path tests lock in behavior you care about — especially API validation from Stages 3–4."
+        }
+      },
+      {
+        "id": "ci-gate",
+        "title": "CI as a gate",
+        "file": "sandbox/05-ci-gate.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "Tests run in GitHub Actions on every push. A test fails. What should happen to the PR?",
+          "choices": [
+            { "id": "a", "text": "Merge is blocked until tests pass — fix or update the test intentionally" },
+            { "id": "b", "text": "Merge anyway; tests are decorative" },
+            { "id": "c", "text": "Delete the failing test" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "CI only helps when failing tests block broken code from landing on main."
+        }
+      }
+    ]
+  },
+  "checklist": [
+    { "id": "unit-tests", "label": "Unit tests for at least one service/validation module" },
+    { "id": "integration-tests", "label": "Integration tests for GET and POST on main resource" },
+    { "id": "sad-path-test", "label": "Test that invalid input returns 400" },
+    { "id": "test-script", "label": "`npm test` passes locally" },
+    { "id": "ci-runs-tests", "label": "GitHub Actions (or CI) runs tests on push" }
+  ],
+  "quiz": {
+    "passScore": 0.8,
+    "questions": [
+      {
+        "id": "test-purpose",
+        "prompt": "What is the main purpose of automated tests in your project?",
+        "choices": [
+          { "id": "a", "text": "Catch regressions when you change code" },
+          { "id": "b", "text": "Replace manual coding entirely" },
+          { "id": "c", "text": "Slow down development on purpose" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Tests document expected behavior and alert you when a change breaks it."
+      },
+      {
+        "id": "unit-vs-integration",
+        "prompt": "Unit test vs integration test — which is faster and more isolated?",
+        "choices": [
+          { "id": "a", "text": "Unit tests — they target one function without HTTP or DB" },
+          { "id": "b", "text": "Integration tests — they always run faster" },
+          { "id": "c", "text": "They are identical" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Unit tests avoid I/O. Integration tests hit the app stack and are slower but more realistic."
+      },
+      {
+        "id": "mock-db",
+        "prompt": "For API integration tests, a common approach is to…",
+        "choices": [
+          { "id": "a", "text": "Use a separate test database or in-memory DB, not production data" },
+          { "id": "b", "text": "Always test against the live production database" },
+          { "id": "c", "text": "Never touch a database in tests" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Tests must be repeatable and safe. Never run destructive tests against prod."
+      },
+      {
+        "id": "tdd",
+        "prompt": "Do you need test-driven development (write test first) to get value from tests?",
+        "choices": [
+          { "id": "a", "text": "No — tests after code still catch regressions; TDD is optional" },
+          { "id": "b", "text": "Yes — tests are useless unless written first" },
+          { "id": "c", "text": "Yes — and you must achieve 100% coverage" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Some tests after the fact beat zero tests. Coverage targets are guides, not religion."
+      },
+      {
+        "id": "frontend-tests",
+        "prompt": "For Track 1, where do tests give the most value first?",
+        "choices": [
+          { "id": "a", "text": "API validation and endpoints — your contract with the frontend" },
+          { "id": "b", "text": "Screenshot pixel diffs of every page" },
+          { "id": "c", "text": "Testing only README spelling" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Backend tests stabilize the core. Frontend E2E comes later when flows are stable."
+      }
+    ]
+  }
+}

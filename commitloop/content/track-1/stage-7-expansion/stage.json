@@ -1,0 +1,189 @@
+{
+  "slug": "stage-7-expansion",
+  "title": "Stage 7 — Growing the System",
+  "goal": "Grow the product: authentication, related data, and paginated lists — without restarting.",
+  "summary": "The finale — add auth, user-scoped data, relationships, and pagination to the same deployed, tested app.",
+  "estimatedMinutes": 300,
+  "lesson": {
+    "pages": [
+      {
+        "id": "grow-dont-restart",
+        "title": "Grow the system, don't restart",
+        "file": "lesson/01-grow-dont-restart.md"
+      },
+      {
+        "id": "auth-basics",
+        "title": "Authentication basics",
+        "file": "lesson/02-auth-basics.md"
+      },
+      {
+        "id": "relationships",
+        "title": "Relationships between tables",
+        "file": "lesson/03-relationships.md"
+      },
+      {
+        "id": "pagination",
+        "title": "Pagination and search",
+        "file": "lesson/04-pagination.md"
+      },
+      {
+        "id": "ship-incrementally",
+        "title": "Ship features incrementally",
+        "file": "lesson/05-ship-incrementally.md"
+      }
+    ]
+  },
+  "sandbox": {
+    "intro": "sandbox/00-intro.md",
+    "steps": [
+      {
+        "id": "auth-vs-authz",
+        "title": "Authentication vs authorization",
+        "file": "sandbox/01-auth-vs-authz.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "\"Only the owner can delete this workout\" is an example of…",
+          "choices": [
+            { "id": "a", "text": "Authorization (what you're allowed to do)" },
+            { "id": "b", "text": "Authentication (proving who you are)" },
+            { "id": "c", "text": "CSS styling" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Authentication = identity. Authorization = permissions after identity is known."
+        }
+      },
+      {
+        "id": "password-storage",
+        "title": "Storing passwords",
+        "file": "sandbox/02-password-storage.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "How should passwords be stored in the database?",
+          "choices": [
+            { "id": "a", "text": "Hashed with a slow algorithm (bcrypt, argon2) — never plain text" },
+            { "id": "b", "text": "Plain text for easy password resets" },
+            { "id": "c", "text": "Base64 encoded" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Hashing is one-way. If the DB leaks, attackers still can't read passwords."
+        }
+      },
+      {
+        "id": "foreign-key",
+        "title": "Foreign keys",
+        "file": "sandbox/03-foreign-key.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "Each workout belongs to one user. In the workouts table, `user_id` should…",
+          "choices": [
+            { "id": "a", "text": "Reference the users table (foreign key)" },
+            { "id": "b", "text": "Store the user's password" },
+            { "id": "c", "text": "Be optional on every row with no link" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Foreign keys enforce relationships at the database level and enable efficient joins."
+        }
+      },
+      {
+        "id": "pagination-params",
+        "title": "Pagination query params",
+        "file": "sandbox/04-pagination-params.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "GET /workouts?page=2&limit=20 — what does the API return differently from page 1?",
+          "choices": [
+            { "id": "a", "text": "The next slice of results (rows 21–40), not the full table" },
+            { "id": "b", "text": "A completely different database" },
+            { "id": "c", "text": "Only HTTP headers, no body" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Pagination limits payload size and query cost. Page + limit (or cursor) select a window of rows."
+        }
+      },
+      {
+        "id": "incremental-ship",
+        "title": "One feature per branch",
+        "file": "sandbox/05-incremental-ship.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "You're adding auth, then user-scoped workouts, then pagination. Best workflow?",
+          "choices": [
+            { "id": "a", "text": "Separate feature branches / PRs — merge auth before building on it" },
+            { "id": "b", "text": "One 10,000-line commit on main" },
+            { "id": "c", "text": "New repository for each feature" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Incremental merges keep review manageable and let you revert one feature if needed."
+        }
+      }
+    ]
+  },
+  "checklist": [
+    { "id": "auth-flow", "label": "Users can sign up / sign in (session or token)" },
+    { "id": "scoped-data", "label": "Main records scoped to the signed-in user" },
+    { "id": "relationship", "label": "Related entity with foreign key (e.g. categories, tags)" },
+    { "id": "pagination", "label": "List endpoint supports page/limit or cursor" },
+    { "id": "tests-updated", "label": "Tests cover auth and at least one new endpoint" },
+    { "id": "deployed", "label": "Production still works after expansion" }
+  ],
+  "quiz": {
+    "passScore": 0.8,
+    "questions": [
+      {
+        "id": "session-cookie",
+        "prompt": "A session cookie after login typically proves…",
+        "choices": [
+          { "id": "a", "text": "The server recognizes this browser as an authenticated user" },
+          { "id": "b", "text": "The user's password for future requests" },
+          { "id": "c", "text": "The database schema version" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Sessions store server-side state keyed by a cookie. Passwords are not re-sent each request."
+      },
+      {
+        "id": "401-403",
+        "prompt": "401 Unauthorized vs 403 Forbidden — which fits \"not logged in\"?",
+        "choices": [
+          { "id": "a", "text": "401 — authentication required" },
+          { "id": "b", "text": "403 — authentication required" },
+          { "id": "c", "text": "200 — not logged in" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "401 = who are you? 403 = I know who you are, but you can't do this."
+      },
+      {
+        "id": "one-to-many",
+        "prompt": "One user, many workouts — what relationship is that?",
+        "choices": [
+          { "id": "a", "text": "One-to-many (user → workouts)" },
+          { "id": "b", "text": "One-to-one" },
+          { "id": "c", "text": "No relationship possible in SQL" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "The \"many\" side holds the foreign key pointing to the \"one\" side."
+      },
+      {
+        "id": "why-pagination",
+        "prompt": "Why paginate API list results?",
+        "choices": [
+          { "id": "a", "text": "Faster responses and less memory when tables grow large" },
+          { "id": "b", "text": "SQL cannot return more than one row" },
+          { "id": "c", "text": "Browsers forbid arrays over 10 items" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Pagination keeps payloads bounded. Clients load more as the user scrolls or clicks next."
+      },
+      {
+        "id": "track-graduate",
+        "prompt": "Track 1 graduation means you can…",
+        "choices": [
+          { "id": "a", "text": "Build, deploy, test, and evolve a full-stack app without restarting" },
+          { "id": "b", "text": "Memorize every React hook" },
+          { "id": "c", "text": "Finish without ever pushing to GitHub" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Breadth + habits + one real repo. Specialization comes in optional later tracks."
+      }
+    ]
+  }
+}

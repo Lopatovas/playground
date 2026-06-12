@@ -12,7 +12,8 @@ describe("content loader", () => {
 
   it("loads stage markdown and manifest", () => {
     const stage = loadStageContent("track-1", "stage-1-git-fundamentals");
-    expect(stage?.lesson).toContain("git add");
+    const lessonText = stage?.lesson.pages.map((p) => p.body).join("\n") ?? "";
+    expect(lessonText).toContain("git add");
     expect(stage?.quiz.questions.length).toBeGreaterThanOrEqual(3);
   });
 

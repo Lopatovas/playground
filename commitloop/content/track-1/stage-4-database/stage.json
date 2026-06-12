@@ -1,0 +1,185 @@
+{
+  "slug": "stage-4-database",
+  "title": "Stage 4 — The Database",
+  "goal": "Replace in-memory storage with a real database so data survives restarts.",
+  "summary": "Tables, SQL, persistence — then swap your API's array for queries. The full stack connects.",
+  "estimatedMinutes": 180,
+  "nextStage": "stage-5-deployment",
+  "lesson": {
+    "pages": [
+      {
+        "id": "why-persist",
+        "title": "Why data must outlive the process",
+        "file": "lesson/01-why-persist.md"
+      },
+      {
+        "id": "tables-and-rows",
+        "title": "Tables, rows, and primary keys",
+        "file": "lesson/02-tables-and-rows.md"
+      },
+      {
+        "id": "sql-crud",
+        "title": "SQL and CRUD",
+        "file": "lesson/03-sql-crud.md"
+      },
+      {
+        "id": "swap-in-memory",
+        "title": "Swap in-memory for the database",
+        "file": "lesson/04-swap-in-memory.md"
+      },
+      {
+        "id": "full-stack-flow",
+        "title": "The full stack, end to end",
+        "file": "lesson/05-full-stack-flow.md"
+      }
+    ]
+  },
+  "sandbox": {
+    "intro": "sandbox/00-intro.md",
+    "steps": [
+      {
+        "id": "sql-select",
+        "title": "Read all rows",
+        "file": "sandbox/01-sql-select.md",
+        "checkpoint": {
+          "kind": "text",
+          "prompt": "SQL to read every column from table `workouts`.",
+          "placeholder": "SELECT ...",
+          "accept": ["SELECT * FROM workouts", "SELECT * FROM workouts;"],
+          "explanation": "`SELECT * FROM workouts` returns all columns and rows."
+        }
+      },
+      {
+        "id": "primary-key",
+        "title": "Primary key purpose",
+        "file": "sandbox/02-primary-key.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "What is a primary key?",
+          "choices": [
+            { "id": "a", "text": "A unique identifier for each row" },
+            { "id": "b", "text": "The password for the database" },
+            { "id": "c", "text": "The first column you add alphabetically" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Primary keys let you reference one specific record reliably."
+        }
+      },
+      {
+        "id": "parameterized",
+        "title": "Parameterized queries",
+        "file": "sandbox/03-parameterized.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "Why use `?` placeholders instead of string concatenation in SQL?",
+          "choices": [
+            { "id": "a", "text": "Prevents SQL injection from malicious input" },
+            { "id": "b", "text": "Makes queries run slower on purpose" },
+            { "id": "c", "text": "SQLite forbids INSERT without ?" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Never build SQL with template strings from user input."
+        }
+      },
+      {
+        "id": "restart-test",
+        "title": "Prove persistence",
+        "file": "sandbox/04-restart-test.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "After swapping to SQLite, you restart the API. Data is still there. What changed?",
+          "choices": [
+            { "id": "a", "text": "Data is stored on disk, not only in RAM" },
+            { "id": "b", "text": "Express caches everything in the browser" },
+            { "id": "c", "text": "GET requests now create data" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "The database file persists across process restarts."
+        }
+      },
+      {
+        "id": "vertical-slice",
+        "title": "Three layers connected",
+        "file": "sandbox/05-vertical-slice.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "User clicks Add → data survives refresh and server restart. How many layers worked together?",
+          "choices": [
+            { "id": "a", "text": "Three: UI → API → database" },
+            { "id": "b", "text": "One: only the database matters" },
+            { "id": "c", "text": "Zero: the browser stores everything locally" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "You built outside-in: UI, then API, then persistence. Now they all connect."
+        }
+      }
+    ]
+  },
+  "checklist": [
+    { "id": "db-table", "label": "SQLite table created for main entity" },
+    { "id": "api-uses-db", "label": "GET/POST use SQL instead of in-memory array" },
+    { "id": "persistence-proof", "label": "Data survives API restart" },
+    { "id": "ui-still-works", "label": "Frontend still lists and creates through API" },
+    { "id": "committed", "label": "Migration committed with clear message" }
+  ],
+  "quiz": {
+    "passScore": 0.8,
+    "questions": [
+      {
+        "id": "crud-sql",
+        "prompt": "POST /workouts maps to which SQL operation?",
+        "choices": [
+          { "id": "a", "text": "INSERT" },
+          { "id": "b", "text": "SELECT" },
+          { "id": "c", "text": "DROP TABLE" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Create → INSERT. Read → SELECT. Update → UPDATE. Delete → DELETE."
+      },
+      {
+        "id": "sqlite-why",
+        "prompt": "Why SQLite for local development?",
+        "choices": [
+          { "id": "a", "text": "Single file, zero setup, real SQL" },
+          { "id": "b", "text": "It only works in production" },
+          { "id": "c", "text": "It replaces the need for an API" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "SQLite is a real relational DB in a file — perfect for learning."
+      },
+      {
+        "id": "layer-order",
+        "prompt": "CommitLoop Track 1 layer order was…",
+        "choices": [
+          { "id": "a", "text": "UI → API (in-memory) → database" },
+          { "id": "b", "text": "Database → UI → API" },
+          { "id": "c", "text": "API only, no UI" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Outside-in: each layer attaches to the one before it."
+      },
+      {
+        "id": "not-null",
+        "prompt": "What does `NOT NULL` on a column mean?",
+        "choices": [
+          { "id": "a", "text": "Every row must have a value for that column" },
+          { "id": "b", "text": "The column is hidden from SELECT" },
+          { "id": "c", "text": "Only nulls are allowed" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "The database rejects rows missing required fields."
+      },
+      {
+        "id": "404-db",
+        "prompt": "GET /workouts/999 returns 404. The database had no row with id 999. Which layer returned 404?",
+        "choices": [
+          { "id": "a", "text": "The API, after the query found nothing" },
+          { "id": "b", "text": "SQLite sends HTTP responses directly" },
+          { "id": "c", "text": "The HTML file" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "The DB returns no row; the API translates that into an HTTP status."
+      }
+    ]
+  }
+}

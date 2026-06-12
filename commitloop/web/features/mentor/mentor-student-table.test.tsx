@@ -1,6 +1,10 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
-import { MentorStudentTable } from "./mentor-student-table";
+import {
+  filterMentorStudents,
+  MentorStudentTable,
+} from "./mentor-student-table";
 import type { MentorStudent } from "@/lib/api";
 
 const students: MentorStudent[] = [
@@ -64,5 +68,26 @@ describe("MentorStudentTable", () => {
       screen.getByRole("link", { name: "alice/app →" }),
     ).toHaveAttribute("href", "https://github.com/alice/app");
     expect(screen.getByText(/quiz passed/)).toBeInTheDocument();
+  });
+
+  it("filters students by search query", async () => {
+    const user = userEvent.setup();
+    render(<MentorStudentTable students={students} />);
+
+    await user.type(
+      screen.getByRole("searchbox", { name: "Search students" }),
+      "alice",
+    );
+
+    expect(screen.getByText("@alice")).toBeInTheDocument();
+    expect(screen.queryByText("@bob")).not.toBeInTheDocument();
+    expect(screen.getByText("1 of 2 students")).toBeInTheDocument();
+  });
+
+  it("matches stage titles and attention labels", () => {
+    expect(filterMentorStudents(students, "missed today")).toHaveLength(1);
+    expect(filterMentorStudents(students, "onboarding")[0]?.username).toBe(
+      "bob",
+    );
   });
 });

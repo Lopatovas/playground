@@ -29,7 +29,7 @@ export default function CurriculumPage() {
 
       <h1 style={{ margin: "0 0 0.5rem" }}>Track 1 — Fundamentals</h1>
       <p style={{ color: "var(--muted)", marginBottom: "1.5rem" }}>
-        Stages 0–1 available. More stages ship as we build.
+        Eight stages: UI, API, database, then deploy, test, and grow the system.
       </p>
 
       {track === null ? (

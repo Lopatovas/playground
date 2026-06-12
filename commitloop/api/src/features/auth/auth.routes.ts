@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import type { PrismaClient } from "@prisma/client";
 import { Router } from "express";
 import type { GitHubClient } from "../../clients/github.client.js";
@@ -23,7 +24,7 @@ export function createAuthRouter({
       return;
     }
 
-    const state = crypto.randomUUID();
+    const state = randomUUID();
     req.session.oauthState = state;
 
     const params = new URLSearchParams({

@@ -1,0 +1,189 @@
+{
+  "slug": "stage-3-rest-api",
+  "title": "Stage 3 — The API",
+  "goal": "Build a REST API with in-memory storage and connect your Stage 2 UI to it.",
+  "summary": "HTTP, Express, JSON — the middle layer. Data lives in memory until Stage 4 gives it a real database.",
+  "estimatedMinutes": 180,
+  "nextStage": "stage-4-database",
+  "lesson": {
+    "pages": [
+      {
+        "id": "client-server",
+        "title": "Client, server, and HTTP",
+        "file": "lesson/01-client-server.md"
+      },
+      {
+        "id": "rest-resources",
+        "title": "REST and resources",
+        "file": "lesson/02-rest-resources.md"
+      },
+      {
+        "id": "express-routes",
+        "title": "Express routes and handlers",
+        "file": "lesson/03-express-routes.md"
+      },
+      {
+        "id": "in-memory-store",
+        "title": "In-memory storage (temporary DB)",
+        "file": "lesson/04-in-memory-store.md"
+      },
+      {
+        "id": "connect-the-ui",
+        "title": "Wire the UI to the API",
+        "file": "lesson/05-connect-the-ui.md"
+      }
+    ]
+  },
+  "sandbox": {
+    "intro": "sandbox/00-intro.md",
+    "steps": [
+      {
+        "id": "http-method",
+        "title": "Pick the HTTP method",
+        "file": "sandbox/01-http-method.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "Fetch the list of workouts without changing anything. Which method?",
+          "choices": [
+            { "id": "a", "text": "GET" },
+            { "id": "b", "text": "POST" },
+            { "id": "c", "text": "DELETE" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "GET reads. POST creates. DELETE removes."
+        }
+      },
+      {
+        "id": "created-status",
+        "title": "Status after create",
+        "file": "sandbox/02-created-status.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "POST successfully creates a workout. Best status code?",
+          "choices": [
+            { "id": "a", "text": "201 Created" },
+            { "id": "b", "text": "404 Not Found" },
+            { "id": "c", "text": "500 Internal Server Error" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "201 signals a new resource was created."
+        }
+      },
+      {
+        "id": "in-memory-limit",
+        "title": "Limits of in-memory data",
+        "file": "sandbox/03-in-memory-limit.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "You restart the API server. In-memory workouts disappear. Why?",
+          "choices": [
+            { "id": "a", "text": "RAM is cleared — nothing was written to disk" },
+            { "id": "b", "text": "Express deletes arrays on shutdown intentionally" },
+            { "id": "c", "text": "GET requests erase data" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "In-memory storage is fine for learning; Stage 4 adds real persistence."
+        }
+      },
+      {
+        "id": "fetch-json",
+        "title": "Parse a fetch response",
+        "file": "sandbox/04-fetch-json.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "After `const res = await fetch(url)`, how do you get JSON?",
+          "choices": [
+            { "id": "a", "text": "const data = await res.json()" },
+            { "id": "b", "text": "const data = res.body" },
+            { "id": "c", "text": "const data = JSON(res)" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "`res.json()` parses the body asynchronously."
+        }
+      },
+      {
+        "id": "cors-local",
+        "title": "CORS on localhost",
+        "file": "sandbox/05-cors-local.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "Frontend :3000, API :3001 — browser blocks fetch. Likely fix?",
+          "choices": [
+            { "id": "a", "text": "Enable CORS on the API for the frontend origin" },
+            { "id": "b", "text": "Merge both into one port by deleting the API" },
+            { "id": "c", "text": "Disable JavaScript in the browser" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Different ports = different origins. The API must allow the frontend."
+        }
+      }
+    ]
+  },
+  "checklist": [
+    { "id": "api-folder", "label": "`api/` Express app runs on a port" },
+    { "id": "get-endpoint", "label": "GET returns in-memory records as JSON" },
+    { "id": "post-endpoint", "label": "POST adds to in-memory store, returns 201" },
+    { "id": "ui-fetch", "label": "Frontend uses fetch instead of local mock array" },
+    { "id": "curl-tested", "label": "Endpoints tested with curl or browser Network tab" }
+  ],
+  "quiz": {
+    "passScore": 0.8,
+    "questions": [
+      {
+        "id": "api-role",
+        "prompt": "What does the API layer do?",
+        "choices": [
+          { "id": "a", "text": "Enforces rules and exposes data over HTTP" },
+          { "id": "b", "text": "Renders HTML buttons" },
+          { "id": "c", "text": "Replaces the frontend" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "The API sits between UI and storage — the contract the frontend calls."
+      },
+      {
+        "id": "json-role",
+        "prompt": "Why JSON in API responses?",
+        "choices": [
+          { "id": "a", "text": "Structured text both JavaScript and servers understand" },
+          { "id": "b", "text": "It is the database file format" },
+          { "id": "c", "text": "Browsers only read XML" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "JSON is the standard wire format for REST APIs."
+      },
+      {
+        "id": "express-json",
+        "prompt": "Why `app.use(express.json())`?",
+        "choices": [
+          { "id": "a", "text": "Parses JSON request bodies into `req.body`" },
+          { "id": "b", "text": "Creates the database table" },
+          { "id": "c", "text": "Styles the frontend" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Without it, POST bodies are undefined."
+      },
+      {
+        "id": "in-memory-stage",
+        "prompt": "Why use in-memory storage before a real database?",
+        "choices": [
+          { "id": "a", "text": "Learn HTTP and Express without SQL complexity at the same time" },
+          { "id": "b", "text": "Production apps use in-memory only" },
+          { "id": "c", "text": "Databases cannot work with Express" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "One layer at a time: UI (2) → API (3) → DB (4)."
+      },
+      {
+        "id": "swap-mock",
+        "prompt": "Connecting UI to API means replacing…",
+        "choices": [
+          { "id": "a", "text": "Direct array mutations with fetch() calls" },
+          { "id": "b", "text": "HTML with SQL" },
+          { "id": "c", "text": "Git with JSON" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Keep render logic; change where data is loaded and saved."
+      }
+    ]
+  }
+}

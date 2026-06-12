@@ -1,0 +1,189 @@
+{
+  "slug": "stage-2-frontend",
+  "title": "Stage 2 — The Frontend",
+  "goal": "Build a UI that lists and creates records — using mock data in the browser, no server yet.",
+  "summary": "HTML, JavaScript, and user interaction first. The screen exists before the API or database do.",
+  "estimatedMinutes": 150,
+  "nextStage": "stage-3-rest-api",
+  "lesson": {
+    "pages": [
+      {
+        "id": "what-is-a-ui",
+        "title": "What the frontend actually is",
+        "file": "lesson/01-what-is-a-ui.md"
+      },
+      {
+        "id": "rendering-data",
+        "title": "Rendering data on the page",
+        "file": "lesson/02-rendering-data.md"
+      },
+      {
+        "id": "forms-and-events",
+        "title": "Forms, clicks, and events",
+        "file": "lesson/03-forms-and-events.md"
+      },
+      {
+        "id": "mock-data",
+        "title": "Mock data in memory",
+        "file": "lesson/04-mock-data.md"
+      },
+      {
+        "id": "ui-without-backend",
+        "title": "Why start without a backend",
+        "file": "lesson/05-ui-without-backend.md"
+      }
+    ]
+  },
+  "sandbox": {
+    "intro": "sandbox/00-intro.md",
+    "steps": [
+      {
+        "id": "dom-role",
+        "title": "What the DOM is",
+        "file": "sandbox/01-dom-role.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "JavaScript changes what the user sees by updating…",
+          "choices": [
+            { "id": "a", "text": "The DOM — the browser's live representation of the page" },
+            { "id": "b", "text": "The Git repository directly" },
+            { "id": "c", "text": "The SQL database file" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "The DOM is the tree of elements the browser renders. Your JS reads and updates it."
+        }
+      },
+      {
+        "id": "mock-array",
+        "title": "Data in a JavaScript array",
+        "file": "sandbox/02-mock-array.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "Before you have an API, where can the frontend keep its list of workouts?",
+          "choices": [
+            { "id": "a", "text": "A JavaScript array in memory — mock data" },
+            { "id": "b", "text": "It cannot show a list without PostgreSQL" },
+            { "id": "c", "text": "Only in a cookie on GitHub" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "An in-browser array lets you build and test UI logic before any server exists."
+        }
+      },
+      {
+        "id": "event-handler",
+        "title": "Responding to a submit",
+        "file": "sandbox/03-event-handler.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "A form's submit button is clicked. What should happen first in your code?",
+          "choices": [
+            { "id": "a", "text": "Prevent the default page reload and run your handler" },
+            { "id": "b", "text": "Immediately reload the entire browser" },
+            { "id": "c", "text": "Delete the database" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "`event.preventDefault()` stops the browser refresh so your JavaScript controls what happens."
+        }
+      },
+      {
+        "id": "rerender",
+        "title": "Update the list after add",
+        "file": "sandbox/04-rerender.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "User adds an item to your mock array. The list on screen is stale. Fix?",
+          "choices": [
+            { "id": "a", "text": "Re-run your render function so the DOM reflects the array" },
+            { "id": "b", "text": "Ask the user to manually refresh the browser every time" },
+            { "id": "c", "text": "Add a second array that never updates" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "When data changes, re-render (or update the DOM). That's the core UI loop."
+        }
+      },
+      {
+        "id": "separation-hint",
+        "title": "Separate data from display",
+        "file": "sandbox/05-separation-hint.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "Good structure: one function loads/updates data, another renders HTML. Why?",
+          "choices": [
+            { "id": "a", "text": "Later you swap mock data for fetch() without rewriting the whole UI" },
+            { "id": "b", "text": "Git requires exactly two functions" },
+            { "id": "c", "text": "Browsers cannot run one function" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Separating data access from rendering is what makes Stage 3's API hookup a small change."
+        }
+      }
+    ]
+  },
+  "checklist": [
+    { "id": "web-folder", "label": "`web/` folder with a runnable frontend" },
+    { "id": "list-ui", "label": "Page renders a list from mock data" },
+    { "id": "add-form", "label": "Form adds a new item to mock data and updates the list" },
+    { "id": "empty-state", "label": "Empty state when the list has zero items" },
+    { "id": "committed", "label": "Work committed in meaningful chunks" }
+  ],
+  "quiz": {
+    "passScore": 0.8,
+    "questions": [
+      {
+        "id": "frontend-job",
+        "prompt": "What is the frontend's primary job?",
+        "choices": [
+          { "id": "a", "text": "Present data and capture user actions" },
+          { "id": "b", "text": "Store data permanently on disk" },
+          { "id": "c", "text": "Replace the need for an API" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "The UI shows information and sends intent (clicks, forms). Persistence comes later."
+      },
+      {
+        "id": "mock-why",
+        "prompt": "Why use mock data before building an API?",
+        "choices": [
+          { "id": "a", "text": "You can design and test the UI independently" },
+          { "id": "b", "text": "Mock data is required for production" },
+          { "id": "c", "text": "APIs cannot return lists" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Building the screen first separates UI problems from network and server problems."
+      },
+      {
+        "id": "dom-update",
+        "prompt": "After changing a JavaScript array, why might the page still look wrong?",
+        "choices": [
+          { "id": "a", "text": "The DOM wasn't updated to reflect the new data" },
+          { "id": "b", "text": "Arrays cannot hold objects" },
+          { "id": "c", "text": "HTML forbids lists" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Data and display are separate — you must re-render or patch the DOM when data changes."
+      },
+      {
+        "id": "prevent-default",
+        "prompt": "What does `event.preventDefault()` on a form submit do?",
+        "choices": [
+          { "id": "a", "text": "Stops the browser's default full-page reload" },
+          { "id": "b", "text": "Deletes all form fields" },
+          { "id": "c", "text": "Sends the form to GitHub" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Without it, the page reloads and your JavaScript state is lost."
+      },
+      {
+        "id": "no-server-yet",
+        "prompt": "In this stage, does the frontend need a running API?",
+        "choices": [
+          { "id": "a", "text": "No — mock data in the browser is enough" },
+          { "id": "b", "text": "Yes — fetch is required on day one" },
+          { "id": "c", "text": "Yes — SQLite must be installed first" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Stage 2 is UI-only. The API arrives in Stage 3."
+      }
+    ]
+  }
+}

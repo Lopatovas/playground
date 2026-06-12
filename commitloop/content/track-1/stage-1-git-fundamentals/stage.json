@@ -4,7 +4,7 @@
   "goal": "Develop daily Git habits and learn to manage work with branches.",
   "summary": "Git for real work: the staging model, clean commits, branches, and a stage \u2190 dev \u2190 feature workflow.",
   "estimatedMinutes": 150,
-  "nextStage": "stage-2-end-to-end",
+  "nextStage": "stage-2-frontend",
   "lesson": {
     "pages": [
       {

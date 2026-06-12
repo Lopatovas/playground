@@ -1,3 +1,6 @@
+"use client";
+
+import { useMemo, useState } from "react";
 import type { MentorStudent } from "@/lib/api";
 
 const ATTENTION_LABEL: Record<MentorStudent["attention"], string> = {
@@ -7,11 +10,42 @@ const ATTENTION_LABEL: Record<MentorStudent["attention"], string> = {
   inactive: "No commits yet",
 };
 
+export function filterMentorStudents(
+  students: MentorStudent[],
+  query: string,
+): MentorStudent[] {
+  const needle = query.trim().toLowerCase();
+  if (!needle) return students;
+
+  return students.filter((student) => {
+    const haystack = [
+      student.username,
+      student.stageTitle,
+      student.currentStage,
+      student.currentStep,
+      ATTENTION_LABEL[student.attention],
+      student.repo?.owner,
+      student.repo?.name,
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    return haystack.includes(needle);
+  });
+}
+
 export function MentorStudentTable({
   students,
 }: {
   students: MentorStudent[];
 }) {
+  const [query, setQuery] = useState("");
+  const filteredStudents = useMemo(
+    () => filterMentorStudents(students, query),
+    [students, query],
+  );
+
   if (students.length === 0) {
     return (
       <div className="card">
@@ -23,7 +57,34 @@ export function MentorStudentTable({
   }
 
   return (
-    <div className="card" style={{ overflowX: "auto" }}>
+    <div className="mentor-dashboard">
+      <div className="mentor-toolbar">
+        <label className="mentor-search" htmlFor="mentor-student-search">
+          <span className="label">Search students</span>
+          <input
+            id="mentor-student-search"
+            type="search"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Username, stage, status, repo…"
+            autoComplete="off"
+          />
+        </label>
+        <p className="mentor-toolbar__meta">
+          {query.trim()
+            ? `${filteredStudents.length} of ${students.length} students`
+            : `${students.length} students`}
+        </p>
+      </div>
+
+      {filteredStudents.length === 0 ? (
+        <div className="card">
+          <p style={{ margin: 0, color: "var(--muted)" }}>
+            No students match &ldquo;{query.trim()}&rdquo;.
+          </p>
+        </div>
+      ) : (
+        <div className="card" style={{ overflowX: "auto" }}>
       <table className="mentor-table">
         <thead>
           <tr>
@@ -36,7 +97,7 @@ export function MentorStudentTable({
           </tr>
         </thead>
         <tbody>
-          {students.map((student) => (
+          {filteredStudents.map((student) => (
             <tr
               key={student.id}
               className={
@@ -103,6 +164,8 @@ export function MentorStudentTable({
           ))}
         </tbody>
       </table>
+        </div>
+      )}
     </div>
   );
 }

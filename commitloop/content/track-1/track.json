@@ -5,10 +5,11 @@
   "stages": [
     { "slug": "stage-0-onboarding", "order": 0, "available": true },
     { "slug": "stage-1-git-fundamentals", "order": 1, "available": true },
-    { "slug": "stage-2-end-to-end", "order": 2, "available": false },
-    { "slug": "stage-3-structure", "order": 3, "available": false },
-    { "slug": "stage-4-deployment", "order": 4, "available": false },
-    { "slug": "stage-5-testing", "order": 5, "available": false },
-    { "slug": "stage-6-expansion", "order": 6, "available": false }
+    { "slug": "stage-2-frontend", "order": 2, "available": true },
+    { "slug": "stage-3-rest-api", "order": 3, "available": true },
+    { "slug": "stage-4-database", "order": 4, "available": true },
+    { "slug": "stage-5-deployment", "order": 5, "available": true },
+    { "slug": "stage-6-testing", "order": 6, "available": true },
+    { "slug": "stage-7-expansion", "order": 7, "available": true }
   ]
 }

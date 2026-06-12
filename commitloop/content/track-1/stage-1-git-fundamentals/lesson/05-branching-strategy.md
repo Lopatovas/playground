@@ -61,7 +61,7 @@ Bugs get caught low (on `dev`) before they can reach users (on `main`). The furt
 You're one person on Track 1, so don't cargo-cult a four-branch tree on day one. Start simple and grow into it:
 
 - **Now:** `main` + `feature/*` branches, merged via PRs. This alone builds the habit.
-- **Later (Stage 3+):** add a `dev` integration branch once you have multiple features in flight.
-- **At deployment (Stage 4):** add `stage`/production separation so you can verify before going live.
+- **Later (Stage 6+):** add a `dev` integration branch once you have multiple features in flight.
+- **At deployment (Stage 5):** add `stage`/production separation so you can verify before going live.
 
 The point isn't ceremony — it's that **you can reason about where code lives and how it's promoted**. That judgment is what separates someone who "knows Git commands" from someone who can manage a real codebase.

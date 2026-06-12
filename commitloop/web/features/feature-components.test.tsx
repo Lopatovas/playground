@@ -220,8 +220,8 @@ describe("extracted page components", () => {
             status: "current",
           },
           {
-            slug: "stage-2-end-to-end",
-            title: "Stage 2 — First End-to-End System",
+            slug: "stage-2-frontend",
+            title: "Stage 2 — The Frontend",
             available: false,
             status: "locked",
           },

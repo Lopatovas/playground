@@ -1,0 +1,190 @@
+{
+  "slug": "stage-5-deployment",
+  "title": "Stage 5 — Deployment",
+  "goal": "Ship your app beyond localhost: production builds, environment variables, and live URLs.",
+  "summary": "Deploy the API and frontend, configure secrets safely, and prove the full stack works in production.",
+  "estimatedMinutes": 180,
+  "nextStage": "stage-6-testing",
+  "lesson": {
+    "pages": [
+      {
+        "id": "why-deploy-early",
+        "title": "Why deploy before you feel ready",
+        "file": "lesson/01-why-deploy-early.md"
+      },
+      {
+        "id": "env-and-secrets",
+        "title": "Environment variables and secrets",
+        "file": "lesson/02-env-and-secrets.md"
+      },
+      {
+        "id": "production-builds",
+        "title": "Production builds vs dev servers",
+        "file": "lesson/03-production-builds.md"
+      },
+      {
+        "id": "hosting-the-api",
+        "title": "Hosting the API",
+        "file": "lesson/04-hosting-the-api.md"
+      },
+      {
+        "id": "hosting-the-frontend",
+        "title": "Hosting the frontend",
+        "file": "lesson/05-hosting-the-frontend.md"
+      }
+    ]
+  },
+  "sandbox": {
+    "intro": "sandbox/00-intro.md",
+    "steps": [
+      {
+        "id": "env-purpose",
+        "title": "What env vars are for",
+        "file": "sandbox/01-env-purpose.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "Why put the database URL in an environment variable instead of hardcoding it in source?",
+          "choices": [
+            { "id": "a", "text": "So dev, staging, and production can use different values without code changes" },
+            { "id": "b", "text": "Because environment variables make the app run faster" },
+            { "id": "c", "text": "Because GitHub requires it" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Config differs per environment. Code stays the same; the host injects the right values at runtime."
+        }
+      },
+      {
+        "id": "secrets-in-git",
+        "title": "Secrets and version control",
+        "file": "sandbox/02-secrets-in-git.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "You need an API key for production. What should you do?",
+          "choices": [
+            { "id": "a", "text": "Set it in the host's environment / secrets UI — never commit it" },
+            { "id": "b", "text": "Commit it to main so deploys are automatic" },
+            { "id": "c", "text": "Paste it in the README for your future self" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Secrets in git leak forever in history. Hosts like Railway, Render, and Vercel have secrets panels for a reason."
+        }
+      },
+      {
+        "id": "build-vs-dev",
+        "title": "Build step vs dev server",
+        "file": "sandbox/03-build-vs-dev.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "In production, Next.js typically runs `next build` then `next start`. Why not `next dev`?",
+          "choices": [
+            { "id": "a", "text": "`next dev` is unoptimized and unsafe for real users; the build produces optimized output" },
+            { "id": "b", "text": "`next dev` doesn't support React" },
+            { "id": "c", "text": "There is no difference" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Dev servers trade speed for safety and performance. Production builds bundle, minify, and catch issues early."
+        }
+      },
+      {
+        "id": "cors-prod",
+        "title": "CORS in production",
+        "file": "sandbox/04-cors-prod.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "Your frontend is at https://myapp.vercel.app and API at https://api.railway.app. The browser blocks requests. Likely cause?",
+          "choices": [
+            { "id": "a", "text": "API CORS only allows localhost — production origin must be added" },
+            { "id": "b", "text": "HTTPS is incompatible with REST" },
+            { "id": "c", "text": "You must merge frontend and API into one repo file" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Browsers enforce CORS. Your API must explicitly allow the production frontend origin."
+        }
+      },
+      {
+        "id": "smoke-test",
+        "title": "Smoke test after deploy",
+        "file": "sandbox/05-smoke-test.md",
+        "checkpoint": {
+          "kind": "text",
+          "prompt": "After deploying, what is the simplest check that the API is alive? (one GET path)",
+          "placeholder": "/health or /...",
+          "accept": [
+            "/health",
+            "GET /health",
+            "curl /health",
+            "/api/health"
+          ],
+          "explanation": "A health endpoint (or hitting your root GET) confirms the process is up before you debug the full UI flow."
+        }
+      }
+    ]
+  },
+  "checklist": [
+    { "id": "api-deployed", "label": "API deployed with a public HTTPS URL" },
+    { "id": "web-deployed", "label": "Frontend deployed with a public HTTPS URL" },
+    { "id": "env-configured", "label": "Production env vars set on the host (no secrets in git)" },
+    { "id": "cors-prod", "label": "API allows the production frontend origin" },
+    { "id": "smoke-tested", "label": "Created a record through the live site end to end" }
+  ],
+  "quiz": {
+    "passScore": 0.8,
+    "questions": [
+      {
+        "id": "env-vs-code",
+        "prompt": "What belongs in environment variables instead of source code?",
+        "choices": [
+          { "id": "a", "text": "Database URLs, API keys, and other config that changes per environment" },
+          { "id": "b", "text": "All business logic" },
+          { "id": "c", "text": "React component names" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Environment-specific and secret config goes in env vars. Logic stays in code."
+      },
+      {
+        "id": "dotenv-commit",
+        "prompt": "Should `.env` files with real secrets be committed to Git?",
+        "choices": [
+          { "id": "a", "text": "No — use .env.example with placeholders; real values only on the host" },
+          { "id": "b", "text": "Yes — teammates need them" },
+          { "id": "c", "text": "Only on private repos" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Even private repos leak. Use .env.example for documentation; inject real secrets at deploy time."
+      },
+      {
+        "id": "prod-build",
+        "prompt": "Why run a production build before deploy?",
+        "choices": [
+          { "id": "a", "text": "To catch build errors early and serve optimized assets" },
+          { "id": "b", "text": "To delete the database" },
+          { "id": "c", "text": "Git requires it" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "CI/build steps surface TypeScript and bundling failures before users hit them."
+      },
+      {
+        "id": "https",
+        "prompt": "Why do production apps use HTTPS?",
+        "choices": [
+          { "id": "a", "text": "Encrypts traffic and is required for many browser features (cookies, secure APIs)" },
+          { "id": "b", "text": "It makes SQL faster" },
+          { "id": "c", "text": "Only for aesthetics" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "HTTPS protects data in transit. Modern hosts provide certificates automatically."
+      },
+      {
+        "id": "deploy-order",
+        "prompt": "You updated the API URL the frontend calls. What must you redeploy?",
+        "choices": [
+          { "id": "a", "text": "The frontend (it bakes in or reads the API URL at build/runtime)" },
+          { "id": "b", "text": "Only the database" },
+          { "id": "c", "text": "Nothing — URLs update automatically" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "If the frontend's API base URL changed, rebuild/redeploy the frontend with the new config."
+      }
+    ]
+  }
+}

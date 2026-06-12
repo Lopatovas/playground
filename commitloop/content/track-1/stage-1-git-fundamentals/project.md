@@ -6,7 +6,7 @@ Add a sensible starting layout for a full-stack app. You don't need code yet, ju
 
 ```text
 your-repo/
-  api/        # Express backend (built in Stage 2)
+  api/        # Express backend (built in Stage 3)
   web/        # frontend (built in Stage 2)
   README.md
 ```
@@ -64,4 +64,4 @@ git pull
 
 ## Outcome
 
-Your project has structure, ignores what it should, runs locally, and you've completed a full feature-branch → pull-request → merge cycle. Git is now a daily habit, not an afterthought. Next stage: your first end-to-end system.
+Your project has structure, ignores what it should, runs locally, and you've completed a full feature-branch → pull-request → merge cycle. Git is now a daily habit, not an afterthought. Next stage: build the frontend.

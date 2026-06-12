@@ -1924,6 +1924,42 @@ a:hover {
   }
 }
 
+.mentor-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.mentor-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+}
+
+.mentor-search {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1 1 16rem;
+  max-width: 28rem;
+}
+
+.mentor-search input {
+  padding: 0.6rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font: inherit;
+}
+
+.mentor-toolbar__meta {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
 .mentor-table {
   width: 100%;
   border-collapse: collapse;
