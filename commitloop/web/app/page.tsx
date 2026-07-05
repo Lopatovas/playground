@@ -49,8 +49,8 @@ export default function LandingPage() {
               </h1>
               <p className="landing-hero__lede">
                 Track 1 — Web Systems: twelve stages from Git and the browser to
-                API, SQL, auth, and a deployed full-stack app. One evolving repo,
-                daily assignments, GitHub-verified commits.
+                API, SQL, auth, and a deployed full-stack app. Structure and
+                accountability from us — depth and initiative from you.
               </p>
 
               <div className="landing-hero__actions">

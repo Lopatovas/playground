@@ -54,7 +54,8 @@ export default function CurriculumPage() {
       <p style={{ color: "var(--muted)", marginBottom: "1rem", maxWidth: "42rem" }}>
         One app, every layer — Git, UI, API, SQL, ORM, auth, tests, deploy.
         Twelve stages in one evolving repo. Each stage: lesson → sandbox → quiz
-        → project.
+        → project. CommitLoop gives the map; you bring curiosity, research, and
+        the commits that prove you did the work.
       </p>
 
       <div

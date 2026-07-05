@@ -4,6 +4,21 @@ You are starting a **project that will live for months**. Tutorials end; your pr
 
 CommitLoop's promise is simple: if you show up and commit real work, you will come out the other side able to build, deploy, test, and evolve a full-stack application.
 
+## This is only as good as you make it
+
+CommitLoop gives you **structure** — stages, assignments, checkpoints, and a loop that keeps you moving. It does **not** give you a passive path where watching or clicking is enough.
+
+**Your outcome depends on you:**
+
+- **Look things up.** Official docs, MDN, Prisma, Express — and yes, search engines and AI — are part of the job. We teach concepts; you fill in the gaps when something is new.
+- **Think before you ask.** When you're stuck, try one concrete thing: read the error, reproduce it in isolation, change one variable. That habit is the skill.
+- **Go beyond the minimum.** The project checklist is a floor, not a ceiling. Extra polish, a small feature you care about, or a deeper read on a topic you hit in the wild — that's where growth happens.
+- **Own your repo.** Messy commits, dead ends, and refactors are normal. Professionals debug, research, and recover. So will you.
+
+> CommitLoop is an accountability system, not a babysitter. The students who thrive treat every stage as practice for **self-directed engineering** — the same muscle you'll use on the job.
+
+If that sounds uncomfortable, good — it means you're in the right place. If it sounds exciting, you're going to love Track 1.
+
 ## The loop
 
 Every stage of every track runs the same four-step loop. Learn it once and you'll recognize it everywhere:

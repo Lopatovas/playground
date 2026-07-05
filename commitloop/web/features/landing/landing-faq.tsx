@@ -2,6 +2,10 @@ import { LandingSection } from "./landing-section";
 
 const FAQS = [
   {
+    q: "Is CommitLoop a video course?",
+    a: "No. You get curriculum and accountability — lessons point you in the right direction, but you research, debug, and build in your own repo. How far you go is up to you.",
+  },
+  {
     q: "Is this a bootcamp or video course?",
     a: "Neither. CommitLoop is an accountability system: curriculum tells you what to do, GitHub proves you did it. No watch-time metrics.",
   },

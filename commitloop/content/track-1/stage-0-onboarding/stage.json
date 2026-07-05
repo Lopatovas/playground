@@ -2,7 +2,7 @@
   "slug": "stage-0-onboarding",
   "title": "Stage 0 — Onboarding",
   "goal": "Enter a working engineering environment and ship your first commit.",
-  "summary": "Set up GitHub, your tools, and your project repo. Ship a real first commit.",
+  "summary": "Set up GitHub, your tools, and your project repo. Ship a real first commit — and understand that Track 1 rewards self-directed effort.",
   "estimatedMinutes": 90,
   "nextStage": "stage-1-git",
   "lesson": {
