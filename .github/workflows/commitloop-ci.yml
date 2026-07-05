@@ -5,49 +5,13 @@ on:
     paths:
       - "commitloop/**"
       - ".github/workflows/commitloop-ci.yml"
+      - ".github/workflows/commitloop-ci-reusable.yml"
   pull_request:
     paths:
       - "commitloop/**"
       - ".github/workflows/commitloop-ci.yml"
-
-defaults:
-  run:
-    working-directory: commitloop
+      - ".github/workflows/commitloop-ci-reusable.yml"
 
 jobs:
   ci:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: npm
-          cache-dependency-path: commitloop/package-lock.json
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Generate Prisma client
-        run: npm run db:generate -w @commitloop/api
-
-      - name: Clean stale Next.js types
-        run: rm -rf web/.next
-
-      - name: Architecture gates
-        run: npm run arch:check
-
-      - name: Typecheck
-        run: npm run typecheck
-
-      - name: Lint
-        run: npm run lint
-
-      - name: Test with coverage
-        run: npm run test:coverage
-        env:
-          DATABASE_URL: file:./test.db
-
-      - name: Build
-        run: npm run build
+    uses: ./.github/workflows/commitloop-ci-reusable.yml

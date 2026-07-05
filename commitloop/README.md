@@ -14,8 +14,8 @@ Accountability-first engineering apprenticeship. GitHub is the source of truth.
 
 | Layer | Tech |
 |-------|------|
-| Web | Next.js 16 (App Router) → Vercel |
-| API | Express (feature modules) + Prisma + SQLite (dev) → Postgres (prod) |
+| Web | Next.js 16 (App Router) → [commitloop.dev](https://commitloop.dev) on Vercel |
+| API | Express + Prisma + PostgreSQL → [api.commitloop.dev](https://api.commitloop.dev) on Render |
 | Content | Hybrid JSON + Markdown in `content/track-1/` |
 | Quality | Vitest, ESLint 9 flat config, GitHub Actions CI |
 
@@ -27,13 +27,16 @@ Requires **Node >= 20.9** (Next.js 16).
 cp .env.example .env
 # GitHub OAuth app → callback http://localhost:3001/auth/github/callback
 
-npm install          # from commitloop/ (workspace root)
+docker compose up -d postgres   # local Postgres (or use Neon URL in .env)
+npm install                     # from commitloop/ (workspace root)
 npm run db:generate -w @commitloop/api
 npm run db:migrate -w @commitloop/api
 
 npm run dev -w @commitloop/api    # :3001
 npm run dev -w @commitloop/web    # :3000
 ```
+
+**Production:** [commitloop.dev](https://commitloop.dev) · API [api.commitloop.dev](https://api.commitloop.dev) · [DEPLOY.md](./DEPLOY.md)
 
 ## App routes
 

@@ -1,0 +1,32 @@
+# Render Blueprint — API only. Create Neon Postgres separately, paste DATABASE_URL in Render.
+# Docs: commitloop/DEPLOY.md
+#
+# Connect repo, set Blueprint path to: commitloop/render.yaml
+
+services:
+  - type: web
+    name: commitloop-api
+    runtime: node
+    plan: free
+    rootDir: commitloop
+    buildCommand: npm ci && npm run db:generate -w @commitloop/api && npm run build -w @commitloop/api
+    preDeployCommand: npm run db:migrate:deploy -w @commitloop/api
+    startCommand: npm run start -w @commitloop/api
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: WEB_URL
+        value: https://commitloop.dev
+      - key: GITHUB_CLIENT_ID
+        sync: false
+      - key: GITHUB_CLIENT_SECRET
+        sync: false
+      - key: GITHUB_CALLBACK_URL
+        value: https://api.commitloop.dev/auth/github/callback
+      - key: MENTOR_GITHUB_IDS
+        sync: false

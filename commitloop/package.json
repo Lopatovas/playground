@@ -14,6 +14,9 @@
     "test": "npm run test -w @commitloop/api && npm run test -w @commitloop/web",
     "test:coverage": "npm run test:coverage -w @commitloop/api && npm run test:coverage -w @commitloop/web",
     "build": "npm run build -w @commitloop/api && npm run build -w @commitloop/web",
+    "db:up": "docker compose up -d postgres",
+    "db:migrate": "npm run db:migrate -w @commitloop/api",
+    "db:migrate:deploy": "npm run db:migrate:deploy -w @commitloop/api",
     "content:check": "npm run content:check -w @commitloop/api",
     "ci": "npm run arch:check && npm run content:check && npm run typecheck && npm run lint && npm run test:coverage && npm run build"
   }

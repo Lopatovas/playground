@@ -12,7 +12,7 @@ dotenv.config({
 });
 
 const prisma = new PrismaClient();
-const PORT = Number(process.env.API_PORT ?? 3001);
+const PORT = Number(process.env.PORT ?? process.env.API_PORT ?? 3001);
 
 const app = createApp(
   prisma,
