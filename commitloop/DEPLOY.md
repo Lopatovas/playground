@@ -42,7 +42,9 @@ Resources defined in `render.yaml`:
 5. After deploy → **commitloop-api** → **Settings → Custom Domains** → add `api.commitloop.dev`
 6. **Settings → Deploy Hook** → copy URL for GitHub Actions
 
-Migrations run on **start** (`npm run start:prod` → `prisma migrate deploy` then the server). Render free tier has no pre-deploy hook.
+Migrations run at **build** time (`build:render` → generate, compile, `prisma migrate deploy`). Start is just the server — no extra cold-boot delay. Render free tier has no pre-deploy hook.
+
+`DATABASE_URL` must be set before build (link `commitloopdb` in the dashboard). If migrate fails at build, use the database **External** URL instead of Internal.
 
 **Free tier:** API sleeps after ~15 min idle; first request may take 30–60s.
 

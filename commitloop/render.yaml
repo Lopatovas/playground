@@ -16,8 +16,8 @@ services:
     runtime: node
     plan: free
     region: frankfurt
-    buildCommand: npm ci --include=dev && npm run db:generate -w @commitloop/api && npm run build -w @commitloop/api
-    startCommand: npm run start:prod -w @commitloop/api
+    buildCommand: npm ci --include=dev && npm run build:render -w @commitloop/api
+    startCommand: npm run start -w @commitloop/api
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
