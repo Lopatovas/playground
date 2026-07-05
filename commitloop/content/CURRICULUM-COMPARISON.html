@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CommitLoop Track 1 — Curriculum Comparison</title>
+  <style>
+    :root {
+      --bg: #0f1117; --surface: #181b24; --surface2: #1f2430; --border: #2a3142;
+      --text: #e6eaf2; --muted: #8b95a8; --accent: #6ea8fe; --accent2: #7ee787;
+      --warn: #f0b429; --heavy: #f85149; --sandbox: #a371f7; --quiz: #79c0ff; --project: #7ee787;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; font-size: 15px; }
+    header { padding: 2rem 2rem 1rem; border-bottom: 1px solid var(--border); }
+    header h1 { margin: 0 0 .35rem; font-size: 1.65rem; }
+    header p { margin: 0; color: var(--muted); max-width: 75ch; }
+    main { padding: 1.5rem 2rem 3rem; max-width: 1400px; margin: 0 auto; }
+    h2 { font-size: 1.15rem; margin: 2rem 0 1rem; padding-bottom: .4rem; border-bottom: 1px solid var(--border); color: var(--accent); }
+    h2:first-child { margin-top: 0; }
+    .anatomy {
+      background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+      padding: 1rem 1.25rem; margin-bottom: 1.5rem; font-size: .9rem;
+    }
+    .anatomy strong { color: var(--text); }
+    .anatomy ol { margin: .5rem 0 0; padding-left: 1.25rem; color: var(--muted); }
+    .anatomy li { margin: .25rem 0; }
+    .anatomy code { color: var(--accent2); font-size: .85em; }
+    .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: .75rem; margin-bottom: 1.25rem; }
+    .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: .75rem 1rem; }
+    .stat .label { font-size: .72rem; text-transform: uppercase; color: var(--muted); }
+    .stat .value { font-size: 1.25rem; font-weight: 650; }
+    .stat .sub { font-size: .78rem; color: var(--muted); }
+    .legend { display: flex; flex-wrap: wrap; gap: 1rem; font-size: .82rem; color: var(--muted); margin-bottom: 1rem; }
+    .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 1.25rem; overflow: hidden; }
+    .panel-head { padding: .85rem 1rem; background: var(--surface2); border-bottom: 1px solid var(--border); }
+    .panel-head h3 { margin: 0 0 .2rem; font-size: 1rem; }
+    .panel-head .meta { font-size: .78rem; color: var(--muted); }
+    .commitloop-panel .panel-head { border-left: 3px solid var(--accent); }
+    .stage { border-bottom: 1px solid var(--border); padding: .75rem 1rem; }
+    .stage:last-child { border-bottom: none; }
+    .stage-header { display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem .75rem; margin-bottom: .6rem; }
+    .stage-num { font-size: .72rem; font-weight: 700; color: var(--muted); background: var(--surface2); padding: .1rem .4rem; border-radius: 4px; }
+    .stage-title { font-weight: 650; font-size: .95rem; flex: 1; min-width: 200px; }
+    .stage-hours { font-size: .75rem; color: var(--muted); }
+    .badge { font-size: .65rem; padding: .1rem .4rem; border-radius: 999px; font-weight: 600; text-transform: uppercase; }
+    .badge.light { background: rgba(126,231,135,.15); color: var(--accent2); }
+    .badge.medium { background: rgba(110,168,254,.15); color: var(--accent); }
+    .badge.heavy { background: rgba(248,81,73,.15); color: var(--heavy); }
+    .block { margin: .45rem 0 .35rem 0; }
+    .block-label {
+      font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em;
+      margin-bottom: .25rem; display: flex; align-items: center; gap: .35rem;
+    }
+    .block-label.lessons { color: var(--accent); }
+    .block-label.sandbox { color: var(--sandbox); }
+    .block-label.quiz { color: var(--quiz); }
+    .block-label.project { color: var(--project); }
+    .block ul { margin: 0; padding: 0 0 0 1.1rem; list-style: none; }
+    .block li { font-size: .84rem; color: #b8c0d0; padding: .12rem 0; position: relative; }
+    .block li::before { content: "·"; position: absolute; left: -.75rem; color: var(--border); }
+    .block li.reuse { color: var(--warn); }
+    .block li.new::after { content: " (new)"; font-size: .7rem; color: var(--muted); }
+    .competitor-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1rem; }
+    .note { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: .85rem 1rem; font-size: .88rem; color: var(--muted); }
+    .note strong { color: var(--text); }
+    footer { padding: 1rem 2rem; font-size: .78rem; color: var(--muted); border-top: 1px solid var(--border); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Track 1 curriculum — visual comparison</h1>
+    <p>Stages broken into lessons (and CommitLoop sandbox / quiz / project layers). One evolving student repo throughout.</p>
+  </header>
+
+  <main>
+    <div class="anatomy">
+      <strong>Yes — CommitLoop breaks every stage into lessons.</strong> Each stage in <code>stage.json</code> has four layers:
+      <ol>
+        <li><strong>Lessons</strong> — <code>lesson.pages[]</code> markdown pages (typically 3–6 per stage). <strong>Tooling lessons come first</strong> when a stage introduces DevTools, Postman, curl, or DB tools — students need validation before the subject.</li>
+        <li><strong>Sandbox</strong> — <code>sandbox.steps[]</code> guided drills with checkpoints (typically 5)</li>
+        <li><strong>Quiz</strong> — <code>quiz.questions[]</code> — <strong>max 5 questions</strong>, 80% to pass; every question must be answerable from that stage’s lessons + sandbox only</li>
+        <li><strong>Project</strong> — <code>checklist[]</code> items student must complete in their repo</li>
+      </ol>
+      Loop: <strong>Lesson → Sandbox → Quiz → Project</strong>, then unlock next stage.
+    </div>
+
+    <section id="summary">
+      <h2>At a glance</h2>
+      <div class="summary">
+        <div class="stat"><div class="label">CommitLoop planned</div><div class="value">12 stages</div><div class="sub">~60 lessons · ~55 sandbox · ~60 quiz Q · 1 app</div></div>
+        <div class="stat"><div class="label">CommitLoop shipped</div><div class="value">8 stages</div><div class="sub">38 lessons · 38 sandbox · 40 quiz Q · 1 app</div></div>
+        <div class="stat"><div class="label">FSO core 0–5</div><div class="value">6 parts</div><div class="sub">~30 chapters · 108 exercises · 1 app</div></div>
+        <div class="stat"><div class="label">Odin Fdn + Node</div><div class="value">10 blocks</div><div class="sub">~64 lessons · 14 projects</div></div>
+      </div>
+      <div class="legend">
+        <span style="color:var(--accent)">■ Lessons</span>
+        <span style="color:var(--sandbox)">■ Sandbox steps</span>
+        <span style="color:var(--quiz)">■ Quiz</span>
+        <span style="color:var(--project)">■ Project checklist</span>
+        <span style="color:var(--warn)">Orange lesson = reuse existing markdown</span>
+      </div>
+    </section>
+
+    <section id="commitloop">
+      <h2>CommitLoop Track 1 — planned (12 stages)</h2>
+
+      <div class="panel commitloop-panel">
+        <div class="panel-head">
+          <h3>Track 1 — Web Systems (planned spec)</h3>
+          <span class="meta">From CURRICULUM-PROPOSAL.md · ~45–65 h total · vanilla FE + Express + SQLite</span>
+        </div>
+
+        <!-- Stage 0 -->
+        <div class="stage">
+          <div class="stage-header">
+            <span class="stage-num">0</span>
+            <span class="stage-title">Onboarding &amp; the web stack</span>
+            <span class="badge light">light</span>
+            <span class="stage-hours">~1.5 h</span>
+          </div>
+          <div class="block"><div class="block-label lessons">Lessons (4) — tooling first</div><ul>
+            <li class="reuse">How CommitLoop works</li>
+            <li class="reuse">Professional tooling map (DevTools, Postman, DB GUI)</li>
+            <li class="new">The web stack landscape (FE / BE / DB / Git / hosting)</li>
+            <li class="reuse">Choose your project domain</li>
+          </ul></div>
+          <div class="block"><div class="block-label sandbox">Sandbox (5)</div><ul>
+            <li>Confirm Git is installed</li><li>Configure Git identity</li><li>Make first commit</li><li>Push to GitHub</li><li>Verify repo structure</li>
+          </ul></div>
+          <div class="block"><div class="block-label quiz">Quiz (5 questions)</div><ul><li>Platform flow, tooling purpose, repo basics</li></ul></div>
+          <div class="block"><div class="block-label project">Project checklist</div><ul>
+            <li>Repo created · README · first push · tooling map noted</li>
+          </ul></div>
+        </div>
+
+        <!-- Stage 1 -->
+        <div class="stage">
+          <div class="stage-header">
+            <span class="stage-num">1</span>
+            <span class="stage-title">Git &amp; collaboration</span>
+            <span class="badge light">light</span>
+            <span class="stage-hours">~2 h</span>
+          </div>
+          <div class="block"><div class="block-label lessons">Lessons (5)</div><ul>
+            <li class="reuse">Why version control exists</li>
+            <li class="reuse">The everyday Git loop</li>
+            <li class="reuse">What makes a good commit</li>
+            <li class="reuse">Branches: parallel lines of work</li>
+            <li class="reuse">Feature branches, PRs, and merge workflow</li>
+          </ul></div>
+          <div class="block"><div class="block-label sandbox">Sandbox (5)</div><ul>
+            <li>Read what Git sees (status)</li><li>Stage changes deliberately</li><li>Write a commit message</li><li>Create a feature branch</li><li>Merge work back</li>
+          </ul></div>
+          <div class="block"><div class="block-label quiz">Quiz (5 questions)</div><ul><li>Commands, branching, PR workflow</li></ul></div>
+          <div class="block"><div class="block-label project">Project checklist</div><ul>
+            <li><code>api/</code> + <code>web/</code> folders on feature branch · merged PR · <code>.gitignore</code></li>
+          </ul></div>
+        </div>
+
+        <!-- Stage 2 -->
+        <div class="stage">
+          <div class="stage-header">
+            <span class="stage-num">2</span>
+            <span class="stage-title">HTML &amp; CSS</span>
+            <span class="badge medium">medium</span>
+            <span class="stage-hours">~3 h</span>
+          </div>
+          <div class="block"><div class="block-label lessons">Lessons (5) — DevTools first</div><ul>
+            <li class="new">DevTools Elements (inspect layout live)</li>
+            <li class="new">Semantic HTML structure</li>
+            <li class="new">Flexbox layout</li>
+            <li class="new">CSS variables and theming</li>
+            <li class="new">Responsive layout + static app shell</li>
+          </ul></div>
+          <div class="block"><div class="block-label sandbox">Sandbox (5)</div><ul>
+            <li>Pick semantic element for nav</li><li>Flex direction for a toolbar</li><li>Set a CSS variable</li><li>Apply a media query</li><li>Inspect layout in DevTools Elements</li>
+          </ul></div>
+          <div class="block"><div class="block-label quiz">Quiz (5 questions)</div><ul><li>Semantics, flexbox, responsive basics</li></ul></div>
+          <div class="block"><div class="block-label project">Project checklist</div><ul>
+            <li>Static shell looks like an app on desktop and phone-width</li>
+          </ul></div>
+        </div>
+
+        <!-- Stage 3 -->
+        <div class="stage">
+          <div class="stage-header">
+            <span class="stage-num">3</span>
+            <span class="stage-title">JavaScript &amp; the DOM</span>
+            <span class="badge medium">medium</span>
+            <span class="stage-hours">~3.5 h</span>
+          </div>
+          <div class="block"><div class="block-label lessons">Lessons (5) — DevTools first</div><ul>
+            <li class="new">DevTools Elements + Console</li>
+            <li class="reuse">What the DOM is</li>
+            <li class="reuse">Rendering data on the page</li>
+            <li class="reuse">Forms, clicks, and events</li>
+            <li class="reuse">Mock data CRUD in memory</li>
+          </ul></div>
+          <div class="block"><div class="block-label sandbox">Sandbox (5)</div><ul>
+            <li>What the DOM is</li><li>Data in a JavaScript array</li><li>Respond to a submit event</li><li>Update the list after add</li><li>Separate data from display</li>
+          </ul></div>
+          <div class="block"><div class="block-label quiz">Quiz (5 questions)</div><ul><li>DOM, events, mock CRUD patterns</li></ul></div>
+          <div class="block"><div class="block-label project">Project checklist</div><ul>
+            <li>Full CRUD on mock array · dynamic list/form · no backend yet</li>
+          </ul></div>
+        </div>
+
+        <!-- Stage 4 -->
+        <div class="stage">
+          <div class="stage-header">
+            <span class="stage-num">4</span>
+            <span class="stage-title">API architecture &amp; HTTP</span>
+            <span class="badge heavy">heavy</span>
+            <span class="stage-hours">~4.5 h</span>
+          </div>
+          <div class="block"><div class="block-label lessons">Lessons (6) — curl before Express</div><ul>
+            <li class="reuse">Client, server, and HTTP</li>
+            <li class="new">curl — hit an endpoint from the terminal</li>
+            <li class="reuse">REST and resources</li>
+            <li class="new">Structured JSON responses + middleware pipeline</li>
+            <li class="reuse">Express routes, handlers, in-memory store</li>
+            <li class="new">Environment variables (.env)</li>
+          </ul></div>
+          <div class="block"><div class="block-label sandbox">Sandbox (5)</div><ul>
+            <li>Pick the HTTP method</li><li>Status after create (201)</li><li>Limits of in-memory data</li><li>Parse a fetch response</li><li>curl a GET endpoint</li>
+          </ul></div>
+          <div class="block"><div class="block-label quiz">Quiz (5 questions)</div><ul><li>HTTP, REST, middleware, JSON envelope</li></ul></div>
+          <div class="block"><div class="block-label project">Project checklist</div><ul>
+            <li>Express API · in-memory store · JSON envelope · <code>.env</code> · middleware chain</li>
+          </ul></div>
+        </div>
+
+        <!-- Stage 5 -->
+        <div class="stage">
+          <div class="stage-header">
+            <span class="stage-num">5</span>
+            <span class="stage-title">Relational databases (SQL)</span>
+            <span class="badge medium">medium</span>
+            <span class="stage-hours">~3.5 h</span>
+          </div>
+          <div class="block"><div class="block-label lessons">Lessons (5) — DB tools first</div><ul>
+            <li class="new">Inspect the database (CLI + GUI)</li>
+            <li class="reuse">Why data must outlive the process</li>
+            <li class="reuse">Tables, rows, and primary keys</li>
+            <li class="new">Timestamps (created_at / updated_at)</li>
+            <li class="reuse">SQL CRUD + swap in-memory for SQLite</li>
+          </ul></div>
+          <div class="block"><div class="block-label sandbox">Sandbox (5)</div><ul>
+            <li>Read all rows with SELECT</li><li>Primary key purpose</li><li>Parameterized queries</li><li>Prove persistence after restart</li><li>Three layers connected</li>
+          </ul></div>
+          <div class="block"><div class="block-label quiz">Quiz (5 questions)</div><ul><li>SQL, persistence, parameterized queries</li></ul></div>
+          <div class="block"><div class="block-label project">Project checklist</div><ul>
+            <li>SQLite replaces in-memory · timestamps on rows · verify via CLI/GUI</li>
+          </ul></div>
+        </div>
+
+        <!-- Stage 6 -->
+        <div class="stage">
+          <div class="stage-header">
+            <span class="stage-num">6</span>
+            <span class="stage-title">Wire frontend &amp; backend</span>
+            <span class="badge medium">medium</span>
+            <span class="stage-hours">~3 h</span>
+          </div>
+          <div class="block"><div class="block-label lessons">Lessons (5) — Postman & Network first</div><ul>
+            <li class="new">Postman / curl — save a request collection</li>
+            <li class="new">DevTools Network tab</li>
+            <li class="reuse">fetch() and JSON from the browser</li>
+            <li class="reuse">CORS on localhost and in prod</li>
+            <li class="new">Loading and error states in the UI</li>
+          </ul></div>
+          <div class="block"><div class="block-label sandbox">Sandbox (5)</div><ul>
+            <li>CORS on localhost</li><li>Read status code in Network tab</li><li>Save a Postman request</li><li>Handle fetch error in UI</li><li>Match curl output to browser request</li>
+          </ul></div>
+          <div class="block"><div class="block-label quiz">Quiz (5 questions)</div><ul><li>fetch, CORS, Network tab, API testing tools</li></ul></div>
+          <div class="block"><div class="block-label project">Project checklist</div><ul>
+            <li>Frontend uses fetch for all CRUD · loading/error states · Postman collection saved</li>
+          </ul></div>
+        </div>
+
+        <!-- Stage 7 -->
+        <div class="stage">
+          <div class="stage-header">
+            <span class="stage-num">7</span>
+            <span class="stage-title">Relations, search &amp; pagination</span>
+            <span class="badge heavy">heavy</span>
+            <span class="stage-hours">~5 h</span>
+          </div>
+          <div class="block"><div class="block-label lessons">Lessons (6)</div><ul>
+            <li class="reuse">Grow the system, don't restart</li>
+            <li class="reuse">One-to-many and foreign keys</li>
+            <li class="new">Many-to-many and junction tables</li>
+            <li class="new">Indexing — what and when</li>
+            <li class="reuse">Pagination (?page= &amp; ?limit=)</li>
+            <li class="reuse">Search API (?q= with parameterized WHERE)</li>
+          </ul></div>
+          <div class="block"><div class="block-label sandbox">Sandbox (5)</div><ul>
+            <li>Authentication vs authorization</li><li>Foreign keys</li><li>Junction table design</li><li>Pagination query params</li><li>Search query param</li>
+          </ul></div>
+          <div class="block"><div class="block-label quiz">Quiz (5 questions)</div><ul><li>1:N, M:N, indexes, pagination, search</li></ul></div>
+          <div class="block"><div class="block-label project">Project checklist</div><ul>
+            <li>M:N relation in schema · index on filtered column · paginated + searchable list endpoint</li>
+          </ul></div>
+        </div>
+
+        <!-- Stage 8 -->
+        <div class="stage">
+          <div class="stage-header">
+            <span class="stage-num">8</span>
+            <span class="stage-title">ORM, migrations &amp; seeding</span>
+            <span class="badge heavy">heavy</span>
+            <span class="stage-hours">~4.5 h</span>
+          </div>
+          <div class="block"><div class="block-label lessons">Lessons (5) — DB GUI first</div><ul>
+            <li class="new">DB GUI — schema view after migrations</li>
+            <li class="new">Why ORMs exist</li>
+            <li class="new">ORM queries — same routes, new data layer</li>
+            <li class="new">Migration files (versioned schema)</li>
+            <li class="new">Seed scripts for dev data</li>
+          </ul></div>
+          <div class="block"><div class="block-label sandbox">Sandbox (5)</div><ul>
+            <li>ORM vs raw SQL tradeoff</li><li>Write a migration</li><li>Run migration up</li><li>Seed dev data</li><li>Verify rows after seed</li>
+          </ul></div>
+          <div class="block"><div class="block-label quiz">Quiz (5 questions)</div><ul><li>ORM, migrations, seeding</li></ul></div>
+          <div class="block"><div class="block-label project">Project checklist</div><ul>
+            <li>≥2 migration files · 1 seed script · handlers use ORM · same JSON shape as before</li>
+          </ul></div>
+        </div>
+
+        <!-- Stage 9 -->
+        <div class="stage">
+          <div class="stage-header">
+            <span class="stage-num">9</span>
+            <span class="stage-title">Authentication &amp; authorization</span>
+            <span class="badge heavy">heavy</span>
+            <span class="stage-hours">~5 h</span>
+          </div>
+          <div class="block"><div class="block-label lessons">Lessons (5) — Postman before JWT</div><ul>
+            <li class="new">Postman — register / login / refresh collection</li>
+            <li class="reuse">Authentication basics + password hashing</li>
+            <li class="new">JWT access tokens</li>
+            <li class="new">Refresh tokens — why two tokens</li>
+            <li class="new">RBAC and auth middleware on routes</li>
+          </ul></div>
+          <div class="block"><div class="block-label sandbox">Sandbox (5)</div><ul>
+            <li>Auth vs authz</li><li>Storing passwords safely</li><li>Decode a JWT payload</li><li>Refresh token flow</li><li>403 vs 401</li>
+          </ul></div>
+          <div class="block"><div class="block-label quiz">Quiz (5 questions)</div><ul><li>Hashing, JWT, refresh, RBAC, middleware</li></ul></div>
+          <div class="block"><div class="block-label project">Project checklist</div><ul>
+            <li>register / login / refresh / me endpoints · protected routes · admin role on at least one route</li>
+          </ul></div>
+        </div>
+
+        <!-- Stage 10 -->
+        <div class="stage">
+          <div class="stage-header">
+            <span class="stage-num">10</span>
+            <span class="stage-title">Frontend application</span>
+            <span class="badge medium">medium</span>
+            <span class="stage-hours">~4 h</span>
+          </div>
+          <div class="block"><div class="block-label lessons">Lessons (5)</div><ul>
+            <li class="new">Client-side navigation (tabs, hash, or multi-page)</li>
+            <li class="new">Login and register screens</li>
+            <li class="new">Auth gate — redirect unauthenticated users</li>
+            <li class="new">Role-aware UI (hide admin actions)</li>
+            <li class="new">Search UI wired to paginated API</li>
+          </ul></div>
+          <div class="block"><div class="block-label sandbox">Sandbox (5)</div><ul>
+            <li>Switch views without reload</li><li>Store token client-side</li><li>Attach Authorization header</li><li>Hide element by role</li><li>Wire search input to API</li>
+          </ul></div>
+          <div class="block"><div class="block-label quiz">Quiz (5 questions)</div><ul><li>Navigation, auth UI, role-aware rendering</li></ul></div>
+          <div class="block"><div class="block-label project">Project checklist</div><ul>
+            <li>Multi-view app · login/register · search box · admin-only actions hidden for users</li>
+          </ul></div>
+        </div>
+
+        <!-- Stage 11 -->
+        <div class="stage">
+          <div class="stage-header">
+            <span class="stage-num">11</span>
+            <span class="stage-title">Testing &amp; deployment</span>
+            <span class="badge heavy">heavy</span>
+            <span class="stage-hours">~5 h</span>
+          </div>
+          <div class="block"><div class="block-label lessons">Lessons (5) — run tests locally first</div><ul>
+            <li class="new">Run tests locally (fail → fix → pass)</li>
+            <li class="reuse">Why tests exist + unit tests</li>
+            <li class="reuse">Integration tests (HTTP, auth, pagination)</li>
+            <li class="reuse">Deploy API and frontend (env in prod)</li>
+            <li class="reuse">CI pipeline and smoke test</li>
+          </ul></div>
+          <div class="block"><div class="block-label sandbox">Sandbox (5)</div><ul>
+            <li>Arrange, act, assert</li><li>Test services without HTTP</li><li>HTTP integration test</li><li>Test the sad path (401)</li><li>CI as a gate</li>
+          </ul></div>
+          <div class="block"><div class="block-label quiz">Quiz (≤5, from lessons + sandbox only)</div><ul><li>e.g. arrange/act/assert, 401 vs 403, env in prod</li></ul></div>
+          <div class="block"><div class="block-label project">Project checklist</div><ul>
+            <li>Tests in CI · public URLs · smoke test · tests cover auth, pagination, one relation query</li>
+          </ul></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="competitors">
+      <h2>Competitors — same breakdown</h2>
+      <p style="color:var(--muted);font-size:.88rem;margin:0 0 1rem;">Peers use different labels but the same idea: <strong>read → practice → assess → build</strong>.</p>
+
+      <div class="competitor-grid">
+
+        <div class="panel">
+          <div class="panel-head"><h3>Full Stack Open (parts 0–5)</h3><span class="meta">~90–120 h · 1 phonebook app · 15–20 h per part</span></div>
+          <div class="stage">
+            <div class="stage-header"><span class="stage-num">0</span><span class="stage-title">General info &amp; web fundamentals</span><span class="stage-hours">15–20 h</span></div>
+            <div class="block"><div class="block-label lessons">Chapters (5)</div><ul>
+              <li>General info · Fundamentals of web apps · Running software · Validating requests · Legacy styles</li>
+            </ul></div>
+            <div class="block"><div class="block-label sandbox">Exercises (6)</div><ul><li>Micro-steps on course setup</li></ul></div>
+          </div>
+          <div class="stage">
+            <div class="stage-header"><span class="stage-num">1</span><span class="stage-title">Introduction to React</span><span class="stage-hours">15–20 h</span></div>
+            <div class="block"><div class="block-label lessons">Chapters (~6)</div><ul>
+              <li>React intro · JSX · State · Events · Conditional render · Lists · Forms</li>
+            </ul></div>
+            <div class="block"><div class="block-label sandbox">Exercises (14)</div><ul><li>Course info app · Unicafe · Anecdotes (step-by-step)</li></ul></div>
+          </div>
+          <div class="stage">
+            <div class="stage-header"><span class="stage-num">2</span><span class="stage-title">Communicating with server</span><span class="stage-hours">15–20 h</span></div>
+            <div class="block"><div class="block-label lessons">Chapters (5)</div><ul>
+              <li>Rendering collections · Forms · Getting data · Altering data · Styles</li>
+            </ul></div>
+            <div class="block"><div class="block-label sandbox">Exercises (20)</div><ul><li>Phonebook frontend grows · fetch/axios</li></ul></div>
+          </div>
+          <div class="stage">
+            <div class="stage-header"><span class="stage-num">3</span><span class="stage-title">Node.js &amp; Express</span><span class="stage-hours">15–20 h</span></div>
+            <div class="block"><div class="block-label lessons">Chapters (~7)</div><ul>
+              <li>Node/npm · Express · REST backend · Database · Validation · Full-stack wire · Deploy</li>
+            </ul></div>
+            <div class="block"><div class="block-label sandbox">Exercises (22)</div><ul><li>Phonebook backend + DB + connect FE</li></ul></div>
+          </div>
+          <div class="stage">
+            <div class="stage-header"><span class="stage-num">4</span><span class="stage-title">Testing &amp; user admin</span><span class="stage-hours">15–20 h</span></div>
+            <div class="block"><div class="block-label lessons">Chapters (~6)</div><ul>
+              <li>Backend tests · Frontend tests · E2E intro · User admin · Token auth · localStorage</li>
+            </ul></div>
+            <div class="block"><div class="block-label sandbox">Exercises (23)</div><ul><li>Login flow · test suites grow</li></ul></div>
+          </div>
+          <div class="stage">
+            <div class="stage-header"><span class="stage-num">5</span><span class="stage-title">React deep dive</span><span class="stage-hours">15–20 h</span></div>
+            <div class="block"><div class="block-label lessons">Chapters (~6)</div><ul>
+              <li>propTypes · React Router · Custom hooks · Hooks deep dive · UI libs · Webpack</li>
+            </ul></div>
+            <div class="block"><div class="block-label sandbox">Exercises (23)</div><ul><li>Phonebook SPA matures</li></ul></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h3>The Odin Project — Foundations</h3><span class="meta">~80–120 h · 5 standalone projects</span></div>
+          <div class="stage">
+            <div class="stage-header"><span class="stage-num">§</span><span class="stage-title">Introduction + Prerequisites + Git</span></div>
+            <div class="block"><div class="block-label lessons">Lessons (12)</div><ul>
+              <li>How course works · Web dev intro · Mindset · Help · Community</li>
+              <li>How web works · Installations · Editors · CLI · Git setup</li>
+              <li>Intro to Git · Git basics</li>
+            </ul></div>
+          </div>
+          <div class="stage">
+            <div class="stage-header"><span class="stage-num">§</span><span class="stage-title">HTML Foundations</span></div>
+            <div class="block"><div class="block-label lessons">Lessons (7)</div><ul>
+              <li>Intro HTML/CSS · Elements · Boilerplate · Text · Lists · Links/images · Commit messages</li>
+            </ul></div>
+            <div class="block"><div class="block-label project">Project</div><ul><li>Recipes</li></ul></div>
+          </div>
+          <div class="stage">
+            <div class="stage-header"><span class="stage-num">§</span><span class="stage-title">CSS &amp; Flexbox</span></div>
+            <div class="block"><div class="block-label lessons">Lessons (9)</div><ul>
+              <li>Intro CSS · Cascade · Inspect · Box model · Block/inline · Flexbox intro · Grow/shrink · Axes · Alignment</li>
+            </ul></div>
+            <div class="block"><div class="block-label project">Project</div><ul><li>Landing page</li></ul></div>
+          </div>
+          <div class="stage">
+            <div class="stage-header"><span class="stage-num">§</span><span class="stage-title">JavaScript Basics</span></div>
+            <div class="block"><div class="block-label lessons">Lessons (14)</div><ul>
+              <li>Variables · Node install · Types/conditionals · DevTools · Functions · Problem solving · Errors</li>
+              <li>Clean code · Loops/arrays · DOM/events · Objects</li>
+            </ul></div>
+            <div class="block"><div class="block-label project">Projects (3)</div><ul><li>Rock Paper Scissors · Etch-a-Sketch · Calculator</li></ul></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h3>The Odin Project — Node path</h3><span class="meta">~120 h · 9 projects</span></div>
+          <div class="stage">
+            <div class="stage-header"><span class="stage-title">Intro &amp; Express</span></div>
+            <div class="block"><div class="block-label lessons">Lessons (13)</div><ul>
+              <li>Backend intro · Node.js · Getting started · Debugging · Env vars</li>
+              <li>Frameworks · Express · Routes · Controllers · Views · Deployment · Forms</li>
+            </ul></div>
+            <div class="block"><div class="block-label project">Projects (2)</div><ul><li>Basic informational site · Mini message board</li></ul></div>
+          </div>
+          <div class="stage">
+            <div class="stage-header"><span class="stage-title">PostgreSQL</span></div>
+            <div class="block"><div class="block-label lessons">Lessons (2)</div><ul><li>Installing PostgreSQL · Using PostgreSQL</li></ul></div>
+            <div class="block"><div class="block-label project">Project</div><ul><li>Inventory application</li></ul></div>
+          </div>
+          <div class="stage">
+            <div class="stage-header"><span class="stage-title">Auth, ORM, APIs</span></div>
+            <div class="block"><div class="block-label lessons">Lessons (5)</div><ul>
+              <li>Authentication basics · Prisma ORM · API basics · API security</li>
+            </ul></div>
+            <div class="block"><div class="block-label project">Projects (3)</div><ul><li>Members Only · File uploader · Blog API</li></ul></div>
+          </div>
+          <div class="stage">
+            <div class="stage-header"><span class="stage-title">Testing &amp; capstone</span></div>
+            <div class="block"><div class="block-label lessons">Lessons (2)</div><ul><li>Testing routes/controllers · Testing DB operations</li></ul></div>
+            <div class="block"><div class="block-label project">Projects (3)</div><ul><li>Where's Waldo · Messaging app · Odin-Book</li></ul></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h3>freeCodeCamp (4 web certs)</h3><span class="meta">~300 h listed each · 5 cert projects + exam per cert</span></div>
+          <div class="stage">
+            <div class="stage-header"><span class="stage-title">Responsive Web Design</span></div>
+            <div class="block"><div class="block-label lessons">Modules</div><ul><li>Many modules: lessons → workshops → labs → review → 20-Q quiz each</li></ul></div>
+            <div class="block"><div class="block-label project">Cert projects (5)</div><ul><li>Survey form · Tribute · Technical doc · Product landing · Portfolio</li></ul></div>
+          </div>
+          <div class="stage">
+            <div class="stage-header"><span class="stage-title">Relational Database</span></div>
+            <div class="block"><div class="block-label lessons">Courses (9 interactive)</div><ul>
+              <li>Bash boilerplate (170 steps) · Mario DB (165) · Bash scripting (222)</li>
+              <li>Student DB p1/p2 (140 each) · Bike rental (210) · Nano (40) · Git+SQL (240)</li>
+            </ul></div>
+            <div class="block"><div class="block-label project">Cert projects (5)</div><ul><li>Celestial bodies · World cup · Salon · Periodic table · Guessing game</li></ul></div>
+          </div>
+          <div class="stage">
+            <div class="stage-header"><span class="stage-title">Back End Development &amp; APIs</span></div>
+            <div class="block"><div class="block-label lessons">Modules</div><ul><li>Node · Express · middleware · MongoDB · Mongoose · microservices · CI</li></ul></div>
+            <div class="block"><div class="block-label project">Cert projects (5)</div><ul><li>5 API projects + exam</li></ul></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h3>CS50 Web · Codecademy · Boot.dev</h3><span class="meta">Condensed</span></div>
+          <div class="stage">
+            <div class="stage-header"><span class="stage-title">CS50 Web (9 weeks)</span></div>
+            <div class="block"><div class="block-label lessons">Weekly lectures</div><ul>
+              <li>W0 Git/HTML/CSS/JS · W1–2 Django · W3 SQL/ORM · W4 JS · W5–6 React · W7 security · W8–9 capstone</li>
+            </ul></div>
+            <div class="block"><div class="block-label project">Projects (9)</div><ul><li>One project per week + final</li></ul></div>
+          </div>
+          <div class="stage">
+            <div class="stage-header"><span class="stage-title">Codecademy Full-Stack (6 modules)</span></div>
+            <div class="block"><div class="block-label lessons">161 lessons in 51 units</div><ul>
+              <li>M1 HTML/CSS · M2 JS · M3 React · M4 Node/SQL · M5 full-stack · M6 interviews</li>
+            </ul></div>
+            <div class="block"><div class="block-label sandbox">96 projects + 141 quizzes</div><ul><li>~3 h per unit average</li></ul></div>
+          </div>
+          <div class="stage">
+            <div class="stage-header"><span class="stage-title">Boot.dev HTTP Servers (24 h)</span></div>
+            <div class="block"><div class="block-label lessons">Chapters (10)</div><ul>
+              <li>Servers · Routing · Architecture · JSON · Errors · Storage · Auth · Authz · Webhooks · Docs</li>
+            </ul></div>
+            <div class="block"><div class="block-label sandbox">~50 in-browser lessons</div><ul><li>Drills between reading blocks</li></ul></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <div class="note" style="margin-top:1.5rem">
+      <strong>Takeaway:</strong> CommitLoop's <strong>5 lessons + 5 sandbox + ≤5 quiz (lesson/sandbox sourced) + checklist</strong> per stage. Tooling lessons always precede the topic they validate. Heaviest stages: 7, 9, 11 (~5 h each).
+    </div>
+  </main>
+
+  <footer>CommitLoop content planning · June 2026 · Static report (no JS required)</footer>
+</body>
+</html>

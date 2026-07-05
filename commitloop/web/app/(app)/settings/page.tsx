@@ -37,7 +37,7 @@ export default function SettingsPage() {
       value: user?.repo ? `${user.repo.owner} / ${user.repo.name}` : "Not set",
       action: null,
     },
-    { label: "Track", value: "Track 1 — Fundamentals", action: null },
+    { label: "Track", value: "Track 1 — Web Systems", action: null },
     {
       label: "Community",
       value: "Discord",

@@ -1,0 +1,190 @@
+{
+  "slug": "stage-3-javascript",
+  "title": "Stage 3 — JavaScript & the DOM",
+  "goal": "Build interactive CRUD on mock data in the browser — debug with DevTools Elements and Console.",
+  "summary": "Selectors, events, dynamic UI, mock data. The screen behaves like an app before any server exists.",
+  "estimatedMinutes": 210,
+  "nextStage": "stage-4-api",
+  "lesson": {
+    "pages": [
+      {
+        "id": "devtools-elements-console",
+        "title": "DevTools: Elements and Console",
+        "file": "lesson/01-devtools-elements-console.md"
+      },
+      {
+        "id": "what-is-the-dom",
+        "title": "What the DOM is",
+        "file": "lesson/02-what-is-the-dom.md"
+      },
+      {
+        "id": "rendering-data",
+        "title": "Rendering data on the page",
+        "file": "lesson/03-rendering-data.md"
+      },
+      {
+        "id": "forms-and-events",
+        "title": "Forms, clicks, and events",
+        "file": "lesson/04-forms-and-events.md"
+      },
+      {
+        "id": "mock-crud",
+        "title": "Mock CRUD in memory",
+        "file": "lesson/05-mock-crud.md"
+      }
+    ]
+  },
+  "sandbox": {
+    "intro": "sandbox/00-intro.md",
+    "steps": [
+      {
+        "id": "devtools-console",
+        "title": "Verify with Console",
+        "file": "sandbox/01-devtools-console.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "Your list looks wrong but `console.log(workouts)` shows the right count. Where is the bug?",
+          "choices": [
+            { "id": "a", "text": "The render function — data is fine, DOM wasn't updated correctly" },
+            { "id": "b", "text": "The Git repository" },
+            { "id": "c", "text": "SQLite didn't save the row" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Console confirms data; Elements shows DOM. If they disagree, fix render."
+        }
+      },
+      {
+        "id": "dom-role",
+        "title": "What the DOM is",
+        "file": "sandbox/02-dom-role.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "JavaScript changes what the user sees by updating…",
+          "choices": [
+            { "id": "a", "text": "The DOM — the browser's live representation of the page" },
+            { "id": "b", "text": "The Git repository directly" },
+            { "id": "c", "text": "The SQL database file" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "The DOM is the tree of elements the browser renders. Your JS reads and updates it."
+        }
+      },
+      {
+        "id": "event-handler",
+        "title": "Responding to a submit",
+        "file": "sandbox/03-event-handler.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "A form's submit button is clicked. What should happen first in your code?",
+          "choices": [
+            { "id": "a", "text": "Prevent the default page reload and run your handler" },
+            { "id": "b", "text": "Immediately reload the entire browser" },
+            { "id": "c", "text": "Delete the database" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "`event.preventDefault()` stops the browser refresh so your JavaScript controls what happens."
+        }
+      },
+      {
+        "id": "rerender",
+        "title": "Update the list after add",
+        "file": "sandbox/04-rerender.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "User adds an item to your mock array. The list on screen is stale. Fix?",
+          "choices": [
+            { "id": "a", "text": "Re-run your render function so the DOM reflects the array" },
+            { "id": "b", "text": "Ask the user to manually refresh the browser every time" },
+            { "id": "c", "text": "Add a second array that never updates" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "When data changes, re-render (or update the DOM). That's the core UI loop."
+        }
+      },
+      {
+        "id": "separation-hint",
+        "title": "Separate data from display",
+        "file": "sandbox/05-separation-hint.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "Good structure: one function loads/updates data, another renders HTML. Why?",
+          "choices": [
+            { "id": "a", "text": "Later you swap mock data for fetch() without rewriting the whole UI" },
+            { "id": "b", "text": "Git requires exactly two functions" },
+            { "id": "c", "text": "Browsers cannot run one function" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Separating data access from rendering is what makes Stage 6's API hookup a small change."
+        }
+      }
+    ]
+  },
+  "checklist": [
+    { "id": "mock-data", "label": "Mock data array with sample records" },
+    { "id": "render-fn", "label": "`renderWorkouts()` updates the DOM from the array" },
+    { "id": "add-form", "label": "Form adds a new item to mock data and re-renders the list" },
+    { "id": "empty-state", "label": "Empty state when the list has zero items" },
+    { "id": "devtools-used", "label": "Verified behavior in DevTools Elements and Console" },
+    { "id": "committed", "label": "Work committed in meaningful chunks" }
+  ],
+  "quiz": {
+    "passScore": 0.8,
+    "questions": [
+      {
+        "id": "devtools-console",
+        "prompt": "What is the Console tab best for in this stage?",
+        "choices": [
+          { "id": "a", "text": "Reading errors and logging values while debugging JavaScript" },
+          { "id": "b", "text": "Editing SQL queries" },
+          { "id": "c", "text": "Deploying the API to production" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Console shows errors and lets you inspect data while building DOM logic."
+      },
+      {
+        "id": "dom-update",
+        "prompt": "After changing a JavaScript array, why might the page still look wrong?",
+        "choices": [
+          { "id": "a", "text": "The DOM wasn't updated to reflect the new data" },
+          { "id": "b", "text": "Arrays cannot hold objects" },
+          { "id": "c", "text": "HTML forbids lists" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Data and display are separate — you must re-render or patch the DOM when data changes."
+      },
+      {
+        "id": "prevent-default",
+        "prompt": "What does `event.preventDefault()` on a form submit do?",
+        "choices": [
+          { "id": "a", "text": "Stops the browser's default full-page reload" },
+          { "id": "b", "text": "Deletes all form fields" },
+          { "id": "c", "text": "Sends the form to GitHub" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Without it, the page reloads and your JavaScript state is lost."
+      },
+      {
+        "id": "mock-why",
+        "prompt": "Why use mock data before building an API?",
+        "choices": [
+          { "id": "a", "text": "You can design and test the UI independently" },
+          { "id": "b", "text": "Mock data is required for production" },
+          { "id": "c", "text": "APIs cannot return lists" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Building the screen first separates UI problems from network and server problems."
+      },
+      {
+        "id": "query-selector",
+        "prompt": "What does `document.querySelector(\"#workout-list\")` return?",
+        "choices": [
+          { "id": "a", "text": "The first DOM element with id=\"workout-list\"" },
+          { "id": "b", "text": "All workout records from the database" },
+          { "id": "c", "text": "The Express server process" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "querySelector finds one element in the live DOM tree by CSS selector."
+      }
+    ]
+  }
+}

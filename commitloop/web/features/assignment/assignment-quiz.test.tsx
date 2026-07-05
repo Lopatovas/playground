@@ -7,8 +7,8 @@ import type { Assignment } from "@/lib/api";
 function quizAssignment(overrides?: Partial<Assignment>): Assignment {
   return {
     stage: {
-      slug: "stage-1-git-fundamentals",
-      title: "Stage 1 — Git Fundamentals",
+      slug: "stage-1-git",
+      title: "Stage 1 — Git & Collaboration",
       goal: "Develop daily engineering habits.",
     },
     step: "quiz",

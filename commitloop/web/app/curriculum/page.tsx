@@ -27,9 +27,9 @@ export default function CurriculumPage() {
         <PublicHeader />
       )}
 
-      <h1 style={{ margin: "0 0 0.5rem" }}>Track 1 — Fundamentals</h1>
+      <h1 style={{ margin: "0 0 0.5rem" }}>Track 1 — Web Systems</h1>
       <p style={{ color: "var(--muted)", marginBottom: "1.5rem" }}>
-        Eight stages: UI, API, database, then deploy, test, and grow the system.
+        Twelve stages: Git, HTML/CSS, JavaScript, API, SQL, wire-up, data modeling, ORM, auth, frontend app, then test and deploy — one evolving repo.
       </p>
 
       {track === null ? (

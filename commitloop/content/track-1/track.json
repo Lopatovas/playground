@@ -1,15 +1,19 @@
 {
   "id": "track-1",
-  "title": "Fundamentals",
-  "subtitle": "Full-stack fundamentals",
+  "title": "Web Systems",
+  "subtitle": "One app, every layer — Git, UI, API, SQL, ORM, auth, tests, deploy",
   "stages": [
     { "slug": "stage-0-onboarding", "order": 0, "available": true },
-    { "slug": "stage-1-git-fundamentals", "order": 1, "available": true },
-    { "slug": "stage-2-frontend", "order": 2, "available": true },
-    { "slug": "stage-3-rest-api", "order": 3, "available": true },
-    { "slug": "stage-4-database", "order": 4, "available": true },
-    { "slug": "stage-5-deployment", "order": 5, "available": true },
-    { "slug": "stage-6-testing", "order": 6, "available": true },
-    { "slug": "stage-7-expansion", "order": 7, "available": true }
+    { "slug": "stage-1-git", "order": 1, "available": true },
+    { "slug": "stage-2-html-css", "order": 2, "available": true },
+    { "slug": "stage-3-javascript", "order": 3, "available": true },
+    { "slug": "stage-4-api", "order": 4, "available": true },
+    { "slug": "stage-5-sql", "order": 5, "available": true },
+    { "slug": "stage-6-fullstack-wire", "order": 6, "available": true },
+    { "slug": "stage-7-data-modeling", "order": 7, "available": true },
+    { "slug": "stage-8-orm", "order": 8, "available": true },
+    { "slug": "stage-9-auth", "order": 9, "available": true },
+    { "slug": "stage-10-frontend-app", "order": 10, "available": true },
+    { "slug": "stage-11-ship", "order": 11, "available": true }
   ]
 }

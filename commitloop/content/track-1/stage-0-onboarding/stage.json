@@ -4,7 +4,7 @@
   "goal": "Enter a working engineering environment and ship your first commit.",
   "summary": "Set up GitHub, your tools, and your project repo. Ship a real first commit.",
   "estimatedMinutes": 90,
-  "nextStage": "stage-1-git-fundamentals",
+  "nextStage": "stage-1-git",
   "lesson": {
     "pages": [
       {
@@ -18,9 +18,14 @@
         "file": "lesson/02-tools-of-the-trade.md"
       },
       {
+        "id": "web-stack-landscape",
+        "title": "The web stack landscape",
+        "file": "lesson/03-web-stack-landscape.md"
+      },
+      {
         "id": "choose-your-project",
         "title": "Choose your project",
-        "file": "lesson/03-choose-your-project.md"
+        "file": "lesson/04-choose-your-project.md"
       }
     ]
   },
@@ -87,6 +92,22 @@
           "correctChoiceId": "a",
           "explanation": "`git push` sends commits that exist locally up to the remote. `git pull` is the download direction; `git commit` saves locally."
         }
+      },
+      {
+        "id": "verify-repo-linked",
+        "title": "Link your repo in CommitLoop",
+        "file": "sandbox/05-verify-repo-linked.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "Why must you link your GitHub repository in the CommitLoop dashboard?",
+          "choices": [
+            { "id": "a", "text": "So CommitLoop can read your real commit history as proof of work" },
+            { "id": "b", "text": "So Git installs automatically on your machine" },
+            { "id": "c", "text": "So the database creates tables for you" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "CommitLoop tracks progress from your GitHub repo. Linking connects your commits to your account."
+        }
       }
     ]
   },
@@ -134,15 +155,26 @@
         "explanation": "Git runs locally and tracks history. GitHub is a hosting service for Git repositories plus collaboration features."
       },
       {
-        "id": "commit-meaning",
-        "prompt": "What is a commit?",
+        "id": "devtools-purpose",
+        "prompt": "You changed CSS but the page still looks wrong. Which tool do you open first?",
         "choices": [
-          { "id": "a", "text": "A saved snapshot of your project at a point in time, with a message" },
-          { "id": "b", "text": "A copy of your files uploaded to the cloud" },
-          { "id": "c", "text": "A request to merge code" }
+          { "id": "a", "text": "Chrome DevTools — Elements panel to inspect and live-edit styles" },
+          { "id": "b", "text": "Postman — to send HTTP requests" },
+          { "id": "c", "text": "DB Browser — to run SELECT queries" }
         ],
         "correctChoiceId": "a",
-        "explanation": "A commit is an immutable snapshot plus metadata (author, message, parent). It is the atom of Git history."
+        "explanation": "DevTools Elements is for frontend structure and CSS. Postman and DB tools are for API and database layers."
+      },
+      {
+        "id": "stack-flow",
+        "prompt": "In Track 1's stack, how does the frontend get workout data from storage?",
+        "choices": [
+          { "id": "a", "text": "Browser calls the Express API over HTTP; the API reads the database" },
+          { "id": "b", "text": "JavaScript opens the SQLite file directly in the browser" },
+          { "id": "c", "text": "GitHub stores the rows and serves them to HTML" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "The frontend talks HTTP to the API; the API owns database access. Layers stay separated."
       }
     ]
   }

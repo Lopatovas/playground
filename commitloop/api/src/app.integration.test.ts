@@ -145,7 +145,7 @@ describe("API integration", () => {
     const agent = await loginAgent(app, user.id);
 
     const res = await agent.post("/assignment/advance").expect(200);
-    expect(res.body.stage.slug).toBe("stage-1-git-fundamentals");
+    expect(res.body.stage.slug).toBe("stage-1-git");
     expect(res.body.step).toBe("lesson");
     expect(res.body.quizPassed).toBe(false);
     expect(res.body.allChecklistDone).toBe(false);
@@ -391,13 +391,13 @@ describe("API integration", () => {
 
   it("GET /tracks/track-1/stages reflects user progress when logged in", async () => {
     const user = await seedUser(prisma, {
-      currentStage: "stage-1-git-fundamentals",
+      currentStage: "stage-1-git",
     });
     const agent = await loginAgent(app, user.id);
 
     const res = await agent.get("/tracks/track-1/stages").expect(200);
     const current = res.body.stages.find(
-      (s: { slug: string }) => s.slug === "stage-1-git-fundamentals",
+      (s: { slug: string }) => s.slug === "stage-1-git",
     );
     expect(current?.status).toBe("current");
   });

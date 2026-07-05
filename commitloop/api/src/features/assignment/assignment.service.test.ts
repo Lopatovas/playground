@@ -96,7 +96,7 @@ describe("buildAssignment", () => {
       true,
     )!;
     expect(done.allChecklistDone).toBe(true);
-    expect(done.nextHint).toContain("Git Fundamentals");
+    expect(done.nextHint).toContain("Git & Collaboration");
   });
 
   it("hints quiz after sandbox and blocks project access until passed", () => {

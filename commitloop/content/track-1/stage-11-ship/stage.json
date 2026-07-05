@@ -1,0 +1,191 @@
+{
+  "slug": "stage-11-ship",
+  "title": "Stage 11 — Ship It",
+  "goal": "Graduate Track 1: tests green locally and in CI, API and web deployed to public URLs, smoke-tested end to end.",
+  "summary": "Run tests first, then deploy. The finale merges testing and deployment into one ship stage.",
+  "estimatedMinutes": 300,
+  "lesson": {
+    "pages": [
+      {
+        "id": "run-tests-locally",
+        "title": "Run tests locally",
+        "file": "lesson/01-run-tests-locally.md"
+      },
+      {
+        "id": "why-test-unit",
+        "title": "Why test and unit tests",
+        "file": "lesson/02-why-test-unit.md"
+      },
+      {
+        "id": "integration-auth-pagination",
+        "title": "Integration tests: auth, pagination, relations",
+        "file": "lesson/03-integration-auth-pagination.md"
+      },
+      {
+        "id": "deploy-api-web",
+        "title": "Deploy API and web",
+        "file": "lesson/04-deploy-api-web.md"
+      },
+      {
+        "id": "ci-smoke",
+        "title": "CI and smoke test",
+        "file": "lesson/05-ci-smoke.md"
+      }
+    ]
+  },
+  "sandbox": {
+    "intro": "sandbox/00-intro.md",
+    "steps": [
+      {
+        "id": "run-npm-test",
+        "title": "Run npm test",
+        "file": "sandbox/01-run-npm-test.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "Before pushing or deploying, you run `npm test` locally. One test fails. What do you do first?",
+          "choices": [
+            { "id": "a", "text": "Read the failure, fix code or test, re-run until green" },
+            { "id": "b", "text": "Deploy anyway — CI will fix it" },
+            { "id": "c", "text": "Delete the failing test file" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Local red tests are cheaper than broken main. Fix before push."
+        }
+      },
+      {
+        "id": "arrange-act-assert",
+        "title": "Arrange, act, assert",
+        "file": "sandbox/02-arrange-act-assert.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "In a unit test, what does the \"assert\" step do?",
+          "choices": [
+            { "id": "a", "text": "Checks the outcome matches what you expected" },
+            { "id": "b", "text": "Sets up the database" },
+            { "id": "c", "text": "Deploys to production" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Arrange sets up inputs, act runs the code under test, assert verifies the result."
+        }
+      },
+      {
+        "id": "auth-sad-path",
+        "title": "Test 401 and 403",
+        "file": "sandbox/03-auth-sad-path.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "Integration test: GET /me with no token expects 401. Admin route as user expects…",
+          "choices": [
+            { "id": "a", "text": "403 — authenticated but forbidden" },
+            { "id": "b", "text": "200 — roles don't matter in tests" },
+            { "id": "c", "text": "404 — user not found" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Lock in auth sad paths so RBAC can't regress silently."
+        }
+      },
+      {
+        "id": "env-secrets",
+        "title": "Secrets and deploy",
+        "file": "sandbox/04-env-secrets.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "Production JWT_SECRET should live…",
+          "choices": [
+            { "id": "a", "text": "In the host's environment / secrets UI — not in git" },
+            { "id": "b", "text": "Committed to main in .env" },
+            { "id": "c", "text": "Hardcoded in the frontend bundle" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Secrets in git leak forever. Inject at deploy time."
+        }
+      },
+      {
+        "id": "smoke-test",
+        "title": "Smoke test after deploy",
+        "file": "sandbox/05-smoke-test.md",
+        "checkpoint": {
+          "kind": "text",
+          "prompt": "After deploying, what is the simplest check that the API is alive? (one GET path)",
+          "placeholder": "/health or /...",
+          "accept": [
+            "/health",
+            "GET /health",
+            "curl /health",
+            "/api/health"
+          ],
+          "explanation": "A health endpoint confirms the process is up before you debug the full UI flow."
+        }
+      }
+    ]
+  },
+  "checklist": [
+    { "id": "tests-local", "label": "`npm test` passes locally including auth and pagination tests" },
+    { "id": "auth-tests", "label": "Integration tests cover 401 (no token) and 403 (wrong role)" },
+    { "id": "pagination-test", "label": "Test proves page 2 differs from page 1 when total > limit" },
+    { "id": "relation-test", "label": "Test covers at least one relation/join query from Stage 7" },
+    { "id": "ci-green", "label": "GitHub Actions runs tests on push — green on main" },
+    { "id": "deployed", "label": "API and web on public HTTPS URLs in README" },
+    { "id": "smoke-live", "label": "Created a record through the live site end to end" }
+  ],
+  "quiz": {
+    "passScore": 0.8,
+    "questions": [
+      {
+        "id": "test-before-deploy",
+        "prompt": "Why run tests locally before deploying?",
+        "choices": [
+          { "id": "a", "text": "Catch regressions cheaply before users or CI see broken code" },
+          { "id": "b", "text": "Deploy automatically fails if you skip local tests" },
+          { "id": "c", "text": "Tests replace the need for deployment" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Local green tests mean deploy and CI are validating known-good behavior."
+      },
+      {
+        "id": "unit-vs-integration",
+        "prompt": "Unit test vs integration test — which hits real HTTP routes?",
+        "choices": [
+          { "id": "a", "text": "Integration tests — supertest against the Express app" },
+          { "id": "b", "text": "Unit tests — they always use fetch from the browser" },
+          { "id": "c", "text": "Neither — Track 1 has no HTTP tests" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Integration tests exercise routing, middleware, and handlers together."
+      },
+      {
+        "id": "401-test",
+        "prompt": "Why test GET /workouts without a token expecting 401?",
+        "choices": [
+          { "id": "a", "text": "Ensures auth middleware can't be accidentally removed" },
+          { "id": "b", "text": "401 means the workout was not found" },
+          { "id": "c", "text": "Tests should only cover happy paths" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Auth sad-path tests document security behavior you rely on."
+      },
+      {
+        "id": "env-deploy",
+        "prompt": "What belongs in production environment variables, not source code?",
+        "choices": [
+          { "id": "a", "text": "DATABASE_URL, JWT_SECRET, WEB_URL for CORS" },
+          { "id": "b", "text": "All React component names" },
+          { "id": "c", "text": "Every route handler function" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Config and secrets differ per environment. Code stays the same."
+      },
+      {
+        "id": "graduation",
+        "prompt": "Track 1 graduation means you have…",
+        "choices": [
+          { "id": "a", "text": "Live URLs, tests in CI, auth, and a full-stack app in one repo" },
+          { "id": "b", "text": "Memorized every npm package" },
+          { "id": "c", "text": "Finished without ever using Git branches" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Breadth + habits + one real shipped project. Specialization comes in Track 2."
+      }
+    ]
+  }
+}

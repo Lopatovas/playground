@@ -1,0 +1,189 @@
+{
+  "slug": "stage-2-html-css",
+  "title": "Stage 2 — HTML & CSS",
+  "goal": "Build a responsive static app shell with semantic HTML, flexbox, and CSS variables.",
+  "summary": "DevTools first, then structure and layout. A real-looking shell on desktop and mobile — no JavaScript yet.",
+  "estimatedMinutes": 180,
+  "nextStage": "stage-3-javascript",
+  "lesson": {
+    "pages": [
+      {
+        "id": "devtools-elements",
+        "title": "Chrome DevTools — Elements",
+        "file": "lesson/01-devtools-elements.md"
+      },
+      {
+        "id": "semantic-html",
+        "title": "Semantic HTML",
+        "file": "lesson/02-semantic-html.md"
+      },
+      {
+        "id": "flexbox",
+        "title": "Flexbox layout",
+        "file": "lesson/03-flexbox.md"
+      },
+      {
+        "id": "css-variables",
+        "title": "CSS variables",
+        "file": "lesson/04-css-variables.md"
+      },
+      {
+        "id": "responsive-layout",
+        "title": "Responsive layout",
+        "file": "lesson/05-responsive-layout.md"
+      }
+    ]
+  },
+  "sandbox": {
+    "intro": "sandbox/00-intro.md",
+    "steps": [
+      {
+        "id": "devtools-inspect",
+        "title": "Inspect and live-edit in Elements",
+        "file": "sandbox/01-devtools-inspect.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "You tweak CSS in DevTools and the page updates, but refresh loses the change. Why?",
+          "choices": [
+            { "id": "a", "text": "DevTools edits are temporary — source files in your repo are the truth" },
+            { "id": "b", "text": "Chrome blocks CSS on refresh" },
+            { "id": "c", "text": "HTML files cannot load stylesheets" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Live edits prove a fix works. Copy the working rule into styles.css and commit it."
+        }
+      },
+      {
+        "id": "semantic-tags",
+        "title": "Use semantic regions",
+        "file": "sandbox/02-semantic-tags.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "Which element should wrap the primary content of the page (one per page)?",
+          "choices": [
+            { "id": "a", "text": "<main>" },
+            { "id": "b", "text": "<div class=\"main\">" },
+            { "id": "c", "text": "<header>" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "<main> is the semantic region for primary content. <header> is for top bars; divs carry no meaning."
+        }
+      },
+      {
+        "id": "flex-direction",
+        "title": "Lay out a header with flex",
+        "file": "sandbox/03-flex-direction.md",
+        "checkpoint": {
+          "kind": "text",
+          "prompt": "Which CSS property makes flex items line up in a row by default on the main axis?",
+          "placeholder": "flex-...",
+          "accept": [
+            "flex-direction: row",
+            "flex-direction row",
+            "display: flex"
+          ],
+          "explanation": "`display: flex` creates the container; `flex-direction: row` (the default) lays children out horizontally."
+        }
+      },
+      {
+        "id": "css-var-theme",
+        "title": "Theme with CSS variables",
+        "file": "sandbox/04-css-var-theme.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "You want one accent color used by buttons, links, and borders. Best approach?",
+          "choices": [
+            { "id": "a", "text": "Define --color-accent on :root and reference var(--color-accent) in rules" },
+            { "id": "b", "text": "Copy the same hex into every selector" },
+            { "id": "c", "text": "Use inline style on each element" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "CSS variables on :root give a single source of truth for the theme."
+        }
+      },
+      {
+        "id": "media-query",
+        "title": "Add a responsive breakpoint",
+        "file": "sandbox/05-media-query.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "Mobile-first CSS means…",
+          "choices": [
+            { "id": "a", "text": "Default styles target narrow screens; min-width media queries enhance for wider viewports" },
+            { "id": "b", "text": "You write a separate HTML file for phones" },
+            { "id": "c", "text": "JavaScript detects the device and loads different CSS" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Start simple for small viewports, then use @media (min-width: …) to add layout complexity as space grows."
+        }
+      }
+    ]
+  },
+  "checklist": [
+    { "id": "semantic-html", "label": "Semantic HTML shell (header, main, nav, footer)" },
+    { "id": "flexbox-layout", "label": "Flexbox layout for header and main content area" },
+    { "id": "css-variables", "label": "CSS variables on :root used across styles" },
+    { "id": "responsive-breakpoint", "label": "At least one responsive breakpoint (mobile + desktop OK)" },
+    { "id": "devtools-validated", "label": "Layout validated in DevTools Elements at ~375px and desktop width" }
+  ],
+  "quiz": {
+    "passScore": 0.8,
+    "questions": [
+      {
+        "id": "elements-panel",
+        "prompt": "Spacing looks wrong on a card. Which DevTools panel do you use first?",
+        "choices": [
+          { "id": "a", "text": "Elements — select the node and inspect box model / flex overlay" },
+          { "id": "b", "text": "Network — inspect HTTP headers" },
+          { "id": "c", "text": "Application — inspect localStorage" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Elements shows DOM structure, applied CSS, and the box model for layout debugging."
+      },
+      {
+        "id": "label-input",
+        "prompt": "Why pair <label for=\"name\"> with <input id=\"name\">?",
+        "choices": [
+          { "id": "a", "text": "Associates the label with the input — correct structure and a larger click target" },
+          { "id": "b", "text": "Required for CSS flexbox to work" },
+          { "id": "c", "text": "Git needs matching ids to commit forms" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Labels tied to inputs are correct semantic form structure."
+      },
+      {
+        "id": "flex-main-axis",
+        "prompt": "In a row flex container, justify-content aligns items along…",
+        "choices": [
+          { "id": "a", "text": "The main axis (horizontal for flex-direction: row)" },
+          { "id": "b", "text": "The cross axis only" },
+          { "id": "c", "text": "The z-index stack" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "justify-content distributes along the main axis; align-items handles the cross axis."
+      },
+      {
+        "id": "var-syntax",
+        "prompt": "How do you use a custom property --color-accent in a rule?",
+        "choices": [
+          { "id": "a", "text": "color: var(--color-accent);" },
+          { "id": "b", "text": "color: --color-accent;" },
+          { "id": "c", "text": "color: $color-accent;" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Custom properties are referenced with var(--name), optionally with a fallback."
+      },
+      {
+        "id": "viewport-meta",
+        "prompt": "What does <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" /> do?",
+        "choices": [
+          { "id": "a", "text": "Tells mobile browsers to use the device width so your CSS layout applies correctly" },
+          { "id": "b", "text": "Loads a second CSS file for phones" },
+          { "id": "c", "text": "Enables JavaScript in the head" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Without viewport meta, mobile browsers assume a desktop-width page and shrink it."
+      }
+    ]
+  }
+}

@@ -1,303 +1,296 @@
-# CommitLoop Curriculum Proposal
+# Track 1 — Curriculum Spec
 
-**Status:** Draft for discussion — not yet implemented in `track.json`.
+**Status:** Implemented in `track.json` (12 stages, 0–11). Legacy 8-stage folders archived under `_archive/`.
 
-**Audience for Track 1:** Students who can already program (e.g. 2nd-year CS: Java, C#, algorithms) but do not yet understand web development, professional tooling, or how to choose frontend vs backend depth.
+**Product model:** One track in this phase. **Track 2 (later)** = specialization — mobile, frontend, or backend depth. No sub-tracks inside Track 1.
 
-**Design principles (informed by TOP, MDN, Full Stack Open, freeCodeCamp, Codecademy):**
+**Audience:** Can already code (e.g. CS student: Java, C#, algorithms) but needs a **broad, end-to-end** picture of web-based systems — not framework mastery.
 
-1. **Map before maze** — explain the whole field before specializing.
-2. **Breadth over depth in Track 1** — touch many concepts thinly; master them in Track 2+.
-3. **One repo, evolving app** — same project throughout; each stage adds a *room*, not a reset.
-4. **Transferable spine** — HTTP, REST, JSON, auth *ideas*, Git, env vars, validation taught as shared vocabulary.
-5. **Multiple competencies, not one CRUD** — graduates can *name* what they learned.
-6. **Explicit fork** — Track 1 ends with an informed Track 2 choice.
+**Method:** One repo, one evolving app (student picks entity: workouts, recipes, etc.). Each stage adds capability. **Lesson → Sandbox → Quiz → Project** unchanged.
+
+**Depth rule:** Cover topics **in the round** — enough to use them correctly and know what they are. Skip advanced rabbit holes (microservices, bundle splitting, lazy loading, etc.).
 
 ---
 
-## Track overview
+## Stage loop rules
 
-| Track | Title | Promise |
-|-------|-------|---------|
-| **Track 1** | Web Fundamentals | Understand what web development is, use daily tools, build one app through every layer, deploy and test it, choose what to learn next. |
-| **Track 2 — Frontend** | Frontend Depth | Same app: polish vanilla JS → React (or Vue) → state → routing → UI testing. |
-| **Track 2 — Backend** | Backend Depth | Same app: layered API → real auth → migrations → caching → OpenAPI. |
-| **Track 2 — Product** | Growing the System | Auth, user-scoped data, relationships, pagination (current stage-7 content). |
-| **Track 2 — Structure** | Maintainable Code | Validation, layering, refactors (archived `stage-5-structure`). |
+### Quiz (max 5 questions)
 
-Tracks 2 can be taken in any order after Track 1. All use the same student repo.
+- **Hard cap: 5 questions** per stage quiz. No exceptions in Track 1.
+- **Every question must be answerable** from that stage’s **lesson pages** and **sandbox steps** only — no surprise topics, no “nice to know” tangents.
+- Pick the **5 highest-signal checks**: one concept per lesson/sandbox cluster when possible; prefer what they need for the project checklist.
+- **Pass threshold:** 80% (`passScore: 0.8`) → 4/5 correct. With only 5 questions, each one matters — write distractors from common mistakes seen in sandbox checkpoints.
+- Sandbox checkpoint prompts are fair game for quiz reuse (rephrased, not copy-pasted verbatim if avoidable).
 
----
+### Tooling before subject
 
-## Track 1 — Web Fundamentals (12 stages)
+When a stage introduces **professional tooling** (DevTools, Postman/curl, DB CLI/GUI, test runner, etc.), teach **how to use the tool first**, then the domain topic — students must be able to **validate** what they built.
 
-**Graduation artifact:** Live HTTPS app + GitHub repo + CI green + README with architecture diagram + written Track 2 choice.
+| Stage | Tooling lesson(s) come **before** |
+|-------|-----------------------------------|
+| 0 | Tooling map before landscape deep-dive; Git/terminal before “choose project” |
+| 2 | DevTools **Elements** before semantic HTML/CSS exercises |
+| 3 | DevTools **Elements + Console** before DOM/CRUD lessons |
+| 4 | **curl** (or API client) right after HTTP basics — before Express handlers |
+| 5 | **DB CLI + GUI** before SQL CRUD and swap-from-in-memory |
+| 6 | **Postman + Network tab** before fetch/CORS/UI wiring |
+| 8 | **DB GUI** (schema view) before ORM/migration lessons |
+| 9 | **Postman collection for auth endpoints** before JWT/RBAC theory depth |
+| 11 | **Run tests locally** before CI/deploy (see failing test → fix → green) |
 
-**Graduation competencies (student can explain each):**
-
-- How a browser request becomes a response (DNS, HTTP, JSON)
-- What REST is and why APIs look the way they do
-- What frontend vs backend vs database each own
-- Git workflow (branch, PR, meaningful commits)
-- DevTools Network tab and `curl` for debugging
-- Why validation exists on server and client
-- Sessions vs tokens (conceptually)
-- Why tests and CI exist
-
-### Stage 0 — Enter the profession
-
-**Goal:** Working environment + mental map of web development.
-
-**Teach:** How CommitLoop works; roles (frontend, backend, full-stack, DevOps); how the web works (browser, server, DB); pick project idea.
-
-**Project delta:** Repo created, README with “what I’m building,” first commit pushed.
-
-**Inspired by:** FSO Part 0, Codecademy “Overview of Web Development,” TOP “How Does the Web Work?”
+Rule of thumb: if the student would ask *“how do I know this worked?”*, the prior lesson page should have already shown the tool.
 
 ---
 
-### Stage 1 — Git & collaboration
+## Graduation skills (must-have checklist)
 
-**Goal:** Git as a daily tool, not a one-time setup.
+Student can **do and explain** each area below in the context of their own project.
 
-**Teach:** Staging, commits, branches, feature-branch → PR → merge; commit messages; `.gitignore`.
+### Git
+- Common commands: `status`, `add`, `commit`, `push`, `pull`, `log`, `diff`, `switch` / `checkout`, `merge`
+- Branching: feature branches, keeping `main` deployable
+- Branching strategies (practical): feature branches + PRs; when `dev` makes sense later
+- Pull requests: open, review, merge
 
-**Project delta:** `api/` + `web/` scaffold; one PR merged.
+### Frontend (vanilla — no React/Vue in Track 1)
+- **HTML** — correct **semantic** structure (`header`, `main`, `form`, `label`, etc.)
+- **CSS** — flexbox layout, **CSS variables**, **responsive** basics (works on narrow viewports)
+- **JavaScript** — `querySelector`, dynamic DOM (create/update/remove “components” as elements)
+- **Backend communication** — `fetch`, JSON, handling loading/error/success
+- **Page navigation** — multi-view app (show/hide sections or multi-page) without a framework
 
-**Reuse:** Current `stage-1-git-fundamentals` (minor tone tweak for CS audience).
+### Professional tooling
+Students know **which tool to reach for** — Track 1 uses JavaScript/Express/SQLite in projects, but tooling lessons name **transferable skills**:
+- **Chrome DevTools** — Elements, Console, Network tab (debug frontend + inspect API calls from the browser)
+- **API testing** — Postman, Insomnia, or Bruno (or `curl`); same workflow on any stack
+- **Database inspection** — CLI + GUI (e.g. `sqlite3`, DB Browser for SQLite, or TablePlus / pgAdmin for Postgres)
+- **Git** — already covered in Stage 1
 
----
+### Backend
+- **API architecture** — routes, handlers, thin separation (routes → logic → data access)
+- **Request pipeline / middleware (concept)** — each request passes through a chain before the handler; Express `app.use()` is the JS implementation; same idea exists in ASP.NET, Java filters, etc.
+- **HTTP status codes** — when `200`, `201`, `400`, `401`, `403`, `404`, `500`
+- **Structured JSON responses** — consistent success/error shape (not ad-hoc strings)
+- **DB connections** — pool / client lifecycle, config via **environment variables**
+- **SQL first**, then **ORM** — same endpoints; swap implementation
+- **Pagination & search** — list endpoints accept query params (`page`/`limit`, `q`); simple SQL `LIMIT`/`OFFSET` and `WHERE` filters
 
-### Stage 2 — The web UI
+### Databases (relational)
+- Tables, columns, types, primary keys
+- **Timestamps** — why `created_at` / `updated_at` matter
+- **One-to-many** and **many-to-many** (junction table)
+- **Indexing** — what indexes do; when a query benefits
+- SQL first: `SELECT`, `INSERT`, `UPDATE`, `DELETE`, `JOIN`, parameterized queries
+- **Migrations** — versioned schema changes (files, not manual drift)
+- **Seeding** — scripts to populate dev/test data reproducibly
 
-**Goal:** Frontend literacy — structure, style, interaction — without a backend.
+### Authentication & authorization
+- **Register / login** flows (UI + API)
+- **JWT access tokens** + **refresh tokens** (why two tokens)
+- **Role-based access** — e.g. `user` vs `admin`; protected routes return `401` / `403`
 
-**Teach:** Semantic HTML; CSS fundamentals + **layout (flexbox)**; DOM & events; mock data; empty states.
+### Testing
+- **Unit tests** — validation, pure functions, services without HTTP
+- **Integration tests** — HTTP endpoints (supertest or equivalent), test DB
 
-**Project delta:** Styled page that lists and creates records from an in-browser array. Looks intentional, not a raw `<table>`.
-
-**Gap vs today:** Add CSS/layout stage weight (MDN modules 2–5, TOP Flexbox + landing page).
-
-**Reuse:** `stage-2-frontend` + new CSS lessons.
-
----
-
-### Stage 3 — HTTP & the API
-
-**Goal:** Shared language for all web dev — HTTP, REST, JSON.
-
-**Teach:** Request/response, methods, status codes; Express routes; in-memory store; **`curl` + DevTools Network** debugging.
-
-**Project delta:** API on :3001; `GET`/`POST` on in-memory data; tested with curl before UI wiring.
-
-**Reuse:** `stage-3-rest-api` + explicit tooling lesson.
-
----
-
-### Stage 4 — Data & persistence
-
-**Goal:** Why databases exist; SQL as the persistence layer.
-
-**Teach:** Tables, keys, CRUD, parameterized queries; SQLite; swap in-memory → SQL.
-
-**Project delta:** Data survives API restart.
-
-**Reuse:** `stage-4-database`.
-
----
-
-### Stage 5 — Contracts & structure
-
-**Goal:** Professional discipline — validation, errors, thin layering.
-
-**Teach:** Never trust the client; `400` vs `500`; separate route / handler / data access; frontend loading & error states.
-
-**Project delta:** Invalid input rejected; API folders extracted; UI shows loading/error.
-
-**Reuse:** `_archive/stage-5-structure` (lightened — refactor, not rewrite).
+### End-to-end (implicit)
+- App runs locally across UI + API + DB
+- **Deployed** to public URLs (light deploy stage — env in prod, smoke test)
 
 ---
 
-### Stage 6 — Auth & security (concepts)
+## Explicitly out of scope (Track 1)
 
-**Goal:** Understand authentication and security — shared FE/BE vocabulary.
+Save for Track 2 specialization or never at intro level:
 
-**Teach:** Authentication vs authorization; sessions vs JWT (ideas); cookies; CORS; env secrets; password hashing (concept).
-
-**Project delta:** Minimal auth stub (e.g. hardcoded user or session cookie) OR protected route returning `401` without login — **not** production OAuth.
-
-**Move from:** Current `stage-7-expansion` auth lessons (thin version).
-
-**Inspired by:** FSO Part 4 (token auth), Codecademy security module (conceptual).
-
----
-
-### Stage 7 — Data modeling
-
-**Goal:** Real apps have shape — relationships, not one table.
-
-**Teach:** Foreign keys, `JOIN`, second entity (e.g. categories); optional user scoping preview.
-
-**Project delta:** Second table + FK; list shows related data.
-
-**Move from:** `stage-7-expansion` relationships content.
+- **Accessibility (WCAG, screen readers, audit tools)** — Track 2 Frontend
+- React, Vue, Angular, Svelte
+- Mobile (React Native, Flutter)
+- Microservices, message queues, complex backend topology
+- Lazy loading, code splitting, bundle analysis
+- GraphQL, gRPC
+- Docker/Kubernetes depth
+- OAuth “Sign in with Google/GitHub” (optional footnote only)
+- E2E browser automation (Playwright/Cypress) — optional mention
+- Advanced performance tuning, caching layers, CDN theory
 
 ---
 
-### Stage 8 — Connect & polish the slice
+## Track 1 — 12 stages (0–11)
 
-**Goal:** Wire UI ↔ API ↔ DB with async UX.
+| # | Slug (proposed) | Title | Covers |
+|---|-----------------|-------|--------|
+| 0 | `stage-0-onboarding` | Onboarding & the web stack | CommitLoop, **professional tooling overview**, web landscape, pick project |
+| 1 | `stage-1-git` | Git & collaboration | Commands, branches, PR workflow, `.gitignore` |
+| 2 | `stage-2-html-css` | HTML & CSS | Semantics, flexbox, CSS variables, **responsive layout** |
+| 3 | `stage-3-javascript` | JavaScript & the DOM | Selectors, events, dynamic UI, mock CRUD; **Chrome DevTools** (Elements, Console) |
+| 4 | `stage-4-api` | API architecture & HTTP | Express, REST, status codes, **structured responses**, **request pipeline / middleware**, env vars, in-memory store |
+| 5 | `stage-5-sql` | Relational databases (SQL) | Tables, columns, **timestamps**, connections, parameterized SQL, SQLite; **inspect DB** (CLI + GUI) |
+| 6 | `stage-6-fullstack-wire` | Wire frontend & backend | `fetch`, CORS, loading/error states; **Network tab**, **Postman/curl** |
+| 7 | `stage-7-data-modeling` | Relations, search & pagination | **1:N**, **M:N**, joins, indexes; **`?page=` / `?q=` search** |
+| 8 | `stage-8-orm` | ORM, migrations & seeding | ORM replaces raw SQL; **migration files** + **seed script** |
+| 9 | `stage-9-auth` | Authentication & authorization | Register/login, **JWT + refresh**, password hashing, **RBAC** |
+| 10 | `stage-10-frontend-app` | Frontend application | **Multi-view navigation**, auth screens, role-aware UI, **search UI** |
+| 11 | `stage-11-ship` | Testing & deployment | Unit + integration tests, CI; deploy API + web; smoke test |
 
-**Teach:** `fetch` patterns; re-render; empty/loading/error/success states; “why frameworks exist” preview (no React yet).
-
-**Project delta:** End-to-end flow feels like a product; short lesson on React/Vue/Angular landscape.
-
-**Reuse:** Parts of `stage-2-frontend` connect lesson + structure stage UI state.
-
----
-
-### Stage 9 — Deployment
-
-**Goal:** Software runs somewhere other than localhost.
-
-**Teach:** Env vars, builds, host API + web, prod CORS, Postgres in prod, smoke tests.
-
-**Project delta:** Live URLs in README.
-
-**Reuse:** `stage-5-deployment`.
+**Graduation artifact:** Public repo + live app + tests in CI + README describing stack and one architecture diagram.
 
 ---
 
-### Stage 10 — Testing & CI
-
-**Goal:** Quality is automated, not manual clicking.
-
-**Teach:** Unit vs integration tests; supertest; sad paths; GitHub Actions gate.
-
-**Project delta:** `npm test` in CI; badge or screenshot in README.
-
-**Reuse:** `stage-6-testing`.
-
----
-
-### Stage 11 — Choose your path
-
-**Goal:** Informed specialization — Track 2 selection.
-
-**Teach:** Framework landscape; frontend vs backend career paths; what Track 2 options cover; soft skills (reading docs, debugging across layers).
-
-**Project delta:** README “Architecture” section (ASCII or mermaid diagram); written paragraph: which Track 2 and why.
-
-**Inspired by:** TOP “Choose Your Path Forward,” MDN Extensions intro.
-
-**Assessment:** Quiz on the map + project checklist (no new code feature required).
-
----
-
-## Track 1 project spine (one app, growing)
+## Project spine (what grows in the repo)
 
 ```text
-Stage 0   repo + README
-Stage 1   api/ web/ + git workflow
-Stage 2   styled UI + mock CRUD
-Stage 3   + Express in-memory API
-Stage 4   + SQLite persistence
-Stage 5   + validation, layers, UI states
-Stage 6   + auth stub / 401 gate
-Stage 7   + second table + FK
-Stage 8   + polished async UX + framework preview
-Stage 9   + production deploy
-Stage 10  + tests + CI
-Stage 11  + architecture doc + Track 2 choice
+0   repo, README, first push; tooling map (DevTools, Postman, DB GUI)
+1   api/ + web/ folders; feature branch + merged PR
+2   semantic HTML + flexbox + CSS variables + responsive (mobile-width OK)
+3   JS CRUD on mock data; DevTools Elements/Console
+4   Express API, in-memory, JSON envelope, .env; middleware chain (json parser, logger)
+5   SQLite, timestamps, SQL in handlers; inspect DB with CLI/GUI
+6   web/ uses fetch; Network tab + Postman/curl for same requests
+7   related tables, M:N, index; GET list supports ?page= & ?q= search
+8   ORM + migration files + seed script (dev data)
+9   users table, JWT + refresh, RBAC on routes
+10  login/register, app shell, navigation, search box wired to API
+11  vitest + supertest; GitHub Actions; production URLs
 ```
 
-Same entity throughout (workouts, recipes, etc.) — but the **app grows in conceptual surface area**, not just row count.
+Example domain (student choice): **Workouts** with **Categories** (M:N), **Users** with roles, `created_at` on everything.
 
 ---
 
-## Track 2 — Frontend Depth (example)
+## Stage notes (teaching intent)
 
-**Prerequisite:** Track 1 complete.
+### Stage 0 — Onboarding
+- **Lesson order:** (1) How CommitLoop works → (2) **Tooling map** (editor, terminal, Git, DevTools, Postman, DB GUI) → (3) Web stack landscape diagram → (4) Choose project.
+- Tooling map **before** landscape — students know *what they'll use to verify each layer* before the diagram names those layers.
+- Assumes they can code; skips “what is a variable.”
+- **Quiz (≤5):** CommitLoop flow, one-repo rule, Git vs GitHub, tooling purpose — all from lessons + onboarding sandbox.
 
-| Stage | Title | Project delta |
-|-------|-------|----------------|
-| 0 | Modules, bundler, TypeScript optional | Organized `web/` src |
-| 1 | React rewrite | Same features, components |
-| 2 | State when it hurts | Context or Zustand |
-| 3 | Routing & forms at scale | Multi-page flow |
-| 4 | UI testing | RTL or Playwright on critical path |
+### Stage 1 — Git
+- Expand current `stage-1-git-fundamentals` if needed: PR flow, branching strategy prose.
+- **Outcome:** daily Git habit, not one-time setup.
 
-Alternative branch: Vue or Angular instead of React (same stage shape, different lessons).
+### Stage 2 — HTML & CSS
+- **Lesson order:** (1) DevTools **Elements** (inspect/style live) → (2) Semantic HTML → (3) Flexbox → (4) CSS variables → (5) Responsive layout + static shell.
+- **New content** vs today — current `stage-2-frontend` is JS-heavy, light on CSS.
+- **Not in Track 1:** WCAG, screen readers, accessibility audits → Track 2 Frontend.
+- Project: static shell that *looks* like an app on desktop and phone-width; validate layout in Elements.
+
+### Stage 3 — JavaScript
+- **Lesson order:** (1) DevTools **Elements + Console** → (2) What the DOM is → (3) Rendering data → (4) Forms & events → (5) Mock CRUD in memory.
+- Sets up “components” as functions that return/update DOM — no JSX.
+- Every sandbox step should be debuggable via Console; quiz pulls from DOM lessons + sandbox checkpoints.
+
+### Stage 4 — API
+- **Lesson order:** (1) Client, server, HTTP → (2) **curl** (first way to hit an endpoint) → (3) REST & resources → (4) Structured JSON responses + **middleware pipeline** → (5) Express routes + in-memory store → (6) Environment variables.
+- Response envelope early: `{ data }` / `{ error: { code, message } }`.
+- **`process.env`, `.env.example`, `PORT`, `DATABASE_URL` placeholder** in final lesson; student verifies routes with curl before any UI wire.
+- Reuse much of `stage-3-rest-api`; split “connect UI” out to Stage 6.
+
+### Stage 5 — SQL
+- **Lesson order:** (1) **Inspect the DB** (CLI + GUI — open empty DB, run SELECT) → (2) Why persist → (3) Tables, rows, PKs → (4) Timestamps → (5) SQL CRUD + swap in-memory for SQLite.
+- After every API write, student re-runs SELECT in CLI/GUI to confirm rows — habit starts here.
+- Single main table; users/auth tables come later.
+
+### Stage 6 — Wire
+- **Lesson order:** (1) **Postman/curl** (save GET/POST collection) → (2) DevTools **Network tab** → (3) fetch + JSON → (4) CORS → (5) Loading/error states in UI.
+- Student proves API with Postman *before* debugging fetch in the browser; Network tab explains what fetch is doing.
+- Full request path before relations/auth complexity.
+
+### Stage 7 — Data modeling
+- Pull from `stage-7-expansion` relationships + new indexing lesson.
+- M:N example required in project checklist.
+- **Pagination:** `GET /workouts?page=1&limit=20` — SQL `LIMIT`/`OFFSET`.
+- **Search:** `GET /workouts?q=run` — parameterized `WHERE name LIKE` (or `ILIKE` on Postgres); keep it simple, not full-text search engines.
+
+### Stage 8 — ORM, migrations & seeding
+- **Lesson order:** (1) **DB GUI — schema view** (tables/columns after migrations) → (2) Why ORMs exist → (3) ORM queries (same routes, new layer) → (4) Migration files → (5) Seed scripts.
+- **New stage** — not in shipped track.
+- Never “just edit the DB by hand”; after each migration, refresh GUI and confirm schema.
+- Project checklist: at least **2 migrations** (initial + one alter) and **one seed script**.
+
+### Stage 9 — Auth
+- **Lesson order:** (1) **Postman — register/login/refresh collection** → (2) Auth basics + password hashing → (3) JWT access tokens → (4) Refresh tokens → (5) RBAC + auth middleware.
+- Pull from `stage-7-expansion` auth content; extend for **refresh tokens** + **RBAC**.
+- Backend-first: endpoints proven in Postman before Stage 10 UI.
+
+### Stage 10 — Frontend app
+- **Client-side navigation** (tabs, hash routes, or multi-page — student choice).
+- Login gate: redirect unauthenticated users.
+- Hide admin actions when role !== `admin`.
+- **Search UI** — input debounced or on submit, calls paginated/search API from Stage 7.
+
+### Stage 11 — Ship
+- **Lesson order:** (1) **Run tests locally** (watch one fail, fix, pass) → (2) Why tests / unit tests → (3) Integration tests (auth, pagination, relations) → (4) Deploy API + web → (5) CI + smoke test.
+- Merge `stage-6-testing` + `stage-5-deployment`.
+- Tests must cover auth sad paths (`401`, `403`), pagination/search query params, and one relation query.
+- Quiz: mix of “what to test” from lessons + sandbox assertions (e.g. arrange/act/assert, sad-path status codes).
 
 ---
 
-## Track 2 — Backend Depth (example)
+## Track 2 (future — not this phase)
 
-| Stage | Title | Project delta |
-|-------|-------|----------------|
-| 0 | Layered API | routes / services / repos |
-| 1 | Real authentication | sessions or JWT end-to-end |
-| 2 | Migrations & Postgres | schema evolution |
-| 3 | Caching & performance basics | optional Redis |
-| 4 | OpenAPI & contract tests | documented API |
+After Track 1, student picks **one** specialization track (same repo continues):
 
----
+| Track 2 | Example depth |
+|---------|----------------|
+| **Frontend** | React/Vue rewrite, state management, **accessibility (WCAG, audits)**, UI testing |
+| **Backend** | Layered architecture, caching, OpenAPI, Postgres ops |
+| **Mobile** | React Native / Expo consuming existing API |
 
-## Track 2 — Product Growth
-
-Move current **`stage-7-expansion`** here in full: user-scoped data, pagination, incremental feature branches.
+Track 1 must **not** require picking a Track 2 path to graduate.
 
 ---
 
-## What changes from current `track.json`
+## Current repo vs this spec
 
-| Current | Proposal |
-|---------|----------|
+| Shipped today (`track.json`) | This spec |
+|------------------------------|-----------|
 | 8 stages (0–7) | 12 stages (0–11) |
-| Stage 7 = expansion in Track 1 | Expansion → Track 2 Product |
-| Structure archived | Structure → Track 1 stage 5 + Track 2 optional |
-| Thin CSS / no landscape | Stages 0 & 2 add map + layout |
-| Auth at end / optional | Auth concepts in Track 1 stage 6 |
-| No graduation fork | Stage 11 explicit |
+| Thin CSS | Dedicated HTML/CSS stage |
+| No ORM stage | Stage 8 ORM |
+| Auth in expansion stage 7 | Stages 9–10 auth + auth UI |
+| No relations/indexing focus | Stage 7 explicit |
+| No structured API responses | Stage 4 explicit |
+| Deploy + testing separate | Combined in stage 11 |
+| `_archive/stage-5-structure` | Ideas folded into stages 4, 6, 8 (light layering) |
+
+**Reuse:** ~60% of existing markdown can be split, moved, or extended. **New writing:** stages 2, 8, 10, landscape + tooling in 0, responsive CSS, middleware-as-concept, pagination/search, migrations/seeding, DevTools/Postman/DB GUI lessons, timestamps/indexing/M:N depth, refresh tokens, RBAC.
 
 ---
 
-## Content reuse map
+## Tooling lessons (where they land)
 
-| Existing folder | Proposal |
-|-----------------|----------|
-| `stage-0-onboarding` | Stage 0 (+ new landscape lesson) |
-| `stage-1-git-fundamentals` | Stage 1 |
-| `stage-2-frontend` | Stages 2 & 8 (split UI vs connect) |
-| `stage-3-rest-api` | Stage 3 |
-| `stage-4-database` | Stage 4 |
-| `_archive/stage-5-structure` | Stage 5 |
-| `stage-5-deployment` | Stage 9 |
-| `stage-6-testing` | Stage 10 |
-| `stage-7-expansion` | Track 2 Product (+ thin parts → stages 6–7) |
+| Tool | Stage | Outcome |
+|------|-------|---------|
+| Chrome DevTools — Elements | 2–3 | Inspect HTML/CSS; see DOM updates after JS |
+| Chrome DevTools — Console | 3 | Read errors; debug with `console.log` |
+| Chrome DevTools — Network | 6 | See fetch requests, status codes, JSON bodies |
+| Postman / Insomnia / Bruno | 6 | Test API without UI; save requests; share collection |
+| `curl` | 4, 6 | Quick terminal checks; works everywhere |
+| DB CLI (`sqlite3`, `psql`) | 5 | Run SQL directly; verify API writes |
+| DB GUI (DB Browser, TablePlus, pgAdmin) | 5, 8 | Visual schema + rows; inspect after migrations |
 
----
-
-## Platform copy (Track 1 subtitle)
-
-> **Track 1 — Web Fundamentals:** For students who can code but don’t yet speak web. One app, every layer, daily tools, live deploy — then choose your depth.
+Track 1 exercises use **Express + SQLite** — students who later pick **.NET** or **Java** reuse the same tools (Postman, DB GUI, DevTools for any frontend) and the same **concepts** (middleware pipeline, migrations, JWT).
 
 ---
 
-## Open questions
+## Content work order (suggested)
 
-1. **CS audience tone** — skip “what is a variable” everywhere; assume IDE comfort.
-2. **Stage count** — 12 may feel long; could merge 6+7 or 9+10 if we want 10 stages.
-3. **React in Track 1?** — Proposal says no; preview only in stage 8. React is Track 2 Frontend stage 1.
-4. **Mongo vs SQL in Track 1** — keep SQLite for simplicity; Postgres at deploy (current deployment content).
+1. Lock stage slugs and `track.json` (12 entries).
+2. Stage 0 — landscape + tooling map.
+3. Split stage 2 → HTML/CSS (responsive) + stage 3 JS (DevTools).
+4. Extend stage 4 — structured responses + **middleware as concept** + Express examples.
+5. Extend stage 5 — timestamps + DB inspection; stage 7 — pagination + search.
+6. Write stage 8 — ORM + **migrations + seeding** (explicit project steps).
+7. Extend stage 9–10 — JWT refresh + RBAC + navigation + search UI.
+8. Stage 6 — Postman + Network tab lesson.
+9. Merge deploy + testing → stage 11.
+10. Archive old `stage-7-expansion`; absorb auth/relations/search pieces.
+11. `npm run content:check` + walk one stage yourself.
 
 ---
 
-## Next implementation steps
+## Platform copy (when implemented)
 
-1. Approve stage list and graduation competencies.
-2. Update `track.json` and create/rename stage folders.
-3. Write new content: landscape (0), CSS layout (2), tooling (3), choose-path (11).
-4. Split/merge existing markdown per reuse map.
-5. Run `npm run content:check` and update tests.
-6. Add Track 2 stubs to `content/track-2/` when ready.
+> **Track 1 — Web Systems:** One app, every layer — Git, UI, API, SQL, ORM, auth, tests, deploy. Broad strokes so you can specialize later.

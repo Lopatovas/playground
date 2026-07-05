@@ -7,11 +7,11 @@ describe("content loader", () => {
   it("loads track manifest", () => {
     const track = loadTrackManifest("track-1");
     expect(track?.id).toBe("track-1");
-    expect(track?.stages.length).toBeGreaterThanOrEqual(2);
+    expect(track?.stages.length).toBe(12);
   });
 
   it("loads stage markdown and manifest", () => {
-    const stage = loadStageContent("track-1", "stage-1-git-fundamentals");
+    const stage = loadStageContent("track-1", "stage-1-git");
     const lessonText = stage?.lesson.pages.map((p) => p.body).join("\n") ?? "";
     expect(lessonText).toContain("git add");
     expect(stage?.quiz.questions.length).toBeGreaterThanOrEqual(3);

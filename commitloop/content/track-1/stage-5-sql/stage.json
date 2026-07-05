@@ -1,0 +1,186 @@
+{
+  "slug": "stage-5-sql",
+  "title": "Stage 5 — Relational Databases (SQL)",
+  "goal": "Replace in-memory storage with SQLite — inspect rows with CLI/GUI and prove data survives restarts.",
+  "summary": "Tables, primary keys, timestamps, parameterized SQL. Persistence before the UI connects.",
+  "estimatedMinutes": 210,
+  "nextStage": "stage-6-fullstack-wire",
+  "lesson": {
+    "pages": [
+      {
+        "id": "inspect-db",
+        "title": "Inspect the database (CLI + GUI)",
+        "file": "lesson/01-inspect-db.md"
+      },
+      {
+        "id": "why-persist",
+        "title": "Why data must outlive the process",
+        "file": "lesson/02-why-persist.md"
+      },
+      {
+        "id": "tables-and-primary-keys",
+        "title": "Tables, rows, and primary keys",
+        "file": "lesson/03-tables-and-primary-keys.md"
+      },
+      {
+        "id": "timestamps",
+        "title": "Timestamps",
+        "file": "lesson/04-timestamps.md"
+      },
+      {
+        "id": "sql-crud-swap",
+        "title": "SQL CRUD and swap in-memory",
+        "file": "lesson/05-sql-crud-swap.md"
+      }
+    ]
+  },
+  "sandbox": {
+    "intro": "sandbox/00-intro.md",
+    "steps": [
+      {
+        "id": "inspect-db",
+        "title": "Verify with SELECT",
+        "file": "sandbox/01-inspect-db.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "curl POST returns 201 but GET returns an empty list. SELECT * FROM workouts shows the row. What's wrong?",
+          "choices": [
+            { "id": "a", "text": "GET handler reads from the wrong source — DB has data, handler doesn't query it" },
+            { "id": "b", "text": "SQLite cannot store rows" },
+            { "id": "c", "text": "created_at column blocks SELECT" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Direct SQL confirms the row exists. If GET is empty, the handler isn't reading the DB."
+        }
+      },
+      {
+        "id": "primary-key",
+        "title": "Primary key purpose",
+        "file": "sandbox/02-primary-key.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "What is a primary key?",
+          "choices": [
+            { "id": "a", "text": "A unique identifier for each row" },
+            { "id": "b", "text": "The password for the database" },
+            { "id": "c", "text": "The first column you add alphabetically" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Primary keys let you reference one specific record reliably."
+        }
+      },
+      {
+        "id": "sql-select",
+        "title": "Read all rows",
+        "file": "sandbox/03-sql-select.md",
+        "checkpoint": {
+          "kind": "text",
+          "prompt": "SQL to read every column from table `workouts`.",
+          "placeholder": "SELECT ...",
+          "accept": ["SELECT * FROM workouts", "SELECT * FROM workouts;"],
+          "explanation": "`SELECT * FROM workouts` returns all columns and rows."
+        }
+      },
+      {
+        "id": "parameterized",
+        "title": "Parameterized queries",
+        "file": "sandbox/04-parameterized.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "Why use `?` placeholders instead of string concatenation in SQL?",
+          "choices": [
+            { "id": "a", "text": "Prevents SQL injection from malicious input" },
+            { "id": "b", "text": "Makes queries run slower on purpose" },
+            { "id": "c", "text": "SQLite forbids INSERT without ?" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Never build SQL with template strings from user input."
+        }
+      },
+      {
+        "id": "restart-test",
+        "title": "Prove persistence",
+        "file": "sandbox/05-restart-test.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "After swapping to SQLite, you restart the API. curl GET still returns data. What changed?",
+          "choices": [
+            { "id": "a", "text": "Data is stored on disk, not only in RAM" },
+            { "id": "b", "text": "Express caches everything in the browser" },
+            { "id": "c", "text": "GET requests now create data" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "The database file persists across process restarts."
+        }
+      }
+    ]
+  },
+  "checklist": [
+    { "id": "db-table", "label": "SQLite table created with `created_at` timestamp" },
+    { "id": "api-uses-db", "label": "GET/POST use SQL instead of in-memory array" },
+    { "id": "parameterized", "label": "INSERT uses `?` placeholders, not string concat" },
+    { "id": "inspect-habit", "label": "Verified writes with SELECT in CLI or GUI" },
+    { "id": "persistence-proof", "label": "Data survives API restart (curl GET)" },
+    { "id": "committed", "label": "Schema and swap committed with clear message" }
+  ],
+  "quiz": {
+    "passScore": 0.8,
+    "questions": [
+      {
+        "id": "inspect-why",
+        "prompt": "Why run SELECT in sqlite3 after curl POST?",
+        "choices": [
+          { "id": "a", "text": "Confirms the row actually landed in the database file" },
+          { "id": "b", "text": "SELECT is required before every curl command" },
+          { "id": "c", "text": "It replaces the need for GET /workouts" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Direct SQL inspection catches INSERT bugs curl status codes can hide."
+      },
+      {
+        "id": "crud-sql",
+        "prompt": "POST /workouts maps to which SQL operation?",
+        "choices": [
+          { "id": "a", "text": "INSERT" },
+          { "id": "b", "text": "SELECT" },
+          { "id": "c", "text": "DROP TABLE" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Create → INSERT. Read → SELECT. Update → UPDATE. Delete → DELETE."
+      },
+      {
+        "id": "sqlite-why",
+        "prompt": "Why SQLite for local development?",
+        "choices": [
+          { "id": "a", "text": "Single file, zero setup, real SQL" },
+          { "id": "b", "text": "It only works in production" },
+          { "id": "c", "text": "It replaces the need for an API" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "SQLite is a real relational DB in a file — perfect for learning."
+      },
+      {
+        "id": "timestamps",
+        "prompt": "Why add `created_at` with DEFAULT CURRENT_TIMESTAMP?",
+        "choices": [
+          { "id": "a", "text": "Records when each row was created without extra INSERT code" },
+          { "id": "b", "text": "It makes the primary key auto-increment" },
+          { "id": "c", "text": "SQLite requires timestamps on every table" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Database defaults set created_at automatically on INSERT."
+      },
+      {
+        "id": "not-null",
+        "prompt": "What does `NOT NULL` on a column mean?",
+        "choices": [
+          { "id": "a", "text": "Every row must have a value for that column" },
+          { "id": "b", "text": "The column is hidden from SELECT" },
+          { "id": "c", "text": "Only nulls are allowed" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "The database rejects rows missing required fields."
+      }
+    ]
+  }
+}

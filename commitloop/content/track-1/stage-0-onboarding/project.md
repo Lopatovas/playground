@@ -41,4 +41,4 @@ In your CommitLoop dashboard, connect GitHub and link this repository (owner + n
 
 ## Outcome
 
-You are inside a working codebase, GitHub is connected, and CommitLoop can see your activity. You're ready for Stage 1, where Git becomes a daily habit.
+You are inside a working codebase, GitHub is connected, and CommitLoop can see your activity. You're ready for Stage 1 — Git & Collaboration, where Git becomes a daily habit.

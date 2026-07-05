@@ -1,0 +1,190 @@
+{
+  "slug": "stage-10-frontend-app",
+  "title": "Stage 10 — Frontend Application",
+  "goal": "Turn the web folder into a multi-view app with login, auth gates, role-aware UI, and search — vanilla JavaScript only.",
+  "summary": "No React. Navigation, auth screens, and search wired to the API you proved in Postman.",
+  "estimatedMinutes": 240,
+  "nextStage": "stage-11-ship",
+  "lesson": {
+    "pages": [
+      {
+        "id": "client-navigation",
+        "title": "Client-side navigation",
+        "file": "lesson/01-client-navigation.md"
+      },
+      {
+        "id": "login-register-screens",
+        "title": "Login and register screens",
+        "file": "lesson/02-login-register-screens.md"
+      },
+      {
+        "id": "auth-gate",
+        "title": "The auth gate",
+        "file": "lesson/03-auth-gate.md"
+      },
+      {
+        "id": "role-aware-ui",
+        "title": "Role-aware UI",
+        "file": "lesson/04-role-aware-ui.md"
+      },
+      {
+        "id": "search-ui",
+        "title": "Search UI",
+        "file": "lesson/05-search-ui.md"
+      }
+    ]
+  },
+  "sandbox": {
+    "intro": "sandbox/00-intro.md",
+    "steps": [
+      {
+        "id": "show-hide-views",
+        "title": "Show and hide views",
+        "file": "sandbox/01-show-hide-views.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "Vanilla JS multi-view app: user clicks \"Settings\". Simplest navigation pattern?",
+          "choices": [
+            { "id": "a", "text": "Hide all sections, show the settings section (or update hash route)" },
+            { "id": "b", "text": "Reload the entire page from the server for every click" },
+            { "id": "c", "text": "Install React Router" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Track 1 uses show/hide sections or hash routes — no framework router required."
+        }
+      },
+      {
+        "id": "token-storage",
+        "title": "Storing tokens",
+        "file": "sandbox/02-token-storage.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "After login, where should the frontend keep the access token for fetch calls?",
+          "choices": [
+            { "id": "a", "text": "Memory or localStorage — sent as Authorization Bearer header" },
+            { "id": "b", "text": "In the URL query string on every page" },
+            { "id": "c", "text": "Hardcoded in index.html" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Bearer tokens in memory or localStorage match the JWT API from Stage 9. Never expose tokens in URLs."
+        }
+      },
+      {
+        "id": "auth-gate-check",
+        "title": "Redirect when logged out",
+        "file": "sandbox/03-auth-gate-check.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "User opens /app without a valid token. What should the client do?",
+          "choices": [
+            { "id": "a", "text": "Show login view — don't render protected content" },
+            { "id": "b", "text": "Show the app anyway; API will error later" },
+            { "id": "c", "text": "Delete the database" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Auth gate runs before protected views. Call GET /me or check stored token on app boot."
+        }
+      },
+      {
+        "id": "hide-admin-ui",
+        "title": "Hide admin actions",
+        "file": "sandbox/04-hide-admin-ui.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "User role is `user`, not `admin`. Delete-user button should…",
+          "choices": [
+            { "id": "a", "text": "Not render in the DOM — UI hides what they can't do" },
+            { "id": "b", "text": "Always show — security is only the API's job" },
+            { "id": "c", "text": "Show but disable CSS only" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "API enforces 403, but good UX hides actions the user cannot perform. Check role from /me."
+        }
+      },
+      {
+        "id": "search-debounce",
+        "title": "Search input",
+        "file": "sandbox/05-search-debounce.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "Search box calls GET /workouts?q=run. Best first approach to avoid spamming the API?",
+          "choices": [
+            { "id": "a", "text": "Search on form submit or debounce input (~300ms)" },
+            { "id": "b", "text": "fetch on every keypress with zero delay" },
+            { "id": "c", "text": "Never call the API — filter only client-side mock data" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Submit or debounce keeps requests reasonable. Wire to the paginated search API from Stage 7."
+        }
+      }
+    ]
+  },
+  "checklist": [
+    { "id": "app-shell", "label": "App shell with navigation between list, detail/form, and settings views" },
+    { "id": "login-register", "label": "Login and register forms call API and store tokens" },
+    { "id": "auth-gate", "label": "Unauthenticated users see login — not the main app" },
+    { "id": "role-ui", "label": "Admin-only controls hidden unless role is admin" },
+    { "id": "search-ui", "label": "Search input calls API with ?q= and shows results" },
+    { "id": "logout", "label": "Logout clears tokens and returns to login view" }
+  ],
+  "quiz": {
+    "passScore": 0.8,
+    "questions": [
+      {
+        "id": "navigation-pattern",
+        "prompt": "Vanilla JS multi-view navigation without React typically uses…",
+        "choices": [
+          { "id": "a", "text": "Show/hide DOM sections or hash-based routes (#/list)" },
+          { "id": "b", "text": "JSX components only" },
+          { "id": "c", "text": "A separate HTML file per button click with full server round-trip required" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Single-page feel is achievable with plain DOM manipulation or hash routing."
+      },
+      {
+        "id": "fetch-auth-header",
+        "prompt": "Authenticated fetch to GET /me should include…",
+        "choices": [
+          { "id": "a", "text": "Authorization: Bearer <accessToken>" },
+          { "id": "b", "text": "The password in the JSON body" },
+          { "id": "c", "text": "No headers — cookies are always automatic" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Stage 9 issued JWTs. The frontend sends the access token on protected requests."
+      },
+      {
+        "id": "auth-gate-purpose",
+        "prompt": "An auth gate on app startup prevents…",
+        "choices": [
+          { "id": "a", "text": "Showing protected UI before verifying the user is logged in" },
+          { "id": "b", "text": "The API from running" },
+          { "id": "c", "text": "Users from ever registering" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Check token or call /me before rendering the app shell."
+      },
+      {
+        "id": "role-ui-why",
+        "prompt": "Why hide admin buttons when role !== admin if the API already returns 403?",
+        "choices": [
+          { "id": "a", "text": "Better UX — don't show actions that will fail" },
+          { "id": "b", "text": "API 403 is optional; UI is the only security layer" },
+          { "id": "c", "text": "Admin buttons must always be visible for debugging" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "API enforces security. UI reflects permissions so users aren't confused."
+      },
+      {
+        "id": "search-api",
+        "prompt": "Search box wired to GET /workouts?q=term should…",
+        "choices": [
+          { "id": "a", "text": "Replace or update the list with API results for that query" },
+          { "id": "b", "text": "Only filter items already loaded on page 1 forever" },
+          { "id": "c", "text": "POST the search term to /auth/login" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Search hits the server-side filter from Stage 7. Re-render the list from the response."
+      }
+    ]
+  }
+}

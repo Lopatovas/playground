@@ -1,0 +1,194 @@
+{
+  "slug": "stage-7-data-modeling",
+  "title": "Stage 7 — Data Modeling",
+  "goal": "Grow your schema with relationships, indexes, pagination, and search — without restarting the project.",
+  "summary": "One-to-many, many-to-many, indexes, and query params — same repo, richer data model.",
+  "estimatedMinutes": 300,
+  "nextStage": "stage-8-orm",
+  "lesson": {
+    "pages": [
+      {
+        "id": "grow-dont-restart",
+        "title": "Grow the schema, don't restart",
+        "file": "lesson/01-grow-dont-restart.md"
+      },
+      {
+        "id": "one-to-many",
+        "title": "One-to-many and foreign keys",
+        "file": "lesson/02-one-to-many.md"
+      },
+      {
+        "id": "many-to-many",
+        "title": "Many-to-many and junction tables",
+        "file": "lesson/03-many-to-many.md"
+      },
+      {
+        "id": "indexing",
+        "title": "Indexes — faster lookups",
+        "file": "lesson/04-indexing.md"
+      },
+      {
+        "id": "pagination-api",
+        "title": "Pagination in the API",
+        "file": "lesson/05-pagination-api.md"
+      },
+      {
+        "id": "search-api",
+        "title": "Search in the API",
+        "file": "lesson/06-search-api.md"
+      }
+    ]
+  },
+  "sandbox": {
+    "intro": "sandbox/00-intro.md",
+    "steps": [
+      {
+        "id": "foreign-key",
+        "title": "Foreign keys",
+        "file": "sandbox/01-foreign-key.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "Each workout belongs to one category. In the workouts table, `category_id` should…",
+          "choices": [
+            { "id": "a", "text": "Reference the categories table (foreign key)" },
+            { "id": "b", "text": "Store the category name as plain text only" },
+            { "id": "c", "text": "Be optional on every row with no link" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Foreign keys enforce relationships at the database level and enable efficient joins."
+        }
+      },
+      {
+        "id": "junction-table",
+        "title": "Many-to-many junction",
+        "file": "sandbox/02-junction-table.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "A workout can have many tags, and a tag can belong to many workouts. How do you model that?",
+          "choices": [
+            { "id": "a", "text": "A junction table (workout_tags) linking workout_id and tag_id" },
+            { "id": "b", "text": "Store all tag names in one TEXT column on workouts" },
+            { "id": "c", "text": "Duplicate the workouts table for each tag" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "M:N needs a join table with two foreign keys — one row per workout–tag pair."
+        }
+      },
+      {
+        "id": "index-purpose",
+        "title": "Why indexes exist",
+        "file": "sandbox/03-index-purpose.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "You filter `WHERE name LIKE '%run%'` on 50,000 rows and it's slow. What helps?",
+          "choices": [
+            { "id": "a", "text": "An index on the filtered/sorted columns (when appropriate)" },
+            { "id": "b", "text": "Delete half the rows" },
+            { "id": "c", "text": "Change HTTP to GET-only" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Indexes speed up lookups and sorts. They're not magic — but they matter as tables grow."
+        }
+      },
+      {
+        "id": "pagination-params",
+        "title": "Pagination query params",
+        "file": "sandbox/04-pagination-params.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "GET /workouts?page=2&limit=20 — what does the API return differently from page 1?",
+          "choices": [
+            { "id": "a", "text": "The next slice of results (rows 21–40), not the full table" },
+            { "id": "b", "text": "A completely different database" },
+            { "id": "c", "text": "Only HTTP headers, no body" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Pagination limits payload size and query cost. Page + limit select a window of rows."
+        }
+      },
+      {
+        "id": "search-query",
+        "title": "Search query param",
+        "file": "sandbox/05-search-query.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "GET /workouts?q=run — what should the API do with `q`?",
+          "choices": [
+            { "id": "a", "text": "Filter rows with a parameterized WHERE (e.g. name LIKE)" },
+            { "id": "b", "text": "Concatenate q directly into SQL without escaping" },
+            { "id": "c", "text": "Ignore q and return all rows always" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Search is a filtered query — always use placeholders, never string-concat user input."
+        }
+      }
+    ]
+  },
+  "checklist": [
+    { "id": "one-to-many", "label": "Related table with foreign key (e.g. categories → workouts)" },
+    { "id": "many-to-many", "label": "Junction table for M:N (e.g. workouts ↔ tags)" },
+    { "id": "pagination", "label": "List endpoint supports ?page= and ?limit= with metadata" },
+    { "id": "search", "label": "List endpoint supports ?q= with parameterized SQL filter" },
+    { "id": "index-added", "label": "At least one index on a column you filter or sort by" }
+  ],
+  "quiz": {
+    "passScore": 0.8,
+    "questions": [
+      {
+        "id": "grow-mindset",
+        "prompt": "You need categories on workouts. Best approach?",
+        "choices": [
+          { "id": "a", "text": "ALTER / CREATE in the same repo — migrate forward, don't wipe the DB" },
+          { "id": "b", "text": "Delete the repo and start a new tutorial" },
+          { "id": "c", "text": "Store categories only in frontend localStorage" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Real projects evolve schema in place. Stage 8 adds formal migration files."
+      },
+      {
+        "id": "one-to-many",
+        "prompt": "One category, many workouts — where does the foreign key go?",
+        "choices": [
+          { "id": "a", "text": "On the many side (workouts.category_id → categories.id)" },
+          { "id": "b", "text": "On the one side (categories.workout_id)" },
+          { "id": "c", "text": "Foreign keys are not used in SQL" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "The \"many\" side holds the FK pointing to the \"one\" side."
+      },
+      {
+        "id": "junction",
+        "prompt": "Workouts ↔ tags (many-to-many) requires…",
+        "choices": [
+          { "id": "a", "text": "A junction table with workout_id and tag_id" },
+          { "id": "b", "text": "A JSON array column only — no extra table" },
+          { "id": "c", "text": "Merging both tables into one" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Each row in the junction table is one link between one workout and one tag."
+      },
+      {
+        "id": "why-pagination",
+        "prompt": "Why paginate API list results?",
+        "choices": [
+          { "id": "a", "text": "Faster responses and less memory when tables grow large" },
+          { "id": "b", "text": "SQL cannot return more than one row" },
+          { "id": "c", "text": "Browsers forbid arrays over 10 items" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Pagination keeps payloads bounded. Clients load more as the user navigates pages."
+      },
+      {
+        "id": "search-safe",
+        "prompt": "Implementing GET /workouts?q=run, you should…",
+        "choices": [
+          { "id": "a", "text": "Use a ? placeholder in LIKE — never concat user input into SQL" },
+          { "id": "b", "text": "Build SQL with template literals from req.query.q" },
+          { "id": "c", "text": "Run q as raw SQL from the client" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Search filters are still SQL — parameterized queries prevent injection."
+      }
+    ]
+  }
+}

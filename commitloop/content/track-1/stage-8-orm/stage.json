@@ -1,0 +1,189 @@
+{
+  "slug": "stage-8-orm",
+  "title": "Stage 8 — ORM, Migrations & Seeding",
+  "goal": "Replace raw SQL with an ORM, version schema changes in migration files, and seed dev data reproducibly.",
+  "summary": "Drizzle or Prisma on Express + SQLite — same routes, new data layer. Migrations and seeds you can replay.",
+  "estimatedMinutes": 270,
+  "nextStage": "stage-9-auth",
+  "lesson": {
+    "pages": [
+      {
+        "id": "db-gui-schema",
+        "title": "Schema view in the DB GUI",
+        "file": "lesson/01-db-gui-schema.md"
+      },
+      {
+        "id": "why-orms",
+        "title": "Why ORMs exist",
+        "file": "lesson/02-why-orms.md"
+      },
+      {
+        "id": "orm-same-routes",
+        "title": "ORM queries, same routes",
+        "file": "lesson/03-orm-same-routes.md"
+      },
+      {
+        "id": "migrations",
+        "title": "Migration files",
+        "file": "lesson/04-migrations.md"
+      },
+      {
+        "id": "seeding",
+        "title": "Seed scripts",
+        "file": "lesson/05-seeding.md"
+      }
+    ]
+  },
+  "sandbox": {
+    "intro": "sandbox/00-intro.md",
+    "steps": [
+      {
+        "id": "schema-view",
+        "title": "Read the schema in a GUI",
+        "file": "sandbox/01-schema-view.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "After running a migration, what should you verify in the DB GUI?",
+          "choices": [
+            { "id": "a", "text": "Tables, columns, and foreign keys match what the migration defined" },
+            { "id": "b", "text": "Only the number of Git commits" },
+            { "id": "c", "text": "CSS variables in the frontend" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "The GUI schema view confirms the migration actually changed the database — don't assume success from logs alone."
+        }
+      },
+      {
+        "id": "orm-vs-raw",
+        "title": "ORM vs raw SQL",
+        "file": "sandbox/02-orm-vs-raw-sql.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "You swap better-sqlite3 strings for Drizzle queries. What stays the same for the frontend?",
+          "choices": [
+            { "id": "a", "text": "HTTP routes, URLs, and JSON response shapes" },
+            { "id": "b", "text": "Nothing — the frontend must be rewritten" },
+            { "id": "c", "text": "Only the HTML file names" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "ORMs change the data access layer inside handlers — not the public API contract."
+        }
+      },
+      {
+        "id": "migration-file",
+        "title": "What goes in a migration",
+        "file": "sandbox/03-migration-file.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "A migration file should…",
+          "choices": [
+            { "id": "a", "text": "Describe one schema change step — committed to Git, applied in order" },
+            { "id": "b", "text": "Contain the entire application source code" },
+            { "id": "c", "text": "Be edited by hand on production only, never in Git" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Migrations are versioned DDL steps. Teammates and CI replay the same history."
+        }
+      },
+      {
+        "id": "seed-script",
+        "title": "Seed vs migration",
+        "file": "sandbox/04-seed-script.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "Seed scripts are for…",
+          "choices": [
+            { "id": "a", "text": "Reproducible dev/test data (rows), not schema structure" },
+            { "id": "b", "text": "Replacing migrations entirely" },
+            { "id": "c", "text": "Storing user passwords in plain text" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Migrations change structure; seeds insert sample rows you can wipe and re-run."
+        }
+      },
+      {
+        "id": "gui-after-migrate",
+        "title": "Confirm after migrate",
+        "file": "sandbox/05-gui-after-migrate.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "You run `npm run db:migrate` and add a column. Before merging the PR, you should…",
+          "choices": [
+            { "id": "a", "text": "Refresh the DB GUI schema view and hit the API endpoint" },
+            { "id": "b", "text": "Delete the database file and never check" },
+            { "id": "c", "text": "Only read the migration filename" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Verify schema in the GUI and behavior via Postman — same habit as Stage 5 and 6."
+        }
+      }
+    ]
+  },
+  "checklist": [
+    { "id": "orm-installed", "label": "Drizzle or Prisma configured for Express + SQLite" },
+    { "id": "handlers-orm", "label": "At least GET/POST list routes use ORM instead of raw SQL strings" },
+    { "id": "two-migrations", "label": "At least 2 migration files (initial schema + one alter)" },
+    { "id": "seed-script", "label": "Seed script populates dev data (`npm run db:seed` or equivalent)" },
+    { "id": "gui-verified", "label": "Schema verified in DB GUI after migrations" }
+  ],
+  "quiz": {
+    "passScore": 0.8,
+    "questions": [
+      {
+        "id": "schema-gui",
+        "prompt": "After a migration, the DB GUI schema view helps you…",
+        "choices": [
+          { "id": "a", "text": "Confirm tables, columns, and FKs match what you intended" },
+          { "id": "b", "text": "Deploy to production automatically" },
+          { "id": "c", "text": "Replace the need for API tests" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Visual schema inspection catches typos and missed alters before they hit the team."
+      },
+      {
+        "id": "orm-purpose",
+        "prompt": "An ORM mainly…",
+        "choices": [
+          { "id": "a", "text": "Maps tables to objects and builds queries in your language" },
+          { "id": "b", "text": "Replaces HTTP with WebSockets" },
+          { "id": "c", "text": "Eliminates the need for a database" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "ORMs sit between handlers and the DB — you still need routes and SQL concepts."
+      },
+      {
+        "id": "same-routes",
+        "prompt": "Switching from raw SQL to Drizzle/Prisma, the frontend should…",
+        "choices": [
+          { "id": "a", "text": "Keep calling the same URLs — only handler internals change" },
+          { "id": "b", "text": "Switch to GraphQL immediately" },
+          { "id": "c", "text": "Stop using fetch" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Swap the implementation layer; preserve the API contract."
+      },
+      {
+        "id": "migration-order",
+        "prompt": "Migration files must be…",
+        "choices": [
+          { "id": "a", "text": "Applied in order — each change builds on the last" },
+          { "id": "b", "text": "Applied randomly — order doesn't matter" },
+          { "id": "c", "text": "Run only on the frontend server" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Migration history is linear: 001_create_workouts, 002_add_category_id, etc."
+      },
+      {
+        "id": "seed-vs-migrate",
+        "prompt": "Seeding is different from migrating because seeds…",
+        "choices": [
+          { "id": "a", "text": "Insert data rows for dev — safe to re-run after wipe" },
+          { "id": "b", "text": "Change table structure permanently" },
+          { "id": "c", "text": "Replace Git commits" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Migrations = DDL. Seeds = DML for sample data."
+      }
+    ]
+  }
+}

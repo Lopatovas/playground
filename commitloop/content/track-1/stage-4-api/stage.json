@@ -1,0 +1,195 @@
+{
+  "slug": "stage-4-api",
+  "title": "Stage 4 — API Architecture & HTTP",
+  "goal": "Build a REST API with in-memory storage, structured JSON, middleware, and env config — verified with curl.",
+  "summary": "HTTP, Express, REST, middleware pipeline, environment variables. The server exists before the UI connects.",
+  "estimatedMinutes": 270,
+  "nextStage": "stage-5-sql",
+  "lesson": {
+    "pages": [
+      {
+        "id": "client-server",
+        "title": "Client, server, and HTTP",
+        "file": "lesson/01-client-server.md"
+      },
+      {
+        "id": "curl-basics",
+        "title": "curl basics",
+        "file": "lesson/02-curl-basics.md"
+      },
+      {
+        "id": "rest-resources",
+        "title": "REST and resources",
+        "file": "lesson/03-rest-resources.md"
+      },
+      {
+        "id": "structured-json-middleware",
+        "title": "Structured JSON and middleware",
+        "file": "lesson/04-structured-json-middleware.md"
+      },
+      {
+        "id": "express-in-memory",
+        "title": "Express routes and in-memory store",
+        "file": "lesson/05-express-in-memory.md"
+      },
+      {
+        "id": "env-vars",
+        "title": "Environment variables",
+        "file": "lesson/06-env-vars.md"
+      }
+    ]
+  },
+  "sandbox": {
+    "intro": "sandbox/00-intro.md",
+    "steps": [
+      {
+        "id": "http-method",
+        "title": "Pick the HTTP method",
+        "file": "sandbox/01-http-method.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "Fetch the list of workouts without changing anything. Which method?",
+          "choices": [
+            { "id": "a", "text": "GET" },
+            { "id": "b", "text": "POST" },
+            { "id": "c", "text": "DELETE" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "GET reads. POST creates. DELETE removes."
+        }
+      },
+      {
+        "id": "created-status",
+        "title": "Status after create",
+        "file": "sandbox/02-created-status.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "POST successfully creates a workout. Best status code?",
+          "choices": [
+            { "id": "a", "text": "201 Created" },
+            { "id": "b", "text": "404 Not Found" },
+            { "id": "c", "text": "500 Internal Server Error" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "201 signals a new resource was created."
+        }
+      },
+      {
+        "id": "curl-get",
+        "title": "Test with curl",
+        "file": "sandbox/03-curl-get.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "curl returns JSON but your browser UI fails later. Where is the bug likely first?",
+          "choices": [
+            { "id": "a", "text": "Not in the API — curl proved the server works; debug the frontend in Stage 6" },
+            { "id": "b", "text": "curl is always wrong; ignore it" },
+            { "id": "c", "text": "The SQL database file is corrupt" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "curl isolates the API layer. If it works, the server side is solid."
+        }
+      },
+      {
+        "id": "in-memory-limit",
+        "title": "Limits of in-memory data",
+        "file": "sandbox/04-in-memory-limit.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "You restart the API server. In-memory workouts disappear. Why?",
+          "choices": [
+            { "id": "a", "text": "RAM is cleared — nothing was written to disk" },
+            { "id": "b", "text": "Express deletes arrays on shutdown intentionally" },
+            { "id": "c", "text": "GET requests erase data" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "In-memory storage is fine for learning; Stage 5 adds real persistence."
+        }
+      },
+      {
+        "id": "middleware-envelope",
+        "title": "Middleware and response shape",
+        "file": "sandbox/05-middleware-envelope.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "POST body fields are undefined in your handler. Most likely cause?",
+          "choices": [
+            { "id": "a", "text": "`express.json()` middleware is missing or runs after the route" },
+            { "id": "b", "text": "curl cannot send JSON" },
+            { "id": "c", "text": "GET requests don't have bodies, so POST can't either" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "JSON body parsing is middleware — it must run before handlers that read req.body."
+        }
+      }
+    ]
+  },
+  "checklist": [
+    { "id": "api-folder", "label": "`api/` Express app runs on configurable PORT" },
+    { "id": "middleware-chain", "label": "Middleware: cors, json parser, request logger" },
+    { "id": "get-endpoint", "label": "GET /workouts returns `{ data: [...] }`" },
+    { "id": "post-endpoint", "label": "POST validates input, returns 201 or 400 with envelope" },
+    { "id": "curl-tested", "label": "GET and POST verified with curl" },
+    { "id": "env-example", "label": "`.env.example` committed; `.env` gitignored" }
+  ],
+  "quiz": {
+    "passScore": 0.8,
+    "questions": [
+      {
+        "id": "api-role",
+        "prompt": "What does the API layer do?",
+        "choices": [
+          { "id": "a", "text": "Enforces rules and exposes data over HTTP" },
+          { "id": "b", "text": "Renders HTML buttons" },
+          { "id": "c", "text": "Replaces the frontend" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "The API sits between UI and storage — the contract clients call."
+      },
+      {
+        "id": "curl-purpose",
+        "prompt": "Why test with curl before wiring the UI?",
+        "choices": [
+          { "id": "a", "text": "Isolates the API layer so you know the server works first" },
+          { "id": "b", "text": "curl is required for production deployment only" },
+          { "id": "c", "text": "Browsers cannot send HTTP requests" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "curl removes browser, CORS, and JavaScript from debugging."
+      },
+      {
+        "id": "express-json",
+        "prompt": "Why `app.use(express.json())`?",
+        "choices": [
+          { "id": "a", "text": "Parses JSON request bodies into `req.body`" },
+          { "id": "b", "text": "Creates the database table" },
+          { "id": "c", "text": "Styles the frontend" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Without it, POST bodies are undefined."
+      },
+      {
+        "id": "response-envelope",
+        "prompt": "Why wrap success responses in `{ data: ... }`?",
+        "choices": [
+          { "id": "a", "text": "Consistent shape so clients always know where to read the payload" },
+          { "id": "b", "text": "JSON requires a data key by specification" },
+          { "id": "c", "text": "It makes responses smaller" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Structured envelopes keep frontend code predictable across endpoints."
+      },
+      {
+        "id": "env-port",
+        "prompt": "Why read `PORT` from `process.env` instead of hard-coding 3001?",
+        "choices": [
+          { "id": "a", "text": "Production hosts assign ports dynamically" },
+          { "id": "b", "text": "Node.js forbids literal port numbers" },
+          { "id": "c", "text": "curl only works on env-configured ports" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Environment variables let the same code run locally and in deployment."
+      }
+    ]
+  }
+}

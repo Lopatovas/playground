@@ -1,0 +1,189 @@
+{
+  "slug": "stage-6-fullstack-wire",
+  "title": "Stage 6 — Wire Frontend & Backend",
+  "goal": "Connect your UI to the SQLite API with fetch, CORS, and professional debugging tools.",
+  "summary": "Postman and the Network tab first — then fetch, CORS, and loading/error states. The full stack finally talks.",
+  "estimatedMinutes": 180,
+  "nextStage": "stage-7-data-modeling",
+  "lesson": {
+    "pages": [
+      {
+        "id": "postman-curl",
+        "title": "Test the API with Postman or curl",
+        "file": "lesson/01-postman-curl.md"
+      },
+      {
+        "id": "network-tab",
+        "title": "Chrome DevTools — Network tab",
+        "file": "lesson/02-network-tab.md"
+      },
+      {
+        "id": "fetch-and-json",
+        "title": "fetch and JSON in the browser",
+        "file": "lesson/03-fetch-and-json.md"
+      },
+      {
+        "id": "cors",
+        "title": "CORS — why the browser blocks you",
+        "file": "lesson/04-cors.md"
+      },
+      {
+        "id": "loading-error-states",
+        "title": "Loading and error states in the UI",
+        "file": "lesson/05-loading-error-states.md"
+      }
+    ]
+  },
+  "sandbox": {
+    "intro": "sandbox/00-intro.md",
+    "steps": [
+      {
+        "id": "postman-collection",
+        "title": "Save a GET/POST request",
+        "file": "sandbox/01-postman-collection.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "Before wiring fetch in the browser, why test with Postman or curl first?",
+          "choices": [
+            { "id": "a", "text": "Proves the API works without CORS or UI bugs in the way" },
+            { "id": "b", "text": "Postman replaces the need for an API" },
+            { "id": "c", "text": "Browsers cannot send HTTP requests" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Isolate layers: if Postman succeeds but the browser fails, the bug is in the frontend or CORS — not the handler."
+        }
+      },
+      {
+        "id": "network-inspect",
+        "title": "Read a request in Network",
+        "file": "sandbox/02-network-inspect.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "Network tab shows status 404 for GET /workouts. Where do you look first?",
+          "choices": [
+            { "id": "a", "text": "The API route and database — the server returned 404" },
+            { "id": "b", "text": "CSS flexbox settings" },
+            { "id": "c", "text": "Git commit messages" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "404 means the server responded. Check the route path, handler logic, and whether a row exists."
+        }
+      },
+      {
+        "id": "fetch-json",
+        "title": "Parse a fetch response",
+        "file": "sandbox/03-fetch-json.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "After `const res = await fetch(url)`, how do you get JSON?",
+          "choices": [
+            { "id": "a", "text": "const data = await res.json()" },
+            { "id": "b", "text": "const data = res.body" },
+            { "id": "c", "text": "const data = JSON(res)" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "`res.json()` parses the body asynchronously."
+        }
+      },
+      {
+        "id": "cors-local",
+        "title": "CORS on localhost",
+        "file": "sandbox/04-cors-local.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "Frontend :5500, API :3001 — browser blocks fetch with a CORS error. Likely fix?",
+          "choices": [
+            { "id": "a", "text": "Enable CORS on the API for the frontend origin" },
+            { "id": "b", "text": "Merge both into one port by deleting the API" },
+            { "id": "c", "text": "Disable JavaScript in the browser" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Different ports = different origins. The API must allow the frontend."
+        }
+      },
+      {
+        "id": "ui-states",
+        "title": "Loading and error states",
+        "file": "sandbox/05-ui-states.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "While fetch is in flight, the user should see…",
+          "choices": [
+            { "id": "a", "text": "A loading indicator — not a blank screen or stale data" },
+            { "id": "b", "text": "Nothing — wait silently with no feedback" },
+            { "id": "c", "text": "The login page every time" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Professional UIs show loading, success, empty, and error states explicitly."
+        }
+      }
+    ]
+  },
+  "checklist": [
+    { "id": "postman-tested", "label": "GET and POST tested with Postman or curl before browser wiring" },
+    { "id": "ui-fetch", "label": "Frontend uses fetch instead of local mock array" },
+    { "id": "cors-enabled", "label": "CORS configured so browser requests succeed" },
+    { "id": "loading-state", "label": "UI shows loading while fetch is in progress" },
+    { "id": "error-state", "label": "UI shows a clear message when fetch fails" }
+  ],
+  "quiz": {
+    "passScore": 0.8,
+    "questions": [
+      {
+        "id": "tool-first",
+        "prompt": "Why test the API with Postman before debugging fetch in the browser?",
+        "choices": [
+          { "id": "a", "text": "Separates API bugs from CORS and frontend bugs" },
+          { "id": "b", "text": "Postman is required to run Express" },
+          { "id": "c", "text": "fetch only works after Postman approves the route" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Postman/curl hit the server directly — no browser security layer in the way."
+      },
+      {
+        "id": "network-tab-use",
+        "prompt": "What does the Network tab show for each fetch call?",
+        "choices": [
+          { "id": "a", "text": "URL, method, status code, headers, and response body" },
+          { "id": "b", "text": "Only CSS rules applied to the page" },
+          { "id": "c", "text": "Git branch name" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Network is your X-ray for HTTP — compare what the browser sent with what the API returned."
+      },
+      {
+        "id": "fetch-json",
+        "prompt": "After `const res = await fetch(url)`, how do you get JSON?",
+        "choices": [
+          { "id": "a", "text": "const data = await res.json()" },
+          { "id": "b", "text": "const data = res.body" },
+          { "id": "c", "text": "const data = JSON(res)" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "`res.json()` parses the body asynchronously."
+      },
+      {
+        "id": "cors-why",
+        "prompt": "Frontend on :5500, API on :3001 — fetch blocked by CORS. Why?",
+        "choices": [
+          { "id": "a", "text": "Different ports are different origins; the browser enforces cross-origin rules" },
+          { "id": "b", "text": "SQLite rejects browser connections" },
+          { "id": "c", "text": "GET requests are forbidden in JavaScript" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "The API must send CORS headers allowing your frontend origin."
+      },
+      {
+        "id": "ui-states",
+        "prompt": "A data-fetching view should handle which states?",
+        "choices": [
+          { "id": "a", "text": "Loading, success, empty, and error" },
+          { "id": "b", "text": "Only success — errors are invisible" },
+          { "id": "c", "text": "Loading only — never show data" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Users need feedback at every step — not a blank screen while waiting or after failure."
+      }
+    ]
+  }
+}

@@ -1,0 +1,185 @@
+{
+  "slug": "stage-1-git",
+  "title": "Stage 1 — Git & Collaboration",
+  "goal": "Develop daily Git habits and learn to manage work with branches.",
+  "summary": "Git for real work: the staging model, clean commits, branches, and a stage ← dev ← feature workflow.",
+  "estimatedMinutes": 120,
+  "nextStage": "stage-2-html-css",
+  "lesson": {
+    "pages": [
+      {
+        "id": "why-version-control",
+        "title": "Why version control exists",
+        "file": "lesson/01-why-version-control.md"
+      },
+      {
+        "id": "everyday-git",
+        "title": "The everyday Git loop",
+        "file": "lesson/02-everyday-git.md"
+      },
+      {
+        "id": "good-commits",
+        "title": "What makes a good commit",
+        "file": "lesson/03-good-commits.md"
+      },
+      {
+        "id": "branches",
+        "title": "Branches: parallel lines of work",
+        "file": "lesson/04-branches.md"
+      },
+      {
+        "id": "branching-strategy",
+        "title": "A real branching strategy",
+        "file": "lesson/05-branching-strategy.md"
+      }
+    ]
+  },
+  "sandbox": {
+    "intro": "sandbox/00-intro.md",
+    "steps": [
+      {
+        "id": "read-status",
+        "title": "Read what Git sees",
+        "file": "sandbox/01-read-status.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "A file you edited shows under \"Changes not staged for commit\". What does that mean?",
+          "choices": [
+            { "id": "a", "text": "Git is tracking the file but the edit isn't in the next commit yet" },
+            { "id": "b", "text": "The file is brand new and Git has never seen it" },
+            { "id": "c", "text": "The change is already committed" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Tracked-but-unstaged means Git knows the file but you haven't run `git add` on this change yet. Untracked is for brand-new files."
+        }
+      },
+      {
+        "id": "stage-selectively",
+        "title": "Stage changes deliberately",
+        "file": "sandbox/02-stage-selectively.md",
+        "checkpoint": {
+          "kind": "text",
+          "prompt": "Which command stages only the file src/app.js (not everything)?",
+          "placeholder": "git add ...",
+          "accept": ["git add src/app.js", "git add ./src/app.js"],
+          "explanation": "`git add src/app.js` stages just that file. `git add .` stages everything in the current directory — handy, but be intentional."
+        }
+      },
+      {
+        "id": "commit-message",
+        "title": "Write a commit message",
+        "file": "sandbox/03-commit-message.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "Which commit message is best?",
+          "choices": [
+            { "id": "a", "text": "feat: add email validation to signup form" },
+            { "id": "b", "text": "stuff" },
+            { "id": "c", "text": "fixed it finally" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "A good message names the change and its intent. \"stuff\" and \"fixed it\" tell a future reader (you!) nothing."
+        }
+      },
+      {
+        "id": "create-branch",
+        "title": "Create a feature branch",
+        "file": "sandbox/04-create-branch.md",
+        "checkpoint": {
+          "kind": "text",
+          "prompt": "Which command creates a new branch called feature/login AND switches to it?",
+          "placeholder": "git ...",
+          "accept": [
+            "git switch -c feature/login",
+            "git checkout -b feature/login"
+          ],
+          "explanation": "`git switch -c feature/login` (modern) or `git checkout -b feature/login` (classic) both create the branch and move you onto it in one step."
+        }
+      },
+      {
+        "id": "merge-flow",
+        "title": "Merge work back",
+        "file": "sandbox/05-merge-flow.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "You finished feature/login. What's the typical next move in a team workflow?",
+          "choices": [
+            { "id": "a", "text": "Push the branch and open a pull request to merge it into dev" },
+            { "id": "b", "text": "Delete the branch and rewrite the code on main" },
+            { "id": "c", "text": "Commit directly to main and skip review" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Feature branches are pushed and merged via pull requests, which create a review point before code reaches shared branches."
+        }
+      }
+    ]
+  },
+  "checklist": [
+    { "id": "structure", "label": "A sensible project structure is committed" },
+    { "id": "gitignore", "label": ".gitignore added for your stack" },
+    { "id": "runs-locally", "label": "App runs locally (a minimal \"hello\" is fine)" },
+    { "id": "feature-branch", "label": "Built something on a feature branch and merged it" },
+    { "id": "three-commits", "label": "3+ meaningful commits pushed" },
+    { "id": "second-day", "label": "At least one commit on a second, separate day" }
+  ],
+  "quiz": {
+    "passScore": 0.8,
+    "questions": [
+      {
+        "id": "git-add",
+        "prompt": "What does `git add` do?",
+        "choices": [
+          { "id": "a", "text": "Stages changes so they'll be included in the next commit" },
+          { "id": "b", "text": "Pushes your commits to GitHub" },
+          { "id": "c", "text": "Permanently deletes uncommitted changes" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "`git add` moves changes into the staging area. `git push` sends commits to the remote."
+      },
+      {
+        "id": "three-areas",
+        "prompt": "Git has three main areas a change moves through. What is the correct order?",
+        "choices": [
+          { "id": "a", "text": "Working directory → staging area → repository" },
+          { "id": "b", "text": "Repository → working directory → staging area" },
+          { "id": "c", "text": "Staging area → repository → working directory" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "You edit in the working directory, `git add` to staging, then `git commit` into the repository."
+      },
+      {
+        "id": "meaningful-commit",
+        "prompt": "Which of these is an acceptable daily commit on CommitLoop?",
+        "choices": [
+          { "id": "a", "text": "feat: add workout list endpoint" },
+          { "id": "b", "text": "An empty commit just to keep the streak" },
+          { "id": "c", "text": "Bumping a timestamp in the README with no real change" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Commits should reflect real work: features, fixes, refactors, tests, docs, or structure."
+      },
+      {
+        "id": "what-is-branch",
+        "prompt": "What is a Git branch?",
+        "choices": [
+          { "id": "a", "text": "A movable pointer to a line of commits, letting you work in parallel" },
+          { "id": "b", "text": "A separate copy of your files in another folder" },
+          { "id": "c", "text": "A backup uploaded to GitHub" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "A branch is just a lightweight, movable pointer to a commit. Switching branches changes which line of history you build on."
+      },
+      {
+        "id": "branch-purpose",
+        "prompt": "Why build a feature on its own branch instead of directly on a shared branch?",
+        "choices": [
+          { "id": "a", "text": "It isolates in-progress work so the shared branch stays stable and reviewable" },
+          { "id": "b", "text": "Branches make your code run faster" },
+          { "id": "c", "text": "You're required to delete shared branches afterward" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Feature branches keep unfinished work out of shared branches and give you a clean unit to review and merge."
+      }
+    ]
+  }
+}

@@ -1,0 +1,190 @@
+{
+  "slug": "stage-9-auth",
+  "title": "Stage 9 — Authentication & Authorization",
+  "goal": "Add secure user accounts to the API — register, login, JWT access tokens, refresh tokens, and role-based access.",
+  "summary": "Backend-first auth: prove every endpoint in Postman before building login screens in the next stage.",
+  "estimatedMinutes": 300,
+  "nextStage": "stage-10-frontend-app",
+  "lesson": {
+    "pages": [
+      {
+        "id": "postman-auth-collection",
+        "title": "Postman: auth endpoint collection",
+        "file": "lesson/01-postman-auth-collection.md"
+      },
+      {
+        "id": "auth-basics-hashing",
+        "title": "Auth basics and password hashing",
+        "file": "lesson/02-auth-basics-hashing.md"
+      },
+      {
+        "id": "jwt-access",
+        "title": "JWT access tokens",
+        "file": "lesson/03-jwt-access.md"
+      },
+      {
+        "id": "refresh-tokens",
+        "title": "Refresh tokens",
+        "file": "lesson/04-refresh-tokens.md"
+      },
+      {
+        "id": "rbac-middleware",
+        "title": "RBAC and auth middleware",
+        "file": "lesson/05-rbac-middleware.md"
+      }
+    ]
+  },
+  "sandbox": {
+    "intro": "sandbox/00-intro.md",
+    "steps": [
+      {
+        "id": "auth-vs-authz",
+        "title": "Authentication vs authorization",
+        "file": "sandbox/01-auth-vs-authz.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "\"Only the owner can delete this workout\" is an example of…",
+          "choices": [
+            { "id": "a", "text": "Authorization (what you're allowed to do)" },
+            { "id": "b", "text": "Authentication (proving who you are)" },
+            { "id": "c", "text": "CSS styling" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Authentication = identity. Authorization = permissions after identity is known."
+        }
+      },
+      {
+        "id": "password-storage",
+        "title": "Storing passwords",
+        "file": "sandbox/02-password-storage.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "How should passwords be stored in the database?",
+          "choices": [
+            { "id": "a", "text": "Hashed with a slow algorithm (bcrypt, argon2) — never plain text" },
+            { "id": "b", "text": "Plain text for easy password resets" },
+            { "id": "c", "text": "Base64 encoded" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Hashing is one-way. If the DB leaks, attackers still can't read passwords."
+        }
+      },
+      {
+        "id": "jwt-bearer",
+        "title": "Sending a JWT",
+        "file": "sandbox/03-jwt-bearer.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "How does the client send a JWT access token on protected requests?",
+          "choices": [
+            { "id": "a", "text": "Authorization: Bearer <token>" },
+            { "id": "b", "text": "Password: <token> in the JSON body" },
+            { "id": "c", "text": "X-Password: <token> header" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Bearer tokens go in the Authorization header. The server verifies the signature before trusting claims."
+        }
+      },
+      {
+        "id": "refresh-flow",
+        "title": "Why refresh tokens exist",
+        "file": "sandbox/04-refresh-flow.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "Access tokens expire in 15 minutes. Why also issue a refresh token?",
+          "choices": [
+            { "id": "a", "text": "Get a new access token without asking for the password again" },
+            { "id": "b", "text": "Refresh tokens replace password hashing" },
+            { "id": "c", "text": "Browsers require two tokens by law" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Short-lived access tokens limit damage if stolen. Refresh tokens renew access with a longer-lived, revocable credential."
+        }
+      },
+      {
+        "id": "rbac-check",
+        "title": "Role-based access",
+        "file": "sandbox/05-rbac-check.md",
+        "checkpoint": {
+          "kind": "choice",
+          "prompt": "A logged-in user with role `user` hits DELETE /admin/users. Server returns 403. Why?",
+          "choices": [
+            { "id": "a", "text": "Authenticated but not authorized — admin role required" },
+            { "id": "b", "text": "Not authenticated — should be 401" },
+            { "id": "c", "text": "DELETE is never allowed over HTTP" }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "401 = not logged in. 403 = logged in but lacking permission. RBAC checks role after auth middleware."
+        }
+      }
+    ]
+  },
+  "checklist": [
+    { "id": "users-table", "label": "Users table with hashed passwords and role column" },
+    { "id": "register-login", "label": "POST /auth/register and POST /auth/login return tokens" },
+    { "id": "refresh-endpoint", "label": "POST /auth/refresh issues a new access token" },
+    { "id": "me-endpoint", "label": "GET /me returns current user when Bearer token is valid" },
+    { "id": "protected-routes", "label": "Protected routes return 401 without token; admin routes return 403 for non-admin" },
+    { "id": "postman-collection", "label": "Postman collection proves register → login → me → refresh flow" }
+  ],
+  "quiz": {
+    "passScore": 0.8,
+    "questions": [
+      {
+        "id": "auth-vs-authz-quiz",
+        "prompt": "Login with email and password proves…",
+        "choices": [
+          { "id": "a", "text": "Authentication — who you are" },
+          { "id": "b", "text": "Authorization — what you may do" },
+          { "id": "c", "text": "Pagination — which page of results" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Login verifies identity. Authorization rules apply after the server knows who you are."
+      },
+      {
+        "id": "password-hash",
+        "prompt": "Why hash passwords with bcrypt instead of storing them plain text?",
+        "choices": [
+          { "id": "a", "text": "One-way hashing protects users if the database leaks" },
+          { "id": "b", "text": "Plain text is faster to compare at login" },
+          { "id": "c", "text": "bcrypt encrypts passwords so you can decrypt them later" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Hashing is one-way. bcrypt.compare checks a guess without ever storing the original password."
+      },
+      {
+        "id": "jwt-claims",
+        "prompt": "A JWT access token typically contains…",
+        "choices": [
+          { "id": "a", "text": "Signed claims like user id and role — not the password" },
+          { "id": "b", "text": "The user's plain-text password for convenience" },
+          { "id": "c", "text": "The entire database schema" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "JWTs carry claims the server signed. Never put secrets or passwords inside a token."
+      },
+      {
+        "id": "401-vs-403",
+        "prompt": "GET /me with no Authorization header should return…",
+        "choices": [
+          { "id": "a", "text": "401 — authentication required" },
+          { "id": "b", "text": "403 — forbidden" },
+          { "id": "c", "text": "200 with a guest user" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "No token means the server doesn't know who you are — that's 401, not 403."
+      },
+      {
+        "id": "refresh-purpose",
+        "prompt": "Why keep access tokens short-lived and use refresh tokens?",
+        "choices": [
+          { "id": "a", "text": "Limits damage from a stolen access token; refresh can be revoked server-side" },
+          { "id": "b", "text": "JWTs cannot expire without a refresh token" },
+          { "id": "c", "text": "Refresh tokens are sent on every API request instead of access tokens" }
+        ],
+        "correctChoiceId": "a",
+        "explanation": "Short access + long refresh is the standard tradeoff: security vs user convenience."
+      }
+    ]
+  }
+}

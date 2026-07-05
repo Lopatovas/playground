@@ -12,7 +12,7 @@ import {
 describe("curriculum", () => {
   it("lists track 1 stages from track.json", () => {
     const stages = getTrackStages("track-1");
-    expect(stages.length).toBeGreaterThanOrEqual(2);
+    expect(stages.length).toBe(12);
     expect(stages[0]?.slug).toBe("stage-0-onboarding");
   });
 
@@ -31,10 +31,10 @@ describe("curriculum", () => {
   });
 
   it("marks current and complete stages in overview", () => {
-    const overview = getTrackOverview("track-1", "stage-1-git-fundamentals");
+    const overview = getTrackOverview("track-1", "stage-1-git");
     const stage0 = overview.find((s) => s.slug === "stage-0-onboarding");
-    const stage1 = overview.find((s) => s.slug === "stage-1-git-fundamentals");
-    const stage2 = overview.find((s) => s.slug === "stage-2-frontend");
+    const stage1 = overview.find((s) => s.slug === "stage-1-git");
+    const stage2 = overview.find((s) => s.slug === "stage-2-html-css");
 
     expect(stage0?.status).toBe("complete");
     expect(stage1?.status).toBe("current");
@@ -46,12 +46,8 @@ describe("curriculum", () => {
   });
 
   it("advances to next available stage", () => {
-    expect(nextStageSlug("track-1", "stage-0-onboarding")).toBe(
-      "stage-1-git-fundamentals",
-    );
-    expect(nextStageSlug("track-1", "stage-1-git-fundamentals")).toBe(
-      "stage-2-frontend",
-    );
+    expect(nextStageSlug("track-1", "stage-0-onboarding")).toBe("stage-1-git");
+    expect(nextStageSlug("track-1", "stage-1-git")).toBe("stage-2-html-css");
   });
 
   it("labels steps for display", () => {
@@ -62,7 +58,7 @@ describe("curriculum", () => {
   });
 
   it("grades quiz server-side", () => {
-    const stage = getStageContent("track-1", "stage-1-git-fundamentals")!;
+    const stage = getStageContent("track-1", "stage-1-git")!;
     const answers = Object.fromEntries(
       stage.quiz.questions.map((q) => [q.id, q.correctChoiceId]),
     );
@@ -73,7 +69,7 @@ describe("curriculum", () => {
   });
 
   it("fails quiz below pass threshold and returns explanations", () => {
-    const stage = getStageContent("track-1", "stage-1-git-fundamentals")!;
+    const stage = getStageContent("track-1", "stage-1-git")!;
     const answers = Object.fromEntries(
       stage.quiz.questions.map((q) => [q.id, "b"]),
     );
