@@ -1,11 +1,21 @@
-# Render Blueprint — API only. Create Neon Postgres separately, paste DATABASE_URL in Render.
-# Docs: DEPLOY.md
+# Render Blueprint — API + Postgres. Docs: DEPLOY.md
+#
+# Sync in Render: New → Blueprint → repo Lopatovas/commitloop → render.yaml
+# Put API + DB in the same region (Frankfurt) for private networking.
+
+databases:
+  - name: commitloopdb
+    plan: free
+    region: frankfurt
+    databaseName: commitloopdb
+    user: commitmaster
 
 services:
   - type: web
     name: commitloop-api
     runtime: node
     plan: free
+    region: frankfurt
     buildCommand: npm ci && npm run db:generate -w @commitloop/api && npm run build -w @commitloop/api
     preDeployCommand: npm run db:migrate:deploy -w @commitloop/api
     startCommand: npm run start -w @commitloop/api
@@ -14,7 +24,9 @@ services:
       - key: NODE_ENV
         value: production
       - key: DATABASE_URL
-        sync: false
+        fromDatabase:
+          name: commitloopdb
+          property: connectionString
       - key: SESSION_SECRET
         generateValue: true
       - key: WEB_URL

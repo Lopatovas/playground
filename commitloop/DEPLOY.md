@@ -1,6 +1,6 @@
 # Deploy CommitLoop (free tier)
 
-**Stack:** Vercel (web) + Neon (Postgres) + Render (API)
+**Stack:** Vercel (web) + Render (API + Postgres)
 
 **Production domains:**
 
@@ -13,14 +13,42 @@ Web and API share the same registrable domain so session cookies work across ori
 
 ---
 
-## 1. Neon — database
+## 1. Render — Blueprint (API + Postgres)
 
-1. Create a project at [neon.tech](https://neon.tech) (free tier).
-2. Copy the **pooled** connection string (port **6543**, “Transaction” mode) — better for Render’s Node process.
-3. Append `?sslmode=require` if not already present.
-4. Save as `DATABASE_URL` — paste into Render (step 2).
+One `render.yaml` creates both the database and API in **Frankfurt** (same region = private network).
 
-Local dev instead of Neon:
+1. [render.com](https://render.com) → **New** → **Blueprint**
+2. Connect repo `Lopatovas/commitloop`
+3. Blueprint path: `render.yaml`
+4. When prompted, set secrets Render can't generate:
+
+| Variable | Value |
+|----------|--------|
+| `GITHUB_CLIENT_ID` | GitHub OAuth app |
+| `GITHUB_CLIENT_SECRET` | GitHub OAuth app |
+| `MENTOR_GITHUB_IDS` | Your GitHub numeric user id |
+
+`DATABASE_URL` is wired automatically from the `commitloopdb` Postgres instance.
+
+**Already created `commitloopdb` manually?** Sync the Blueprint — Render adopts the existing database if the name matches.
+
+Resources defined in `render.yaml`:
+
+| Resource | Name |
+|----------|------|
+| Postgres (free) | `commitloopdb` |
+| Web service (free) | `commitloop-api` |
+
+5. After deploy → **commitloop-api** → **Settings → Custom Domains** → add `api.commitloop.dev`
+6. **Settings → Deploy Hook** → copy URL for GitHub Actions
+
+`preDeployCommand` runs `prisma migrate deploy` before each API deploy.
+
+**Free tier:** API sleeps after ~15 min idle; first request may take 30–60s.
+
+Health check: `GET /health`
+
+### Local dev (Postgres without Render)
 
 ```bash
 docker compose up -d postgres
@@ -30,34 +58,7 @@ npm run db:migrate -w @commitloop/api   # first time only
 
 ---
 
-## 2. Render — API (`api.commitloop.dev`)
-
-1. [render.com](https://render.com) → **New** → **Blueprint** (or Web Service).
-2. Connect repo `Lopatovas/commitloop`.
-3. Blueprint path: `render.yaml`
-4. Set **environment variables** in the Render dashboard:
-
-| Variable | Value |
-|----------|--------|
-| `DATABASE_URL` | Neon pooled URL |
-| `SESSION_SECRET` | `openssl rand -hex 32` |
-| `WEB_URL` | `https://commitloop.dev` |
-| `GITHUB_CLIENT_ID` | from GitHub OAuth app |
-| `GITHUB_CLIENT_SECRET` | from GitHub OAuth app |
-| `GITHUB_CALLBACK_URL` | `https://api.commitloop.dev/auth/github/callback` |
-| `MENTOR_GITHUB_IDS` | your GitHub numeric user id |
-
-5. Deploy, then add custom domain **`api.commitloop.dev`** in Render → Settings → Custom Domains (DNS: CNAME to Render).
-
-`preDeployCommand` runs `prisma migrate deploy` before each deploy.
-
-**Free tier:** service sleeps after ~15 min idle; first request may take 30–60s.
-
-Health check: `GET /health`
-
----
-
-## 3. GitHub OAuth app
+## 2. GitHub OAuth app
 
 [github.com/settings/developers](https://github.com/settings/developers) → OAuth App:
 
@@ -76,7 +77,7 @@ Use the same `CLIENT_ID` / `SECRET` on Render for production.
 
 ---
 
-## 4. Vercel — web (`commitloop.dev`)
+## 3. Vercel — web (`commitloop.dev`)
 
 1. [vercel.com](https://vercel.com) → Import repo `Lopatovas/commitloop`.
 2. **Root Directory:** `web`
@@ -91,7 +92,7 @@ Use the same `CLIENT_ID` / `SECRET` on Render for production.
 
 ---
 
-## 5. DNS
+## 4. DNS
 
 | Record | Name | Target |
 |--------|------|--------|
@@ -102,7 +103,7 @@ After DNS propagates, confirm both services show the custom domain as active.
 
 ---
 
-## 6. Verify
+## 5. Verify
 
 ```bash
 curl https://api.commitloop.dev/health
@@ -164,6 +165,6 @@ npm test
 | `VERCEL_ORG_ID` | Vercel project settings |
 | `VERCEL_PROJECT_ID` | Vercel project settings |
 
-4. **Neon** — `DATABASE_URL` stays on Render only (migrations run in Render `preDeployCommand`).
+4. **Neon (optional)** — only if you prefer an external DB; otherwise Render Postgres from `render.yaml` is enough.
 
 Manual deploy: Actions → **Deploy** → **Run workflow**.
