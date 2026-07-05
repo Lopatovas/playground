@@ -1,6 +1,7 @@
 import type { PrismaClient } from "@prisma/client";
 import { Router } from "express";
 import type { GitHubClient } from "../../clients/github.client.js";
+import { GITHUB_REPO_NAME_PATTERN } from "../../config/env.js";
 import { requireAuth } from "../../middleware/auth.js";
 
 export function createRepoRouter({
@@ -20,6 +21,17 @@ export function createRepoRouter({
       return;
     }
 
+    const trimmedOwner = owner.trim();
+    const trimmedName = name.trim();
+
+    if (
+      !GITHUB_REPO_NAME_PATTERN.test(trimmedOwner) ||
+      !GITHUB_REPO_NAME_PATTERN.test(trimmedName)
+    ) {
+      res.status(400).json({ error: "Invalid repository owner or name" });
+      return;
+    }
+
     const user = await prisma.user.findUnique({
       where: { id: req.session.userId },
     });
@@ -30,8 +42,8 @@ export function createRepoRouter({
 
     const hasAccess = await github.verifyRepoAccess(
       user.accessToken,
-      owner,
-      name,
+      trimmedOwner,
+      trimmedName,
     );
 
     if (!hasAccess) {
@@ -43,7 +55,7 @@ export function createRepoRouter({
 
     const updated = await prisma.user.update({
       where: { id: user.id },
-      data: { repoOwner: owner.trim(), repoName: name.trim() },
+      data: { repoOwner: trimmedOwner, repoName: trimmedName },
     });
 
     res.json({

@@ -47,3 +47,23 @@ export function loadAppConfig({
     mentorGithubIds: parseMentorGithubIds(process.env.MENTOR_GITHUB_IDS),
   };
 }
+
+const INSECURE_SECRETS = new Set(["", "dev-only-change-me", "test-secret"]);
+
+export function assertProductionConfig(config: AppConfig): void {
+  if (process.env.NODE_ENV !== "production") return;
+
+  if (INSECURE_SECRETS.has(config.sessionSecret)) {
+    throw new Error(
+      "SESSION_SECRET must be set to a strong random value in production",
+    );
+  }
+
+  if (!config.githubClientId || !config.githubClientSecret) {
+    throw new Error(
+      "GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET are required in production",
+    );
+  }
+}
+
+export const GITHUB_REPO_NAME_PATTERN = /^[a-zA-Z0-9._-]+$/;

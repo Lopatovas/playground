@@ -126,6 +126,48 @@ describe("API integration", () => {
     await agent.post("/assignment/advance").expect(400);
   });
 
+  it("blocks advance when checklist is done but quiz was not passed", async () => {
+    const assignment = buildAssignment(
+      "track-1",
+      "stage-0-onboarding",
+      "project",
+      "{}",
+      false,
+    )!;
+    const checklistState = JSON.stringify(
+      Object.fromEntries(assignment.checklist.map((item) => [item.id, true])),
+    );
+    const user = await seedUser(prisma, {
+      currentStep: "project",
+      checklistState,
+      quizPassed: false,
+    });
+    const agent = await loginAgent(app, user.id);
+
+    const res = await agent.post("/assignment/advance").expect(400);
+    expect(res.body.error).toMatch(/quiz/i);
+  });
+
+  it("rejects unknown checklist item ids", async () => {
+    const user = await seedUser(prisma);
+    const agent = await loginAgent(app, user.id);
+
+    await agent
+      .post("/assignment/checklist")
+      .send({ itemId: "not-a-real-item", done: true })
+      .expect(400);
+  });
+
+  it("rejects invalid repository names", async () => {
+    const user = await seedUser(prisma);
+    const agent = await loginAgent(app, user.id);
+
+    await agent
+      .post("/repo")
+      .send({ owner: "../evil", name: "repo" })
+      .expect(400);
+  });
+
   it("advances stage when checklist is complete", async () => {
     const assignment = buildAssignment(
       "track-1",

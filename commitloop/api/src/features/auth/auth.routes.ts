@@ -45,9 +45,12 @@ export function createAuthRouter({
       typeof state !== "string" ||
       state !== req.session.oauthState
     ) {
+      delete req.session.oauthState;
       res.redirect(`${config.webUrl}/home?error=oauth_state`);
       return;
     }
+
+    delete req.session.oauthState;
 
     try {
       const token = await github.exchangeCodeForToken({

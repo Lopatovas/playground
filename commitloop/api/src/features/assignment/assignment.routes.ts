@@ -174,6 +174,18 @@ export function createAssignmentRouter(prisma: PrismaClient) {
       return;
     }
 
+    const stage = getStageContent(user.trackId, user.currentStage);
+    if (!stage) {
+      res.status(404).json({ error: "Stage not found" });
+      return;
+    }
+
+    const validIds = new Set(stage.checklist.map((item) => item.id));
+    if (!validIds.has(itemId)) {
+      res.status(400).json({ error: "Unknown checklist item" });
+      return;
+    }
+
     const checklistState = parseChecklistState(user.checklistState);
     checklistState[itemId] = done;
 
@@ -212,6 +224,11 @@ export function createAssignmentRouter(prisma: PrismaClient) {
 
     if (!assignment?.allChecklistDone) {
       res.status(400).json({ error: "Complete the checklist first" });
+      return;
+    }
+
+    if (!user.quizPassed) {
+      res.status(400).json({ error: "Pass the quiz before advancing" });
       return;
     }
 
