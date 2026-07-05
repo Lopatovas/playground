@@ -4,11 +4,11 @@
 
 Accountability-first engineering apprenticeship. GitHub is the source of truth.
 
-- [Architecture](../docs/ARCHITECTURE.md)
-- [Wireframes](../docs/WIREFRAMES.md)
-- [Curriculum](../docs/curriculum.md)
-- [Roadmap](../docs/ROADMAP.md)
-- [Mentor view](../docs/MENTOR_VIEW.md)
+- [Architecture](./docs/ARCHITECTURE.md)
+- [Wireframes](./docs/WIREFRAMES.md)
+- [Curriculum](./docs/curriculum.md)
+- [Roadmap](./docs/ROADMAP.md)
+- [Mentor view](./docs/MENTOR_VIEW.md)
 
 ## Stack
 

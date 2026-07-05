@@ -23,7 +23,6 @@ Web and API share the same registrable domain so session cookies work across ori
 Local dev instead of Neon:
 
 ```bash
-cd commitloop
 docker compose up -d postgres
 cp .env.example .env
 npm run db:migrate -w @commitloop/api   # first time only
@@ -34,8 +33,8 @@ npm run db:migrate -w @commitloop/api   # first time only
 ## 2. Render — API (`api.commitloop.dev`)
 
 1. [render.com](https://render.com) → **New** → **Blueprint** (or Web Service).
-2. Connect this GitHub repo.
-3. Blueprint path: `commitloop/render.yaml`
+2. Connect repo `Lopatovas/commitloop`.
+3. Blueprint path: `render.yaml`
 4. Set **environment variables** in the Render dashboard:
 
 | Variable | Value |
@@ -79,9 +78,9 @@ Use the same `CLIENT_ID` / `SECRET` on Render for production.
 
 ## 4. Vercel — web (`commitloop.dev`)
 
-1. [vercel.com](https://vercel.com) → Import repo.
-2. **Root Directory:** `commitloop/web`
-3. Framework: Next.js (auto-detected; `vercel.json` sets install from monorepo root).
+1. [vercel.com](https://vercel.com) → Import repo `Lopatovas/commitloop`.
+2. **Root Directory:** `web`
+3. Framework: Next.js (auto-detected; `vercel.json` installs from monorepo root).
 4. **Environment variable:**
 
 | Variable | Value |
@@ -120,7 +119,6 @@ open https://commitloop.dev/curriculum
 ## Local commands
 
 ```bash
-cd commitloop
 docker compose up -d postgres
 cp .env.example .env          # fill GitHub OAuth for local login
 npm install
@@ -142,8 +140,8 @@ npm test
 
 | Workflow | Trigger | What it does |
 |----------|---------|--------------|
-| `CommitLoop CI` | PR + push to any branch | Tests, lint, build |
-| `CommitLoop Deploy` | Push to `main` (+ manual) | CI gate → deploy API + web |
+| `CI` | PR + push to any branch | Tests, lint, build |
+| `Deploy` | Push to `main` (+ manual) | CI gate → deploy API + web |
 
 **Pipeline:** merge to `main` → CI passes → Render API deploy (with `prisma migrate deploy`) → Vercel web deploy → health check on `https://api.commitloop.dev/health`.
 
@@ -153,11 +151,11 @@ npm test
    Settings → **Deploy Hook** → copy URL.  
    Turn off **Auto-Deploy** if you only want GitHub Actions to deploy.
 
-2. **Vercel** — import repo, root `commitloop/web`, domain `commitloop.dev`, env `NEXT_PUBLIC_API_URL=https://api.commitloop.dev`.  
+2. **Vercel** — import repo, root `web`, domain `commitloop.dev`, env `NEXT_PUBLIC_API_URL=https://api.commitloop.dev`.  
    Settings → disable **Auto-Deploy** on git push if using Actions only.  
    Note **Org ID** and **Project ID** from project settings.
 
-3. **GitHub** — repo → Settings → Environments → create `production`, then add secrets:
+3. **GitHub** (`Lopatovas/commitloop`) — Settings → Environments → create `production`, then add secrets:
 
 | Secret | Source |
 |--------|--------|
@@ -168,4 +166,4 @@ npm test
 
 4. **Neon** — `DATABASE_URL` stays on Render only (migrations run in Render `preDeployCommand`).
 
-Manual deploy: Actions → **CommitLoop Deploy** → **Run workflow**.
+Manual deploy: Actions → **Deploy** → **Run workflow**.

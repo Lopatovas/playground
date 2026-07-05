@@ -1,0 +1,209 @@
+# CommitLoop — Architecture
+
+Decisions from product validation. Last updated: 2026-06-10.
+
+---
+
+## Summary
+
+| Decision | Choice |
+|----------|--------|
+| Web frontend | **Next.js 16** (App Router) → Vercel |
+| API | **Express** feature modules — stable JSON surface for future mobile |
+| Database | SQLite (local dev) → **Postgres** (production) |
+| Launch curriculum | **Track 1 only** |
+| Post-login home | **Assignment first, streak second** (layout C) |
+| Auth | Cookie session via API; `AuthProvider` + `(app)` route group |
+| Visual | **Light, tool-like** — see [WIREFRAMES.md](./WIREFRAMES.md) |
+
+---
+
+## System shape
+
+```
+┌─────────────────┐     ┌─────────────────┐     ┌──────────┐
+│  Next.js (web)  │────▶│  Express (api)  │────▶│ Postgres │
+│  Vercel         │     │  Railway/Fly    │     │ Neon     │
+└─────────────────┘     └────────┬────────┘     └──────────┘
+                                 │
+                    ┌────────────┼────────────┐
+                    ▼            ▼            ▼
+              GitHub API    Hybrid content     (future)
+              OAuth       (track.json +        Mobile app
+                           stage folders)
+```
+
+**Why split:** Web ships fast on Vercel. API stays a stable JSON surface for a future React Native / Expo app without coupling to Next.js server routes.
+
+---
+
+## API structure
+
+`commitloop/api/src/` is organized by feature domain:
+
+```
+api/src/
+  app.ts                    # compose Express app
+  index.ts                  # bootstrap + listen
+  config/env.ts             # env → AppConfig
+  clients/github.client.ts  # GitHub OAuth + API (injectable in tests)
+  content/                  # track/stage loaders, Zod schemas, content:check
+  middleware/
+    auth.ts                 # requireAuth
+    session.ts              # express-session
+    error.ts                # global error handler
+  features/
+    health/                 # GET /health
+    auth/                   # GitHub OAuth, logout
+    user/                   # GET /me
+    assignment/             # current, step, quiz, checklist, advance
+    repo/                   # POST /repo
+    streak/                 # GET /streak
+    mentor/                 # GET /mentor/students (mentor allowlist)
+    curriculum/             # tracks, hybrid stage content
+  test/                     # integration test helpers
+```
+
+Each feature owns its routes; services hold pure logic where possible. `createApp(prisma, config, { github? })` accepts dependency injection for tests.
+
+---
+
+## API contract
+
+REST JSON. Version prefix when mobile ships: `/v1/...`
+
+| Endpoint | Purpose |
+|----------|---------|
+| `GET /health` | Liveness |
+| `GET /auth/github` | Start OAuth |
+| `GET /auth/github/callback` | OAuth callback |
+| `POST /auth/logout` | End session |
+| `GET /me` | Current user + track + stage + step |
+| `POST /repo` | Link project repository |
+| `GET /streak` | Accountability stats |
+| `GET /tracks/:trackId/stages` | Stage map with progress status |
+| `GET /curriculum/:trackId` | Hybrid stage content (lesson/sandbox/project + metadata) |
+| `GET /assignment/current` | Today's focus (stage + step + quiz + checklist) |
+| `POST /assignment/step` | Switch lesson / sandbox / quiz / project tab (project blocked if quiz not passed) |
+| `POST /assignment/quiz` | Submit quiz answers; server grades; unlocks project on pass |
+| `POST /assignment/checklist` | Toggle checklist item |
+| `POST /assignment/advance` | Move to next stage when checklist complete (resets quiz state) |
+| `GET /mentor/students` | Student roster + streak snapshot (mentor allowlist only) |
+
+`GET /me` includes `isMentor` when the user's GitHub id is in `MENTOR_GITHUB_IDS`.
+
+**Future (mobile):** `POST /auth/token` or session exchange; same endpoints with `Authorization: Bearer`.
+
+---
+
+## Web structure
+
+```
+commitloop/web/
+  app/
+    page.tsx                  # Landing (public)
+    curriculum/page.tsx       # Track map (public; shows user header if logged in)
+    (app)/                    # Protected route group
+      layout.tsx              # Auth gate + AppHeader
+      home/page.tsx           # Assignment + streak
+      assignment/page.tsx     # Lesson / Sandbox / Quiz / Project tabs
+      settings/page.tsx       # Repo link
+      mentor/page.tsx         # Mentor ops roster (mentors only)
+    providers.tsx             # AuthProvider wrapper
+    layout.tsx                # Root layout + fonts
+  components/                 # Shared UI (header, markdown, streak panel)
+  features/                   # Domain components by area
+    assignment/
+    curriculum/
+    dashboard/
+    landing/
+    repo/
+    settings/
+    mentor/
+  lib/
+    api.ts                    # fetch wrapper → Express API
+    auth.tsx                  # AuthProvider + useAuth
+```
+
+- **No API routes in Next.js** for domain logic — all data via Express
+- **Public pages:** `/`, `/curriculum`
+- **Protected pages:** `/home`, `/assignment`, `/settings`, `/mentor` (via `(app)/layout.tsx`)
+- Auth: cookie session from API (`credentials: "include"`)
+
+---
+
+## Visual principles (anti-slop)
+
+- **Light mode default** — warm off-white background
+- **One accent** — muted green for streak/active states only
+- **Typography** — Source Sans 3 (body), IBM Plex Mono (stats/repo)
+- **No** gradients, glass blur, hero illustrations, emoji UI
+- **Density** — information-first; feels like a tool, not a landing-page template
+
+Wireframes: [WIREFRAMES.md](./WIREFRAMES.md) — **implemented in v0**.
+
+---
+
+## Architecture gates
+
+Deterministic checks prevent layer drift as the platform grows. Run from `commitloop/`:
+
+```bash
+npm run arch:check   # structure + import boundary tests
+npm run ci           # arch:check + content:check + typecheck + lint + coverage + build
+```
+
+| Gate | What it enforces |
+|------|------------------|
+| `architecture/` tests | API feature registry, router mounting in `app.ts` only, service/route/client layer boundaries, known feature domains, no Next.js `app/api/`, protected routes under `(app)/`, web cross-feature import ban, API client usage only in pages/lib/header |
+| ESLint (api) | Services cannot import Express or `*.routes`; clients/middleware/config cannot import `features/` |
+| ESLint (web) | `features/` cannot import `app/`; shared `components/` cannot import `features/` (except `app-header`) |
+
+**Adding a feature:** create `api/src/features/<name>/` + register in `architecture/src/paths.ts` (`API_FEATURES`). For web UI, add `web/features/<name>/` + register `WEB_FEATURES`. Cross-feature service deps require an explicit allowlist entry in `ALLOWED_CROSS_FEATURE_SERVICE_IMPORTS`.
+
+---
+
+## Quality
+
+From `commitloop/`:
+
+```bash
+npm run ci    # arch:check + content:check + typecheck + eslint + coverage + build
+```
+
+| Package | Tests | Lint |
+|---------|-------|------|
+| `architecture/` | Vitest structure gates | — |
+| `api/` | Vitest + Supertest | ESLint 9 + typescript-eslint |
+| `web/` | Vitest + Testing Library | ESLint 9 flat config (`eslint.config.mjs`) |
+
+CI: `.github/workflows/commitloop-ci.yml` on pushes to `commitloop/**`.
+
+**Note:** Next.js 16 requires Node `>=20.9`. Use Node 22 in CI and locally.
+
+---
+
+## What's built
+
+| Area | Status |
+|------|--------|
+| GitHub OAuth + repo linking | ✅ |
+| Assignment-first home + streak panel | ✅ |
+| Assignment tabs + quiz gate + checklist + advance | ✅ |
+| Hybrid curriculum content system (Stage 0–1) | ✅ |
+| `content:check` validation in CI | ✅ |
+| Feature-based API + web architecture | ✅ |
+| Tests (103) + coverage thresholds | ✅ |
+| Mentor view v1 | ✅ |
+
+---
+
+## Next up
+
+See [ROADMAP.md](./ROADMAP.md) and [MENTOR_VIEW.md](./MENTOR_VIEW.md).
+
+1. Accountability gate (warnings → lockout)
+3. Stage 2+ curriculum (content agent)
+4. Deploy API + web to commitloop.dev
+
+**Not now:** Track 2, payments, mobile app, AI mentor, in-app CMS.
