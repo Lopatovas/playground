@@ -48,8 +48,9 @@ export default function LandingPage() {
                 <span> Ship one real app.</span>
               </h1>
               <p className="landing-hero__lede">
-                Daily assignments. GitHub-verified commits. One evolving
-                project — so your profile proves you can build, not just watch.
+                Track 1 — Web Systems: twelve stages from Git and the browser to
+                API, SQL, auth, and a deployed full-stack app. One evolving repo,
+                daily assignments, GitHub-verified commits.
               </p>
 
               <div className="landing-hero__actions">
@@ -62,7 +63,7 @@ export default function LandingPage() {
               </div>
 
               <p className="landing-hero__risk">
-                No credit card · Track 1 live · ~2 min to start
+                No credit card · 12 stages live · ~2 min to start
               </p>
             </div>
 

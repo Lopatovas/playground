@@ -14,8 +14,12 @@ const FAQS = [
     a: "Yes — link the GitHub repo you're growing for the track. One evolving project, no resets mid-track.",
   },
   {
+    q: "What does Track 1 cover?",
+    a: "Web Systems — twelve stages: onboarding and Git, HTML/CSS and JavaScript, Express API and SQL, wiring the stack, data modeling and ORM, auth, a client UI, then tests and deploy. One repo throughout.",
+  },
+  {
     q: "What if I'm a complete beginner?",
-    a: "Track 1 starts at onboarding and Git basics. You should be willing to learn by building, not expecting spoon-feeding.",
+    a: "Stage 0 starts at onboarding and tooling. You should already be willing to code a little; we teach the web stack outside-in, not computer science from zero.",
   },
   {
     q: "How much does it cost?",

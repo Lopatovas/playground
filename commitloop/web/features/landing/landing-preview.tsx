@@ -18,10 +18,10 @@ export function LandingPreview() {
         <div className="landing-preview__body">
           <div className="landing-preview__card landing-preview__card--wide">
             <p className="label">Today&apos;s assignment</p>
-            <h3>Stage 1 — Git & Collaboration</h3>
+            <h3>Stage 0 — Onboarding</h3>
             <p className="landing-preview__muted">
-              Push meaningful commits. Add .gitignore and starter code so the
-              app runs locally.
+              Link your repo, set up tools, and ship your first commit. Then
+              the loop: lesson → sandbox → quiz → project.
             </p>
             <span className="landing-preview__cta">Continue assignment</span>
           </div>

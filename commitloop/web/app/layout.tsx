@@ -18,7 +18,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   title: "CommitLoop",
   description:
-    "Accountability-first engineering apprenticeship. One loop. One project. Every day.",
+    "Track 1 — Web Systems: twelve stages from Git and HTML to API, SQL, auth, and deploy. One repo. Daily accountability.",
 };
 
 export const viewport = {

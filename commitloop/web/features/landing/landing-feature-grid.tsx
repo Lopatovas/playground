@@ -2,7 +2,7 @@ const FEATURES = [
   {
     num: "1",
     title: "The loop",
-    body: "Lesson → Sandbox → Project. Every concept lands in your codebase.",
+    body: "Lesson → Sandbox → Quiz → Project. Every concept lands in your codebase.",
   },
   {
     num: "2",

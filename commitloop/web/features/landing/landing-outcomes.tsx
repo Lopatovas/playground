@@ -5,7 +5,7 @@ const OUTCOMES = [
     tag: "Focus",
     title: "Know exactly what to do today",
     body: "Assignment-first home: stage, step, and checklist — not an overwhelming syllabus.",
-    metric: "Lesson → Sandbox → Project",
+    metric: "Lesson → Sandbox → Quiz → Project",
     featured: true,
   },
   {

@@ -9,7 +9,7 @@ const STEPS = [
   {
     step: "02",
     title: "Follow today's assignment",
-    body: "Lesson → Sandbox → Project. Every concept lands in your codebase.",
+    body: "Lesson → Sandbox → Quiz → Project. Every concept lands in your codebase.",
   },
   {
     step: "03",

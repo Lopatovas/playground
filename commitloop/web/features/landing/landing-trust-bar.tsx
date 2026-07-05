@@ -1,7 +1,7 @@
 const SIGNALS = [
+  { value: "12 stages", label: "Web Systems — Git to deploy" },
   { value: "1 repo", label: "One evolving project — no resets" },
   { value: "GitHub", label: "Commits verified from your repo" },
-  { value: "Weekends", label: "Streaks skip Sat & Sun" },
   { value: "Free", label: "Connect GitHub to start Track 1" },
 ];
 
