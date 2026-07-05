@@ -17,8 +17,7 @@ services:
     plan: free
     region: frankfurt
     buildCommand: npm ci --include=dev && npm run db:generate -w @commitloop/api && npm run build -w @commitloop/api
-    preDeployCommand: npm run db:migrate:deploy -w @commitloop/api
-    startCommand: npm run start -w @commitloop/api
+    startCommand: npm run start:prod -w @commitloop/api
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
