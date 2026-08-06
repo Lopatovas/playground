@@ -1,0 +1,41 @@
+{
+  "name": "@bulwark/adapters",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Concrete implementations of Bulwark's ports: vision services, browser, filesystem and fakes",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./dist/index.js"
+    },
+    "./testing": {
+      "types": "./src/testing/index.ts",
+      "default": "./dist/testing/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -b --pretty",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@bulwark/domain": "workspace:*",
+    "@bulwark/imaging": "workspace:*",
+    "@bulwark/ports": "workspace:*",
+    "zod": "^3.24.1"
+  },
+  "peerDependencies": {
+    "playwright": "^1.49.0"
+  },
+  "peerDependenciesMeta": {
+    "playwright": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "playwright": "^1.62.1"
+  }
+}
