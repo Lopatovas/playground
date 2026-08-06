@@ -1,31 +1,32 @@
 {
-  "name": "@bulwark/pipeline",
+  "name": "@bulwark/cli",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Bulwark application layer: configuration, measurement orchestration and report assembly",
+  "description": "Bulwark command line: capture, analyze, serve and diagnose",
+  "bin": {
+    "bulwark": "./dist/bin.js"
+  },
   "exports": {
     ".": {
       "types": "./src/index.ts",
       "default": "./dist/index.js"
-    },
-    "./testing": {
-      "types": "./src/testing/index.ts",
-      "default": "./dist/testing/index.js"
     }
   },
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc -b",
     "typecheck": "tsc -b --pretty",
-    "test": "vitest run"
+    "test": "vitest run",
+    "start": "node ./dist/bin.js"
   },
   "dependencies": {
     "@bulwark/adapters": "workspace:*",
     "@bulwark/domain": "workspace:*",
     "@bulwark/imaging": "workspace:*",
+    "@bulwark/pipeline": "workspace:*",
     "@bulwark/ports": "workspace:*",
-    "zod": "^3.24.1"
+    "commander": "^13.0.0",
+    "playwright": "^1.49.0",
+    "zod": "^3.25.76"
   }
 }

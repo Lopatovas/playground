@@ -13,6 +13,7 @@ export const workspaceAliases: Record<string, string> = {
   '@bulwark/ports': resolveFromRoot('packages/ports/src/index.ts'),
   '@bulwark/adapters/testing': resolveFromRoot('packages/adapters/src/testing/index.ts'),
   '@bulwark/adapters': resolveFromRoot('packages/adapters/src/index.ts'),
+  '@bulwark/pipeline/testing': resolveFromRoot('packages/pipeline/src/testing/index.ts'),
   '@bulwark/pipeline': resolveFromRoot('packages/pipeline/src/index.ts'),
 };
 
