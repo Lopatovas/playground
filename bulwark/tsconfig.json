@@ -1,0 +1,11 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./packages/domain" },
+    { "path": "./packages/imaging" },
+    { "path": "./packages/ports" },
+    { "path": "./packages/adapters" },
+    { "path": "./packages/pipeline" },
+    { "path": "./apps/cli" }
+  ]
+}
