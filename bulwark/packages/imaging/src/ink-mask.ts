@@ -1,3 +1,4 @@
+import type { BoundingBox } from '@bulwark/domain';
 import { roundTo } from '@bulwark/domain';
 import type { GrayImage } from './grayscale.js';
 import { histogram } from './grayscale.js';
@@ -97,6 +98,47 @@ export function buildInkMask(image: GrayImage, polarityOverride?: InkPolarity): 
   }
 
   return { width: image.width, height: image.height, data, threshold, polarity, inkPixelCount };
+}
+
+/**
+ * Restricts an existing mask to a sub-region.
+ *
+ * Re-thresholding a crop that is already all ink is not equivalent: Otsu needs both
+ * classes present, so a tight glyph crop would threshold into noise. Slicing the mask
+ * that was computed with the full crop's context keeps the polarity decision intact.
+ */
+export function cropInkMask(mask: InkMask, region: BoundingBox): InkMask {
+  const xMin = Math.max(0, Math.floor(region.xMin));
+  const yMin = Math.max(0, Math.floor(region.yMin));
+  const xMax = Math.min(mask.width, Math.ceil(region.xMax));
+  const yMax = Math.min(mask.height, Math.ceil(region.yMax));
+  const width = xMax - xMin;
+  const height = yMax - yMin;
+  if (width <= 0 || height <= 0) {
+    throw new RangeError(
+      `cropInkMask() region [${region.xMin}, ${region.yMin}, ${region.xMax}, ${region.yMax}] ` +
+        `does not overlap a ${mask.width}x${mask.height} mask`,
+    );
+  }
+
+  const data = new Uint8Array(width * height);
+  let inkPixelCount = 0;
+  for (let y = 0; y < height; y += 1) {
+    for (let x = 0; x < width; x += 1) {
+      const value = mask.data[(yMin + y) * mask.width + (xMin + x)] as number;
+      data[y * width + x] = value;
+      inkPixelCount += value;
+    }
+  }
+
+  return {
+    width,
+    height,
+    data,
+    threshold: mask.threshold,
+    polarity: mask.polarity,
+    inkPixelCount,
+  };
 }
 
 export function maskAt(mask: InkMask, x: number, y: number): number {

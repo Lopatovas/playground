@@ -2,6 +2,7 @@ export * from './raster.js';
 export * from './grayscale.js';
 export * from './ink-mask.js';
 export * from './projection.js';
+export * from './glyph-shape.js';
 export * from './kmeans.js';
 export * from './ssim.js';
 export * from './resize.js';

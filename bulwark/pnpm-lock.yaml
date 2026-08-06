@@ -70,6 +70,24 @@ importers:
         specifier: ^6.0.5
         version: 6.0.5
 
+  packages/pipeline:
+    dependencies:
+      '@bulwark/adapters':
+        specifier: workspace:*
+        version: link:../adapters
+      '@bulwark/domain':
+        specifier: workspace:*
+        version: link:../domain
+      '@bulwark/imaging':
+        specifier: workspace:*
+        version: link:../imaging
+      '@bulwark/ports':
+        specifier: workspace:*
+        version: link:../ports
+      zod:
+        specifier: ^3.24.1
+        version: 3.25.76
+
   packages/ports:
     dependencies:
       '@bulwark/domain':

@@ -11,6 +11,7 @@ export const workspaceAliases: Record<string, string> = {
   '@bulwark/domain': resolveFromRoot('packages/domain/src/index.ts'),
   '@bulwark/imaging': resolveFromRoot('packages/imaging/src/index.ts'),
   '@bulwark/ports': resolveFromRoot('packages/ports/src/index.ts'),
+  '@bulwark/adapters/testing': resolveFromRoot('packages/adapters/src/testing/index.ts'),
   '@bulwark/adapters': resolveFromRoot('packages/adapters/src/index.ts'),
   '@bulwark/pipeline': resolveFromRoot('packages/pipeline/src/index.ts'),
 };
