@@ -103,6 +103,8 @@ importers:
         specifier: ^7.0.0
         version: 7.3.6(@types/node@22.20.1)
 
+  apps/demo-target: {}
+
   packages/adapters:
     dependencies:
       '@bulwark/domain':
