@@ -1,3 +1,5 @@
+/* global Buffer, console */
+
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { deflateSync } from 'node:zlib';
