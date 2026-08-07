@@ -75,7 +75,11 @@ async function checkDesignExport(context: CliContext, path: string): Promise<Che
 
 async function checkDetector(baseUrl: string): Promise<CheckResult> {
   try {
-    const health = await new OmniParserDetector({ baseUrl, maxAttempts: 1, timeoutMs: 5000 }).health();
+    const health = await new OmniParserDetector({
+      baseUrl,
+      maxAttempts: 1,
+      timeoutMs: 5000,
+    }).health();
     return {
       name: 'element detector',
       ok: true,
@@ -90,7 +94,11 @@ async function checkDetector(baseUrl: string): Promise<CheckResult> {
 
 async function checkRecognizer(baseUrl: string): Promise<CheckResult> {
   try {
-    const health = await new PaddleOcrRecognizer({ baseUrl, maxAttempts: 1, timeoutMs: 5000 }).health();
+    const health = await new PaddleOcrRecognizer({
+      baseUrl,
+      maxAttempts: 1,
+      timeoutMs: 5000,
+    }).health();
     return { name: 'text recognizer', ok: true, detail: `${baseUrl} serving ${health.model}` };
   } catch (error) {
     return { name: 'text recognizer', ok: false, detail: `${baseUrl}: ${describe(error)}` };

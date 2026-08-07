@@ -52,6 +52,7 @@ export default tseslint.config(
     files: ['**/*.test.ts', '**/*.test.tsx', '**/test/**/*.ts', '**/testing/**/*.ts'],
     rules: {
       'no-restricted-syntax': 'off',
+      'no-restricted-properties': 'off',
     },
   },
 );

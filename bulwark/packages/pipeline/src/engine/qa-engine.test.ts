@@ -232,7 +232,15 @@ describe('QaEngine typography regressions', () => {
       renders,
       availableFamilies: ['Mark Pro', 'Open Sans'],
       config: {
-        checks: { fontSize: false, spacing: true, position: true, fontWeight: false, fontFamily: true, color: true, reportUnexpectedElements: true },
+        checks: {
+          fontSize: false,
+          spacing: true,
+          position: true,
+          fontWeight: false,
+          fontFamily: true,
+          color: true,
+          reportUnexpectedElements: true,
+        },
       },
     }).analyze();
 

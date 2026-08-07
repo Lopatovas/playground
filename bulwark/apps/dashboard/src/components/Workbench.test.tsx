@@ -46,9 +46,7 @@ describe('Workbench', () => {
 
   it('exposes a curtain seam when curtain mode is active', async () => {
     const user = userEvent.setup();
-    const { container } = render(
-      <Workbench report={SAMPLE_REPORT} artifactsBase="/artifacts/" />,
-    );
+    const { container } = render(<Workbench report={SAMPLE_REPORT} artifactsBase="/artifacts/" />);
 
     await user.click(screen.getByRole('button', { name: /Curtain/i }));
     expect(container.querySelector('.curtain-seam')).not.toBeNull();
@@ -79,16 +77,16 @@ describe('Workbench', () => {
   });
 });
 
-
 describe('App loading', () => {
   beforeEach(() => {
     vi.stubGlobal(
       'fetch',
-      vi.fn(async () =>
-        new Response(JSON.stringify(SAMPLE_REPORT), {
-          status: 200,
-          headers: { 'content-type': 'application/json' },
-        }),
+      vi.fn(
+        async () =>
+          new Response(JSON.stringify(SAMPLE_REPORT), {
+            status: 200,
+            headers: { 'content-type': 'application/json' },
+          }),
       ),
     );
   });

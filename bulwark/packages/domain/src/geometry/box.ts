@@ -117,7 +117,12 @@ export function inflateBox(box: BoundingBox, padding: number): BoundingBox {
   const yMin = box.yMin - padding;
   const xMax = box.xMax + padding;
   const yMax = box.yMax + padding;
-  return createBox(Math.min(xMin, xMax), Math.min(yMin, yMax), Math.max(xMin, xMax), Math.max(yMin, yMax));
+  return createBox(
+    Math.min(xMin, xMax),
+    Math.min(yMin, yMax),
+    Math.max(xMin, xMax),
+    Math.max(yMin, yMax),
+  );
 }
 
 /**

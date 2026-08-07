@@ -65,9 +65,10 @@ export function overlayReducer(state: OverlayState, action: OverlayAction): Over
  * - curtain: clip-path is applied separately so this only carries opacity.
  * - difference: matching pixels go black; mismatches glow neon.
  */
-export function liveLayerStyle(
-  state: OverlayState,
-): { opacity: number; mixBlendMode: 'normal' | 'difference' } {
+export function liveLayerStyle(state: OverlayState): {
+  opacity: number;
+  mixBlendMode: 'normal' | 'difference';
+} {
   switch (state.mode) {
     case 'opacity':
       return { opacity: state.opacity, mixBlendMode: 'normal' };

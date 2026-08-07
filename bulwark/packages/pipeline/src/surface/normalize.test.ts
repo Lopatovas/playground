@@ -4,7 +4,11 @@ import type { DetectionResult, LiveDomElement } from '@bulwark/ports';
 import { associateDomElements, domElementKind, normalizeDetection } from './normalize.js';
 
 function detection(
-  regions: readonly { box: readonly [number, number, number, number]; label: string; kind?: 'text' | 'icon' | 'container' }[],
+  regions: readonly {
+    box: readonly [number, number, number, number];
+    label: string;
+    kind?: 'text' | 'icon' | 'container';
+  }[],
   size = { width: 800, height: 600 },
 ): DetectionResult {
   return {
@@ -19,7 +23,9 @@ function detection(
   };
 }
 
-function domElement(overrides: Partial<LiveDomElement> & Pick<LiveDomElement, 'id' | 'box'>): LiveDomElement {
+function domElement(
+  overrides: Partial<LiveDomElement> & Pick<LiveDomElement, 'id' | 'box'>,
+): LiveDomElement {
   return {
     tagName: 'div',
     text: null,
@@ -206,9 +212,9 @@ describe('associateDomElements', () => {
 
   it('honours a stricter overlap requirement', () => {
     const loose = domElement({ id: 'main', box: createBox(40, 180, 400, 300) });
-    expect(associateDomElements(elements, [loose], { minIou: 0.9 }).unassociatedElementIds).toEqual([
-      'live-001',
-    ]);
+    expect(associateDomElements(elements, [loose], { minIou: 0.9 }).unassociatedElementIds).toEqual(
+      ['live-001'],
+    );
     expect(associateDomElements(elements, [loose], { minIou: 0.2 }).unassociatedElementIds).toEqual(
       [],
     );
@@ -217,9 +223,9 @@ describe('associateDomElements', () => {
 
 describe('domElementKind', () => {
   it('classifies by content and tag', () => {
-    expect(
-      domElementKind(domElement({ id: 'a', box: createBox(0, 0, 10, 10), text: 'hi' })),
-    ).toBe('text');
+    expect(domElementKind(domElement({ id: 'a', box: createBox(0, 0, 10, 10), text: 'hi' }))).toBe(
+      'text',
+    );
     expect(
       domElementKind(domElement({ id: 'a', box: createBox(0, 0, 10, 10), tagName: 'img' })),
     ).toBe('image');

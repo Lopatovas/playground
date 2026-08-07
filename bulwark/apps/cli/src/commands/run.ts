@@ -21,10 +21,7 @@ export const EXIT_DEFECTS_FOUND = 1;
  * Returns an exit code rather than calling `process.exit`, so the behaviour that CI
  * depends on is directly testable.
  */
-export async function runCommand(
-  context: CliContext,
-  options: RunCommandOptions,
-): Promise<number> {
+export async function runCommand(context: CliContext, options: RunCommandOptions): Promise<number> {
   const prepared = await prepareRun(context, options.configPath);
   const result = await prepared.runner.run();
 

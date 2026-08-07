@@ -6,7 +6,9 @@ import type { InkMask } from './ink-mask.js';
 /** Bilinear resample of a grayscale image. */
 export function resizeBilinear(image: GrayImage, width: number, height: number): GrayImage {
   if (!Number.isInteger(width) || !Number.isInteger(height) || width <= 0 || height <= 0) {
-    throw new RangeError(`resizeBilinear() requires positive integer dimensions, received ${width}x${height}`);
+    throw new RangeError(
+      `resizeBilinear() requires positive integer dimensions, received ${width}x${height}`,
+    );
   }
   if (image.width === width && image.height === height) {
     return { width, height, data: new Uint8Array(image.data) };

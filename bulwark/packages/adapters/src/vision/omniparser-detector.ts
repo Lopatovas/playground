@@ -10,8 +10,10 @@ import { HttpJsonClient } from './http-json.js';
 import type { HttpJsonClientOptions } from './http-json.js';
 import { detectionResponseSchema, healthResponseSchema } from './contract.js';
 
-export interface OmniParserDetectorOptions
-  extends Omit<HttpJsonClientOptions, 'service' | 'timeoutMs' | 'maxAttempts' | 'retryDelayMs'> {
+export interface OmniParserDetectorOptions extends Omit<
+  HttpJsonClientOptions,
+  'service' | 'timeoutMs' | 'maxAttempts' | 'retryDelayMs'
+> {
   readonly timeoutMs?: number;
   readonly maxAttempts?: number;
   readonly retryDelayMs?: number;

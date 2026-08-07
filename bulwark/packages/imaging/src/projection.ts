@@ -192,7 +192,11 @@ export function measureTextInk(
   };
 }
 
-function measureLine(mask: InkMask, band: Band, options: TextInkOptions): TextLineMeasurement | null {
+function measureLine(
+  mask: InkMask,
+  band: Band,
+  options: TextInkOptions,
+): TextLineMeasurement | null {
   const columnCounts = new Uint32Array(mask.width);
   let xMin = mask.width;
   let xMax = -1;

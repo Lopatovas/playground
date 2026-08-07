@@ -11,9 +11,7 @@ export function formatReportSummary(report: QaReport, options: { color: boolean 
   const paint = options.color ? colorize : (_code: string, text: string) => text;
   const lines: string[] = [];
 
-  const verdict = report.summary.passed
-    ? paint('32', 'PASS')
-    : paint('31', 'FAIL');
+  const verdict = report.summary.passed ? paint('32', 'PASS') : paint('31', 'FAIL');
   lines.push(
     `${verdict} ${report.target.url} against ${report.surfaces.design.imagePath} ` +
       `(run ${report.runId})`,

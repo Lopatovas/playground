@@ -75,9 +75,9 @@ describe('findBands', () => {
   });
 
   it('rejects an out-of-range peak ratio', () => {
-    expect(() => findBands(new Uint32Array([1]), { ...DEFAULT_LINE_BAND_OPTIONS, minPeakRatio: 2 })).toThrow(
-      RangeError,
-    );
+    expect(() =>
+      findBands(new Uint32Array([1]), { ...DEFAULT_LINE_BAND_OPTIONS, minPeakRatio: 2 }),
+    ).toThrow(RangeError);
   });
 });
 
@@ -97,7 +97,8 @@ describe('measureTextInk', () => {
   it('measures glyph height while ignoring surrounding line-height padding', () => {
     // 20px-tall bars inside a 40px-tall box: the box height must not be the answer.
     const mask = maskOf(
-      (raster) => drawGlyphBars(raster, { x: 6, y: 10, height: 20, strokeWidth: 2, gap: 3, count: 8 }),
+      (raster) =>
+        drawGlyphBars(raster, { x: 6, y: 10, height: 20, strokeWidth: 2, gap: 3, count: 8 }),
       80,
       40,
     );
@@ -112,7 +113,8 @@ describe('measureTextInk', () => {
 
   it('feeds the blueprint formula: 19.68px of ink implies 24px Mark Pro type', () => {
     const mask = maskOf(
-      (raster) => drawGlyphBars(raster, { x: 4, y: 4, height: 20, strokeWidth: 2, gap: 2, count: 6 }),
+      (raster) =>
+        drawGlyphBars(raster, { x: 4, y: 4, height: 20, strokeWidth: 2, gap: 2, count: 6 }),
       60,
       30,
     );
@@ -150,10 +152,14 @@ describe('measureTextInk', () => {
   });
 
   it('splits stacked lines and reports the median line height', () => {
-    const mask = maskOf((raster) => {
-      drawGlyphBars(raster, { x: 6, y: 4, height: 10, strokeWidth: 2, gap: 3, count: 6 });
-      drawGlyphBars(raster, { x: 6, y: 24, height: 10, strokeWidth: 2, gap: 3, count: 6 });
-    }, 80, 40);
+    const mask = maskOf(
+      (raster) => {
+        drawGlyphBars(raster, { x: 6, y: 4, height: 10, strokeWidth: 2, gap: 3, count: 6 });
+        drawGlyphBars(raster, { x: 6, y: 24, height: 10, strokeWidth: 2, gap: 3, count: 6 });
+      },
+      80,
+      40,
+    );
 
     const measurement = measureTextInk(mask);
     expect(measurement?.lines).toHaveLength(2);
@@ -173,12 +179,14 @@ describe('measureTextInk', () => {
 
   it('is unaffected by where the text sits inside the crop', () => {
     const left = maskOf(
-      (raster) => drawGlyphBars(raster, { x: 2, y: 6, height: 12, strokeWidth: 2, gap: 2, count: 5 }),
+      (raster) =>
+        drawGlyphBars(raster, { x: 2, y: 6, height: 12, strokeWidth: 2, gap: 2, count: 5 }),
       60,
       30,
     );
     const right = maskOf(
-      (raster) => drawGlyphBars(raster, { x: 30, y: 6, height: 12, strokeWidth: 2, gap: 2, count: 5 }),
+      (raster) =>
+        drawGlyphBars(raster, { x: 30, y: 6, height: 12, strokeWidth: 2, gap: 2, count: 5 }),
       60,
       30,
     );

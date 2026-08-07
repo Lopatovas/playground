@@ -51,8 +51,7 @@ export function otsuThreshold(image: GrayImage): number {
     backgroundSum += threshold * (bins[threshold] as number);
     const backgroundMean = backgroundSum / backgroundWeight;
     const foregroundMean = (sum - backgroundSum) / foregroundWeight;
-    const variance =
-      backgroundWeight * foregroundWeight * (backgroundMean - foregroundMean) ** 2;
+    const variance = backgroundWeight * foregroundWeight * (backgroundMean - foregroundMean) ** 2;
 
     if (variance > bestVariance) {
       bestVariance = variance;
@@ -84,7 +83,8 @@ export function buildInkMask(image: GrayImage, polarityOverride?: InkPolarity): 
     if (value <= threshold) darkCount += 1;
   }
   const polarity: InkPolarity =
-    polarityOverride ?? (darkCount <= image.data.length - darkCount ? 'dark-on-light' : 'light-on-dark');
+    polarityOverride ??
+    (darkCount <= image.data.length - darkCount ? 'dark-on-light' : 'light-on-dark');
 
   const data = new Uint8Array(image.data.length);
   let inkPixelCount = 0;

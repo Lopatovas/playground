@@ -15,43 +15,48 @@ export type ReportLoadState =
  * artifact images are resolved next to that report. That keeps the dashboard a static
  * bundle that works the same under `bulwark serve`, nginx, or a CI artifact host.
  */
-export function useReport(search: string = typeof window === 'undefined' ? '' : window.location.search): ReportLoadState {
+export function useReport(
+  search: string = typeof window === 'undefined' ? '' : window.location.search,
+): ReportLoadState {
   const [state, setState] = useState<ReportLoadState>({ status: 'loading' });
   const reportUrl = reportUrlFromLocation(search);
 
-  const load = useCallback(async (signal: AbortSignal) => {
-    setState({ status: 'loading' });
-    try {
-      const response = await fetch(reportUrl, { signal });
-      if (!response.ok) {
+  const load = useCallback(
+    async (signal: AbortSignal) => {
+      setState({ status: 'loading' });
+      try {
+        const response = await fetch(reportUrl, { signal });
+        if (!response.ok) {
+          setState({
+            status: 'error',
+            message: `Could not load the report at ${reportUrl} (HTTP ${response.status}).`,
+          });
+          return;
+        }
+        const payload: unknown = await response.json();
+        const parsed = parseReport(payload);
+        if (!parsed.ok) {
+          setState({ status: 'error', message: parsed.message, issues: parsed.issues });
+          return;
+        }
+        setState({
+          status: 'ready',
+          report: parsed.report,
+          artifactsBase: artifactsBaseFromReportUrl(reportUrl),
+        });
+      } catch (error) {
+        if (signal.aborted) return;
         setState({
           status: 'error',
-          message: `Could not load the report at ${reportUrl} (HTTP ${response.status}).`,
+          message:
+            error instanceof Error
+              ? `Could not load the report: ${error.message}`
+              : 'Could not load the report.',
         });
-        return;
       }
-      const payload: unknown = await response.json();
-      const parsed = parseReport(payload);
-      if (!parsed.ok) {
-        setState({ status: 'error', message: parsed.message, issues: parsed.issues });
-        return;
-      }
-      setState({
-        status: 'ready',
-        report: parsed.report,
-        artifactsBase: artifactsBaseFromReportUrl(reportUrl),
-      });
-    } catch (error) {
-      if (signal.aborted) return;
-      setState({
-        status: 'error',
-        message:
-          error instanceof Error
-            ? `Could not load the report: ${error.message}`
-            : 'Could not load the report.',
-      });
-    }
-  }, [reportUrl]);
+    },
+    [reportUrl],
+  );
 
   useEffect(() => {
     const controller = new AbortController();

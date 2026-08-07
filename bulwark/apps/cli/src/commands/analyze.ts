@@ -2,11 +2,7 @@ import { z } from 'zod';
 import { canonicalStringify } from '@bulwark/domain';
 import { ContractViolationError } from '@bulwark/ports';
 import type { LiveCapture } from '@bulwark/ports';
-import {
-  DESIGN_ARTIFACT_PATH,
-  LIVE_ARTIFACT_PATH,
-  REPORT_ARTIFACT_PATH,
-} from '@bulwark/pipeline';
+import { DESIGN_ARTIFACT_PATH, LIVE_ARTIFACT_PATH, REPORT_ARTIFACT_PATH } from '@bulwark/pipeline';
 import type { CliContext } from './context.js';
 import { prepareRun } from './context.js';
 import { formatDefectsAsLines, formatReportSummary } from '../reporting/format-report.js';

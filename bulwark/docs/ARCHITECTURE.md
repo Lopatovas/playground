@@ -20,13 +20,13 @@ apps (cli, api, dashboard)
              TextRasterizer, ArtifactStore, Clock, IdGenerator, Logger
 ```
 
-| Package    | Responsibility |
-| ---------- | -------------- |
+| Package    | Responsibility                                                                                                           |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------ |
 | `domain`   | Pure functions: boxes, mutual-nearest matching, gap graphs, font profiles, CIEDE2000, defect builders, canonical reports |
-| `imaging`  | Deterministic raster ops used by adapters and pipeline measurers |
-| `ports`    | Interfaces + typed errors only |
-| `adapters` | HTTP OmniParser/PaddleOCR, Playwright inspector/rasterizer, filesystem store, fakes, synthetic scene builder |
-| `pipeline` | Zod config, service composition, `QaEngine` / `QaRunner` |
+| `imaging`  | Deterministic raster ops used by adapters and pipeline measurers                                                         |
+| `ports`    | Interfaces + typed errors only                                                                                           |
+| `adapters` | HTTP OmniParser/PaddleOCR, Playwright inspector/rasterizer, filesystem store, fakes, synthetic scene builder             |
+| `pipeline` | Zod config, service composition, `QaEngine` / `QaRunner`                                                                 |
 
 Apps never own measurement math. The CLI and API both call `QaRunner` through
 the same composition root (`buildServices`).

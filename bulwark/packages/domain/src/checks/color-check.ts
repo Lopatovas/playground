@@ -3,7 +3,11 @@ import type { ColorDefect, ColorRole, Defect } from '../defects/defect.js';
 import type { Rgb } from '../color/rgb.js';
 import { toHex } from '../color/rgb.js';
 import type { DeltaE2000Weights } from '../color/delta-e.js';
-import { DEFAULT_DELTA_E_WEIGHTS, JUST_NOTICEABLE_DELTA_E, deltaE2000Rgb } from '../color/delta-e.js';
+import {
+  DEFAULT_DELTA_E_WEIGHTS,
+  JUST_NOTICEABLE_DELTA_E,
+  deltaE2000Rgb,
+} from '../color/delta-e.js';
 import { roundTo } from '../numeric.js';
 
 /**
@@ -71,7 +75,11 @@ export function checkColors(
 
   for (const measurement of measurements) {
     const roles: { role: ColorRole; design: Rgb | undefined; live: Rgb | undefined }[] = [
-      { role: 'background', design: measurement.designBackground, live: measurement.liveBackground },
+      {
+        role: 'background',
+        design: measurement.designBackground,
+        live: measurement.liveBackground,
+      },
     ];
     if (options.checkForeground) {
       roles.push({

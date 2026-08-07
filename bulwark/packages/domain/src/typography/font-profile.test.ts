@@ -62,17 +62,17 @@ describe('FontRegistry', () => {
 
   it('rejects a name claimed by two families', () => {
     expect(
-      () =>
-        new FontRegistry([
-          MARK_PRO_PROFILE,
-          { ...OPEN_SANS_PROFILE, aliases: ['MarkPro'] },
-        ]),
+      () => new FontRegistry([MARK_PRO_PROFILE, { ...OPEN_SANS_PROFILE, aliases: ['MarkPro'] }]),
     ).toThrow(/claimed by both/);
   });
 
   it('rejects an out-of-range visual ratio', () => {
-    expect(() => new FontRegistry([{ ...MARK_PRO_PROFILE, visualToCssRatio: 0 }])).toThrow(RangeError);
-    expect(() => new FontRegistry([{ ...MARK_PRO_PROFILE, visualToCssRatio: 3 }])).toThrow(RangeError);
+    expect(() => new FontRegistry([{ ...MARK_PRO_PROFILE, visualToCssRatio: 0 }])).toThrow(
+      RangeError,
+    );
+    expect(() => new FontRegistry([{ ...MARK_PRO_PROFILE, visualToCssRatio: 3 }])).toThrow(
+      RangeError,
+    );
   });
 
   it('rejects weight bands with a gap or an overlap', () => {

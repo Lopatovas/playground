@@ -23,7 +23,11 @@ export function parseColor(value: string): Rgb {
   if (hexMatch !== null) {
     const hex = hexMatch[1] as string;
     if (hex.length === 3) {
-      const [r, g, b] = [...hex].map((char) => parseInt(char + char, 16)) as [number, number, number];
+      const [r, g, b] = [...hex].map((char) => parseInt(char + char, 16)) as [
+        number,
+        number,
+        number,
+      ];
       return createRgb(r, g, b);
     }
     return createRgb(

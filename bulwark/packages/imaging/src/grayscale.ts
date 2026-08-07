@@ -36,7 +36,9 @@ export function grayAt(image: GrayImage, x: number, y: number): number {
 
 export function createGrayImage(width: number, height: number, fill = 0): GrayImage {
   if (!Number.isInteger(width) || !Number.isInteger(height) || width <= 0 || height <= 0) {
-    throw new RangeError(`Gray image dimensions must be positive integers, received ${width}x${height}`);
+    throw new RangeError(
+      `Gray image dimensions must be positive integers, received ${width}x${height}`,
+    );
   }
   const data = new Uint8Array(width * height);
   if (fill !== 0) data.fill(fill);

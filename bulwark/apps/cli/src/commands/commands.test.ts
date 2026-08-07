@@ -77,7 +77,10 @@ describe('runCommand', () => {
       color: false,
     });
 
-    const parsed = JSON.parse(harness.stdout.join('\n')) as { runId: string; schemaVersion: number };
+    const parsed = JSON.parse(harness.stdout.join('\n')) as {
+      runId: string;
+      schemaVersion: number;
+    };
     expect(parsed.runId).toBe('run-fixed');
     expect(parsed.schemaVersion).toBe(1);
   });
@@ -92,7 +95,10 @@ describe('runCommand', () => {
       color: false,
     });
 
-    const lines = harness.stdout.join('\n').split('\n').filter((line) => line.length > 0);
+    const lines = harness.stdout
+      .join('\n')
+      .split('\n')
+      .filter((line) => line.length > 0);
     expect(lines).toHaveLength(1);
     expect(lines[0]?.split('\t')).toHaveLength(4);
     expect(lines[0]?.startsWith('error\tcolor\t')).toBe(true);

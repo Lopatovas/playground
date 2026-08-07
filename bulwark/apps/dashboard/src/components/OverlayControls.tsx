@@ -64,9 +64,7 @@ export function OverlayControls({ state, dispatch }: OverlayControlsProps) {
             <button
               type="button"
               aria-pressed={state.curtainOrientation === 'vertical'}
-              onClick={() =>
-                dispatch({ type: 'set-curtain-orientation', orientation: 'vertical' })
-              }
+              onClick={() => dispatch({ type: 'set-curtain-orientation', orientation: 'vertical' })}
             >
               Vertical
             </button>

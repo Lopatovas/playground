@@ -72,9 +72,11 @@ describe('OmniParserDetector', () => {
   });
 
   it('forwards optional thresholds only when set', async () => {
-    const fetchImpl = vi.fn().mockResolvedValue(
-      jsonResponse({ model: 'm', image: { width: 10, height: 10 }, elements: [] }),
-    );
+    const fetchImpl = vi
+      .fn()
+      .mockResolvedValue(
+        jsonResponse({ model: 'm', image: { width: 10, height: 10 }, elements: [] }),
+      );
     await detectorFor(fetchImpl).detect({ surface: 'live', image: IMAGE, minConfidence: 0.3 });
 
     const body = JSON.parse((fetchImpl.mock.calls[0]?.[1] as RequestInit).body as string) as Record<
@@ -99,13 +101,15 @@ describe('OmniParserDetector', () => {
   });
 
   it('rejects a payload that omits required fields', async () => {
-    const fetchImpl = vi.fn().mockResolvedValue(
-      jsonResponse({ model: 'm', image: { width: 10, height: 10 }, elements: [{ label: 'x' }] }),
-    );
+    const fetchImpl = vi
+      .fn()
+      .mockResolvedValue(
+        jsonResponse({ model: 'm', image: { width: 10, height: 10 }, elements: [{ label: 'x' }] }),
+      );
 
-    await expect(detectorFor(fetchImpl).detect({ surface: 'design', image: IMAGE })).rejects.toThrow(
-      ContractViolationError,
-    );
+    await expect(
+      detectorFor(fetchImpl).detect({ surface: 'design', image: IMAGE }),
+    ).rejects.toThrow(ContractViolationError);
   });
 
   it('rejects boxes that fall outside the image the service reported', async () => {
@@ -117,9 +121,9 @@ describe('OmniParserDetector', () => {
       }),
     );
 
-    await expect(detectorFor(fetchImpl).detect({ surface: 'design', image: IMAGE })).rejects.toThrow(
-      /outside the reported 100x100 image/,
-    );
+    await expect(
+      detectorFor(fetchImpl).detect({ surface: 'design', image: IMAGE }),
+    ).rejects.toThrow(/outside the reported 100x100 image/);
   });
 
   it('reports service health including fallback mode', async () => {

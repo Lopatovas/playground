@@ -36,8 +36,7 @@ body {
   font-family: var(--font-body);
   background:
     radial-gradient(1200px 600px at 10% -10%, rgba(61, 214, 198, 0.12), transparent 55%),
-    radial-gradient(900px 500px at 100% 0%, rgba(88, 120, 180, 0.16), transparent 50%),
-    var(--bg);
+    radial-gradient(900px 500px at 100% 0%, rgba(88, 120, 180, 0.16), transparent 50%), var(--bg);
   color: var(--ink);
   line-height: 1.45;
 }
@@ -185,7 +184,10 @@ a {
   border-radius: 8px;
   background: transparent;
   cursor: pointer;
-  transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease;
 }
 
 .mode-button:hover {
@@ -312,7 +314,9 @@ a {
   padding: 0;
   cursor: pointer;
   z-index: 2;
-  transition: box-shadow 160ms ease, border-color 160ms ease;
+  transition:
+    box-shadow 160ms ease,
+    border-color 160ms ease;
 }
 
 .defect-highlight--error {
@@ -394,7 +398,9 @@ a {
   border-radius: 8px;
   padding: 0.65rem 0.7rem;
   cursor: pointer;
-  transition: background 140ms ease, border-color 140ms ease;
+  transition:
+    background 140ms ease,
+    border-color 140ms ease;
 }
 
 .defect-item:hover,

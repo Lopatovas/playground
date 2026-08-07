@@ -5,7 +5,12 @@ import { alignForShapeComparison, inkMaskToGray, padToWidth, resizeBilinear } fr
 import { toGrayscale, createGrayImage } from './grayscale.js';
 import { buildInkMask } from './ink-mask.js';
 import { createRaster, fillRect } from './raster.js';
-import { checkerboardRaster, drawGlyphBars, gradientRaster, solidRaster } from './testing/synthetic.js';
+import {
+  checkerboardRaster,
+  drawGlyphBars,
+  gradientRaster,
+  solidRaster,
+} from './testing/synthetic.js';
 
 const WHITE = createRgb(255, 255, 255);
 const BLACK = createRgb(0, 0, 0);
@@ -97,9 +102,13 @@ describe('ssim', () => {
 
   it('rejects invalid options', () => {
     const image = createGrayImage(20, 20);
-    expect(() => ssim(image, image, { ...DEFAULT_SSIM_OPTIONS, windowSize: 10 })).toThrow(RangeError);
+    expect(() => ssim(image, image, { ...DEFAULT_SSIM_OPTIONS, windowSize: 10 })).toThrow(
+      RangeError,
+    );
     expect(() => ssim(image, image, { ...DEFAULT_SSIM_OPTIONS, sigma: 0 })).toThrow(RangeError);
-    expect(() => ssim(image, image, { ...DEFAULT_SSIM_OPTIONS, dynamicRange: 0 })).toThrow(RangeError);
+    expect(() => ssim(image, image, { ...DEFAULT_SSIM_OPTIONS, dynamicRange: 0 })).toThrow(
+      RangeError,
+    );
   });
 
   it('separates two glyph shapes well enough to pick a family', () => {

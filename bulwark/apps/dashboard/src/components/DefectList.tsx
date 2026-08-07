@@ -73,7 +73,9 @@ export function DefectList({ defects, selectedId, onSelect }: DefectListProps) {
 
       {visible.length === 0 ? (
         <p className="defect-list__empty">
-          {defects.length === 0 ? 'No defects — the surfaces match.' : 'No defects match this filter.'}
+          {defects.length === 0
+            ? 'No defects — the surfaces match.'
+            : 'No defects match this filter.'}
         </p>
       ) : (
         <ul className="defect-list__items">

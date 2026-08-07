@@ -50,7 +50,12 @@ export function OverlayCanvas({
           draggable={false}
           style={
             overlay.mode === 'curtain'
-              ? { clipPath: curtainComplementClipPath(overlay.curtainPosition, overlay.curtainOrientation) }
+              ? {
+                  clipPath: curtainComplementClipPath(
+                    overlay.curtainPosition,
+                    overlay.curtainOrientation,
+                  ),
+                }
               : undefined
           }
         />

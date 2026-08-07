@@ -119,7 +119,8 @@ export function createStaticServer(options: StaticServerOptions): {
         server.once('error', rejectPromise);
         server.listen(options.port, options.host ?? '0.0.0.0', () => {
           const address = server.address();
-          const port = typeof address === 'object' && address !== null ? address.port : options.port;
+          const port =
+            typeof address === 'object' && address !== null ? address.port : options.port;
           resolvePromise({
             port,
             close: () =>

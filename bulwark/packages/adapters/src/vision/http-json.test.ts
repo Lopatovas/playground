@@ -12,7 +12,10 @@ function jsonResponse(body: unknown, status = 200): Response {
   });
 }
 
-function client(fetchImpl: ReturnType<typeof vi.fn>, overrides: Partial<{ maxAttempts: number }> = {}) {
+function client(
+  fetchImpl: ReturnType<typeof vi.fn>,
+  overrides: Partial<{ maxAttempts: number }> = {},
+) {
   return new HttpJsonClient({
     service: 'test-service',
     baseUrl: 'http://vision.local/',
@@ -50,14 +53,18 @@ describe('HttpJsonClient', () => {
       .mockResolvedValueOnce(jsonResponse({ error: 'loading' }, 503))
       .mockResolvedValueOnce(jsonResponse({ ok: true }));
 
-    await expect(client(fetchImpl).postJson('/v1/detect', {}, schema)).resolves.toEqual({ ok: true });
+    await expect(client(fetchImpl).postJson('/v1/detect', {}, schema)).resolves.toEqual({
+      ok: true,
+    });
     expect(fetchImpl).toHaveBeenCalledTimes(2);
   });
 
   it('does not retry a 400, because the request itself is wrong', async () => {
     const fetchImpl = vi.fn().mockResolvedValue(jsonResponse({ error: 'bad image' }, 400));
 
-    await expect(client(fetchImpl).postJson('/v1/detect', {}, schema)).rejects.toThrow(ServiceError);
+    await expect(client(fetchImpl).postJson('/v1/detect', {}, schema)).rejects.toThrow(
+      ServiceError,
+    );
     expect(fetchImpl).toHaveBeenCalledTimes(1);
   });
 
@@ -85,9 +92,7 @@ describe('HttpJsonClient', () => {
   });
 
   it('includes the response body in the error so a service message survives', async () => {
-    const fetchImpl = vi
-      .fn()
-      .mockResolvedValue(new Response('model not loaded', { status: 400 }));
+    const fetchImpl = vi.fn().mockResolvedValue(new Response('model not loaded', { status: 400 }));
 
     const error = await client(fetchImpl)
       .getJson('/health', schema)

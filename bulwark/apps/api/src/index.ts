@@ -401,10 +401,7 @@ async function handleRequest(
         routeContext.artifactsRoot,
       );
       const result = await prepared.runner.run();
-      await routeContext.context.linkLatestRun(
-        prepared.loaded.artifactsDir,
-        prepared.runDirectory,
-      );
+      await routeContext.context.linkLatestRun(prepared.loaded.artifactsDir, prepared.runDirectory);
       const run = await readRunRecord(
         prepared.loaded.artifactsDir,
         basename(prepared.runDirectory),

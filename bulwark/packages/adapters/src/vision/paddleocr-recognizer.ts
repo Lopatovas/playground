@@ -9,8 +9,10 @@ import { HttpJsonClient } from './http-json.js';
 import type { HttpJsonClientOptions } from './http-json.js';
 import { healthResponseSchema, recognitionResponseSchema } from './contract.js';
 
-export interface PaddleOcrRecognizerOptions
-  extends Omit<HttpJsonClientOptions, 'service' | 'timeoutMs' | 'maxAttempts' | 'retryDelayMs'> {
+export interface PaddleOcrRecognizerOptions extends Omit<
+  HttpJsonClientOptions,
+  'service' | 'timeoutMs' | 'maxAttempts' | 'retryDelayMs'
+> {
   readonly timeoutMs?: number;
   readonly maxAttempts?: number;
   readonly retryDelayMs?: number;

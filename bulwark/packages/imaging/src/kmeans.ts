@@ -1,5 +1,12 @@
 import type { ColorCluster, Rgb } from '@bulwark/domain';
-import { createRgb, createSeededRandom, hashStringToSeed, roundTo, sortClustersByDominance, toHex } from '@bulwark/domain';
+import {
+  createRgb,
+  createSeededRandom,
+  hashStringToSeed,
+  roundTo,
+  sortClustersByDominance,
+  toHex,
+} from '@bulwark/domain';
 import type { Raster } from './raster.js';
 import { CHANNELS } from './raster.js';
 
@@ -80,8 +87,10 @@ export function clusterColors(raster: Raster, options: Partial<KMeansOptions> = 
       const cluster = assignments[index] as number;
       counts[cluster] = (counts[cluster] as number) + 1;
       sums[cluster * 3] = (sums[cluster * 3] as number) + (samples[index * 3] as number);
-      sums[cluster * 3 + 1] = (sums[cluster * 3 + 1] as number) + (samples[index * 3 + 1] as number);
-      sums[cluster * 3 + 2] = (sums[cluster * 3 + 2] as number) + (samples[index * 3 + 2] as number);
+      sums[cluster * 3 + 1] =
+        (sums[cluster * 3 + 1] as number) + (samples[index * 3 + 1] as number);
+      sums[cluster * 3 + 2] =
+        (sums[cluster * 3 + 2] as number) + (samples[index * 3 + 2] as number);
     }
 
     let maxShift = 0;
@@ -265,7 +274,9 @@ function mergeIdenticalColors(
 
 function assertOptions(options: KMeansOptions): void {
   if (!Number.isInteger(options.k) || options.k < 1 || options.k > 16) {
-    throw new RangeError(`clusterColors() requires an integer k within 1..16, received ${options.k}`);
+    throw new RangeError(
+      `clusterColors() requires an integer k within 1..16, received ${options.k}`,
+    );
   }
   if (!Number.isInteger(options.maxIterations) || options.maxIterations < 1) {
     throw new RangeError('clusterColors() requires maxIterations >= 1');

@@ -80,16 +80,17 @@ export function assignPaletteRoles(
     return compareStrings(toHex(a.cluster.color), toHex(b.cluster.color));
   });
 
-  const foreground = eligible.length > 0 ? (eligible[0] as { cluster: ColorCluster }).cluster : null;
-  const ignored = sorted
-    .slice(1)
-    .filter((cluster) => cluster !== foreground);
+  const foreground =
+    eligible.length > 0 ? (eligible[0] as { cluster: ColorCluster }).cluster : null;
+  const ignored = sorted.slice(1).filter((cluster) => cluster !== foreground);
 
   return { background, foreground, ignored };
 }
 
 /** Sorts clusters largest-first, breaking ties by hex so output never wobbles. */
-export function sortClustersByDominance(clusters: readonly ColorCluster[]): readonly ColorCluster[] {
+export function sortClustersByDominance(
+  clusters: readonly ColorCluster[],
+): readonly ColorCluster[] {
   return [...clusters].sort((a, b) => {
     if (b.pixelCount !== a.pixelCount) return b.pixelCount - a.pixelCount;
     return compareStrings(toHex(a.color), toHex(b.color));

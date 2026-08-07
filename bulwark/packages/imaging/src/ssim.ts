@@ -166,9 +166,7 @@ function oddFloor(value: number): number {
 
 function assertOptions(options: SsimOptions): void {
   if (options.windowSize % 2 === 0 || options.windowSize < 3) {
-    throw new RangeError(
-      `ssim() requires an odd windowSize >= 3, received ${options.windowSize}`,
-    );
+    throw new RangeError(`ssim() requires an odd windowSize >= 3, received ${options.windowSize}`);
   }
   if (options.sigma <= 0) throw new RangeError('ssim() requires sigma > 0');
   if (options.dynamicRange <= 0) throw new RangeError('ssim() requires dynamicRange > 0');

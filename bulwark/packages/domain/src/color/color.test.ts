@@ -84,11 +84,7 @@ describe('sRGB to CIE Lab', () => {
  * hue-rotation and chroma-compensation terms right, including the discontinuities
  * around the 0/360 degree boundary that naive implementations get wrong.
  */
-const SHARMA_TEST_PAIRS: readonly [
-  [number, number, number],
-  [number, number, number],
-  number,
-][] = [
+const SHARMA_TEST_PAIRS: readonly [[number, number, number], [number, number, number], number][] = [
   [[50, 2.6772, -79.7751], [50, 0, -82.7485], 2.0425],
   [[50, 3.1571, -77.2803], [50, 0, -82.7485], 2.8615],
   [[50, 2.8361, -74.02], [50, 0, -82.7485], 3.4412],
@@ -170,13 +166,18 @@ describe('assignPaletteRoles', () => {
   it('picks the perceptually furthest pool as the foreground, not the smallest', () => {
     const roles = assignPaletteRoles([blurDark, ink, white, blurLight]);
     expect(roles.foreground).not.toBeNull();
-    expect(toHex((roles.foreground as { color: ReturnType<typeof createRgb> }).color)).toBe('#111827');
+    expect(toHex((roles.foreground as { color: ReturnType<typeof createRgb> }).color)).toBe(
+      '#111827',
+    );
     expect(roles.ignored.map((cluster) => toHex(cluster.color))).toEqual(['#aaafb9', '#5a606e']);
   });
 
   it('ignores pools that are too small to be real ink', () => {
     const speck = { color: createRgb(0, 0, 0), pixelCount: 3, share: 0.0003 };
-    const roles = assignPaletteRoles([white, speck], { minForegroundShare: 0.01, minForegroundDeltaE: 5 });
+    const roles = assignPaletteRoles([white, speck], {
+      minForegroundShare: 0.01,
+      minForegroundDeltaE: 5,
+    });
     expect(roles.foreground).toBeNull();
   });
 

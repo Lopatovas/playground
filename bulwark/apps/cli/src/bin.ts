@@ -42,15 +42,22 @@ export function createProgram(context: CliContext): Command {
     .addOption(formatOption)
     .option('--no-color', 'disable ANSI colors')
     .option('--no-fail-on-defects', 'always exit 0, even when defects are found')
-    .action(async (options: { config: string; format: 'pretty' | 'json' | 'lines'; color: boolean; failOnDefects: boolean }) => {
-      const code = await runCommand(context, {
-        configPath: options.config,
-        format: options.format,
-        color: options.color,
-        failOnDefects: options.failOnDefects,
-      });
-      setExitCode(code);
-    });
+    .action(
+      async (options: {
+        config: string;
+        format: 'pretty' | 'json' | 'lines';
+        color: boolean;
+        failOnDefects: boolean;
+      }) => {
+        const code = await runCommand(context, {
+          configPath: options.config,
+          format: options.format,
+          color: options.color,
+          failOnDefects: options.failOnDefects,
+        });
+        setExitCode(code);
+      },
+    );
 
   program
     .command('capture')
@@ -134,17 +141,15 @@ export function createProgram(context: CliContext): Command {
     .option('-p, --port <port>', 'port to listen on', '4180')
     .option('--dashboard <directory>', 'built dashboard directory')
     .option('--host <host>', 'interface to bind', '0.0.0.0')
-    .action(
-      async (options: { run: string; port: string; dashboard?: string; host: string }) => {
-        const result = await serveCommand(context, {
-          runDirectory: options.run,
-          port: Number.parseInt(options.port, 10),
-          host: options.host,
-          ...(options.dashboard === undefined ? {} : { dashboardDirectory: options.dashboard }),
-        });
-        setExitCode(result.exitCode);
-      },
-    );
+    .action(async (options: { run: string; port: string; dashboard?: string; host: string }) => {
+      const result = await serveCommand(context, {
+        runDirectory: options.run,
+        port: Number.parseInt(options.port, 10),
+        host: options.host,
+        ...(options.dashboard === undefined ? {} : { dashboardDirectory: options.dashboard }),
+      });
+      setExitCode(result.exitCode);
+    });
 
   return program;
 }
@@ -165,7 +170,9 @@ export async function main(argv: readonly string[]): Promise<void> {
         context.stderr(`  ${key}: ${formatContextValue(value)}`);
       }
     } else {
-      context.stderr(`error: ${error instanceof Error ? error.stack ?? error.message : String(error)}`);
+      context.stderr(
+        `error: ${error instanceof Error ? (error.stack ?? error.message) : String(error)}`,
+      );
     }
     process.exitCode = 1;
   }

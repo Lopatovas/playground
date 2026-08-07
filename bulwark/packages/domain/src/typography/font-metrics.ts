@@ -17,7 +17,9 @@ export function deriveCssFontSize(
   pixelRatio = 1,
 ): number {
   if (!(visualHeightPx > 0)) {
-    throw new RangeError(`deriveCssFontSize() requires visualHeightPx > 0, received ${visualHeightPx}`);
+    throw new RangeError(
+      `deriveCssFontSize() requires visualHeightPx > 0, received ${visualHeightPx}`,
+    );
   }
   if (!(pixelRatio > 0)) {
     throw new RangeError(`deriveCssFontSize() requires pixelRatio > 0, received ${pixelRatio}`);
@@ -32,7 +34,9 @@ export function expectedVisualHeight(
   pixelRatio = 1,
 ): number {
   if (!(cssFontSizePx > 0)) {
-    throw new RangeError(`expectedVisualHeight() requires cssFontSizePx > 0, received ${cssFontSizePx}`);
+    throw new RangeError(
+      `expectedVisualHeight() requires cssFontSizePx > 0, received ${cssFontSizePx}`,
+    );
   }
   return roundTo(cssFontSizePx * profile.visualToCssRatio * pixelRatio, 4);
 }
@@ -102,7 +106,8 @@ export function selectFontFamily(
 
   const winner = ranked[0] as FontFamilyCandidateScore;
   const runnerUp = ranked.length > 1 ? (ranked[1] as FontFamilyCandidateScore) : null;
-  const margin = runnerUp === null ? Number.POSITIVE_INFINITY : roundTo(winner.score - runnerUp.score, 6);
+  const margin =
+    runnerUp === null ? Number.POSITIVE_INFINITY : roundTo(winner.score - runnerUp.score, 6);
 
   return {
     family: winner.family,

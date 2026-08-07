@@ -70,7 +70,10 @@ export function buildGapGraph(
       for (const to of sorted) {
         if (from.id === to.id) continue;
 
-        const overlap = axis === 'vertical' ? horizontalOverlap(from.box, to.box) : verticalOverlap(from.box, to.box);
+        const overlap =
+          axis === 'vertical'
+            ? horizontalOverlap(from.box, to.box)
+            : verticalOverlap(from.box, to.box);
         const requiredOverlap = requiredCrossAxisOverlap(from.box, to.box, axis, options);
         if (overlap < requiredOverlap || overlap <= 0) continue;
 

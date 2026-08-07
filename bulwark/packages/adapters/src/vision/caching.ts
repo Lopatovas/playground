@@ -83,5 +83,7 @@ export function detectionCacheKey(service: string, request: DetectionRequest): s
 }
 
 export function recognitionCacheKey(service: string, request: TextRecognitionRequest): string {
-  return ['recognize', service, sha256(request.image), request.minConfidence ?? 'default'].join('/');
+  return ['recognize', service, sha256(request.image), request.minConfidence ?? 'default'].join(
+    '/',
+  );
 }

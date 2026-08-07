@@ -28,8 +28,20 @@ describe('buildGapGraph', () => {
     ]);
 
     expect(gaps.filter((gap) => gap.axis === 'vertical')).toEqual([
-      { axis: 'vertical', fromElementId: 'a', toElementId: 'b', gapPx: 24, crossAxisOverlapPx: 360 },
-      { axis: 'vertical', fromElementId: 'b', toElementId: 'c', gapPx: 24, crossAxisOverlapPx: 360 },
+      {
+        axis: 'vertical',
+        fromElementId: 'a',
+        toElementId: 'b',
+        gapPx: 24,
+        crossAxisOverlapPx: 360,
+      },
+      {
+        axis: 'vertical',
+        fromElementId: 'b',
+        toElementId: 'c',
+        gapPx: 24,
+        crossAxisOverlapPx: 360,
+      },
     ]);
   });
 
@@ -98,7 +110,9 @@ describe('buildGapGraph', () => {
   });
 
   it('rejects invalid options', () => {
-    expect(() => buildGapGraph([], { ...DEFAULT_GAP_GRAPH_OPTIONS, maxGapPx: 0 })).toThrow(RangeError);
+    expect(() => buildGapGraph([], { ...DEFAULT_GAP_GRAPH_OPTIONS, maxGapPx: 0 })).toThrow(
+      RangeError,
+    );
     expect(() =>
       buildGapGraph([], { ...DEFAULT_GAP_GRAPH_OPTIONS, minCrossAxisOverlapRatio: 2 }),
     ).toThrow(RangeError);

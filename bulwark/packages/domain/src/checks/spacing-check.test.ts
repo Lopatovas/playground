@@ -4,7 +4,12 @@ import { matchElements } from '../matching/match-elements.js';
 import { designElement, liveElement } from '../testing/factories.js';
 import type { ElementSpec } from '../testing/factories.js';
 
-const HEADING: ElementSpec = { id: 'heading', box: [40, 40, 400, 100], kind: 'text', label: 'heading' };
+const HEADING: ElementSpec = {
+  id: 'heading',
+  box: [40, 40, 400, 100],
+  kind: 'text',
+  label: 'heading',
+};
 const BODY: ElementSpec = { id: 'body', box: [40, 124, 400, 160], kind: 'text', label: 'body' };
 
 describe('checkSpacing', () => {

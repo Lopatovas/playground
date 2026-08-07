@@ -124,7 +124,9 @@ export class PlaywrightLiveInspector implements LiveInspector {
     if (this.options.launch !== undefined) return this.options.launch();
     try {
       const { chromium } = await import('playwright');
-      return await chromium.launch({ args: ['--force-color-profile=srgb', '--font-render-hinting=none'] });
+      return await chromium.launch({
+        args: ['--force-color-profile=srgb', '--font-render-hinting=none'],
+      });
     } catch (error) {
       throw new ServiceError(
         this.name,

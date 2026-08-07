@@ -1,11 +1,20 @@
 import { describe, expect, it } from 'vitest';
-import { DEFAULT_STRUCTURE_CHECK_OPTIONS, checkStructure, structureDefects } from './structure-check.js';
+import {
+  DEFAULT_STRUCTURE_CHECK_OPTIONS,
+  checkStructure,
+  structureDefects,
+} from './structure-check.js';
 import { matchElements } from '../matching/match-elements.js';
 import { designElement, liveElement } from '../testing/factories.js';
 import type { ElementSpec } from '../testing/factories.js';
 
 const CARD: ElementSpec = { id: 'card', box: [40, 40, 400, 200], kind: 'container', label: 'card' };
-const ICON: ElementSpec = { id: 'search', box: [360, 56, 384, 80], kind: 'icon', label: 'search icon' };
+const ICON: ElementSpec = {
+  id: 'search',
+  box: [360, 56, 384, 80],
+  kind: 'icon',
+  label: 'search icon',
+};
 
 describe('checkStructure', () => {
   it('reports nothing when the page matches the design', () => {
@@ -15,12 +24,18 @@ describe('checkStructure', () => {
   });
 
   it('ignores sub-pixel drift inside the tolerance', () => {
-    const match = matchElements([designElement(CARD)], [liveElement({ ...CARD, box: [41, 41, 401, 201] })]);
+    const match = matchElements(
+      [designElement(CARD)],
+      [liveElement({ ...CARD, box: [41, 41, 401, 201] })],
+    );
     expect(checkStructure(match).positionDefects).toHaveLength(0);
   });
 
   it('flags a shifted element with signed offsets', () => {
-    const match = matchElements([designElement(CARD)], [liveElement({ ...CARD, box: [52, 36, 412, 196] })]);
+    const match = matchElements(
+      [designElement(CARD)],
+      [liveElement({ ...CARD, box: [52, 36, 412, 196] })],
+    );
     const [defect] = checkStructure(match).positionDefects;
 
     expect(defect).toMatchObject({

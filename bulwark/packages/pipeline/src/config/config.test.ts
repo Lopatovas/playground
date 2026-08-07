@@ -99,9 +99,9 @@ describe('parseConfig', () => {
   });
 
   it('rejects a non-URL target', () => {
-    expect(() => parseConfig({ ...MINIMAL, target: { ...MINIMAL.target, url: 'not-a-url' } })).toThrow(
-      ConfigurationError,
-    );
+    expect(() =>
+      parseConfig({ ...MINIMAL, target: { ...MINIMAL.target, url: 'not-a-url' } }),
+    ).toThrow(ConfigurationError);
   });
 
   it('rejects out-of-range tolerances instead of clamping them silently', () => {
@@ -116,7 +116,10 @@ describe('parseConfig', () => {
 
   it('rejects a fractional viewport', () => {
     expect(() =>
-      parseConfig({ ...MINIMAL, target: { ...MINIMAL.target, viewport: { width: 100.5, height: 900 } } }),
+      parseConfig({
+        ...MINIMAL,
+        target: { ...MINIMAL.target, viewport: { width: 100.5, height: 900 } },
+      }),
     ).toThrow(ConfigurationError);
   });
 

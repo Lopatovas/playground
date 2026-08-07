@@ -55,9 +55,7 @@ export function pixelIndex(raster: Raster, x: number, y: number): number {
     throw new RangeError(`Pixel coordinates must be integers, received (${x}, ${y})`);
   }
   if (x < 0 || y < 0 || x >= raster.width || y >= raster.height) {
-    throw new RangeError(
-      `Pixel (${x}, ${y}) is outside a ${raster.width}x${raster.height} raster`,
-    );
+    throw new RangeError(`Pixel (${x}, ${y}) is outside a ${raster.width}x${raster.height} raster`);
   }
   return (y * raster.width + x) * CHANNELS;
 }

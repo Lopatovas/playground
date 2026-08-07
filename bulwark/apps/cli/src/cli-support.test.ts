@@ -3,7 +3,12 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { ConfigurationError } from '@bulwark/ports';
-import { DEFAULT_CONFIG_FILENAME, loadConfig, resolveAgainst, runDirectoryName } from './config-loader.js';
+import {
+  DEFAULT_CONFIG_FILENAME,
+  loadConfig,
+  resolveAgainst,
+  runDirectoryName,
+} from './config-loader.js';
 import { contentTypeFor, createStaticServer, resolveWithinDirectory } from './static-server.js';
 import { formatDefectsAsLines, formatReportSummary } from './reporting/format-report.js';
 import type { Defect, QaReport } from '@bulwark/domain';
@@ -79,7 +84,9 @@ describe('runDirectoryName', () => {
   });
 
   it('otherwise derives a filesystem-safe name from the timestamp', () => {
-    expect(runDirectoryName(undefined, '2026-02-01T12:34:56.789Z')).toBe('2026-02-01T12-34-56-789Z');
+    expect(runDirectoryName(undefined, '2026-02-01T12:34:56.789Z')).toBe(
+      '2026-02-01T12-34-56-789Z',
+    );
   });
 });
 
@@ -217,7 +224,10 @@ const REPORT: QaReport = {
   schemaVersion: 1,
   runId: 'run-1',
   generatedAt: '2026-02-01T12:00:00.000Z',
-  target: { url: 'http://localhost:4173/', viewport: { width: 800, height: 600, deviceScaleFactor: 1 } },
+  target: {
+    url: 'http://localhost:4173/',
+    viewport: { width: 800, height: 600, deviceScaleFactor: 1 },
+  },
   surfaces: {
     design: { imagePath: 'figma-screenshot.png', width: 800, height: 600, imageSha256: 'a' },
     live: { imagePath: 'live-screenshot.png', width: 800, height: 600, imageSha256: 'b' },
@@ -279,9 +289,7 @@ describe('formatReportSummary', () => {
     const output = formatReportSummary(REPORT, { color: false });
     const lines = output.split('\n');
 
-    expect(lines[0]).toBe(
-      'FAIL http://localhost:4173/ against figma-screenshot.png (run run-1)',
-    );
+    expect(lines[0]).toBe('FAIL http://localhost:4173/ against figma-screenshot.png (run run-1)');
     expect(lines[1]).toContain('4/4 design elements matched, 2 defect(s) in 1234ms');
     expect(lines[2]).toContain('severity: 1 error, 1 warning');
   });

@@ -89,11 +89,10 @@ describe('checkTypography', () => {
   });
 
   it('scales ink measured from a 2x design export back to CSS pixels', () => {
-    const result = checkTypography(
-      [measurement({ visualHeightPx: 39.36 })],
-      new FontRegistry(),
-      { ...DEFAULT_TYPOGRAPHY_CHECK_OPTIONS, designPixelRatio: 2 },
-    );
+    const result = checkTypography([measurement({ visualHeightPx: 39.36 })], new FontRegistry(), {
+      ...DEFAULT_TYPOGRAPHY_CHECK_OPTIONS,
+      designPixelRatio: 2,
+    });
     expect(result.findings[0]?.expectedCssFontSizePx).toBe(24);
     expect(result.sizeDefects).toHaveLength(0);
   });

@@ -31,7 +31,12 @@ export function Workbench({ report, artifactsBase }: WorkbenchProps) {
           <span className="workbench__run" title={report.runId}>
             {report.runId}
           </span>
-          <a className="workbench__target" href={report.target.url} target="_blank" rel="noreferrer">
+          <a
+            className="workbench__target"
+            href={report.target.url}
+            target="_blank"
+            rel="noreferrer"
+          >
             {report.target.url}
           </a>
           <span className="workbench__counts">

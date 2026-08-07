@@ -76,13 +76,13 @@ From `bulwark/`:
 docker compose up --build
 ```
 
-| Service       | Port | Role                                      |
-| ------------- | ---- | ----------------------------------------- |
-| dashboard     | 8080 | Overlay UI + `/api` proxy + `/artifacts`  |
-| api           | 4190 | `POST /api/runs`, report/artifact serving |
-| demo-target   | 4173 | Seeded landing page                       |
-| omniparser    | 8801 | Element detector                          |
-| paddleocr     | 8802 | Optional OCR (demo uses ink-projection)   |
+| Service     | Port | Role                                      |
+| ----------- | ---- | ----------------------------------------- |
+| dashboard   | 8080 | Overlay UI + `/api` proxy + `/artifacts`  |
+| api         | 4190 | `POST /api/runs`, report/artifact serving |
+| demo-target | 4173 | Seeded landing page                       |
+| omniparser  | 8801 | Element detector                          |
+| paddleocr   | 8802 | Optional OCR (demo uses ink-projection)   |
 
 Kick off a run:
 
@@ -106,14 +106,14 @@ pnpm bulwark -- serve .artifacts/<run-id>
 
 ## API
 
-| Method | Path                                 | Description              |
-| ------ | ------------------------------------ | ------------------------ |
-| GET    | `/api/health`                        | Liveness                 |
-| GET    | `/api/runs`                          | List prior runs          |
-| POST   | `/api/runs`                          | Capture + analyze        |
-| GET    | `/api/runs/:id`                      | Run metadata             |
-| GET    | `/api/runs/:id/report`               | `report.json`            |
-| GET    | `/api/runs/:id/artifacts/:file.png`  | PNG artifact             |
+| Method | Path                                | Description       |
+| ------ | ----------------------------------- | ----------------- |
+| GET    | `/api/health`                       | Liveness          |
+| GET    | `/api/runs`                         | List prior runs   |
+| POST   | `/api/runs`                         | Capture + analyze |
+| GET    | `/api/runs/:id`                     | Run metadata      |
+| GET    | `/api/runs/:id/report`              | `report.json`     |
+| GET    | `/api/runs/:id/artifacts/:file.png` | PNG artifact      |
 
 Env:
 

@@ -60,7 +60,9 @@ export class FakeElementDetector implements ElementDetector {
     const byHash = this.responses.get(sha256(request.image));
     const response = byHash ?? bySurface;
     if (response === undefined) {
-      throw new BulwarkError(`FakeElementDetector has no response for surface "${request.surface}"`);
+      throw new BulwarkError(
+        `FakeElementDetector has no response for surface "${request.surface}"`,
+      );
     }
     return Promise.resolve(response);
   }
@@ -163,9 +165,7 @@ export class MemoryArtifactStore implements ArtifactStore {
 
   list(relativeDirectory = '.'): Promise<readonly string[]> {
     const prefix = relativeDirectory === '.' ? '' : `${normalize(relativeDirectory)}/`;
-    return Promise.resolve(
-      [...this.files.keys()].filter((path) => path.startsWith(prefix)).sort(),
-    );
+    return Promise.resolve([...this.files.keys()].filter((path) => path.startsWith(prefix)).sort());
   }
 }
 

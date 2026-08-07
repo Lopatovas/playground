@@ -14,11 +14,7 @@ import {
   overlayReducer,
 } from './overlay-state.js';
 import { parseReport } from './report-schema.js';
-import {
-  artifactUrl,
-  artifactsBaseFromReportUrl,
-  reportUrlFromLocation,
-} from './urls.js';
+import { artifactUrl, artifactsBaseFromReportUrl, reportUrlFromLocation } from './urls.js';
 import { SAMPLE_REPORT } from '../testing/sample-report.js';
 
 describe('clip-path', () => {
@@ -51,7 +47,9 @@ describe('clip-path', () => {
 
 describe('geometry', () => {
   it('positions a box as percentages of its surface', () => {
-    expect(boxToPercentStyle({ xMin: 100, yMin: 50, xMax: 300, yMax: 150 }, { width: 800, height: 600 })).toEqual({
+    expect(
+      boxToPercentStyle({ xMin: 100, yMin: 50, xMax: 300, yMax: 150 }, { width: 800, height: 600 }),
+    ).toEqual({
       left: '12.5%',
       top: '8.333%',
       width: '25%',
@@ -65,15 +63,19 @@ describe('geometry', () => {
   });
 
   it('frames both surfaces without stretching either', () => {
-    expect(
-      overlayFrameSize({ width: 1440, height: 900 }, { width: 1280, height: 960 }),
-    ).toEqual({ width: 1440, height: 960 });
+    expect(overlayFrameSize({ width: 1440, height: 900 }, { width: 1280, height: 960 })).toEqual({
+      width: 1440,
+      height: 960,
+    });
   });
 });
 
 describe('overlay state', () => {
   it('switches modes and clamps opacity', () => {
-    const withMode = overlayReducer(DEFAULT_OVERLAY_STATE, { type: 'set-mode', mode: 'difference' });
+    const withMode = overlayReducer(DEFAULT_OVERLAY_STATE, {
+      type: 'set-mode',
+      mode: 'difference',
+    });
     expect(withMode.mode).toBe('difference');
     expect(overlayReducer(withMode, { type: 'set-opacity', opacity: 1.5 }).opacity).toBe(1);
     expect(clampOpacity(-0.2)).toBe(0);
@@ -141,7 +143,9 @@ describe('report schema', () => {
 
 describe('urls', () => {
   it('resolves artifact URLs next to the report', () => {
-    expect(artifactUrl('live-screenshot.png', '/artifacts/')).toBe('/artifacts/live-screenshot.png');
+    expect(artifactUrl('live-screenshot.png', '/artifacts/')).toBe(
+      '/artifacts/live-screenshot.png',
+    );
     expect(artifactUrl('live-screenshot.png', 'https://cdn.example/runs/one/')).toBe(
       'https://cdn.example/runs/one/live-screenshot.png',
     );

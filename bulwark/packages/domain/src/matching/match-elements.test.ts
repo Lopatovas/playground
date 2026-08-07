@@ -3,9 +3,24 @@ import { DEFAULT_MATCHING_OPTIONS, findPairByDesignId, matchElements } from './m
 import { designElement, liveElement, shifted } from '../testing/factories.js';
 import type { ElementSpec } from '../testing/factories.js';
 
-const HEADING: ElementSpec = { id: 'heading', box: [40, 40, 400, 80], kind: 'text', label: 'heading' };
-const SUBTITLE: ElementSpec = { id: 'subtitle', box: [40, 104, 360, 128], kind: 'text', label: 'subtitle' };
-const CTA: ElementSpec = { id: 'cta', box: [40, 160, 200, 208], kind: 'container', label: 'button' };
+const HEADING: ElementSpec = {
+  id: 'heading',
+  box: [40, 40, 400, 80],
+  kind: 'text',
+  label: 'heading',
+};
+const SUBTITLE: ElementSpec = {
+  id: 'subtitle',
+  box: [40, 104, 360, 128],
+  kind: 'text',
+  label: 'subtitle',
+};
+const CTA: ElementSpec = {
+  id: 'cta',
+  box: [40, 160, 200, 208],
+  kind: 'container',
+  label: 'button',
+};
 
 describe('matchElements', () => {
   it('pairs elements that sit in the same place', () => {
@@ -57,10 +72,7 @@ describe('matchElements', () => {
   });
 
   it('leaves an element unmatched when it drifted past the gate', () => {
-    const result = matchElements(
-      [designElement(HEADING)],
-      [liveElement(shifted(HEADING, 0, 400))],
-    );
+    const result = matchElements([designElement(HEADING)], [liveElement(shifted(HEADING, 0, 400))]);
 
     expect(result.pairs).toHaveLength(0);
     expect(result.unmatchedDesign.map((item) => item.id)).toEqual(['heading']);
@@ -95,16 +107,21 @@ describe('matchElements', () => {
 
     const result = matchElements(design, live);
     expect(result.pairs).toHaveLength(2);
-    expect(
-      result.pairs.map((pair) => [pair.designElement.id, pair.liveElement.id]),
-    ).toEqual([
+    expect(result.pairs.map((pair) => [pair.designElement.id, pair.liveElement.id])).toEqual([
       ['heading', 'live-a'],
       ['subtitle', 'live-b'],
     ]);
   });
 
   it('prefers the label-matching candidate when geometry is ambiguous', () => {
-    const design = [designElement({ id: 'search', box: [100, 100, 124, 124], kind: 'icon', label: 'search icon' })];
+    const design = [
+      designElement({
+        id: 'search',
+        box: [100, 100, 124, 124],
+        kind: 'icon',
+        label: 'search icon',
+      }),
+    ];
     const live = [
       liveElement({ id: 'icon-a', box: [102, 100, 126, 124], kind: 'icon', label: 'menu icon' }),
       liveElement({ id: 'icon-b', box: [104, 100, 128, 124], kind: 'icon', label: 'Search Icon' }),

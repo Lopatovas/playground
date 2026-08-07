@@ -204,9 +204,7 @@ export class QaEngine {
     if (this.config.checks.fontSize) defects.push(...typography.sizeDefects);
     defects.push(...typography.weightDefects, ...typography.familyDefects);
     for (const skipped of typography.skipped) {
-      warnings.push(
-        `Skipped typography for "${skipped.measurement.text}": ${skipped.reason}`,
-      );
+      warnings.push(`Skipped typography for "${skipped.measurement.text}": ${skipped.reason}`);
     }
 
     const colorMeasurer = new ColorMeasurer(
@@ -240,8 +238,18 @@ export class QaEngine {
       generatedAt: this.deps.clock.nowIso(),
       target: { url: input.live.url, viewport: input.live.viewport },
       surfaces: {
-        design: describeSurface(input.designImagePath, designRaster.width, designRaster.height, input.designImage),
-        live: describeSurface(input.liveImagePath, liveRaster.width, liveRaster.height, input.live.screenshot),
+        design: describeSurface(
+          input.designImagePath,
+          designRaster.width,
+          designRaster.height,
+          input.designImage,
+        ),
+        live: describeSurface(
+          input.liveImagePath,
+          liveRaster.width,
+          liveRaster.height,
+          input.live.screenshot,
+        ),
       },
       tolerances: this.reportTolerances(),
       summary: summarizeDefects(orderedDefects, {

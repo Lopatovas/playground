@@ -104,7 +104,11 @@ export function buttonRaster(options: {
     createBox(inkBox.xMin - 1, inkBox.yMin - 1, inkBox.xMax + 1, inkBox.yMax + 1),
     halo,
   );
-  fillRect(raster, createBox(inkBox.xMin, inkBox.yMin, inkBox.xMax, inkBox.yMax), options.foreground);
+  fillRect(
+    raster,
+    createBox(inkBox.xMin, inkBox.yMin, inkBox.xMax, inkBox.yMax),
+    options.foreground,
+  );
 
   return raster;
 }

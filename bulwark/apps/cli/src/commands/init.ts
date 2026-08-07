@@ -52,9 +52,7 @@ export async function initCommand(
   options: InitCommandOptions,
 ): Promise<number> {
   if (!options.force && (await options.fileExists(options.outputPath))) {
-    context.stderr(
-      `${options.outputPath} already exists. Pass --force to overwrite it.`,
-    );
+    context.stderr(`${options.outputPath} already exists. Pass --force to overwrite it.`);
     return 1;
   }
 

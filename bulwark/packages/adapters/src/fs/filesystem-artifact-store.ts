@@ -47,9 +47,13 @@ export class FilesystemArtifactStore implements ArtifactStore {
     try {
       return new Uint8Array(await readFile(target));
     } catch (error) {
-      throw new MissingArtifactError(`Artifact "${relativePath}" is not present`, {
-        path: target,
-      }, { cause: error });
+      throw new MissingArtifactError(
+        `Artifact "${relativePath}" is not present`,
+        {
+          path: target,
+        },
+        { cause: error },
+      );
     }
   }
 

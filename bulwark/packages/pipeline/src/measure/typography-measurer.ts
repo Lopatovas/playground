@@ -2,9 +2,10 @@ import type {
   BoundingBox,
   ElementPair,
   FontFamilyCandidateScore,
+  FontRegistry,
   TextMeasurement,
 } from '@bulwark/domain';
-import { FontRegistry, inflateBox } from '@bulwark/domain';
+import { inflateBox } from '@bulwark/domain';
 import type { GrayImage, Raster, TextInkOptions } from '@bulwark/imaging';
 import {
   alignForShapeComparison,
@@ -92,7 +93,11 @@ export class TypographyMeasurer {
         continue;
       }
 
-      const crop = cropWithPadding(designRaster, designSurface.sourceBox, this.options.cropPaddingPx);
+      const crop = cropWithPadding(
+        designRaster,
+        designSurface.sourceBox,
+        this.options.cropPaddingPx,
+      );
       const ink = await this.measureInk(crop, pair.designElement.label, warnings);
       if (ink === null) continue;
 

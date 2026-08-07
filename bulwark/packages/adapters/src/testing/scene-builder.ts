@@ -1,9 +1,4 @@
-import type {
-  BoundingBox,
-  ElementKind,
-  FontProfile,
-  Viewport,
-} from '@bulwark/domain';
+import type { BoundingBox, ElementKind, FontProfile, Viewport } from '@bulwark/domain';
 import {
   FontRegistry,
   boxHeight,
@@ -12,12 +7,7 @@ import {
   roundHalfAwayFromZero,
   toHex,
 } from '@bulwark/domain';
-import {
-  createRaster,
-  drawGlyphBars,
-  encodePng,
-  fillRect,
-} from '@bulwark/imaging';
+import { createRaster, drawGlyphBars, encodePng, fillRect } from '@bulwark/imaging';
 import type { Raster } from '@bulwark/imaging';
 import type {
   DetectionResult,
@@ -89,10 +79,7 @@ export function strokeGeometryForWeight(weight: number): { strokeWidth: number; 
   return weight >= 600 ? { strokeWidth: 4, gap: 4 } : { strokeWidth: 2, gap: 8 };
 }
 
-export function buildScene(
-  spec: SceneSpec,
-  registry: FontRegistry = new FontRegistry(),
-): Scene {
+export function buildScene(spec: SceneSpec, registry: FontRegistry = new FontRegistry()): Scene {
   const raster = createRaster(spec.width, spec.height, parseColor(spec.pageBackground));
 
   for (const element of spec.elements) {
@@ -132,7 +119,8 @@ export function buildLiveCapture(scene: Scene, options: BuildLiveCaptureOptions 
     box: createBox(...element.box),
     text: element.text?.content ?? null,
     style: {
-      fontFamily: element.text === undefined ? 'system-ui' : `"${element.text.fontFamily}", sans-serif`,
+      fontFamily:
+        element.text === undefined ? 'system-ui' : `"${element.text.fontFamily}", sans-serif`,
       fontSizePx: element.text?.fontSizePx ?? 16,
       fontWeight: element.text?.fontWeight ?? 400,
       lineHeightPx: element.text === undefined ? null : element.text.fontSizePx * 1.5,

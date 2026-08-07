@@ -31,9 +31,7 @@ describe('checkColors', () => {
   });
 
   it('absorbs gamma-level channel noise instead of reporting it', () => {
-    const result = checkColors([
-      measurement({ liveBackground: parseColor('#2564ec') }),
-    ]);
+    const result = checkColors([measurement({ liveBackground: parseColor('#2564ec') })]);
     expect(result.defects).toHaveLength(0);
     expect(result.comparisons[0]?.deltaE2000).toBeLessThan(2);
     expect(result.comparisons[0]?.withinTolerance).toBe(true);
@@ -87,8 +85,8 @@ describe('checkColors', () => {
   });
 
   it('rejects a negative threshold', () => {
-    expect(() =>
-      checkColors([], { ...DEFAULT_COLOR_CHECK_OPTIONS, deltaEThreshold: -1 }),
-    ).toThrow(RangeError);
+    expect(() => checkColors([], { ...DEFAULT_COLOR_CHECK_OPTIONS, deltaEThreshold: -1 })).toThrow(
+      RangeError,
+    );
   });
 });

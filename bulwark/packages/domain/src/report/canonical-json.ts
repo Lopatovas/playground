@@ -1,6 +1,7 @@
 import { compareStrings } from '../numeric.js';
 
-export type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
+export type JsonValue =
+  string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
 
 /**
  * Serializes a value with object keys in a fixed order.

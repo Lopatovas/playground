@@ -6,7 +6,11 @@ import type {
   FontWeightDefect,
 } from '../defects/defect.js';
 import type { FontFamilyCandidateScore } from '../typography/font-metrics.js';
-import { classifyFontWeight, deriveCssFontSize, selectFontFamily } from '../typography/font-metrics.js';
+import {
+  classifyFontWeight,
+  deriveCssFontSize,
+  selectFontFamily,
+} from '../typography/font-metrics.js';
 import type { FontProfile } from '../typography/font-profile.js';
 import { FontRegistry } from '../typography/font-profile.js';
 import { roundTo } from '../numeric.js';

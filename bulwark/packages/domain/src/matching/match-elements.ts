@@ -83,7 +83,13 @@ export function matchElements(
     const designElement = design[designIndex] as DetectedElement;
     for (let liveIndex = 0; liveIndex < live.length; liveIndex += 1) {
       const liveElement = live[liveIndex] as DetectedElement;
-      const candidate = evaluateCandidate(designElement, liveElement, designIndex, liveIndex, options);
+      const candidate = evaluateCandidate(
+        designElement,
+        liveElement,
+        designIndex,
+        liveIndex,
+        options,
+      );
       if (candidate !== null) candidates.push(candidate);
     }
   }

@@ -60,7 +60,11 @@ export class ColorMeasurer {
 
       // Trimming the edge keeps a border or a rounded corner's anti-aliasing from
       // competing with the fill for the dominant pool.
-      const crop = cropWithPadding(designRaster, designSurface.sourceBox, -this.options.edgeInsetPx);
+      const crop = cropWithPadding(
+        designRaster,
+        designSurface.sourceBox,
+        -this.options.edgeInsetPx,
+      );
       const clustered = clusterColors(crop, { k: this.options.clusterCount });
       const roles = assignPaletteRoles(clustered.clusters, {
         minForegroundShare: this.options.minForegroundShare,
@@ -69,7 +73,8 @@ export class ColorMeasurer {
 
       const liveBackground = this.resolveLiveBackground(dom, domElements, warnings);
       const designForeground = roles.foreground?.color;
-      const liveForeground = pair.designElement.kind === 'text' ? safeParse(dom.style.color) : undefined;
+      const liveForeground =
+        pair.designElement.kind === 'text' ? safeParse(dom.style.color) : undefined;
 
       measurements.push({
         designElementId: pair.designElement.id,
@@ -116,9 +121,13 @@ export class ColorMeasurer {
       if (color !== undefined) return color;
     }
 
-    this.deps.logger.log('debug', 'no opaque ancestor background found; using the page background', {
-      element: dom.id,
-    });
+    this.deps.logger.log(
+      'debug',
+      'no opaque ancestor background found; using the page background',
+      {
+        element: dom.id,
+      },
+    );
     warnings.push(
       `"${dom.id}" has a transparent background and no opaque ancestor; compared against the ` +
         `configured page background ${this.options.pageBackground}`,

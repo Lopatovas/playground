@@ -1,10 +1,4 @@
-import type {
-  BoundingBox,
-  DetectedElement,
-  ElementKind,
-  Size,
-  SurfaceId,
-} from '@bulwark/domain';
+import type { BoundingBox, DetectedElement, ElementKind, Size, SurfaceId } from '@bulwark/domain';
 import { compareElementsInReadingOrder, intersectionOverUnion, scaleBox } from '@bulwark/domain';
 import type { DetectionResult, LiveDomElement } from '@bulwark/ports';
 
@@ -52,7 +46,9 @@ export function normalizeDetection(
   const staged = detection.regions.map((region) => ({
     sourceBox: region.box,
     comparisonBox:
-      options.pixelRatio === 1 ? region.box : scaleBox(region.box, options.imageSize, comparisonSize),
+      options.pixelRatio === 1
+        ? region.box
+        : scaleBox(region.box, options.imageSize, comparisonSize),
     label: region.label,
     kind: region.kind,
     text: region.text,
@@ -161,6 +157,8 @@ export function domElementKind(element: LiveDomElement): ElementKind {
   return 'container';
 }
 
-export function sortSurfaceElements(elements: readonly SurfaceElement[]): readonly SurfaceElement[] {
+export function sortSurfaceElements(
+  elements: readonly SurfaceElement[],
+): readonly SurfaceElement[] {
   return [...elements].sort((a, b) => compareElementsInReadingOrder(a.element, b.element));
 }

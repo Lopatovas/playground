@@ -138,9 +138,9 @@ describe('box transforms', () => {
   });
 
   it('rejects scaling from a degenerate surface', () => {
-    expect(() => scaleBox(createBox(0, 0, 1, 1), { width: 0, height: 10 }, { width: 5, height: 5 })).toThrow(
-      RangeError,
-    );
+    expect(() =>
+      scaleBox(createBox(0, 0, 1, 1), { width: 0, height: 10 }, { width: 5, height: 5 }),
+    ).toThrow(RangeError);
   });
 
   it('translates a crop-local box back into parent space', () => {
