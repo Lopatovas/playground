@@ -52,7 +52,20 @@ font fallback target, but the demo remains usable when it is not installed.
 ## Run Bulwark
 
 `demo/bulwark.config.json` is ready for a Docker Compose network where the app is
-reachable as `demo-target` and OmniParser is reachable as `omniparser`:
+reachable as `demo-target` and OmniParser is reachable as `omniparser`.
+
+### Compose (recommended)
+
+From `bulwark/`:
+
+```sh
+docker compose up --build
+curl -X POST http://localhost:4190/api/runs -H 'content-type: application/json' -d '{}'
+```
+
+Open the overlay at <http://localhost:8080/> (serves `artifacts/latest`).
+
+### CLI on the Compose network
 
 ```sh
 pnpm --filter @bulwark/cli exec bulwark run -c demo/bulwark.config.json

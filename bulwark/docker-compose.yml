@@ -1,0 +1,104 @@
+name: bulwark
+
+services:
+  omniparser:
+    build:
+      context: ./services/omniparser
+    ports:
+      - '8801:8801'
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'python',
+          '-c',
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8801/health')",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 10s
+
+  paddleocr:
+    build:
+      context: ./services/paddleocr
+    ports:
+      - '8802:8802'
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'python',
+          '-c',
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8802/health')",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 10s
+
+  demo-target:
+    build:
+      context: ./apps/demo-target
+    ports:
+      - '4173:4173'
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://127.0.0.1:4173/correct').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 5s
+
+  api:
+    build:
+      context: .
+      target: api
+    environment:
+      BULWARK_CONFIG: /config/bulwark.config.json
+      BULWARK_ARTIFACTS_DIR: /data/artifacts
+      BULWARK_DASHBOARD_ORIGINS: http://localhost:8080,http://127.0.0.1:8080
+      PORT: '4190'
+    volumes:
+      - ./demo/bulwark.config.json:/config/bulwark.config.json:ro
+      - ./demo/design:/config/design:ro
+      - artifacts:/data/artifacts
+    ports:
+      - '4190:4190'
+    depends_on:
+      omniparser:
+        condition: service_healthy
+      demo-target:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://127.0.0.1:4190/api/health').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 8
+      start_period: 20s
+
+  dashboard:
+    build:
+      context: .
+      target: dashboard
+    volumes:
+      - artifacts:/data/artifacts:ro
+    ports:
+      - '8080:80'
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  artifacts:

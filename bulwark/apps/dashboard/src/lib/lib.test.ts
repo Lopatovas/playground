@@ -151,5 +151,8 @@ describe('urls', () => {
     expect(artifactsBaseFromReportUrl('https://cdn.example/runs/one/report.json')).toBe(
       'https://cdn.example/runs/one/',
     );
+    expect(artifactsBaseFromReportUrl('/api/runs/run-fixed/report')).toBe(
+      '/api/runs/run-fixed/artifacts/',
+    );
   });
 });

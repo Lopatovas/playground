@@ -1,4 +1,4 @@
-import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readlink, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
@@ -12,7 +12,7 @@ import {
 } from '@bulwark/adapters/testing';
 import type { QaReport } from '@bulwark/domain';
 import { REFERENCE_SCENE } from '@bulwark/pipeline/testing';
-import { createApiServer } from './index.js';
+import { createApiServer, parseDashboardOrigins, updateLatestRunLink } from './index.js';
 import type { RunningApiServer } from './index.js';
 
 describe('Bulwark API', () => {
@@ -42,6 +42,17 @@ describe('Bulwark API', () => {
     expect(await response.json()).toEqual({ status: 'ok' });
   });
 
+  it('allows the docker dashboard origin through CORS by default', async () => {
+    await startServer({ artifactsRoot: root });
+
+    const response = await fetch(`${baseUrl}/api/health`, {
+      headers: { origin: 'http://localhost:8080' },
+    });
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get('access-control-allow-origin')).toBe('http://localhost:8080');
+  });
+
   it('answers CORS preflight requests', async () => {
     await startServer({ artifactsRoot: root });
 
@@ -59,12 +70,14 @@ describe('Bulwark API', () => {
     await writeRun('run-one', sampleReport('run-one', '2026-02-01T12:00:00.000Z'));
     await writeRun('run-two', sampleReport('run-two', '2026-02-01T13:00:00.000Z'));
     await mkdir(join(root, 'run-without-report'), { recursive: true });
+    await updateLatestRunLink(root, join(root, 'run-two'));
     await startServer({ artifactsRoot: root });
 
     const listResponse = await fetch(`${baseUrl}/api/runs`);
     expect(listResponse.status).toBe(200);
     const list = (await listResponse.json()) as { runs: Array<{ id: string; status: string }> };
     expect(list.runs.map((run) => run.id)).toContain('run-one');
+    expect(list.runs.map((run) => run.id)).not.toContain('latest');
     expect(list.runs.find((run) => run.id === 'run-without-report')).toMatchObject({
       status: 'missing-report',
     });
@@ -165,6 +178,7 @@ describe('Bulwark API', () => {
       'live-screenshot.png',
     ]);
     expect(payload.report.summary.passed).toBe(true);
+    expect(await readlink(join(root, 'latest'))).toBe('api-run');
 
     const reportResponse = await fetch(`${baseUrl}/api/runs/api-run/report`);
     expect(reportResponse.status).toBe(200);
@@ -207,6 +221,37 @@ describe('Bulwark API', () => {
     await writeFile(join(directory, 'figma-screenshot.png'), new Uint8Array([1, 2, 3]));
     await writeFile(join(directory, 'live-screenshot.png'), new Uint8Array([4, 5, 6]));
   }
+});
+
+describe('parseDashboardOrigins', () => {
+  it('splits a comma-separated list and falls back when empty', () => {
+    expect(parseDashboardOrigins('http://a.example, http://b.example')).toEqual([
+      'http://a.example',
+      'http://b.example',
+    ]);
+    expect(parseDashboardOrigins('  ,  ')).toEqual([
+      'http://localhost:5173',
+      'http://127.0.0.1:5173',
+      'http://localhost:8080',
+      'http://127.0.0.1:8080',
+    ]);
+  });
+});
+
+describe('updateLatestRunLink', () => {
+  it('rewrites the latest symlink to the newest run directory', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'bulwark-latest-'));
+    try {
+      await mkdir(join(root, 'run-a'), { recursive: true });
+      await mkdir(join(root, 'run-b'), { recursive: true });
+      await updateLatestRunLink(root, join(root, 'run-a'));
+      expect(await readlink(join(root, 'latest'))).toBe('run-a');
+      await updateLatestRunLink(root, join(root, 'run-b'));
+      expect(await readlink(join(root, 'latest'))).toBe('run-b');
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
 });
 
 function sampleReport(runId: string, generatedAt: string): QaReport {

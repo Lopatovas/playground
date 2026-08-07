@@ -25,6 +25,12 @@ export function reportUrlFromLocation(search: string): string {
 }
 
 export function artifactsBaseFromReportUrl(reportUrl: string): string {
+  // API reports live at /api/runs/:id/report; images are siblings under /artifacts/.
+  const apiReport = reportUrl.match(/^(.*\/runs\/[^/?#]+)\/report\/?(?:[?#].*)?$/i);
+  if (apiReport !== null) {
+    return `${apiReport[1]}/artifacts/`;
+  }
+
   if (/^https?:\/\//i.test(reportUrl)) {
     const url = new URL(reportUrl);
     const path = url.pathname.endsWith('/') ? url.pathname : url.pathname.replace(/[^/]+$/, '');

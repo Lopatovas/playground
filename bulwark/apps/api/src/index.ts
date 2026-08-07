@@ -1,5 +1,5 @@
 import { createReadStream } from 'node:fs';
-import { readFile, readdir, stat } from 'node:fs/promises';
+import { readFile, readdir, rename, rm, stat, symlink } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import type { IncomingMessage, Server, ServerResponse } from 'node:http';
 import { basename, dirname, extname, isAbsolute, join, normalize, resolve, sep } from 'node:path';
@@ -29,7 +29,13 @@ import type { BuiltServices, BulwarkConfig } from '@bulwark/pipeline';
 const DEFAULT_CONFIG_FILENAME = 'bulwark.config.json';
 const DEFAULT_PORT = 4190;
 const MAX_JSON_BODY_BYTES = 64 * 1024;
-const DEFAULT_DASHBOARD_ORIGINS = ['http://localhost:5173', 'http://127.0.0.1:5173'];
+const LATEST_RUN_LINK = 'latest';
+const DEFAULT_DASHBOARD_ORIGINS = [
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  'http://localhost:8080',
+  'http://127.0.0.1:8080',
+];
 
 const CONTENT_TYPES: Readonly<Record<string, string>> = {
   '.json': 'application/json; charset=utf-8',
@@ -53,6 +59,7 @@ export interface ApiContext {
   readonly readBinaryFile: (path: string) => Promise<Uint8Array>;
   readonly createStore: (directory: string) => ArtifactStore;
   readonly buildServices: (config: LoadedConfig) => BuiltServices;
+  readonly linkLatestRun: (artifactsRoot: string, runDirectory: string) => Promise<void>;
   readonly cwd: string;
 }
 
@@ -121,6 +128,7 @@ export function createDefaultApiContext(overrides: Partial<ApiContext> = {}): Ap
           ...(loaded.cacheDir === undefined ? {} : { cacheDir: loaded.cacheDir }),
         },
       }),
+    linkLatestRun: updateLatestRunLink,
     cwd: process.cwd(),
     ...overrides,
   };
@@ -275,6 +283,51 @@ export function runDirectoryName(runId: string | undefined, nowIso: string): str
   return nowIso.replace(/[:.]/g, '-').replace(/Z$/, 'Z');
 }
 
+/**
+ * Points `artifactsRoot/latest` at the newest run directory.
+ *
+ * Nginx serves `/artifacts/` from that link so the overlay dashboard can open
+ * the most recent report without knowing the run id.
+ */
+export async function updateLatestRunLink(
+  artifactsRoot: string,
+  runDirectory: string,
+): Promise<void> {
+  const root = resolve(artifactsRoot);
+  const targetName = basename(runDirectory);
+  if (targetName.length === 0 || targetName === '.' || targetName === '..') {
+    throw new BulwarkError('Cannot link latest run to an empty directory name', { runDirectory });
+  }
+  if (targetName === LATEST_RUN_LINK) {
+    throw new BulwarkError('Run directory must not be named "latest"', { runDirectory });
+  }
+
+  const latestPath = join(root, LATEST_RUN_LINK);
+  const tempPath = join(root, `.${LATEST_RUN_LINK}.${process.pid}.tmp`);
+  await rm(tempPath, { force: true, recursive: true });
+  await symlink(targetName, tempPath);
+  try {
+    await rename(tempPath, latestPath);
+  } catch {
+    await rm(tempPath, { force: true, recursive: true }).catch(() => undefined);
+    // Replace a leftover directory or broken link from an older layout.
+    await rm(latestPath, { force: true, recursive: true });
+    await symlink(targetName, latestPath);
+  }
+}
+
+export function parseDashboardOrigins(
+  raw: string | undefined,
+  fallback: readonly string[] = DEFAULT_DASHBOARD_ORIGINS,
+): readonly string[] {
+  if (raw === undefined || raw.trim() === '') return fallback;
+  const origins = raw
+    .split(',')
+    .map((part) => part.trim())
+    .filter((part) => part.length > 0);
+  return origins.length === 0 ? fallback : origins;
+}
+
 export function resolveWithinDirectory(directory: string, urlPath: string): string | null {
   const decoded = safeDecode(urlPath);
   if (decoded === null) return null;
@@ -299,6 +352,7 @@ export async function main(
     configPath,
     ...(artifactsRoot === undefined ? {} : { artifactsRoot }),
     port,
+    dashboardOrigins: parseDashboardOrigins(env['BULWARK_DASHBOARD_ORIGINS']),
   });
   const running = await listen();
   process.stderr.write(`Bulwark API listening on http://0.0.0.0:${running.port}\n`);
@@ -347,6 +401,10 @@ async function handleRequest(
         routeContext.artifactsRoot,
       );
       const result = await prepared.runner.run();
+      await routeContext.context.linkLatestRun(
+        prepared.loaded.artifactsDir,
+        prepared.runDirectory,
+      );
       const run = await readRunRecord(
         prepared.loaded.artifactsDir,
         basename(prepared.runDirectory),
@@ -416,7 +474,7 @@ async function listRuns(artifactsRoot: string): Promise<readonly RunRecord[]> {
 
   const runs = await Promise.all(
     entries
-      .filter((entry) => entry.isDirectory())
+      .filter((entry) => entry.isDirectory() && entry.name !== LATEST_RUN_LINK)
       .map((entry) => readRunRecord(artifactsRoot, entry.name, false)),
   );
 
