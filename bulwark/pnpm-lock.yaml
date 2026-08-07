@@ -36,6 +36,21 @@ importers:
         specifier: ^3.0.4
         version: 3.2.7(@types/node@22.20.1)(jsdom@26.1.0)
 
+  apps/api:
+    dependencies:
+      '@bulwark/adapters':
+        specifier: workspace:*
+        version: link:../../packages/adapters
+      '@bulwark/domain':
+        specifier: workspace:*
+        version: link:../../packages/domain
+      '@bulwark/pipeline':
+        specifier: workspace:*
+        version: link:../../packages/pipeline
+      '@bulwark/ports':
+        specifier: workspace:*
+        version: link:../../packages/ports
+
   apps/cli:
     dependencies:
       '@bulwark/adapters':

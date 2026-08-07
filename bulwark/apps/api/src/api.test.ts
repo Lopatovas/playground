@@ -106,7 +106,7 @@ describe('Bulwark API', () => {
     expect(artifactResponse.status).toBe(400);
     expect(await artifactResponse.text()).not.toContain('do not serve me');
 
-    const runResponse = await fetch(`${baseUrl}/api/runs/%2e%2e/report`);
+    const runResponse = await fetch(`${baseUrl}/api/runs/%2e%2e%2frun-one/report`);
     expect(runResponse.status).toBe(400);
   });
 
