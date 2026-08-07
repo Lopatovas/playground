@@ -6,3 +6,5 @@ coverage/
 .bulwark-cache/
 .DS_Store
 *.log
+__pycache__/
+*.py[cod]
