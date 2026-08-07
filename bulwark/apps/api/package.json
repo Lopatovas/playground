@@ -1,0 +1,28 @@
+{
+  "name": "@bulwark/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Bulwark HTTP API for listing runs, serving artifacts and kicking off analyses",
+  "bin": {
+    "bulwark-api": "./dist/bin.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -b --pretty",
+    "test": "vitest run",
+    "start": "node ./dist/bin.js"
+  },
+  "dependencies": {
+    "@bulwark/adapters": "workspace:*",
+    "@bulwark/domain": "workspace:*",
+    "@bulwark/pipeline": "workspace:*",
+    "@bulwark/ports": "workspace:*"
+  }
+}
