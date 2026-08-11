@@ -16,6 +16,7 @@ except ImportError:  # pragma: no cover - used when uvicorn imports app.py from 
     from heuristic import RecognitionRun, decode_image_base64, recognize_text_regions
 
 LOGGER = logging.getLogger("bulwark.paddleocr")
+logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO"))
 FALLBACK_MODEL_NAME = "bulwark-paddleocr-heuristic-v0"
 
 
@@ -26,13 +27,14 @@ class RecognitionRequest(BaseModel):
 
 app = FastAPI(
     title="Bulwark PaddleOCR Service",
-    version="0.1.0",
-    description="PaddleOCR-compatible text recognition for Bulwark.",
+    version="0.2.0",
+    description="PaddleOCR text recognition for Bulwark (CPU). Falls back to ink heuristic if disabled.",
 )
 
 
 def _load_paddleocr() -> Any | None:
     if os.environ.get("PADDLEOCR_DISABLE", "").lower() in {"1", "true", "yes"}:
+        LOGGER.info("PaddleOCR disabled via PADDLEOCR_DISABLE")
         return None
 
     try:
@@ -43,10 +45,10 @@ def _load_paddleocr() -> Any | None:
 
     language = os.environ.get("PADDLEOCR_LANG", "en")
     try:
-        return PaddleOCR(use_angle_cls=True, lang=language, show_log=False, use_gpu=False)
+        engine = PaddleOCR(use_angle_cls=True, lang=language, show_log=False, use_gpu=False)
     except TypeError:
         try:
-            return PaddleOCR(lang=language)
+            engine = PaddleOCR(lang=language, use_angle_cls=True)
         except Exception as exc:
             LOGGER.warning("PaddleOCR could not initialize; using heuristic fallback: %s", exc)
             return None
@@ -54,9 +56,16 @@ def _load_paddleocr() -> Any | None:
         LOGGER.warning("PaddleOCR could not initialize; using heuristic fallback: %s", exc)
         return None
 
+    LOGGER.info("detector backend: PaddleOCR (lang=%s)", language)
+    return engine
+
 
 OCR_ENGINE = _load_paddleocr()
-MODEL_NAME = "paddleocr" if OCR_ENGINE is not None else FALLBACK_MODEL_NAME
+MODEL_NAME = (
+    f"paddleocr:{os.environ.get('PADDLEOCR_LANG', 'en')}"
+    if OCR_ENGINE is not None
+    else FALLBACK_MODEL_NAME
+)
 WEIGHTS_LOADED = OCR_ENGINE is not None
 
 
@@ -74,11 +83,16 @@ def recognize(request: RecognitionRequest) -> dict[str, object]:
 
     min_confidence = request.min_confidence if request.min_confidence is not None else 0.0
     runs = _recognize_with_paddle(image, min_confidence=min_confidence) if OCR_ENGINE else []
+    model = MODEL_NAME
     if not runs:
         runs = recognize_text_regions(image, min_confidence=min_confidence)
+        if OCR_ENGINE is None:
+            model = FALLBACK_MODEL_NAME
+        elif runs:
+            model = f"{MODEL_NAME}+heuristic-fallback"
 
     return {
-        "model": MODEL_NAME,
+        "model": model,
         "runs": [
             {"box": list(run.box), "text": run.text, "confidence": run.confidence}
             for run in runs
@@ -87,11 +101,12 @@ def recognize(request: RecognitionRequest) -> dict[str, object]:
 
 
 def _recognize_with_paddle(image: Any, *, min_confidence: float) -> list[RecognitionRun]:
+    rgb = np.asarray(image.convert("RGB"))
     try:
-        result = OCR_ENGINE.ocr(np.asarray(image.convert("RGB")), cls=True)
+        result = OCR_ENGINE.ocr(rgb, cls=True)
     except TypeError:
         try:
-            result = OCR_ENGINE.ocr(np.asarray(image.convert("RGB")))
+            result = OCR_ENGINE.ocr(rgb)
         except Exception as exc:
             LOGGER.warning("PaddleOCR request failed; using heuristic fallback: %s", exc)
             return []
@@ -128,7 +143,9 @@ def _extract_paddle_dict_runs(result: dict[str, Any]) -> list[RecognitionRun]:
         box = _points_to_box(boxes[index])
         if box is None:
             continue
-        runs.append(RecognitionRun(box=box, text=str(text), confidence=min(1.0, max(0.0, confidence))))
+        runs.append(
+            RecognitionRun(box=box, text=str(text), confidence=min(1.0, max(0.0, confidence)))
+        )
     return runs
 
 
@@ -140,6 +157,8 @@ def _flatten_paddle_items(result: Any) -> list[Any]:
 
     items: list[Any] = []
     for entry in result:
+        if entry is None:
+            continue
         if _looks_like_paddle_item(entry):
             items.append(entry)
         elif isinstance(entry, list):

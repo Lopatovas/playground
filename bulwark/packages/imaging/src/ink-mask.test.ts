@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { createBox, createRgb } from '@bulwark/domain';
-import { buildInkMask, otsuThreshold, strokeDensity } from './ink-mask.js';
+import { buildInkMask, extractInkColor, meanMaskedRgb, otsuThreshold, strokeDensity } from './ink-mask.js';
 import { toGrayscale, histogram } from './grayscale.js';
 import { createRaster, fillRect } from './raster.js';
 import { drawGlyphBars, gradientRaster, solidRaster } from './testing/synthetic.js';
+import { toHex } from '@bulwark/domain';
 
 const WHITE = createRgb(255, 255, 255);
 const BLACK = createRgb(0, 0, 0);
@@ -130,5 +131,68 @@ describe('strokeDensity', () => {
   it('rejects an empty region', () => {
     const mask = buildInkMask(toGrayscale(solidRaster(4, 4, WHITE)));
     expect(() => strokeDensity(mask, { xMin: 2, yMin: 2, xMax: 2, yMax: 4 })).toThrow(RangeError);
+  });
+});
+
+describe('meanMaskedRgb', () => {
+  it('averages only ink pixels', () => {
+    const raster = createRaster(10, 10, WHITE);
+    fillRect(raster, createBox(0, 0, 5, 10), NAVY);
+    const mask = buildInkMask(toGrayscale(raster));
+    expect(toHex(meanMaskedRgb(raster, mask)!)).toBe('#111827');
+  });
+
+  it('returns undefined when the mask has no ink', () => {
+    const raster = solidRaster(4, 4, WHITE);
+    const mask = buildInkMask(toGrayscale(raster));
+    expect(meanMaskedRgb(raster, mask)).toBeUndefined();
+  });
+});
+
+describe('extractInkColor', () => {
+  it('recovers dark navy ink on white paper', () => {
+    const raster = createRaster(40, 16, WHITE);
+    fillRect(raster, createBox(8, 4, 24, 12), NAVY);
+    const ink = extractInkColor(raster);
+    expect(ink).toBeDefined();
+    expect(ink!.polarity).toBe('dark-on-light');
+    expect(toHex(ink!.color)).toBe('#111827');
+  });
+
+  it('recovers accent ink that is close in luminance to the paper', () => {
+    // Soft yellow headline on near-white — grayscale Otsu often blends these.
+    const paper = createRgb(255, 255, 255);
+    const accent = createRgb(255, 229, 102); // #ffe566
+    const raster = createRaster(48, 18, paper);
+    fillRect(raster, createBox(6, 4, 36, 14), accent);
+    const ink = extractInkColor(raster, { minDeltaE: 8 });
+    expect(ink).toBeDefined();
+    expect(toHex(ink!.color)).toBe('#ffe566');
+  });
+
+  it('tightens padded crops before sampling ink', () => {
+    // Large paper padding so the tight re-crop is clearly smaller than the detector box.
+    const raster = createRaster(120, 60, WHITE);
+    fillRect(raster, createBox(40, 20, 80, 40), NAVY);
+    const loose = extractInkColor(raster, { tighten: false });
+    const tight = extractInkColor(raster, { tighten: true });
+    expect(loose).toBeDefined();
+    expect(tight).toBeDefined();
+    expect(toHex(loose!.color)).toBe('#111827');
+    expect(toHex(tight!.color)).toBe('#111827');
+    expect(tight!.inkShare).toBeGreaterThan(loose!.inkShare);
+  });
+
+  it('recovers light ink on a dark fill', () => {
+    const raster = createRaster(40, 16, NAVY);
+    fillRect(raster, createBox(8, 4, 24, 12), WHITE);
+    const ink = extractInkColor(raster);
+    expect(ink).toBeDefined();
+    expect(ink!.polarity).toBe('light-on-dark');
+    expect(toHex(ink!.color)).toBe('#ffffff');
+  });
+
+  it('rejects a flat fill with no glyphs', () => {
+    expect(extractInkColor(solidRaster(20, 20, WHITE))).toBeUndefined();
   });
 });

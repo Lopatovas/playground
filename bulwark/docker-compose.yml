@@ -6,36 +6,88 @@ services:
       context: ./services/omniparser
     ports:
       - '8801:8801'
+    environment:
+      OMNIPARSER_WEIGHTS_DIR: /app/weights/icon_detect
+      OMNIPARSER_CAPTION_DIR: /app/weights/icon_caption
+      OMNIPARSER_DEVICE: cpu
+      OMNIPARSER_CAPTION: '1'
+      OMNIPARSER_CAPTION_BATCH: '2'
     healthcheck:
       test:
         [
           'CMD',
           'python',
           '-c',
-          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8801/health')",
+          "import json,urllib.request; d=json.load(urllib.request.urlopen('http://127.0.0.1:8801/health')); raise SystemExit(0 if d.get('status')=='ok' and d.get('weights_loaded') else 1)",
+        ]
+      interval: 20s
+      timeout: 15s
+      retries: 30
+      start_period: 300s
+
+  omniparser-heuristic:
+    build:
+      context: ./services/omniparser
+    ports:
+      - '8803:8801'
+    environment:
+      OMNIPARSER_FORCE_HEURISTIC: '1'
+      OMNIPARSER_CAPTION: '0'
+      OMNIPARSER_DEVICE: cpu
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'python',
+          '-c',
+          "import json,urllib.request; d=json.load(urllib.request.urlopen('http://127.0.0.1:8801/health')); raise SystemExit(0 if d.get('status')=='ok' and d.get('model')=='bulwark-omniparser-heuristic-v0' else 1)",
         ]
       interval: 10s
       timeout: 5s
-      retries: 6
-      start_period: 10s
+      retries: 8
+      start_period: 20s
 
   paddleocr:
     build:
       context: ./services/paddleocr
     ports:
       - '8802:8802'
+    environment:
+      PADDLEOCR_LANG: en
     healthcheck:
       test:
         [
           'CMD',
           'python',
           '-c',
-          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8802/health')",
+          "import json,urllib.request; d=json.load(urllib.request.urlopen('http://127.0.0.1:8802/health')); raise SystemExit(0 if d.get('status')=='ok' and d.get('weights_loaded') else 1)",
         ]
-      interval: 10s
-      timeout: 5s
-      retries: 6
-      start_period: 10s
+      interval: 20s
+      timeout: 15s
+      retries: 18
+      start_period: 180s
+
+  screenparser:
+    build:
+      context: ./services/screenparser
+    ports:
+      - '8804:8804'
+    environment:
+      SCREENPARSER_WEIGHTS_DIR: /app/weights
+      SCREENPARSER_DEVICE: cpu
+      SCREENPARSER_IMGSZ: '1280'
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'python',
+          '-c',
+          "import json,urllib.request; d=json.load(urllib.request.urlopen('http://127.0.0.1:8804/health')); raise SystemExit(0 if d.get('status')=='ok' and d.get('weights_loaded') else 1)",
+        ]
+      interval: 20s
+      timeout: 15s
+      retries: 24
+      start_period: 180s
 
   demo-target:
     build:
@@ -48,7 +100,7 @@ services:
           'CMD',
           'node',
           '-e',
-          "fetch('http://127.0.0.1:4173/correct').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+          "fetch('http://127.0.0.1:4173/fixtures').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
         ]
       interval: 10s
       timeout: 5s
@@ -60,18 +112,19 @@ services:
       context: .
       target: api
     environment:
-      BULWARK_CONFIG: /config/bulwark.config.json
+      BULWARK_CONFIG: /config/demo/complex/bulwark.config.json
       BULWARK_ARTIFACTS_DIR: /data/artifacts
       BULWARK_DASHBOARD_ORIGINS: http://localhost:8080,http://127.0.0.1:8080
       PORT: '4190'
     volumes:
-      - ./demo/bulwark.config.json:/config/bulwark.config.json:ro
-      - ./demo/design:/config/design:ro
+      - ./demo:/config/demo:ro
       - artifacts:/data/artifacts
     ports:
       - '4190:4190'
     depends_on:
       omniparser:
+        condition: service_healthy
+      omniparser-heuristic:
         condition: service_healthy
       demo-target:
         condition: service_healthy
@@ -85,8 +138,8 @@ services:
         ]
       interval: 10s
       timeout: 5s
-      retries: 8
-      start_period: 20s
+      retries: 12
+      start_period: 40s
 
   dashboard:
     build:
@@ -98,7 +151,7 @@ services:
       - '8080:80'
     depends_on:
       api:
-        condition: service_healthy
+        condition: service_started
 
 volumes:
   artifacts:

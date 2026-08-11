@@ -1,0 +1,106 @@
+{
+  "id": "docs",
+  "name": "Docs / blog",
+  "description": "Documentation shell: sidebar nav ink, body link, status pill fill, code block fill.",
+  "device": "desktop",
+  "viewport": {
+    "width": 800,
+    "height": 600,
+    "deviceScaleFactor": 1
+  },
+  "flattenBackground": "#ffffff",
+  "routes": {
+    "correct": "/docs",
+    "broken": "/docs-broken"
+  },
+  "template": "docs.html",
+  "sceneSelector": "main.scene",
+  "expectedLeafCount": 10,
+  "expectedLeaves": [
+    {
+      "id": "brand",
+      "text": "Bulwark Docs",
+      "role": "text"
+    },
+    {
+      "id": "nav1",
+      "text": "Intro",
+      "role": "link"
+    },
+    {
+      "id": "nav2",
+      "text": "Install",
+      "role": "link"
+    },
+    {
+      "id": "nav3",
+      "text": "API",
+      "role": "link"
+    },
+    {
+      "id": "h1",
+      "text": "Getting started",
+      "role": "heading"
+    },
+    {
+      "id": "body",
+      "text": "Compare a design",
+      "role": "text"
+    },
+    {
+      "id": "next",
+      "text": "Next: Install",
+      "role": "link"
+    },
+    {
+      "id": "code",
+      "text": "pnpm bulwark run",
+      "role": "text"
+    },
+    {
+      "id": "pill",
+      "text": "Stable",
+      "role": "badge"
+    },
+    {
+      "id": "side",
+      "text": "",
+      "role": "container"
+    }
+  ],
+  "seeds": [
+    {
+      "id": "nav-ink",
+      "cssClass": "defect-nav-ink",
+      "description": "Active nav #6366f1 instead of #4f46e5",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    },
+    {
+      "id": "link-ink",
+      "cssClass": "defect-link-ink",
+      "description": "Next link #6366f1 instead of #4338ca",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    },
+    {
+      "id": "pill-color",
+      "cssClass": "defect-pill-color",
+      "description": "Stable pill #10b981 instead of #059669",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    },
+    {
+      "id": "code-fill",
+      "cssClass": "defect-code-fill",
+      "description": "Code block #1f2937 instead of #111827",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    }
+  ],
+  "detectionNotes": "Ink-heavy surface. Sidebar may be skipped as Side Bar; nav links should still ink-check."
+}

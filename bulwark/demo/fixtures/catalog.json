@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "description": "Bulwark detection/QA fixture suite — layout shells, color-stress marketing, category surfaces, and analytical dashboards (web/mobile charts).",
+  "fixtures": [
+    "landing",
+    "workspace",
+    "admin",
+    "settings",
+    "mobile-feed",
+    "brand-hero",
+    "pricing",
+    "dashboard-vivid",
+    "promo-mobile",
+    "eshop",
+    "marketplace",
+    "food-delivery",
+    "booking",
+    "fintech",
+    "docs",
+    "portfolio",
+    "analytics-web",
+    "analytics-mobile"
+  ]
+}

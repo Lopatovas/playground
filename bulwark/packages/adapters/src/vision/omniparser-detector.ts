@@ -14,26 +14,32 @@ export interface OmniParserDetectorOptions extends Omit<
   HttpJsonClientOptions,
   'service' | 'timeoutMs' | 'maxAttempts' | 'retryDelayMs'
 > {
+  /** Service id used in errors and cache keys. Defaults to `omniparser`. */
+  readonly name?: string;
   readonly timeoutMs?: number;
   readonly maxAttempts?: number;
   readonly retryDelayMs?: number;
 }
 
 /**
- * Element detection through the OmniParser HTTP service.
+ * Element detection through an OmniParser-compatible HTTP service.
  *
  * The service is expected to return absolute pixel boxes measured on the image it
  * was sent. The adapter verifies the dimensions it reports back, because a service
  * that silently resized the input would return boxes in a different coordinate space
  * and every element would look shifted.
+ *
+ * ScreenParser and other YOLO detectors reuse this adapter when they speak the same
+ * `/v1/detect` contract — only `name` and `baseUrl` change.
  */
 export class OmniParserDetector implements ElementDetector {
-  readonly name = 'omniparser';
+  readonly name: string;
   private readonly client: HttpJsonClient;
 
   constructor(options: OmniParserDetectorOptions) {
+    this.name = options.name ?? 'omniparser';
     this.client = new HttpJsonClient({
-      service: 'omniparser',
+      service: this.name,
       baseUrl: options.baseUrl,
       timeoutMs: options.timeoutMs ?? 120_000,
       maxAttempts: options.maxAttempts ?? 3,

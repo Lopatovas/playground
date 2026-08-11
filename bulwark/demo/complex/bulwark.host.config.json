@@ -1,0 +1,48 @@
+{
+  "name": "bulwark-complex-demo-host-detector",
+  "target": {
+    "url": "http://demo-target:4173/complex-broken",
+    "viewport": {
+      "width": 800,
+      "height": 600,
+      "deviceScaleFactor": 1
+    },
+    "fullPage": false,
+    "waitForSelector": "main.scene",
+    "settleMs": 150,
+    "stabilize": true
+  },
+  "design": {
+    "imagePath": "design/figma-screenshot.png",
+    "pixelRatio": 1,
+    "flattenBackground": "#eef2f7"
+  },
+  "services": {
+    "detector": {
+      "kind": "omniparser",
+      "baseUrl": "http://host.docker.internal:8801",
+      "timeoutMs": 180000
+    },
+    "recognizer": {
+      "kind": "ink-projection"
+    },
+    "rasterizer": {
+      "kind": "disabled"
+    },
+    "cacheDir": ".bulwark-cache"
+  },
+  "tolerances": {
+    "spacingPx": 2,
+    "positionPx": 2,
+    "fontSizePx": 1,
+    "deltaE": 2,
+    "minFamilyMargin": 0.02
+  },
+  "typography": {
+    "candidateFamilies": ["Mark Pro", "Open Sans"]
+  },
+  "output": {
+    "artifactsDir": ".artifacts",
+    "failOnDefects": true
+  }
+}

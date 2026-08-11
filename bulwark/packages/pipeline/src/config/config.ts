@@ -44,7 +44,7 @@ export const tolerancesSchema = z.object({
   spacingPx: z.number().min(0).max(100).default(2),
   positionPx: z.number().min(0).max(100).default(2),
   fontSizePx: z.number().min(0).max(20).default(1),
-  deltaE: z.number().min(0).max(100).default(2),
+  deltaE: z.number().min(0).max(100).default(4),
   minFamilyMargin: z.number().min(0).max(1).default(0.02),
 });
 
@@ -98,15 +98,59 @@ export const colorSchema = z.object({
   minForegroundShare: z.number().min(0).max(1).default(0.01),
   minForegroundDeltaE: z.number().min(0).max(100).default(5),
   checkForeground: z.boolean().default(true),
+  /**
+   * `raster` samples the live screenshot crop like the design PNG (visual compare).
+   * `css` reads computed styles (legacy).
+   */
+  liveSource: z.enum(['raster', 'css']).default('raster'),
+  /**
+   * `specialized` routes solid controls through fill clustering and text through
+   * ink-masked font color. `cluster` applies k-means roles to every matched pair.
+   */
+  mode: z.enum(['specialized', 'cluster']).default('specialized'),
+  /** Dominant-cluster share required before a fill check runs. */
+  minSolidShare: z.number().min(0).max(1).default(0.45),
+  /**
+   * Solid Image / SolidFill crops at/above this share use fill; mid-solidity Images
+   * between {@link minPaletteShare} and this use the chart palette path.
+   */
+  minSolidImageShare: z.number().min(0).max(1).default(0.72),
+  /** Image crops at/above this share (but below solid) run multi-stop palette compare. */
+  minPaletteShare: z.number().min(0).max(1).default(0.18),
+  /** Minimum ink pixels before an ink-masked foreground is trusted. */
+  minInkPixels: z.number().int().min(1).default(8),
+  /**
+   * ΔE for chromatic ink (links, accents). Soft planted accents often sit ~ΔE 6–9.
+   */
+  inkDeltaE: z.number().min(0).max(100).default(5),
+  /** ΔE for near-neutral body text — higher to suppress gray AA false positives. */
+  inkNeutralDeltaE: z.number().min(0).max(100).default(13),
+  /** Lab chroma C* at/above which ink uses `inkDeltaE` instead of `inkNeutralDeltaE`. */
+  inkAccentChroma: z.number().min(0).max(200).default(20),
+  /** ΔE for matched chart series stops (pie slices, donut arcs). */
+  seriesDeltaE: z.number().min(0).max(100).default(8),
+  /** Max design↔live paper ΔE before an ink pair is skipped as unstable. */
+  maxInkBackgroundDeltaE: z.number().min(0).max(100).default(18),
+  /** Max relative ink-share mismatch before skipping an ink pair. */
+  maxInkShareMismatch: z.number().min(0).max(1).default(0.55),
+  /**
+   * After ScreenParser, propose flat color regions (KPI tiles, swatches, chips)
+   * that the detector never boxed. Safe for pie charts: low-purity blobs are dropped.
+   */
+  solidRegionProposal: z.boolean().default(true),
 });
 
-export const detectorServiceSchema = z.object({
-  kind: z.literal('omniparser'),
+const detectorEndpointSchema = z.object({
   baseUrl: z.string().url(),
   minConfidence: z.number().min(0).max(1).optional(),
   maxOverlap: z.number().min(0).max(1).optional(),
   timeoutMs: z.number().int().positive().default(120_000),
 });
+
+export const detectorServiceSchema = z.discriminatedUnion('kind', [
+  detectorEndpointSchema.extend({ kind: z.literal('omniparser') }),
+  detectorEndpointSchema.extend({ kind: z.literal('screenparser') }),
+]);
 
 export const recognizerServiceSchema = z.discriminatedUnion('kind', [
   z.object({

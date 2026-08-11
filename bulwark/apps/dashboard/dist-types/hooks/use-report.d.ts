@@ -1,18 +1,15 @@
 import type { DashboardReport } from '../lib/report-schema.js';
-export type ReportLoadState =
-  | {
-      status: 'loading';
-    }
-  | {
-      status: 'error';
-      message: string;
-      issues?: readonly string[];
-    }
-  | {
-      status: 'ready';
-      report: DashboardReport;
-      artifactsBase: string;
-    };
+export type ReportLoadState = {
+    status: 'loading';
+} | {
+    status: 'error';
+    message: string;
+    issues?: readonly string[];
+} | {
+    status: 'ready';
+    report: DashboardReport;
+    artifactsBase: string;
+};
 /**
  * Loads and validates the report the workbench is reviewing.
  *

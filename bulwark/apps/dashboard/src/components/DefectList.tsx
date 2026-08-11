@@ -2,7 +2,7 @@ import type { DashboardDefect } from '../lib/report-schema.js';
 import { DEFECT_TYPE_LABELS, filterDefects } from '../lib/defects.js';
 import type { DefectFilter } from '../lib/defects.js';
 import { DEFAULT_DEFECT_FILTER } from '../lib/defects.js';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 export interface DefectListProps {
   readonly defects: readonly DashboardDefect[];
@@ -13,6 +13,12 @@ export interface DefectListProps {
 export function DefectList({ defects, selectedId, onSelect }: DefectListProps) {
   const [filter, setFilter] = useState<DefectFilter>(DEFAULT_DEFECT_FILTER);
   const visible = useMemo(() => filterDefects(defects, filter), [defects, filter]);
+  const selectedRef = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    if (selectedId === null) return;
+    selectedRef.current?.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' });
+  }, [selectedId]);
 
   return (
     <aside className="defect-list" aria-label="Defects">
@@ -85,6 +91,7 @@ export function DefectList({ defects, selectedId, onSelect }: DefectListProps) {
               <li key={defect.id}>
                 <button
                   type="button"
+                  ref={selected ? selectedRef : undefined}
                   className={`defect-item defect-item--${defect.severity}${selected ? ' defect-item--selected' : ''}`}
                   aria-pressed={selected}
                   onClick={() => onSelect(selected ? null : defect.id)}

@@ -1,0 +1,59 @@
+{
+  "id": "mobile-feed",
+  "name": "Mobile activity feed",
+  "description": "Phone viewport stacked feed + tab bar — different aspect ratio and density from desktop shells.",
+  "device": "mobile",
+  "viewport": { "width": 390, "height": 844, "deviceScaleFactor": 1 },
+  "flattenBackground": "#0b1220",
+  "routes": { "correct": "/mobile-feed", "broken": "/mobile-feed-broken" },
+  "template": "mobile-feed.html",
+  "sceneSelector": "main.scene",
+  "expectedLeafCount": 18,
+  "expectedLeaves": [
+    { "id": "time", "text": "9:41", "role": "text" },
+    { "id": "title", "text": "Activity", "role": "heading" },
+    { "id": "c1-title", "text": "Design review", "role": "heading" },
+    { "id": "c1-meta", "text": "Mira · 2h", "role": "text" },
+    { "id": "c1-body", "text": "Overlay polish ready for pass", "role": "text" },
+    { "id": "c2-title", "text": "Detector bridge", "role": "heading" },
+    { "id": "c2-meta", "text": "Jon · 5h", "role": "text" },
+    { "id": "c2-body", "text": "ScreenParser A/B checked in", "role": "text" },
+    { "id": "c3-title", "text": "Billing sync", "role": "heading" },
+    { "id": "c3-meta", "text": "Ops · Yesterday", "role": "text" },
+    { "id": "c3-body", "text": "Invoice export completed", "role": "text" },
+    { "id": "c4-title", "text": "Mobile feed", "role": "heading" },
+    { "id": "c4-meta", "text": "You · Just now", "role": "text" },
+    { "id": "c4-body", "text": "New fixture landed in demo", "role": "text" },
+    { "id": "tab-home", "text": "Home", "role": "link" },
+    { "id": "tab-search", "text": "Search", "role": "link" },
+    { "id": "tab-alerts", "text": "Alerts", "role": "link" },
+    { "id": "tab-profile", "text": "Profile", "role": "link" }
+  ],
+  "seeds": [
+    {
+      "id": "title-size",
+      "cssClass": "defect-title-size",
+      "description": "Activity title 22px instead of 28px",
+      "expectedDefectTypes": ["font-size"]
+    },
+    {
+      "id": "card-gap",
+      "cssClass": "defect-card-gap",
+      "description": "Feed cards spaced 20px farther apart vertically",
+      "expectedDefectTypes": ["position", "spacing"]
+    },
+    {
+      "id": "tab-shift",
+      "cssClass": "defect-tab-shift",
+      "description": "Search tab shifted right",
+      "expectedDefectTypes": ["position", "spacing"]
+    },
+    {
+      "id": "accent",
+      "cssClass": "defect-accent",
+      "description": "Active tab / accent #38bdf8 instead of #7dd3fc",
+      "expectedDefectTypes": ["color"]
+    }
+  ],
+  "detectionNotes": "Expect ~16–20 boxes on 390×844. Desktop-tuned NMS may over-merge stacked cards."
+}

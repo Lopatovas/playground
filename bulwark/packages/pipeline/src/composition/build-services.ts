@@ -7,6 +7,7 @@ import {
   PaddleOcrRecognizer,
   PlaywrightLiveInspector,
   PlaywrightTextRasterizer,
+  ScreenParserDetector,
 } from '@bulwark/adapters';
 import type {
   ElementDetector,
@@ -36,11 +37,14 @@ export function buildServices(config: BulwarkConfig): BuiltServices {
       ? undefined
       : new FilesystemResponseCache(config.services.cacheDir);
 
+  const detectorOptions = {
+    baseUrl: config.services.detector.baseUrl,
+    timeoutMs: config.services.detector.timeoutMs,
+  };
   const detector = withDetectorCache(
-    new OmniParserDetector({
-      baseUrl: config.services.detector.baseUrl,
-      timeoutMs: config.services.detector.timeoutMs,
-    }),
+    config.services.detector.kind === 'screenparser'
+      ? new ScreenParserDetector(detectorOptions)
+      : new OmniParserDetector(detectorOptions),
     cache,
   );
 

@@ -47,7 +47,11 @@ export interface TypographyMeasurementOutcome {
 }
 
 /**
- * Turns matched text pairs into the measurements the typography checks consume.
+ * Turns matched pairs into the measurements the typography checks consume.
+ *
+ * Eligibility is "live DOM node has text", not detector `kind`. OmniParser often
+ * labels buttons/CTAs as `container`; gating on `text` alone dropped those type
+ * defects entirely.
  *
  * Ink is always measured on the design surface, never on the live screenshot: the
  * live side already reports its font size exactly through the DOM, so measuring its
@@ -70,26 +74,31 @@ export class TypographyMeasurer {
     const warnings: string[] = [];
 
     for (const pair of pairs) {
-      if (pair.designElement.kind !== 'text') continue;
-
       const designSurface = designElementsById.get(pair.designElement.id);
       const liveSurface = liveElementsById.get(pair.liveElement.id);
       if (designSurface === undefined || liveSurface === undefined) continue;
 
       const dom = liveSurface.dom;
       if (dom === undefined) {
-        warnings.push(
-          `Skipped typography for "${pair.designElement.label}": no DOM node was associated ` +
-            `with the live element`,
-        );
+        // Detector kind is a weak signal (buttons often arrive as `container`). Only skip
+        // silently when there is no live DOM to read CSS from — otherwise we'd hide real
+        // type defects on CTAs/nav chrome.
+        if (pair.designElement.kind === 'text') {
+          warnings.push(
+            `Skipped typography for "${pair.designElement.label}": no DOM node was associated ` +
+              `with the live element`,
+          );
+        }
         continue;
       }
 
       const text = dom.text ?? pair.designElement.text ?? '';
       if (text.trim().length === 0) {
-        warnings.push(
-          `Skipped typography for "${pair.designElement.label}": the live node renders no text`,
-        );
+        if (pair.designElement.kind === 'text') {
+          warnings.push(
+            `Skipped typography for "${pair.designElement.label}": the live node renders no text`,
+          );
+        }
         continue;
       }
 

@@ -25,12 +25,25 @@ describe('parseConfig', () => {
       spacingPx: 2,
       positionPx: 2,
       fontSizePx: 1,
-      deltaE: 2,
+      deltaE: 4,
       minFamilyMargin: 0.02,
     });
     expect(config.matching.maxCenterDistancePx).toBe(48);
     expect(config.matching.minIou).toBe(0);
     expect(config.color.clusterCount).toBe(4);
+    expect(config.color.liveSource).toBe('raster');
+    expect(config.color.mode).toBe('specialized');
+    expect(config.color.minSolidShare).toBe(0.45);
+    expect(config.color.minInkPixels).toBe(8);
+    expect(config.color.inkDeltaE).toBe(5);
+    expect(config.color.inkNeutralDeltaE).toBe(13);
+    expect(config.color.inkAccentChroma).toBe(20);
+    expect(config.color.seriesDeltaE).toBe(8);
+    expect(config.color.minSolidImageShare).toBe(0.72);
+    expect(config.color.minPaletteShare).toBe(0.18);
+    expect(config.color.maxInkBackgroundDeltaE).toBe(18);
+    expect(config.color.maxInkShareMismatch).toBe(0.55);
+    expect(config.color.solidRegionProposal).toBe(true);
     expect(config.typography.candidateFamilies).toEqual(['Mark Pro', 'Open Sans']);
     expect(config.output.artifactsDir).toBe('.artifacts');
     expect(config.output.failOnDefects).toBe(true);
@@ -40,6 +53,21 @@ describe('parseConfig', () => {
     const config = parseConfig(MINIMAL);
     expect(config.services.recognizer).toEqual({ kind: 'ink-projection' });
     expect(config.services.rasterizer).toEqual({ kind: 'disabled' });
+  });
+
+  it('accepts screenparser as a detector backend', () => {
+    const config = parseConfig({
+      ...MINIMAL,
+      services: {
+        detector: { kind: 'screenparser', baseUrl: 'http://screenparser:8804', minConfidence: 0.1 },
+      },
+    });
+    expect(config.services.detector).toMatchObject({
+      kind: 'screenparser',
+      baseUrl: 'http://screenparser:8804',
+      minConfidence: 0.1,
+      timeoutMs: 120_000,
+    });
   });
 
   it('keeps explicit values', () => {

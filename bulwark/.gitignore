@@ -8,3 +8,6 @@ coverage/
 *.log
 __pycache__/
 *.py[cod]
+services/omniparser/.venv/
+services/omniparser/weights/
+services/paddleocr/.venv/

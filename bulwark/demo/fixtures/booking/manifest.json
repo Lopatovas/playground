@@ -1,0 +1,116 @@
+{
+  "id": "booking",
+  "name": "Booking / travel stay",
+  "description": "Stay detail: photo skip, calendar selected day fill, Reserve CTA, free-cancel badge, map link.",
+  "device": "desktop",
+  "viewport": {
+    "width": 800,
+    "height": 600,
+    "deviceScaleFactor": 1
+  },
+  "flattenBackground": "#eff6ff",
+  "routes": {
+    "correct": "/booking",
+    "broken": "/booking-broken"
+  },
+  "template": "booking.html",
+  "sceneSelector": "main.scene",
+  "expectedLeafCount": 12,
+  "expectedLeaves": [
+    {
+      "id": "brand",
+      "text": "Northstay",
+      "role": "text"
+    },
+    {
+      "id": "title",
+      "text": "Harbor loft",
+      "role": "heading"
+    },
+    {
+      "id": "place",
+      "text": "Lisbon",
+      "role": "text"
+    },
+    {
+      "id": "hero",
+      "text": "",
+      "role": "image"
+    },
+    {
+      "id": "d1",
+      "text": "12",
+      "role": "text"
+    },
+    {
+      "id": "d2",
+      "text": "13",
+      "role": "button"
+    },
+    {
+      "id": "rate",
+      "text": "$186",
+      "role": "text"
+    },
+    {
+      "id": "badge",
+      "text": "Free cancel",
+      "role": "badge"
+    },
+    {
+      "id": "cta",
+      "text": "Reserve",
+      "role": "button"
+    },
+    {
+      "id": "map",
+      "text": "View map",
+      "role": "link"
+    },
+    {
+      "id": "d3",
+      "text": "14",
+      "role": "text"
+    },
+    {
+      "id": "d4",
+      "text": "15",
+      "role": "text"
+    }
+  ],
+  "seeds": [
+    {
+      "id": "cta-color",
+      "cssClass": "defect-cta-color",
+      "description": "Reserve #3b82f6 instead of #1d4ed8",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    },
+    {
+      "id": "day-fill",
+      "cssClass": "defect-day-fill",
+      "description": "Selected day #60a5fa instead of #2563eb",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    },
+    {
+      "id": "badge-color",
+      "cssClass": "defect-badge-color",
+      "description": "Free cancel badge #14b8a6 instead of #0f766e",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    },
+    {
+      "id": "link-ink",
+      "cssClass": "defect-link-ink",
+      "description": "Map link #3b82f6 instead of #1e40af",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    }
+  ],
+  "detectionNotes": "Calendar selected cell is a small solid fill \u2014 good for fill precision."
+}

@@ -1,5 +1,5 @@
 import { createReadStream } from 'node:fs';
-import { readFile, readdir, rename, rm, stat, symlink } from 'node:fs/promises';
+import { readFile, readdir, rename, rm, stat, symlink, writeFile } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import type { IncomingMessage, Server, ServerResponse } from 'node:http';
 import { basename, dirname, extname, isAbsolute, join, normalize, resolve, sep } from 'node:path';
@@ -30,6 +30,7 @@ const DEFAULT_CONFIG_FILENAME = 'bulwark.config.json';
 const DEFAULT_PORT = 4190;
 const MAX_JSON_BODY_BYTES = 64 * 1024;
 const LATEST_RUN_LINK = 'latest';
+const RUN_META_FILENAME = 'run-meta.json';
 const DEFAULT_DASHBOARD_ORIGINS = [
   'http://localhost:5173',
   'http://127.0.0.1:5173',
@@ -37,6 +38,31 @@ const DEFAULT_DASHBOARD_ORIGINS = [
   'http://127.0.0.1:8080',
 ];
 
+/** Named presets mounted into the API container under /config/demo. */
+export const RUN_CONFIG_PRESETS: Readonly<Record<string, string>> = {
+  'simple-heuristic': '/config/demo/simple/bulwark.heuristic.config.json',
+  'simple-yolo': '/config/demo/simple/bulwark.yolo.config.json',
+  'complex-yolo': '/config/demo/complex/bulwark.config.json',
+  'complex-screenparser': '/config/demo/complex/bulwark.screenparser.config.json',
+  'landing-screenparser': '/config/demo/fixtures/landing/bulwark.screenparser.config.json',
+  'workspace-screenparser': '/config/demo/fixtures/workspace/bulwark.screenparser.config.json',
+  'admin-screenparser': '/config/demo/fixtures/admin/bulwark.screenparser.config.json',
+  'settings-screenparser': '/config/demo/fixtures/settings/bulwark.screenparser.config.json',
+  'mobile-feed-screenparser': '/config/demo/fixtures/mobile-feed/bulwark.screenparser.config.json',
+  'brand-hero-screenparser': '/config/demo/fixtures/brand-hero/bulwark.screenparser.config.json',
+  'pricing-screenparser': '/config/demo/fixtures/pricing/bulwark.screenparser.config.json',
+  'dashboard-vivid-screenparser': '/config/demo/fixtures/dashboard-vivid/bulwark.screenparser.config.json',
+  'promo-mobile-screenparser': '/config/demo/fixtures/promo-mobile/bulwark.screenparser.config.json',
+  'eshop-screenparser': '/config/demo/fixtures/eshop/bulwark.screenparser.config.json',
+  'marketplace-screenparser': '/config/demo/fixtures/marketplace/bulwark.screenparser.config.json',
+  'food-delivery-screenparser': '/config/demo/fixtures/food-delivery/bulwark.screenparser.config.json',
+  'booking-screenparser': '/config/demo/fixtures/booking/bulwark.screenparser.config.json',
+  'fintech-screenparser': '/config/demo/fixtures/fintech/bulwark.screenparser.config.json',
+  'docs-screenparser': '/config/demo/fixtures/docs/bulwark.screenparser.config.json',
+  'portfolio-screenparser': '/config/demo/fixtures/portfolio/bulwark.screenparser.config.json',
+  'analytics-web-screenparser': '/config/demo/fixtures/analytics-web/bulwark.screenparser.config.json',
+  'analytics-mobile-screenparser': '/config/demo/fixtures/analytics-mobile/bulwark.screenparser.config.json',
+};
 const CONTENT_TYPES: Readonly<Record<string, string>> = {
   '.json': 'application/json; charset=utf-8',
   '.png': 'image/png',
@@ -93,7 +119,16 @@ export interface RunRecord {
   readonly artifactsUrl: string;
   readonly summary?: QaReport['summary'];
   readonly target?: QaReport['target'];
+  readonly label?: string;
+  readonly configName?: string;
+  readonly detector?: string;
+  readonly durationMs?: number;
   readonly artifacts?: readonly RunArtifact[];
+}
+
+export interface RunRequestBody {
+  readonly config?: string;
+  readonly label?: string;
 }
 
 interface PreparedRun {
@@ -394,13 +429,22 @@ async function handleRequest(
       return;
     }
     if (method === 'POST') {
-      await readRunRequestBody(request);
+      const body = await readRunRequestBody(request);
+      const configPath = resolveRunConfigPath(routeContext.configPath, body.config);
       const prepared = await prepareRun(
         routeContext.context,
-        routeContext.configPath,
+        configPath,
         routeContext.artifactsRoot,
       );
       const result = await prepared.runner.run();
+      await writeRunMeta(prepared.runDirectory, {
+        label:
+          body.label ??
+          `${prepared.loaded.config.name} · ${shortTarget(prepared.loaded.config.target.url)}`,
+        configName: prepared.loaded.config.name,
+        configPath: prepared.loaded.configPath,
+        detector: result.report.diagnostics.detector,
+      });
       await routeContext.context.linkLatestRun(prepared.loaded.artifactsDir, prepared.runDirectory);
       const run = await readRunRecord(
         prepared.loaded.artifactsDir,
@@ -515,14 +559,77 @@ async function readRunRecord(
     return { ...base, status: 'invalid-report' };
   }
 
+  const meta = await readRunMeta(runDirectory);
+
   return {
     ...base,
     status: 'complete',
     ...(typeof report.generatedAt === 'string' ? { generatedAt: report.generatedAt } : {}),
     ...(report.summary === undefined ? {} : { summary: report.summary }),
     ...(report.target === undefined ? {} : { target: report.target }),
+    ...(typeof report.diagnostics?.detector === 'string'
+      ? { detector: report.diagnostics.detector }
+      : {}),
+    ...(typeof report.diagnostics?.durationMs === 'number'
+      ? { durationMs: report.diagnostics.durationMs }
+      : {}),
+    ...meta,
     ...(includeArtifacts ? { artifacts: await listPngArtifacts(runDirectory, runId) } : {}),
   };
+}
+
+async function readRunMeta(
+  runDirectory: string,
+): Promise<{ label?: string; configName?: string }> {
+  try {
+    const raw = await readFile(join(runDirectory, RUN_META_FILENAME), 'utf8');
+    const parsed: unknown = JSON.parse(raw);
+    if (!isRecord(parsed)) return {};
+    return {
+      ...(typeof parsed['label'] === 'string' ? { label: parsed['label'] } : {}),
+      ...(typeof parsed['configName'] === 'string' ? { configName: parsed['configName'] } : {}),
+    };
+  } catch {
+    return {};
+  }
+}
+
+async function writeRunMeta(
+  runDirectory: string,
+  meta: {
+    readonly label: string;
+    readonly configName: string;
+    readonly configPath: string;
+    readonly detector: string;
+  },
+): Promise<void> {
+  await writeFile(join(runDirectory, RUN_META_FILENAME), `${JSON.stringify(meta, null, 2)}\n`, 'utf8');
+}
+
+function resolveRunConfigPath(defaultConfigPath: string, presetOrPath?: string): string {
+  if (presetOrPath === undefined || presetOrPath.trim() === '') return defaultConfigPath;
+  const key = presetOrPath.trim();
+  const preset = RUN_CONFIG_PRESETS[key];
+  if (preset !== undefined) return preset;
+
+  if (!key.startsWith('/config/demo/')) {
+    throw new BulwarkError(
+      'config must be a known preset (simple-heuristic, simple-yolo, complex-yolo, complex-screenparser, landing-screenparser, workspace-screenparser, admin-screenparser, settings-screenparser, mobile-feed-screenparser, brand-hero-screenparser, pricing-screenparser, dashboard-vivid-screenparser, promo-mobile-screenparser, eshop-screenparser, marketplace-screenparser, food-delivery-screenparser, booking-screenparser, fintech-screenparser, docs-screenparser, portfolio-screenparser, analytics-web-screenparser, analytics-mobile-screenparser) or a path under /config/demo/',
+      { config: key },
+    );
+  }
+  if (key.includes('..')) {
+    throw new BulwarkError('config path must not contain ".."', { config: key });
+  }
+  return key;
+}
+
+function shortTarget(url: string): string {
+  try {
+    return new URL(url).pathname;
+  } catch {
+    return url;
+  }
 }
 
 async function listPngArtifacts(
@@ -570,7 +677,7 @@ function resolveRunFile(artifactsRoot: string, runId: string, file: string): str
   return target;
 }
 
-async function readRunRequestBody(request: IncomingMessage): Promise<void> {
+async function readRunRequestBody(request: IncomingMessage): Promise<RunRequestBody> {
   const contentType = request.headers['content-type'];
   const chunks: Buffer[] = [];
   let bytes = 0;
@@ -584,14 +691,14 @@ async function readRunRequestBody(request: IncomingMessage): Promise<void> {
     chunks.push(buffer);
   }
 
-  if (bytes === 0) return;
+  if (bytes === 0) return {};
   if (typeof contentType !== 'string' || !contentType.toLowerCase().includes('application/json')) {
     throw new BulwarkError('POST /api/runs accepts application/json bodies only');
   }
 
   let parsed: unknown;
   const text = Buffer.concat(chunks).toString('utf8').trim();
-  if (text.length === 0) return;
+  if (text.length === 0) return {};
   try {
     parsed = JSON.parse(text);
   } catch (error) {
@@ -601,10 +708,17 @@ async function readRunRequestBody(request: IncomingMessage): Promise<void> {
   if (!isRecord(parsed)) {
     throw new BulwarkError('Request body must be a JSON object');
   }
-  const keys = Object.keys(parsed);
-  if (keys.length > 0) {
-    throw new BulwarkError('POST /api/runs does not accept request fields yet', { fields: keys });
+
+  const allowed = new Set(['config', 'label']);
+  const unknown = Object.keys(parsed).filter((key) => !allowed.has(key));
+  if (unknown.length > 0) {
+    throw new BulwarkError('POST /api/runs received unsupported fields', { fields: unknown });
   }
+
+  return {
+    ...(typeof parsed['config'] === 'string' ? { config: parsed['config'] } : {}),
+    ...(typeof parsed['label'] === 'string' ? { label: parsed['label'] } : {}),
+  };
 }
 
 function parseRouteSegment(value: string, label: string): string {

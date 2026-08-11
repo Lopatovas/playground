@@ -1,0 +1,82 @@
+{
+  "id": "workspace",
+  "name": "Workspace board",
+  "description": "Dense desktop app shell: nav, sidebar, metric cards, small table, actions.",
+  "device": "desktop",
+  "viewport": { "width": 800, "height": 600, "deviceScaleFactor": 1 },
+  "flattenBackground": "#eef2f7",
+  "routes": { "correct": "/workspace", "broken": "/workspace-broken" },
+  "aliases": ["/complex", "/complex-broken"],
+  "template": "workspace.html",
+  "sceneSelector": "main.scene",
+  "expectedLeafCount": 28,
+  "expectedLeaves": [
+    { "id": "logo", "text": "NovaDesk", "role": "logo" },
+    { "id": "nav-overview", "text": "Overview", "role": "link" },
+    { "id": "nav-projects", "text": "Projects", "role": "link" },
+    { "id": "nav-reports", "text": "Reports", "role": "link" },
+    { "id": "signin", "text": "Sign in", "role": "button" },
+    { "id": "folders", "text": "Folders", "role": "label" },
+    { "id": "inbox", "text": "Inbox", "role": "link" },
+    { "id": "shared", "text": "Shared", "role": "link" },
+    { "id": "archive", "text": "Archive", "role": "link" },
+    { "id": "heading", "text": "Sprint board", "role": "heading" },
+    { "id": "subtitle", "text": "Track delivery across design and engineering", "role": "text" },
+    { "id": "card-design", "text": "Design", "role": "heading" },
+    { "id": "card-design-meta", "text": "12 open", "role": "text" },
+    { "id": "card-build", "text": "Build", "role": "heading" },
+    { "id": "card-build-meta", "text": "8 open", "role": "text" },
+    { "id": "card-qa", "text": "QA", "role": "heading" },
+    { "id": "card-qa-meta", "text": "5 open", "role": "text" },
+    { "id": "col-task", "text": "Task", "role": "label" },
+    { "id": "col-owner", "text": "Owner", "role": "label" },
+    { "id": "col-status", "text": "Status", "role": "label" },
+    { "id": "row1-task", "text": "Overlay polish", "role": "text" },
+    { "id": "row1-owner", "text": "Mira", "role": "text" },
+    { "id": "row1-status", "text": "Review", "role": "text" },
+    { "id": "row2-task", "text": "Detector bridge", "role": "text" },
+    { "id": "row2-owner", "text": "Jon", "role": "text" },
+    { "id": "row2-status", "text": "Active", "role": "text" },
+    { "id": "create", "text": "Create task", "role": "button" },
+    { "id": "export", "text": "Export", "role": "button" }
+  ],
+  "seeds": [
+    {
+      "id": "heading-size",
+      "cssClass": "defect-heading-size",
+      "description": "Sprint board 18px instead of 22px",
+      "expectedDefectTypes": ["font-size"]
+    },
+    {
+      "id": "card-gap",
+      "cssClass": "defect-card-gap",
+      "description": "Metric cards spread farther apart",
+      "expectedDefectTypes": ["position", "spacing"]
+    },
+    {
+      "id": "nav-spacing",
+      "cssClass": "defect-nav-spacing",
+      "description": "Projects nav link shifted right",
+      "expectedDefectTypes": ["position", "spacing"]
+    },
+    {
+      "id": "primary-color",
+      "cssClass": "defect-primary-color",
+      "description": "Create task #3b82f6 instead of #2563eb",
+      "expectedDefectTypes": ["color"]
+    },
+    {
+      "id": "panel-shift",
+      "cssClass": "defect-panel-shift",
+      "description": "Table panel and actions shifted down 16px",
+      "expectedDefectTypes": ["position", "spacing"]
+    },
+    {
+      "id": "signin-font",
+      "cssClass": "defect-signin-font",
+      "description": "Sign in Georgia 16/400 instead of Open Sans 12/700",
+      "expectedDefectTypes": ["font-family", "font-size", "font-weight"]
+    }
+  ],
+  "detectionNotes": "ScreenParser target ~25–30 after denest. OmniParser historically ~13."
+}

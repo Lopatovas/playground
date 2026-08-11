@@ -1,0 +1,126 @@
+{
+  "id": "marketplace",
+  "name": "Marketplace grid",
+  "description": "Classified listing grid: product thumbs (skip), Deal/New badges, price ink, deals CTA.",
+  "device": "desktop",
+  "viewport": {
+    "width": 960,
+    "height": 640,
+    "deviceScaleFactor": 1
+  },
+  "flattenBackground": "#f4f1ea",
+  "routes": {
+    "correct": "/marketplace",
+    "broken": "/marketplace-broken"
+  },
+  "template": "marketplace.html",
+  "sceneSelector": "main.scene",
+  "expectedLeafCount": 14,
+  "expectedLeaves": [
+    {
+      "id": "brand",
+      "text": "Bazaar",
+      "role": "text"
+    },
+    {
+      "id": "search",
+      "text": "Search listings",
+      "role": "link"
+    },
+    {
+      "id": "c1",
+      "text": "Oak desk",
+      "role": "heading"
+    },
+    {
+      "id": "p1",
+      "text": "$240",
+      "role": "text"
+    },
+    {
+      "id": "deal",
+      "text": "Deal",
+      "role": "badge"
+    },
+    {
+      "id": "c2",
+      "text": "Clay lamp",
+      "role": "heading"
+    },
+    {
+      "id": "new",
+      "text": "New",
+      "role": "badge"
+    },
+    {
+      "id": "c3",
+      "text": "Wool throw",
+      "role": "heading"
+    },
+    {
+      "id": "c4",
+      "text": "Stone vase",
+      "role": "heading"
+    },
+    {
+      "id": "cta",
+      "text": "See all deals",
+      "role": "button"
+    },
+    {
+      "id": "img1",
+      "text": "",
+      "role": "image"
+    },
+    {
+      "id": "img2",
+      "text": "",
+      "role": "image"
+    },
+    {
+      "id": "img3",
+      "text": "",
+      "role": "image"
+    },
+    {
+      "id": "img4",
+      "text": "",
+      "role": "image"
+    }
+  ],
+  "seeds": [
+    {
+      "id": "deal-badge",
+      "cssClass": "defect-deal-badge",
+      "description": "Deal badge #ef4444 instead of #dc2626",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    },
+    {
+      "id": "new-badge",
+      "cssClass": "defect-new-badge",
+      "description": "New badge #3b82f6 instead of #2563eb",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    },
+    {
+      "id": "price-ink",
+      "cssClass": "defect-price-ink",
+      "description": "Price ink #374151 instead of #111827",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    },
+    {
+      "id": "cta-color",
+      "cssClass": "defect-cta-color",
+      "description": "Deals CTA #14b8a6 instead of #0f766e",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    }
+  ],
+  "detectionNotes": "Grid thumbs should skip. Deal/New badges stress multi-badge fills."
+}

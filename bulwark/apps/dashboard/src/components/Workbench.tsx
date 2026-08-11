@@ -19,6 +19,13 @@ export function Workbench({ report, artifactsBase }: WorkbenchProps) {
     [report.defects, selectedDefectId],
   );
 
+  const selectDefect = (id: string | null) => {
+    setSelectedDefectId(id);
+    if (id !== null && !overlay.showHighlights) {
+      dispatch({ type: 'toggle-highlights' });
+    }
+  };
+
   return (
     <div className="workbench">
       <header className="workbench__header">
@@ -55,12 +62,12 @@ export function Workbench({ report, artifactsBase }: WorkbenchProps) {
           overlay={overlay}
           selectedDefectId={selectedDefectId}
           onCurtainChange={(position) => dispatch({ type: 'set-curtain', position })}
-          onSelectDefect={setSelectedDefectId}
+          onSelectDefect={selectDefect}
         />
         <DefectList
           defects={report.defects}
           selectedId={selectedDefectId}
-          onSelect={setSelectedDefectId}
+          onSelect={selectDefect}
         />
       </div>
 

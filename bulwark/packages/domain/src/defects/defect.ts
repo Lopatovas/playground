@@ -90,7 +90,7 @@ export interface FontFamilyDefect extends DefectBase {
   readonly scoreMargin: number;
 }
 
-export type ColorRole = 'background' | 'foreground';
+export type ColorRole = 'background' | 'foreground' | 'series';
 
 export interface ColorDefect extends DefectBase {
   readonly type: 'color';

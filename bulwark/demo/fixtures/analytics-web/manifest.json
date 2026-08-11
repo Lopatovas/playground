@@ -1,0 +1,84 @@
+{
+  "id": "analytics-web",
+  "name": "Analytics web dashboard",
+  "description": "Desktop ops dashboard with KPI strip, pie + legend, bar chart, line chart, and funnel table — exercises Chart skip vs solid swatch/KPI fills.",
+  "device": "desktop",
+  "viewport": {
+    "width": 1120,
+    "height": 720,
+    "deviceScaleFactor": 1
+  },
+  "flattenBackground": "#f4f7f5",
+  "routes": {
+    "correct": "/analytics-web",
+    "broken": "/analytics-web-broken"
+  },
+  "template": "analytics-web.html",
+  "sceneSelector": "main.scene",
+  "expectedLeafCount": 28,
+  "expectedLeaves": [
+    { "id": "brand", "text": "Northwind", "role": "text" },
+    { "id": "title", "text": "Operations pulse", "role": "heading" },
+    { "id": "range", "text": "Last 30 days", "role": "link" },
+    { "id": "export", "text": "Export CSV", "role": "button" },
+    { "id": "kpi-a-label", "text": "Active users", "role": "heading" },
+    { "id": "kpi-a-value", "text": "48.2k", "role": "text" },
+    { "id": "kpi-a-delta", "text": "+6.1%", "role": "text" },
+    { "id": "kpi-b-label", "text": "Conversion", "role": "heading" },
+    { "id": "kpi-b-value", "text": "3.8%", "role": "text" },
+    { "id": "pie-title", "text": "Traffic mix", "role": "heading" },
+    { "id": "pie", "text": "", "role": "image" },
+    { "id": "swatch-organic", "text": "", "role": "image" },
+    { "id": "legend-organic", "text": "Organic", "role": "text" },
+    { "id": "bars-title", "text": "Weekly revenue", "role": "heading" },
+    { "id": "bars", "text": "", "role": "image" },
+    { "id": "line-title", "text": "p95 latency", "role": "heading" },
+    { "id": "line", "text": "", "role": "image" },
+    { "id": "table-title", "text": "Top funnels", "role": "heading" }
+  ],
+  "seeds": [
+    {
+      "id": "kpi-a",
+      "cssClass": "defect-kpi-a",
+      "description": "Active users value ink #14b8a6 instead of #0f766e",
+      "expectedDefectTypes": ["color"]
+    },
+    {
+      "id": "export-color",
+      "cssClass": "defect-export-color",
+      "description": "Export CTA fill #14b8a6 instead of #0f766e",
+      "expectedDefectTypes": ["color"]
+    },
+    {
+      "id": "swatch-paid",
+      "cssClass": "defect-swatch-paid",
+      "description": "Paid legend swatch #fb923c instead of #ea580c",
+      "expectedDefectTypes": ["color"]
+    },
+    {
+      "id": "up-ink",
+      "cssClass": "defect-up-ink",
+      "description": "Positive delta ink #34d399 instead of #047857",
+      "expectedDefectTypes": ["color"]
+    },
+    {
+      "id": "range-ink",
+      "cssClass": "defect-range-ink",
+      "description": "Range link #2dd4bf instead of #0f766e",
+      "expectedDefectTypes": ["color"]
+    },
+    {
+      "id": "pie-paid",
+      "cssClass": "defect-pie-paid",
+      "description": "Pie Paid series #fb923c instead of #ea580c",
+      "expectedDefectTypes": ["color"]
+    },
+    {
+      "id": "bar-series",
+      "cssClass": "defect-bar-series",
+      "description": "Weekly bar series #14b8a6 instead of #0f766e",
+      "expectedDefectTypes": ["color"]
+    }
+  ],
+  "detectionNotes": "Pie is multi-stop (palette candidate). Legend swatches and Export CTA are solid fills. bar-series paints all weekly bars. KPI value/delta text is ink. pie-paid drifts only the pie stop, not the legend chip."
+}

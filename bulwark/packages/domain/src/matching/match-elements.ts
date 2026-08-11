@@ -15,7 +15,13 @@ export interface MatchingOptions {
    * on. Raise it for dense surfaces where distinct elements crowd each other.
    */
   readonly minIou: number;
-  /** When true, a text element can only match another text element. */
+  /**
+   * When true, a text element can only match another text element.
+   *
+   * `unknown` is always treated as a wildcard: detectors often disagree on kind
+   * for the same control (fat nav chrome vs tight text crop), and refusing those
+   * pairs creates false missing/unexpected defects.
+   */
   readonly requireSameKind: boolean;
   /** Cost added when the two detector labels disagree. */
   readonly labelMismatchPenalty: number;
@@ -130,7 +136,12 @@ function evaluateCandidate(
   liveIndex: number,
   options: MatchingOptions,
 ): Candidate | null {
-  if (options.requireSameKind && designElement.kind !== liveElement.kind) return null;
+  if (
+    options.requireSameKind &&
+    !kindsCompatible(designElement, liveElement)
+  ) {
+    return null;
+  }
 
   const designCenter = boxCenter(designElement.box);
   const liveCenter = boxCenter(liveElement.box);
@@ -160,6 +171,36 @@ function evaluateCandidate(
     labelMatches,
     cost: roundTo(cost, 6),
   };
+}
+
+/**
+ * Same-kind gate with a narrow escape for SolidFill proposals.
+ *
+ * Solid-region merge labels flat paint as `SolidFill`/`image`. Detectors often
+ * label the same control `Button`/`icon` on the other surface (or split fill +
+ * link text). Refusing those pairs creates a false missing Button + unexpected
+ * SolidFill — the landing CTA case.
+ */
+function kindsCompatible(
+  designElement: DetectedElement,
+  liveElement: DetectedElement,
+): boolean {
+  if (designElement.kind === liveElement.kind) return true;
+  if (designElement.kind === 'unknown' || liveElement.kind === 'unknown') return true;
+  return isSolidFillStandIn(designElement, liveElement) || isSolidFillStandIn(liveElement, designElement);
+}
+
+function isSolidFillStandIn(paint: DetectedElement, control: DetectedElement): boolean {
+  if (normalizeLabel(paint.label) !== 'solidfill') return false;
+  if (paint.kind !== 'image') return false;
+  const label = normalizeLabel(control.label);
+  return (
+    control.kind === 'icon' ||
+    control.kind === 'container' ||
+    label === 'button' ||
+    label.includes('button') ||
+    label === 'badge'
+  );
 }
 
 function toPair(candidate: Candidate): ElementPair {

@@ -87,6 +87,35 @@ describe('matchElements', () => {
     expect(result.pairs).toHaveLength(0);
   });
 
+  it('matches Button/icon to SolidFill paint proposals', () => {
+    const result = matchElements(
+      [designElement({ id: 'cta', box: [56, 192, 256, 240], kind: 'icon', label: 'Button' })],
+      [
+        liveElement({
+          id: 'fill',
+          box: [56, 216, 256, 264],
+          kind: 'image',
+          label: 'SolidFill',
+        }),
+      ],
+    );
+    expect(result.pairs).toHaveLength(1);
+    expect(result.pairs[0]?.designElement.id).toBe('cta');
+    expect(result.pairs[0]?.liveElement.id).toBe('fill');
+  });
+
+  it('still pairs when one side is unknown, even with requireSameKind', () => {
+    // YOLO/Florence often labels the same nav item unknown on a fat design crop
+    // and text on a tight live crop. Centers agree; refusing the pair is a false
+    // missing-element + unexpected-element.
+    const result = matchElements(
+      [designElement({ ...HEADING, kind: 'unknown', label: 'Reports' })],
+      [liveElement({ ...HEADING, kind: 'text', label: 'Reports' })],
+    );
+    expect(result.pairs).toHaveLength(1);
+    expect(result.pairs[0]?.labelMatches).toBe(true);
+  });
+
   it('matches across kinds when the caller allows it', () => {
     const result = matchElements(
       [designElement({ ...CTA, kind: 'container' })],

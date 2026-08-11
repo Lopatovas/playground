@@ -4,19 +4,44 @@ from __future__ import annotations
 
 import logging
 import os
-from pathlib import Path
 from typing import Literal
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
 try:
+    from .florence_captioner import try_load_florence_captioner
     from .heuristic import decode_image_base64, detect_elements
+    from .yolo_detector import try_load_yolo_detector
 except ImportError:  # pragma: no cover - used when uvicorn imports app.py from this directory.
+    from florence_captioner import try_load_florence_captioner
     from heuristic import decode_image_base64, detect_elements
+    from yolo_detector import try_load_yolo_detector
 
 LOGGER = logging.getLogger("bulwark.omniparser")
-MODEL_NAME = "bulwark-omniparser-heuristic-v0"
+logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO"))
+
+FORCE_HEURISTIC = os.environ.get("OMNIPARSER_FORCE_HEURISTIC", "").lower() in {
+    "1",
+    "true",
+    "yes",
+}
+
+CAPTIONER = None if FORCE_HEURISTIC else try_load_florence_captioner()
+YOLO = None if FORCE_HEURISTIC else try_load_yolo_detector(captioner=CAPTIONER)
+
+if YOLO is not None:
+    MODEL_NAME = YOLO.model_name
+    WEIGHTS_LOADED = True
+    LOGGER.info(
+        "detector backend: %s (captioner=%s)",
+        MODEL_NAME,
+        CAPTIONER.model_name if CAPTIONER is not None else "none",
+    )
+else:
+    MODEL_NAME = "bulwark-omniparser-heuristic-v0"
+    WEIGHTS_LOADED = False
+    LOGGER.info("detector backend: heuristic fallback")
 
 
 class DetectionRequest(BaseModel):
@@ -28,33 +53,19 @@ class DetectionRequest(BaseModel):
 
 app = FastAPI(
     title="Bulwark OmniParser Service",
-    version="0.1.0",
-    description="OmniParser-compatible UI element detection for Bulwark.",
+    version="0.3.0",
+    description="OmniParser-compatible UI element detection for Bulwark (YOLO + optional Florence).",
 )
-
-
-def _weights_loaded() -> bool:
-    weights_dir = os.environ.get("OMNIPARSER_WEIGHTS_DIR")
-    if not weights_dir:
-        return False
-    path = Path(weights_dir)
-    if not path.exists():
-        LOGGER.warning("OMNIPARSER_WEIGHTS_DIR does not exist: %s", path)
-        return False
-
-    LOGGER.info(
-        "OMNIPARSER_WEIGHTS_DIR is present at %s, but this POC build has no OmniParser runtime; using heuristic fallback",
-        path,
-    )
-    return False
-
-
-WEIGHTS_LOADED = _weights_loaded()
 
 
 @app.get("/health")
 def health() -> dict[str, object]:
-    return {"status": "ok", "model": MODEL_NAME, "weights_loaded": WEIGHTS_LOADED}
+    return {
+        "status": "ok",
+        "model": MODEL_NAME,
+        "weights_loaded": WEIGHTS_LOADED,
+        "captioner_loaded": CAPTIONER is not None,
+    }
 
 
 @app.post("/v1/detect")
@@ -66,7 +77,11 @@ def detect(request: DetectionRequest) -> dict[str, object]:
 
     min_confidence = request.min_confidence if request.min_confidence is not None else 0.2
     max_overlap = request.max_overlap if request.max_overlap is not None else 0.6
-    elements = detect_elements(image, min_confidence=min_confidence, max_overlap=max_overlap)
+
+    if YOLO is not None:
+        elements = YOLO.detect(image, min_confidence=min_confidence, max_overlap=max_overlap)
+    else:
+        elements = detect_elements(image, min_confidence=min_confidence, max_overlap=max_overlap)
 
     return {
         "model": MODEL_NAME,

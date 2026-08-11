@@ -77,10 +77,7 @@ describe('QaEngine on a faithful implementation', () => {
       liveHex: '#2563eb',
       deltaE2000: 0,
     });
-    expect(button.find((comparison) => comparison.role === 'foreground')).toMatchObject({
-      designHex: '#ffffff',
-      liveHex: '#ffffff',
-    });
+    expect(button.find((comparison) => comparison.role === 'foreground')).toBeUndefined();
   });
 
   it('records the exact bytes it measured', async () => {
@@ -277,9 +274,9 @@ describe('QaEngine color regressions', () => {
       severity: 'error',
       expectedHex: '#2563eb',
       actualHex: '#3b82f6',
-      threshold: 2,
+      threshold: 4,
     });
-    expect(colors[0]?.deltaE2000).toBeGreaterThan(2);
+    expect(colors[0]?.deltaE2000).toBeGreaterThan(4);
   });
 
   it('ignores a one-step channel difference', async () => {
@@ -349,7 +346,7 @@ describe('QaEngine configuration', () => {
       spacingPx: 2,
       positionPx: 2,
       fontSizePx: 1,
-      deltaE: 2,
+      deltaE: 4,
       minFamilyMargin: 0.02,
     });
     expect(report.diagnostics.detector).toBe('fake-detector');

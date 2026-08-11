@@ -1,0 +1,56 @@
+{
+  "name": "workspace-omniparser",
+  "target": {
+    "fullPage": false,
+    "waitForSelector": "main.scene",
+    "settleMs": 150,
+    "stabilize": true,
+    "url": "http://demo-target:4173/workspace-broken",
+    "viewport": {
+      "width": 800,
+      "height": 600,
+      "deviceScaleFactor": 1
+    }
+  },
+  "design": {
+    "pixelRatio": 1,
+    "imagePath": "design/figma-screenshot.png",
+    "flattenBackground": "#eef2f7"
+  },
+  "services": {
+    "detector": {
+      "kind": "omniparser",
+      "baseUrl": "http://omniparser:8801",
+      "minConfidence": 0.2,
+      "maxOverlap": 0.6,
+      "timeoutMs": 900000
+    },
+    "recognizer": {
+      "kind": "ink-projection"
+    },
+    "rasterizer": {
+      "kind": "disabled"
+    }
+  },
+  "tolerances": {
+    "spacingPx": 2,
+    "positionPx": 2,
+    "fontSizePx": 1,
+    "deltaE": 4,
+    "minFamilyMargin": 0.02
+  },
+  "typography": {
+    "candidateFamilies": [
+      "Mark Pro",
+      "Open Sans"
+    ]
+  },
+  "output": {
+    "artifactsDir": ".artifacts",
+    "failOnDefects": true
+  },
+  "color": {
+    "liveSource": "raster",
+    "inkDeltaE": 5
+  }
+}

@@ -3,7 +3,16 @@
 This directory contains Docker-friendly Python HTTP services that implement the
 wire contracts in `packages/adapters/src/vision/contract.ts`.
 
-## OmniParser-compatible detector
+## ScreenParser detector
+
+- Location: `services/screenparser`
+- Port: `8804`
+- Model: [docling-project/ScreenParser](https://huggingface.co/docling-project/ScreenParser) (YOLO11-L, 55 UI classes)
+- Same `/health` + `/v1/detect` contract as OmniParser
+- Defaults: `min_confidence=0.1`, `max_overlap=0.1`, `imgsz=1280`
+- Labels are class names (Heading, Button, …); no OCR captions
+
+## PaddleOCR recognizer
 
 - Location: `services/omniparser`
 - Port: `8801`
@@ -39,12 +48,22 @@ Response:
 }
 ```
 
-The current POC uses a deterministic connected-component detector over color
+The current POC defaults to a deterministic connected-component detector over color
 and edge masks. It classifies regions roughly as `text`, `icon`, `image`,
 `container`, or `unknown` based on aspect ratio, size, fill ratio, and color
-variance. If `OMNIPARSER_WEIGHTS_DIR` is set and points at a real directory the
-service logs that it found the directory, but this POC image does not bundle an
-OmniParser runtime, so `/health` still reports `"weights_loaded": false`.
+variance.
+
+When OmniParser YOLO weights are present (`OMNIPARSER_WEIGHTS_DIR` /
+`OMNIPARSER_WEIGHTS_PATH`), the same service loads Ultralytics YOLO instead and
+`/health` reports `"weights_loaded": true`.
+
+When Florence caption weights are present (`OMNIPARSER_CAPTION_DIR`, default on),
+each YOLO crop is captioned and returned as `label`. Disable with
+`OMNIPARSER_CAPTION=0`. Expect multi-minute detects on CPU for busy pages.
+
+The Compose image builds with YOLO + Florence and downloads Microsoft's
+`icon_detect` / `icon_caption` checkpoints at image build time (CPU). For a host
+venv instead, use `scripts/setup-omniparser-local.sh`.
 
 ## PaddleOCR-compatible recognizer
 
@@ -72,12 +91,11 @@ Response:
 ```
 
 At startup the service tries to import and initialize `paddleocr.PaddleOCR` if
-the package is installed. The default `requirements.txt` intentionally excludes
-PaddleOCR to avoid heavyweight model downloads during Docker builds. When
-PaddleOCR is not available, the fallback first tries `pytesseract` if it is
-installed and working; otherwise it returns a single tight bounding box around
-non-background ink with empty text. If no ink-like pixels are found it returns
-an empty `runs` array.
+the package is installed. The Compose image installs PaddlePaddle CPU + PaddleOCR
+and warms English weights at build time. When PaddleOCR is not available, the
+fallback first tries `pytesseract` if it is installed and working; otherwise it
+returns a single tight bounding box around non-background ink with empty text.
+If no ink-like pixels are found it returns an empty `runs` array.
 
 ## Local usage
 

@@ -1,0 +1,101 @@
+{
+  "id": "promo-mobile",
+  "name": "Promo mobile neon",
+  "description": "Dark phone promo with neon CTA, light-on-dark title ink, cyan links, lime chips.",
+  "device": "mobile",
+  "viewport": {
+    "width": 390,
+    "height": 844,
+    "deviceScaleFactor": 1
+  },
+  "flattenBackground": "#05010a",
+  "routes": {
+    "correct": "/promo-mobile",
+    "broken": "/promo-mobile-broken"
+  },
+  "template": "promo-mobile.html",
+  "sceneSelector": "main.scene",
+  "expectedLeafCount": 9,
+  "expectedLeaves": [
+    {
+      "id": "time",
+      "text": "9:41",
+      "role": "text"
+    },
+    {
+      "id": "brand",
+      "text": "NEON",
+      "role": "text"
+    },
+    {
+      "id": "title",
+      "text": "Drop tonight",
+      "role": "heading"
+    },
+    {
+      "id": "body",
+      "text": "Limited drop",
+      "role": "text"
+    },
+    {
+      "id": "cta",
+      "text": "Grab pass",
+      "role": "button"
+    },
+    {
+      "id": "lineup",
+      "text": "Lineup",
+      "role": "link"
+    },
+    {
+      "id": "map",
+      "text": "Venue map",
+      "role": "link"
+    },
+    {
+      "id": "chip-sold",
+      "text": "Sold out soon",
+      "role": "badge"
+    },
+    {
+      "id": "chip-age",
+      "text": "18+",
+      "role": "badge"
+    }
+  ],
+  "seeds": [
+    {
+      "id": "cta-color",
+      "cssClass": "defect-cta-color",
+      "description": "CTA fill #e879f9 instead of #d946ef",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    },
+    {
+      "id": "title-ink",
+      "cssClass": "defect-title-ink",
+      "description": "Title ink #fae8ff instead of #f5d0fe",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    },
+    {
+      "id": "accent-ink",
+      "cssClass": "defect-accent-ink",
+      "description": "Accent links #67e8f9 instead of #22d3ee",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    },
+    {
+      "id": "chip-color",
+      "cssClass": "defect-chip-color",
+      "description": "Chip fill #bef264 instead of #a3e635",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    }
+  ],
+  "detectionNotes": "Light-on-dark ink stress. Accent may multi-fire on brand + links like mobile-feed."
+}

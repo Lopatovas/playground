@@ -3,23 +3,28 @@
 HTTP service for the Bulwark element-detection contract.
 
 - Port: `8801`
-- `GET /health` returns `{ "status": "ok", "model": "...", "weights_loaded": false }`
+- `GET /health` returns `{ "status": "ok", "model": "...", "weights_loaded": bool, "captioner_loaded": bool }`
 - `POST /v1/detect` accepts `{ image_base64, surface, min_confidence?, max_overlap? }`
 
-The default implementation is a deterministic Pillow + NumPy heuristic. It
-does not download weights at build time and can run in a slim Python container.
-Set `OMNIPARSER_WEIGHTS_DIR` to point at external weights for future real-model
-integration; this POC still reports `weights_loaded: false` unless a real
-runtime is added.
+Backends:
 
-## Run locally
+1. **Heuristic** — Pillow + NumPy connected components (`OMNIPARSER_FORCE_HEURISTIC=1`)
+2. **YOLO** — OmniParser `icon_detect` via Ultralytics
+3. **YOLO + Florence** — same YOLO boxes, then OmniParser `icon_caption` Florence-2 labels (default in Compose)
+
+CPU Florence is slow (minutes for busy pages). Set `OMNIPARSER_CAPTION=0` to skip captions.
 
 ```sh
-python3 -m pip install -r requirements.txt
-uvicorn app:app --host 0.0.0.0 --port 8801
+# Local real weights (CPU)
+../../scripts/setup-omniparser-local.sh
+source .venv/bin/activate
+export OMNIPARSER_WEIGHTS_DIR="$PWD/weights/icon_detect"
+export OMNIPARSER_CAPTION_DIR="$PWD/weights/icon_caption"
+export OMNIPARSER_DEVICE=cpu
+uvicorn app:app --host 127.0.0.1 --port 8801
 ```
 
-## Build
+## Build (YOLO + Florence image)
 
 ```sh
 docker build -t bulwark-omniparser services/omniparser

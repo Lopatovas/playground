@@ -1,6 +1,7 @@
 export * from './vision/contract.js';
 export * from './vision/http-json.js';
 export * from './vision/omniparser-detector.js';
+export * from './vision/screenparser-detector.js';
 export * from './vision/paddleocr-recognizer.js';
 export * from './vision/ink-projection-recognizer.js';
 export * from './vision/caching.js';

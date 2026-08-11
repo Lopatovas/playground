@@ -1,0 +1,77 @@
+{
+  "id": "analytics-mobile",
+  "name": "Analytics mobile dashboard",
+  "description": "Phone insights screen with KPI grid, donut + legend, rank bars, and sparkline — chart skip vs solid chip/fill stress on a narrow viewport.",
+  "device": "mobile",
+  "viewport": {
+    "width": 390,
+    "height": 844,
+    "deviceScaleFactor": 1
+  },
+  "flattenBackground": "#eef3f0",
+  "routes": {
+    "correct": "/analytics-mobile",
+    "broken": "/analytics-mobile-broken"
+  },
+  "template": "analytics-mobile.html",
+  "sceneSelector": "main.scene",
+  "expectedLeafCount": 24,
+  "expectedLeaves": [
+    { "id": "time", "text": "9:41", "role": "text" },
+    { "id": "brand", "text": "Northwind", "role": "text" },
+    { "id": "title", "text": "Insights", "role": "heading" },
+    { "id": "share", "text": "Share report", "role": "link" },
+    { "id": "seg-7d", "text": "7d", "role": "button" },
+    { "id": "kpi-users", "text": "12.4k", "role": "text" },
+    { "id": "donut-title", "text": "Channels", "role": "heading" },
+    { "id": "donut", "text": "", "role": "image" },
+    { "id": "swatch-ios", "text": "", "role": "image" },
+    { "id": "ranks-title", "text": "Top products", "role": "heading" },
+    { "id": "spark-title", "text": "Sessions", "role": "heading" }
+  ],
+  "seeds": [
+    {
+      "id": "kpi-users",
+      "cssClass": "defect-kpi-users",
+      "description": "Users value ink #14b8a6 instead of #0f766e",
+      "expectedDefectTypes": ["color"]
+    },
+    {
+      "id": "seg-color",
+      "cssClass": "defect-seg-color",
+      "description": "Active segment fill #14b8a6 instead of #0f766e",
+      "expectedDefectTypes": ["color"]
+    },
+    {
+      "id": "swatch-ios",
+      "cssClass": "defect-swatch-ios",
+      "description": "iOS legend swatch #60a5fa instead of #2563eb",
+      "expectedDefectTypes": ["color"]
+    },
+    {
+      "id": "link-ink",
+      "cssClass": "defect-link-ink",
+      "description": "Share link #2dd4bf instead of #0f766e",
+      "expectedDefectTypes": ["color"]
+    },
+    {
+      "id": "rank-fill",
+      "cssClass": "defect-rank-fill",
+      "description": "Rank bar fill #14b8a6 instead of #0f766e",
+      "expectedDefectTypes": ["color"]
+    },
+    {
+      "id": "donut-ios",
+      "cssClass": "defect-donut-ios",
+      "description": "Donut iOS series #60a5fa instead of #2563eb",
+      "expectedDefectTypes": ["color"]
+    },
+    {
+      "id": "spark-series",
+      "cssClass": "defect-spark-series",
+      "description": "Sessions spark bars #14b8a6 instead of #0f766e",
+      "expectedDefectTypes": ["color"]
+    }
+  ],
+  "detectionNotes": "Donut is multi-stop (palette candidate). donut-ios drifts only the donut segment, not the legend swatch. Segment/rank/spark are solid fills; KPI values and Share link are ink."
+}

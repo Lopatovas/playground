@@ -27,6 +27,7 @@ import { sha256 } from '@bulwark/adapters';
 import type { BulwarkConfig } from '../config/config.js';
 import { associateDomElements, normalizeDetection } from '../surface/normalize.js';
 import type { SurfaceElement } from '../surface/normalize.js';
+import { mergeSolidFillProposals } from '../surface/merge-solid-regions.js';
 import { TypographyMeasurer } from '../measure/typography-measurer.js';
 import { ColorMeasurer } from '../measure/color-measurer.js';
 
@@ -105,12 +106,19 @@ export class QaEngine {
       }),
     ]);
 
-    const designSurface = normalizeDetection(designDetection, {
+    const designMerged = mergeSolidFillProposals(designDetection, designRaster, {
+      enabled: this.config.color.solidRegionProposal,
+    });
+    const liveMerged = mergeSolidFillProposals(liveDetection, liveRaster, {
+      enabled: this.config.color.solidRegionProposal,
+    });
+
+    const designSurface = normalizeDetection(designMerged, {
       surface: 'design',
       pixelRatio: this.config.design.pixelRatio,
       imageSize: { width: designRaster.width, height: designRaster.height },
     });
-    const liveNormalized = normalizeDetection(liveDetection, {
+    const liveNormalized = normalizeDetection(liveMerged, {
       surface: 'live',
       pixelRatio: input.live.viewport.deviceScaleFactor,
       imageSize: { width: liveRaster.width, height: liveRaster.height },
@@ -215,15 +223,39 @@ export class QaEngine {
         minForegroundDeltaE: this.config.color.minForegroundDeltaE,
         pageBackground: this.config.design.flattenBackground,
         edgeInsetPx: 1,
+        liveSource: this.config.color.liveSource,
+        mode: this.config.color.mode,
+        strategy: {
+          minSolidShare: this.config.color.minSolidShare,
+          minSolidImageShare: this.config.color.minSolidImageShare,
+          minPaletteShare: this.config.color.minPaletteShare,
+          solidTextMinChroma: 20,
+        },
+        minInkPixels: this.config.color.minInkPixels,
+        maxInkBackgroundDeltaE: this.config.color.maxInkBackgroundDeltaE,
+        maxInkShareMismatch: this.config.color.maxInkShareMismatch,
+        inkAccentChroma: this.config.color.inkAccentChroma,
+        maxAccentInkShareMismatch: 0.75,
       },
     );
     const colorMeasurements = this.config.checks.color
-      ? colorMeasurer.measure(match.pairs, designRaster, designById, liveById, input.live.elements)
+      ? colorMeasurer.measure(
+          match.pairs,
+          designRaster,
+          liveRaster,
+          designById,
+          liveById,
+          input.live.elements,
+        )
       : { measurements: [], warnings: [] };
     warnings.push(...colorMeasurements.warnings);
 
     const colors = checkColors(colorMeasurements.measurements, {
       deltaEThreshold: this.config.tolerances.deltaE,
+      inkDeltaEThreshold: this.config.color.inkDeltaE,
+      inkNeutralDeltaEThreshold: this.config.color.inkNeutralDeltaE,
+      inkAccentChroma: this.config.color.inkAccentChroma,
+      seriesDeltaEThreshold: this.config.color.seriesDeltaE,
       weights: { lightness: 1, chroma: 1, hue: 1 },
       checkForeground: this.config.color.checkForeground,
     });

@@ -119,7 +119,8 @@ export function checkTypography(
         ? selectFontFamily(measurement.familyScores, options.minFamilyMargin)
         : null;
 
-    const designProfile = resolveDesignProfile(registry, selection, liveProfile);
+    const designProfile =
+      resolveDesignProfile(registry, selection, liveProfile) ?? fallbackDesignProfile(registry);
     if (designProfile === null) {
       skipped.push({
         measurement,
@@ -229,6 +230,28 @@ export function checkTypography(
         designElementId: measurement.designElementId,
         liveElementId: measurement.liveElementId,
       });
+    } else if (options.checkFontFamily && liveProfile === undefined) {
+      // Live switched to an unknown face (e.g. Georgia) while the design ratio still
+      // comes from a calibrated family. Still emit size/weight using that ratio, and
+      // call out the family mismatch instead of dropping the whole measurement.
+      familyDefects.push({
+        id: `font-family:${measurement.designElementId}`,
+        type: 'font-family',
+        severity: 'warning',
+        message:
+          `"${truncate(measurement.text)}" renders with unregistered font stack ` +
+          `"${measurement.live.fontFamilyStack}" (size/weight checked against ` +
+          `${designProfile.family})`,
+        expectedFamily: designProfile.family,
+        actualFamily: measurement.live.fontFamilyStack,
+        expectedFamilyScore: selection?.score ?? 0,
+        actualFamilyScore: 0,
+        scoreMargin: selection?.margin ?? 0,
+        designBox: measurement.designBox,
+        liveBox: measurement.liveBox,
+        designElementId: measurement.designElementId,
+        liveElementId: measurement.liveElementId,
+      });
     }
   }
 
@@ -254,6 +277,15 @@ function resolveDesignProfile(
     if (selected !== undefined) return selected;
   }
   return liveProfile ?? null;
+}
+
+/**
+ * When the live face is unknown (Georgia, system UI, …) and no reference-render
+ * winner is available, still measure size/weight against a calibrated body face
+ * rather than dropping the element. Prefer Open Sans when present.
+ */
+function fallbackDesignProfile(registry: FontRegistry): FontProfile | null {
+  return registry.find('Open Sans') ?? registry.profiles[0] ?? null;
 }
 
 function truncate(text: string, maxLength = 40): string {

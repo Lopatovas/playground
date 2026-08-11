@@ -5,10 +5,16 @@ import { roundTo } from '../numeric.js';
 
 /**
  * The Delta E score at which an average observer notices two flat colors differ.
- * Below it, browser gamma handling and display profiles produce more variation than
- * a genuine design mistake would.
+ * Appropriate when comparing two clean CSS colors.
  */
 export const JUST_NOTICEABLE_DELTA_E = 2;
+
+/**
+ * Practical threshold when both sides are k-means clusters from screenshot crops.
+ * Anti-aliasing and subpixel blending routinely land in the 2–5 ΔE band without a
+ * real fill/ink change; seeded solid-fill bugs in our fixtures sit around ΔE ≥ 10.
+ */
+export const SCREENSHOT_CLUSTER_DELTA_E = 5;
 
 export interface DeltaE2000Weights {
   /** Lightness weighting factor (kL). */

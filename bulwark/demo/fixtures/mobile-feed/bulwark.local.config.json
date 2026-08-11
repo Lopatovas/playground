@@ -1,0 +1,56 @@
+{
+  "name": "mobile-feed-screenparser-local",
+  "target": {
+    "fullPage": false,
+    "waitForSelector": "main.scene",
+    "settleMs": 150,
+    "stabilize": true,
+    "url": "http://127.0.0.1:4173/mobile-feed-broken",
+    "viewport": {
+      "width": 390,
+      "height": 844,
+      "deviceScaleFactor": 1
+    }
+  },
+  "design": {
+    "pixelRatio": 1,
+    "imagePath": "design/figma-screenshot.png",
+    "flattenBackground": "#0b1220"
+  },
+  "services": {
+    "detector": {
+      "kind": "screenparser",
+      "baseUrl": "http://127.0.0.1:8804",
+      "minConfidence": 0.1,
+      "maxOverlap": 0.45,
+      "timeoutMs": 900000
+    },
+    "recognizer": {
+      "kind": "ink-projection"
+    },
+    "rasterizer": {
+      "kind": "disabled"
+    }
+  },
+  "tolerances": {
+    "spacingPx": 2,
+    "positionPx": 2,
+    "fontSizePx": 1,
+    "deltaE": 4,
+    "minFamilyMargin": 0.02
+  },
+  "typography": {
+    "candidateFamilies": [
+      "Mark Pro",
+      "Open Sans"
+    ]
+  },
+  "output": {
+    "artifactsDir": ".artifacts",
+    "failOnDefects": true
+  },
+  "color": {
+    "liveSource": "raster",
+    "inkDeltaE": 5
+  }
+}

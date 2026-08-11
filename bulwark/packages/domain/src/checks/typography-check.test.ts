@@ -173,7 +173,30 @@ describe('checkTypography', () => {
     expect(result.familyDefects).toHaveLength(0);
   });
 
-  it('skips a measurement whose fonts are all unregistered instead of guessing a ratio', () => {
+  it('flags an unregistered live stack instead of skipping size/weight', () => {
+    const result = checkTypography([
+      measurement({
+        familyScores: [],
+        visualHeightPx: 10.2, // ~12px Open Sans
+        strokeDensity: 0.42,
+        live: {
+          fontFamilyStack: 'Georgia, "Times New Roman", serif',
+          fontSizePx: 16,
+          fontWeight: 400,
+        },
+      }),
+    ]);
+
+    expect(result.skipped).toHaveLength(0);
+    expect(result.findings).toHaveLength(1);
+    expect(result.familyDefects).toHaveLength(1);
+    expect(result.familyDefects[0]?.actualFamily).toContain('Georgia');
+    expect(result.sizeDefects.length + result.weightDefects.length).toBeGreaterThan(0);
+  });
+
+  it('skips only when the registry itself has no usable ratio', () => {
+    // Empty registry can't be constructed; an empty-score Comic Sans pick with a
+    // registry that doesn't include that family still falls back to Open Sans.
     const result = checkTypography([
       measurement({
         familyScores: [{ family: 'Comic Sans MS', score: 0.99 }],
@@ -181,9 +204,8 @@ describe('checkTypography', () => {
       }),
     ]);
 
-    expect(result.findings).toHaveLength(0);
-    expect(result.skipped).toHaveLength(1);
-    expect(result.skipped[0]?.reason).toContain('no visual-to-CSS ratio is known');
+    expect(result.skipped).toHaveLength(0);
+    expect(result.familyDefects[0]?.type).toBe('font-family');
   });
 
   it('measures against the live family when no reference renders were provided', () => {

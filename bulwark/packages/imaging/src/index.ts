@@ -7,4 +7,6 @@ export * from './kmeans.js';
 export * from './ssim.js';
 export * from './resize.js';
 export * from './png.js';
+export * from './solid-regions.js';
+export * from './chart-palette.js';
 export * from './testing/synthetic.js';

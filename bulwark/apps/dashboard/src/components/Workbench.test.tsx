@@ -21,9 +21,9 @@ describe('Workbench', () => {
     );
   });
 
-  it('lists defects and highlights the selected one', async () => {
+  it('lists defects and spotlights the selected one on the canvas', async () => {
     const user = userEvent.setup();
-    render(<Workbench report={SAMPLE_REPORT} artifactsBase="/artifacts/" />);
+    const { container } = render(<Workbench report={SAMPLE_REPORT} artifactsBase="/artifacts/" />);
 
     const list = screen.getByLabelText('Defects');
     const item = within(list).getByRole('button', { name: /Extra vertical space/i });
@@ -31,6 +31,8 @@ describe('Workbench', () => {
 
     expect(screen.getByRole('contentinfo')).toHaveTextContent('error · spacing');
     expect(item).toHaveAttribute('aria-pressed', 'true');
+    expect(container.querySelector('.overlay-canvas--has-selection')).not.toBeNull();
+    expect(container.querySelector('.defect-highlight--selected')).not.toBeNull();
   });
 
   it('switches into difference blend mode', async () => {
@@ -81,13 +83,19 @@ describe('App loading', () => {
   beforeEach(() => {
     vi.stubGlobal(
       'fetch',
-      vi.fn(
-        async () =>
-          new Response(JSON.stringify(SAMPLE_REPORT), {
+      vi.fn(async (input: RequestInfo | URL) => {
+        const url = String(input);
+        if (url.includes('/api/runs') && !url.includes('/report')) {
+          return new Response(JSON.stringify({ runs: [] }), {
             status: 200,
             headers: { 'content-type': 'application/json' },
-          }),
-      ),
+          });
+        }
+        return new Response(JSON.stringify(SAMPLE_REPORT), {
+          status: 200,
+          headers: { 'content-type': 'application/json' },
+        });
+      }),
     );
   });
 
@@ -104,7 +112,16 @@ describe('App loading', () => {
   it('shows a clear error when the report is missing', async () => {
     vi.stubGlobal(
       'fetch',
-      vi.fn(async () => new Response('missing', { status: 404 })),
+      vi.fn(async (input: RequestInfo | URL) => {
+        const url = String(input);
+        if (url.includes('/api/runs') && !url.includes('/report') && !url.includes('report.json')) {
+          return new Response(JSON.stringify({ runs: [] }), {
+            status: 200,
+            headers: { 'content-type': 'application/json' },
+          });
+        }
+        return new Response('missing', { status: 404 });
+      }),
     );
     render(<App />);
     expect(await screen.findByText(/Could not open this run/i)).toBeInTheDocument();

@@ -1,0 +1,126 @@
+{
+  "id": "pricing",
+  "name": "Pricing tiers",
+  "description": "Three accent-colored plan cards with popular pill and multi-CTA fills \u2014 marketing color density.",
+  "device": "desktop",
+  "viewport": {
+    "width": 960,
+    "height": 640,
+    "deviceScaleFactor": 1
+  },
+  "flattenBackground": "#fff7ed",
+  "routes": {
+    "correct": "/pricing",
+    "broken": "/pricing-broken"
+  },
+  "template": "pricing.html",
+  "sceneSelector": "main.scene",
+  "expectedLeafCount": 14,
+  "expectedLeaves": [
+    {
+      "id": "title",
+      "text": "Plans that pop",
+      "role": "heading"
+    },
+    {
+      "id": "sub",
+      "text": "Pick a tier",
+      "role": "text"
+    },
+    {
+      "id": "starter-name",
+      "text": "Starter",
+      "role": "heading"
+    },
+    {
+      "id": "starter-price",
+      "text": "$12",
+      "role": "text"
+    },
+    {
+      "id": "starter-cta",
+      "text": "Choose",
+      "role": "button"
+    },
+    {
+      "id": "pill",
+      "text": "Most popular",
+      "role": "badge"
+    },
+    {
+      "id": "pro-name",
+      "text": "Pro",
+      "role": "heading"
+    },
+    {
+      "id": "pro-price",
+      "text": "$48",
+      "role": "text"
+    },
+    {
+      "id": "pro-cta",
+      "text": "Choose",
+      "role": "button"
+    },
+    {
+      "id": "scale-name",
+      "text": "Scale",
+      "role": "heading"
+    },
+    {
+      "id": "scale-price",
+      "text": "$96",
+      "role": "text"
+    },
+    {
+      "id": "scale-cta",
+      "text": "Choose",
+      "role": "button"
+    },
+    {
+      "id": "period-a",
+      "text": "per seat",
+      "role": "text"
+    },
+    {
+      "id": "period-b",
+      "text": "per seat",
+      "role": "text"
+    }
+  ],
+  "seeds": [
+    {
+      "id": "pill-color",
+      "cssClass": "defect-pill-color",
+      "description": "Most popular pill #fb923c instead of #f97316",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    },
+    {
+      "id": "pro-cta",
+      "cssClass": "defect-pro-cta",
+      "description": "Pro CTA #f97316 instead of #ea580c",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    },
+    {
+      "id": "price-ink",
+      "cssClass": "defect-price-ink",
+      "description": "Pro price ink #c2410c instead of #9a3412",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    },
+    {
+      "id": "starter-cta",
+      "cssClass": "defect-starter-cta",
+      "description": "Starter CTA #14b8a6 instead of #0d9488",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    }
+  ],
+  "detectionNotes": "Card borders are intentional known blind spot for fill/ink gate. Expect ~12\u201316 boxes."
+}

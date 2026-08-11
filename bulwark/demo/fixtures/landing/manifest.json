@@ -1,0 +1,39 @@
+{
+  "id": "landing",
+  "name": "Landing CTA",
+  "description": "Sparse desktop marketing card — few large leaves. Regression guard for over-segmentation.",
+  "device": "desktop",
+  "viewport": { "width": 800, "height": 600, "deviceScaleFactor": 1 },
+  "flattenBackground": "#f8fafc",
+  "routes": { "correct": "/landing", "broken": "/landing-broken" },
+  "aliases": ["/correct", "/broken"],
+  "template": "landing.html",
+  "sceneSelector": "main.scene",
+  "expectedLeafCount": 3,
+  "expectedLeaves": [
+    { "id": "heading", "text": "ShipFaster", "role": "heading" },
+    { "id": "body", "text": "Deterministic", "role": "text" },
+    { "id": "cta", "text": "GetStarted", "role": "button" }
+  ],
+  "seeds": [
+    {
+      "id": "heading",
+      "cssClass": "defect-heading",
+      "description": "Heading font-size 18px instead of 24px",
+      "expectedDefectTypes": ["font-size", "position"]
+    },
+    {
+      "id": "spacing",
+      "cssClass": "defect-spacing",
+      "description": "CTA top shifts from 152px to 176px",
+      "expectedDefectTypes": ["position", "spacing"]
+    },
+    {
+      "id": "button",
+      "cssClass": "defect-button",
+      "description": "Primary button #3b82f6 instead of #2563eb",
+      "expectedDefectTypes": ["color"]
+    }
+  ],
+  "detectionNotes": "Expect ~3 boxes. Extra boxes are over-segmentation failures."
+}

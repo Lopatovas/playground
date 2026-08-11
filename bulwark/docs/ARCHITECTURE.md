@@ -43,7 +43,8 @@ the same composition root (`buildServices`).
    - Font size: cap-height ratio (Mark Pro `0.82`, Open Sans `0.85`)
    - Weight: ink density on Otsu masks
    - Family (optional): SSIM against rasterized glyph candidates when a rasterizer is enabled
-   - Color: seeded k-means palette + ΔE2000 vs tolerance
+   - Color: specialized fill / ink / palette strategies + ΔE2000 (see
+     [color-gate.md](./color-gate.md) for accepted scorecard and follow-ups)
 7. **Report** — Canonical JSON + PNG artifacts under a run directory
 
 ## Overlay dashboard

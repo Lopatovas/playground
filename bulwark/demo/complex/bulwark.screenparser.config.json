@@ -1,0 +1,49 @@
+{
+  "name": "complex-screenparser",
+  "target": {
+    "url": "http://demo-target:4173/complex-broken",
+    "viewport": {
+      "width": 800,
+      "height": 600,
+      "deviceScaleFactor": 1
+    },
+    "fullPage": false,
+    "waitForSelector": "main.scene",
+    "settleMs": 150,
+    "stabilize": true
+  },
+  "design": {
+    "imagePath": "design/figma-screenshot.png",
+    "pixelRatio": 1,
+    "flattenBackground": "#eef2f7"
+  },
+  "services": {
+    "detector": {
+      "kind": "screenparser",
+      "baseUrl": "http://screenparser:8804",
+      "minConfidence": 0.1,
+      "maxOverlap": 0.45,
+      "timeoutMs": 900000
+    },
+    "recognizer": {
+      "kind": "ink-projection"
+    },
+    "rasterizer": {
+      "kind": "disabled"
+    }
+  },
+  "tolerances": {
+    "spacingPx": 2,
+    "positionPx": 2,
+    "fontSizePx": 1,
+    "deltaE": 2,
+    "minFamilyMargin": 0.02
+  },
+  "typography": {
+    "candidateFamilies": ["Mark Pro", "Open Sans"]
+  },
+  "output": {
+    "artifactsDir": ".artifacts",
+    "failOnDefects": true
+  }
+}

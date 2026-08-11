@@ -1,13 +1,13 @@
 import type { DashboardBox } from './report-schema.js';
 export interface SurfaceSize {
-  readonly width: number;
-  readonly height: number;
+    readonly width: number;
+    readonly height: number;
 }
 export interface BoxStyle {
-  readonly left: string;
-  readonly top: string;
-  readonly width: string;
-  readonly height: string;
+    readonly left: string;
+    readonly top: string;
+    readonly width: string;
+    readonly height: string;
 }
 /**
  * Positions a defect highlight as percentages of its surface.

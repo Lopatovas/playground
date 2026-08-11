@@ -1,0 +1,106 @@
+{
+  "id": "fintech",
+  "name": "Fintech account",
+  "description": "Dark banking home: cyan CTA, green/red money deltas, amber alert ink.",
+  "device": "desktop",
+  "viewport": {
+    "width": 800,
+    "height": 600,
+    "deviceScaleFactor": 1
+  },
+  "flattenBackground": "#020617",
+  "routes": {
+    "correct": "/fintech",
+    "broken": "/fintech-broken"
+  },
+  "template": "fintech.html",
+  "sceneSelector": "main.scene",
+  "expectedLeafCount": 10,
+  "expectedLeaves": [
+    {
+      "id": "brand",
+      "text": "Ledgerly",
+      "role": "text"
+    },
+    {
+      "id": "balance",
+      "text": "$12,480.20",
+      "role": "heading"
+    },
+    {
+      "id": "label",
+      "text": "Available",
+      "role": "text"
+    },
+    {
+      "id": "spend",
+      "text": "Spending",
+      "role": "heading"
+    },
+    {
+      "id": "down",
+      "text": "\u2212$312",
+      "role": "text"
+    },
+    {
+      "id": "save",
+      "text": "Saved",
+      "role": "heading"
+    },
+    {
+      "id": "up",
+      "text": "+$890",
+      "role": "text"
+    },
+    {
+      "id": "cta",
+      "text": "Send money",
+      "role": "button"
+    },
+    {
+      "id": "activity",
+      "text": "Activity",
+      "role": "link"
+    },
+    {
+      "id": "alert",
+      "text": "2 pending transfers",
+      "role": "text"
+    }
+  ],
+  "seeds": [
+    {
+      "id": "cta-color",
+      "cssClass": "defect-cta-color",
+      "description": "Send money #67e8f9 instead of #22d3ee",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    },
+    {
+      "id": "up-ink",
+      "cssClass": "defect-up-ink",
+      "description": "Saved delta #86efac instead of #4ade80",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    },
+    {
+      "id": "down-ink",
+      "cssClass": "defect-down-ink",
+      "description": "Spending delta #fda4af instead of #fb7185",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    },
+    {
+      "id": "alert-ink",
+      "cssClass": "defect-alert-ink",
+      "description": "Alert ink #fcd34d instead of #fbbf24",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    }
+  ],
+  "detectionNotes": "Semantic green/red money ink is the main stress; dark UI polarity."
+}

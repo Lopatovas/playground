@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bulwark · Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/fixtures.css" />
+  </head>
+  <body class="page-admin __PAGE_CLASSES__">
+    <main class="scene scene--admin" aria-label="Admin table fixture, __PAGE_VARIANT__ variant">
+      <p id="defect-summary" class="sr-only">__DEFECT_SUMMARY__</p>
+
+      <header class="ad-top">
+        <div class="ad-brand">Ledgerly</div>
+        <a class="ad-toplink ad-toplink--1" href="#dash">Dashboard</a>
+        <a class="ad-toplink ad-toplink--2" href="#users">Users</a>
+        <a class="ad-toplink ad-toplink--3" href="#billing">Billing</a>
+      </header>
+
+      <aside class="ad-side">
+        <a class="ad-side-item ad-side-item--1" href="#accounts">Accounts</a>
+        <a class="ad-side-item ad-side-item--2" href="#invoices">Invoices</a>
+        <a class="ad-side-item ad-side-item--3" href="#reports">Reports</a>
+        <a class="ad-side-item ad-side-item--4" href="#settings">Settings</a>
+      </aside>
+
+      <section class="ad-main">
+        <h1 class="ad-title">Customers</h1>
+        <div class="ad-search">Search customers</div>
+        <a class="ad-new" href="#new">New account</a>
+
+        <div class="ad-table">
+          <div class="ad-row ad-row--head">
+            <span class="ad-cell ad-cell--name">Name</span>
+            <span class="ad-cell ad-cell--plan">Plan</span>
+            <span class="ad-cell ad-cell--seats">Seats</span>
+            <span class="ad-cell ad-cell--status">Status</span>
+          </div>
+          <div class="ad-row ad-row--1">
+            <span class="ad-cell ad-cell--name">Northwind Labs</span>
+            <span class="ad-cell ad-cell--plan">Growth</span>
+            <span class="ad-cell ad-cell--seats">24</span>
+            <span class="ad-cell ad-cell--status">Active</span>
+          </div>
+          <div class="ad-row ad-row--2">
+            <span class="ad-cell ad-cell--name">Brightside Co</span>
+            <span class="ad-cell ad-cell--plan">Starter</span>
+            <span class="ad-cell ad-cell--seats">6</span>
+            <span class="ad-cell ad-cell--status">Trial</span>
+          </div>
+          <div class="ad-row ad-row--3">
+            <span class="ad-cell ad-cell--name">Orbit Systems</span>
+            <span class="ad-cell ad-cell--plan">Enterprise</span>
+            <span class="ad-cell ad-cell--seats">120</span>
+            <span class="ad-cell ad-cell--status">Active</span>
+          </div>
+          <div class="ad-row ad-row--4">
+            <span class="ad-cell ad-cell--name">Pine &amp; Co</span>
+            <span class="ad-cell ad-cell--plan">Growth</span>
+            <span class="ad-cell ad-cell--seats">18</span>
+            <span class="ad-cell ad-cell--status">Paused</span>
+          </div>
+        </div>
+
+        <p class="ad-footer">Showing 4 of 128</p>
+      </section>
+    </main>
+  </body>
+</html>

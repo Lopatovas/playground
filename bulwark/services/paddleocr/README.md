@@ -3,28 +3,49 @@
 HTTP service for the Bulwark text-recognition contract.
 
 - Port: `8802`
-- `GET /health` returns `{ "status": "ok", "model": "...", "weights_loaded": bool }`
-- `POST /v1/recognize` accepts `{ image_base64, min_confidence? }`
+- `GET /health` → `{ "status": "ok", "model": "paddleocr:en", "weights_loaded": true }`
+- `POST /v1/recognize` → `{ image_base64, min_confidence? }` → `{ model, runs: [{ box, text, confidence }] }`
 
-The default image installs only FastAPI, Uvicorn, Pillow, and NumPy. If
-`paddleocr` is available at runtime, the service tries to initialize it and
-reports `weights_loaded: true` on success. Otherwise it falls back to
-`pytesseract` when available, then to a deterministic tight-ink-box detector
-that returns empty text.
+## Docker (recommended)
 
-Set `PADDLEOCR_DISABLE=1` to force the heuristic path. Set `PADDLEOCR_LANG` to
-change the language passed to PaddleOCR when it is installed.
-
-## Run locally
+The Compose image installs **PaddlePaddle CPU + PaddleOCR 2.7** and downloads English
+det/rec/cls weights at build time (same pattern as OmniParser).
 
 ```sh
-python3 -m pip install -r requirements.txt
-uvicorn app:app --host 0.0.0.0 --port 8802
+docker compose build paddleocr
+docker compose up -d paddleocr
+curl -s http://127.0.0.1:8802/health
 ```
 
-## Build
+Disable real OCR (heuristic only):
+
+```yaml
+environment:
+  PADDLEOCR_DISABLE: "1"
+```
+
+## Local (optional)
+
+Needs Python 3.10–3.11 typically:
 
 ```sh
-docker build -t bulwark-paddleocr services/paddleocr
-docker run --rm -p 8802:8802 bulwark-paddleocr
+pip install -r requirements.txt
+pip install -r requirements-paddle.txt -i https://www.paddlepaddle.org.cn/packages/stable/cpu/
+# paddlepaddle pin is in requirements-paddle.txt; install paddle from the CPU index first if needed
+python download_models.py
+uvicorn app:app --host 127.0.0.1 --port 8802
 ```
+
+## Wire into Bulwark
+
+In `bulwark.config.json`:
+
+```json
+"recognizer": {
+  "kind": "paddleocr",
+  "baseUrl": "http://paddleocr:8802",
+  "timeoutMs": 120000
+}
+```
+
+Demos still default to `ink-projection` until you flip that knob.

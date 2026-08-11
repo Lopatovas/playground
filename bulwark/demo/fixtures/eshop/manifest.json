@@ -1,0 +1,144 @@
+{
+  "id": "eshop",
+  "name": "E-shop product detail",
+  "description": "Retail PDP: neutral chrome, product photo (skip), warm Add to cart, sale badge, sale-price ink, gold stars, color swatches.",
+  "device": "desktop",
+  "viewport": {
+    "width": 960,
+    "height": 640,
+    "deviceScaleFactor": 1
+  },
+  "flattenBackground": "#fafaf9",
+  "routes": {
+    "correct": "/eshop",
+    "broken": "/eshop-broken"
+  },
+  "template": "eshop.html",
+  "sceneSelector": "main.scene",
+  "expectedLeafCount": 16,
+  "expectedLeaves": [
+    {
+      "id": "brand",
+      "text": "FieldGoods",
+      "role": "text"
+    },
+    {
+      "id": "shop",
+      "text": "Shop",
+      "role": "link"
+    },
+    {
+      "id": "cart",
+      "text": "Cart",
+      "role": "link"
+    },
+    {
+      "id": "photo",
+      "text": "",
+      "role": "image"
+    },
+    {
+      "id": "sale",
+      "text": "Sale",
+      "role": "badge"
+    },
+    {
+      "id": "collection",
+      "text": "Trail gear",
+      "role": "text"
+    },
+    {
+      "id": "title",
+      "text": "Ridge Pack 28L",
+      "role": "heading"
+    },
+    {
+      "id": "rating",
+      "text": "128",
+      "role": "text"
+    },
+    {
+      "id": "was",
+      "text": "$180",
+      "role": "text"
+    },
+    {
+      "id": "now",
+      "text": "$129",
+      "role": "text"
+    },
+    {
+      "id": "save",
+      "text": "Save 28%",
+      "role": "badge"
+    },
+    {
+      "id": "atc",
+      "text": "Add to cart",
+      "role": "button"
+    },
+    {
+      "id": "wish",
+      "text": "Wishlist",
+      "role": "link"
+    },
+    {
+      "id": "stock",
+      "text": "In stock",
+      "role": "text"
+    },
+    {
+      "id": "swatch-pine",
+      "text": "",
+      "role": "icon"
+    },
+    {
+      "id": "thumb",
+      "text": "",
+      "role": "image"
+    }
+  ],
+  "seeds": [
+    {
+      "id": "atc-color",
+      "cssClass": "defect-atc-color",
+      "description": "Add to cart #f97316 instead of #ea580c",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    },
+    {
+      "id": "sale-badge",
+      "cssClass": "defect-sale-badge",
+      "description": "Sale badge #ef4444 instead of #dc2626",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    },
+    {
+      "id": "price-ink",
+      "cssClass": "defect-price-ink",
+      "description": "Sale price ink #ea580c instead of #c2410c",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    },
+    {
+      "id": "star-ink",
+      "cssClass": "defect-star-ink",
+      "description": "Star rating #fbbf24 instead of #f59e0b",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    },
+    {
+      "id": "swatch-fill",
+      "cssClass": "defect-swatch-fill",
+      "description": "Pine swatch #15803d instead of #166534",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    }
+  ],
+  "detectionNotes": "Product photo/thumbs should skip color. ATC + Sale badge are fill; price/stars are ink; swatches are small fills (may be icon/badge)."
+}

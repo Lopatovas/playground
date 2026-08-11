@@ -52,12 +52,23 @@ Generate the demo design export (already checked in under `demo/design/`):
 node demo/scripts/generate-design.mjs
 ```
 
+Complex sample (nav + sidebar + cards + table) and a local OmniParser YOLO setup:
+
+```sh
+node demo/scripts/capture-complex-design.mjs
+./scripts/setup-omniparser-local.sh
+```
+
+See [demo/README.md](demo/README.md) for `/complex-broken` and host-detector Compose wiring.
+
 Run the demo target:
 
 ```sh
 pnpm --filter @bulwark/demo-target serve
 # http://localhost:4173/correct  — matches the design
 # http://localhost:4173/broken   — seeded defects
+# http://localhost:4173/complex  — denser layout
+# http://localhost:4173/complex-broken
 ```
 
 Point `demo/bulwark.config.json` at localhost (or keep Docker hostnames and use
@@ -80,9 +91,12 @@ docker compose up --build
 | ----------- | ---- | ----------------------------------------- |
 | dashboard   | 8080 | Overlay UI + `/api` proxy + `/artifacts`  |
 | api         | 4190 | `POST /api/runs`, report/artifact serving |
-| demo-target | 4173 | Seeded landing page                       |
-| omniparser  | 8801 | Element detector                          |
-| paddleocr   | 8802 | Optional OCR (demo uses ink-projection)   |
+| demo-target | 4173 | Complex workspace sample (`/complex-broken`) |
+| omniparser  | 8801 | OmniParser YOLO + Florence captions (CPU) |
+| paddleocr   | 8802 | PaddleOCR CPU text recognition            |
+
+The OmniParser image downloads Microsoft's `icon_detect` weights at build time and
+serves Bulwark's `/v1/detect` contract. First build is large (PyTorch) and slow.
 
 Kick off a run:
 
