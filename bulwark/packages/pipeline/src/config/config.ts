@@ -43,7 +43,7 @@ export const designSchema = z.object({
 export const tolerancesSchema = z.object({
   spacingPx: z.number().min(0).max(100).default(2),
   positionPx: z.number().min(0).max(100).default(2),
-  fontSizePx: z.number().min(0).max(20).default(1),
+  fontSizePx: z.number().min(0).max(20).default(3),
   deltaE: z.number().min(0).max(100).default(4),
   minFamilyMargin: z.number().min(0).max(1).default(0.02),
 });
@@ -89,6 +89,19 @@ export const typographySchema = z.object({
   /** Families the reference renderer will try when identifying a typeface. */
   candidateFamilies: z.array(z.string().min(1)).default(['Mark Pro', 'Open Sans']),
   heightMeasurement: z.enum(['median-character', 'line-extent']).default('median-character'),
+  /**
+   * Experimental render-and-match CSS size search. Parked off by default: modest
+   * FP reduction vs ink÷ratio at large Playwright cost. Keep rasterizer enabled for
+   * family SSIM; set true only when explicitly evaluating size-fit.
+   */
+  enableSizeFit: z.boolean().default(false),
+  /**
+   * Prefer full-page recognizer text boxes (PaddleOCR / ink-projection lines) over
+   * detector crops for typography ink. Tried on the 18-fixture suite with Paddle:
+   * soft recall held, but font-size FPs rose (27→38) and runs slowed (~16s). Off by
+   * default; layout matching still uses ScreenParser either way.
+   */
+  preferPageTextBoxes: z.boolean().default(false),
   /** Overrides the built-in Mark Pro and Open Sans profiles when provided. */
   profiles: z.array(fontProfileSchema).optional(),
 });

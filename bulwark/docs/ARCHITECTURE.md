@@ -44,7 +44,8 @@ the same composition root (`buildServices`).
    - Weight: ink density on Otsu masks
    - Family (optional): SSIM against rasterized glyph candidates when a rasterizer is enabled
    - Color: specialized fill / ink / palette strategies + ΔE2000 (see
-     [color-gate.md](./color-gate.md) for accepted scorecard and follow-ups)
+     [color-gate.md](./color-gate.md) for accepted scorecard and follow-ups).
+     Fixture typefaces: [typography.md](./typography.md).
 7. **Report** — Canonical JSON + PNG artifacts under a run directory
 
 ## Overlay dashboard

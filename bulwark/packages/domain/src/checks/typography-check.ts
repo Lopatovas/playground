@@ -1,4 +1,5 @@
 import type { BoundingBox } from '../geometry/box.js';
+import { boxHeight } from '../geometry/box.js';
 import type {
   Defect,
   FontFamilyDefect,
@@ -39,6 +40,16 @@ export interface TextMeasurement {
   /** SSIM of the design crop against each candidate family's reference render. */
   readonly familyScores: readonly FontFamilyCandidateScore[];
   readonly live: LiveTextStyle;
+  /**
+   * Optional CSS size recovered by render-and-match (SSIM sweep). When present and
+   * confident, {@link checkTypography} prefers it over ink÷ratio.
+   */
+  readonly sizeFit?: {
+    readonly cssFontSizePx: number;
+    readonly score: number;
+    readonly confident: boolean;
+    readonly method: 'render-fit';
+  };
 }
 
 export interface TypographyCheckOptions {
@@ -53,14 +64,46 @@ export interface TypographyCheckOptions {
   readonly designPixelRatio: number;
   readonly checkFontWeight: boolean;
   readonly checkFontFamily: boolean;
+  /**
+   * Reserved for callers that still pass a band margin; adjacent-band weight
+   * defects are suppressed via `minWeightGap` instead (see shouldEmitWeightDefect).
+   */
+  readonly weightBandMargin: number;
+  /** Always report weight when |expected−actual| is at least this large. */
+  readonly minWeightGap: number;
+  /**
+   * Reject size defects when design ink is shorter than this (CSS px after
+   * `designPixelRatio`). Tiny ink usually means a clipped / chrome-heavy crop.
+   */
+  readonly minInkHeightPx: number;
+  /**
+   * For |live−expected| below {@link largeSizeDeltaPx}, require
+   * ink÷designBoxHeight ≥ this fill before emitting a size defect.
+   */
+  readonly minInkBoxFill: number;
+  /**
+   * Seed-scale disagreements may use a looser fill floor
+   * ({@link minInkBoxFillLargeDelta}) so planted heading bugs still fire on
+   * slightly padded line boxes.
+   */
+  readonly largeSizeDeltaPx: number;
+  /** Fill floor when |delta| ≥ {@link largeSizeDeltaPx}. */
+  readonly minInkBoxFillLargeDelta: number;
 }
 
 export const DEFAULT_TYPOGRAPHY_CHECK_OPTIONS: TypographyCheckOptions = {
-  fontSizeTolerancePx: 1,
+  fontSizeTolerancePx: 3,
   minFamilyMargin: 0.02,
   designPixelRatio: 1,
   checkFontWeight: true,
   checkFontFamily: true,
+  weightBandMargin: 0.04,
+  /** Δ200 (one CSS weight step ×2) is mostly density jitter; require a full 300 gap. */
+  minWeightGap: 300,
+  minInkHeightPx: 6,
+  minInkBoxFill: 0.45,
+  largeSizeDeltaPx: 6,
+  minInkBoxFillLargeDelta: 0.35,
 };
 
 export interface TypographyFinding {
@@ -79,6 +122,10 @@ export interface TypographyFinding {
   readonly visualHeightPx: number;
   readonly visualToCssRatio: number;
   readonly actualFamily: string;
+  /** How expectedCssFontSizePx was produced. */
+  readonly sizeEstimateMethod: 'ink-ratio' | 'render-fit';
+  /** False when a size delta existed but the design crop looked unreliable. */
+  readonly inkSizeReliable: boolean;
 }
 
 export interface TypographyCheckResult {
@@ -88,6 +135,10 @@ export interface TypographyCheckResult {
   readonly familyDefects: readonly FontFamilyDefect[];
   /** Measurements skipped because the live font family is not in the registry. */
   readonly skipped: readonly { measurement: TextMeasurement; reason: string }[];
+  /** Size deltas suppressed because the design ink crop looked unreliable. */
+  readonly unreliableSize: readonly { measurement: TextMeasurement; reason: string }[];
+  /** Unique live stacks that were undeclared (for diagnostics; not per-node defects). */
+  readonly undeclaredStacks: readonly string[];
 }
 
 /**
@@ -111,6 +162,9 @@ export function checkTypography(
   const weightDefects: FontWeightDefect[] = [];
   const familyDefects: FontFamilyDefect[] = [];
   const skipped: { measurement: TextMeasurement; reason: string }[] = [];
+  const unreliableSize: { measurement: TextMeasurement; reason: string }[] = [];
+  const undeclaredStacks = new Set<string>();
+  const undeclaredFamilyEmitted = new Set<string>();
 
   for (const measurement of measurements) {
     const liveProfile = registry.resolveStack(measurement.live.fontFamilyStack);
@@ -119,143 +173,79 @@ export function checkTypography(
         ? selectFontFamily(measurement.familyScores, options.minFamilyMargin)
         : null;
 
-    const designProfile =
-      resolveDesignProfile(registry, selection, liveProfile) ?? fallbackDesignProfile(registry);
-    if (designProfile === null) {
-      skipped.push({
-        measurement,
-        reason:
-          `neither the live font stack "${measurement.live.fontFamilyStack}" nor the winning ` +
-          `reference family is registered, so no visual-to-CSS ratio is known`,
-      });
+    const declaredSelection =
+      selection !== null && selection.confident
+        ? registry.find(selection.family)
+        : undefined;
+
+    // Undeclared live: never invent ratios from a random default outside the host
+    // registry. Prefer a confident SSIM winner; otherwise fall back to the first
+    // declared profile so intentional swaps (Georgia vs brand) still get size/weight
+    // when the rasterizer is off. Family defects for undeclared stacks are emitted
+    // once per unique stack (not once per node).
+    if (liveProfile === undefined) {
+      undeclaredStacks.add(measurement.live.fontFamilyStack);
+      const fallbackProfile =
+        declaredSelection ?? (registry.profiles.length > 0 ? registry.profiles[0]! : null);
+      if (fallbackProfile !== null) {
+        const emitFamily =
+          options.checkFontFamily && !undeclaredFamilyEmitted.has(measurement.live.fontFamilyStack);
+        if (emitFamily) undeclaredFamilyEmitted.add(measurement.live.fontFamilyStack);
+        emitMeasuredDefects({
+          measurement,
+          sizeWeightProfile: fallbackProfile,
+          familyLabel: declaredSelection?.family ?? fallbackProfile.family,
+          selection,
+          liveProfile: undefined,
+          actualFamily: measurement.live.fontFamilyStack,
+          findings,
+          sizeDefects,
+          weightDefects,
+          familyDefects,
+          unreliableSize,
+          options,
+          emitFamilyBecauseUndeclared: emitFamily,
+        });
+      } else {
+        skipped.push({
+          measurement,
+          reason:
+            `font stack "${measurement.live.fontFamilyStack}" is not in the host font registry ` +
+            `and no declared profiles are configured, so size/weight were skipped`,
+        });
+      }
       continue;
     }
 
-    const expectedCssFontSizePx = deriveCssFontSize(
-      measurement.visualHeightPx,
-      designProfile,
-      options.designPixelRatio,
-    );
-    const actualCssFontSizePx = measurement.live.fontSizePx;
-    const fontSizeDeltaPx = roundTo(actualCssFontSizePx - expectedCssFontSizePx, 4);
-
-    const expectedFontWeight = classifyFontWeight(measurement.strokeDensity, designProfile);
-    const actualFamily = liveProfile?.family ?? measurement.live.fontFamilyStack;
-
-    findings.push({
-      designElementId: measurement.designElementId,
-      liveElementId: measurement.liveElementId,
-      text: measurement.text,
-      expectedFamily: designProfile.family,
-      expectedFamilyConfident: selection?.confident ?? false,
-      familyMargin: selection?.margin ?? 0,
-      expectedCssFontSizePx,
-      actualCssFontSizePx,
-      fontSizeDeltaPx,
-      expectedFontWeight,
-      actualFontWeight: measurement.live.fontWeight,
-      strokeDensity: roundTo(measurement.strokeDensity, 6),
-      visualHeightPx: roundTo(measurement.visualHeightPx, 4),
-      visualToCssRatio: designProfile.visualToCssRatio,
-      actualFamily,
+    // Size/weight use the live declared face so SSIM mistakes don't warp the ratio.
+    // Family identity still comes from reference-render scores when confident.
+    emitMeasuredDefects({
+      measurement,
+      sizeWeightProfile: liveProfile,
+      familyLabel:
+        declaredSelection !== undefined ? declaredSelection.family : liveProfile.family,
+      selection,
+      liveProfile,
+      actualFamily: liveProfile.family,
+      findings,
+      sizeDefects,
+      weightDefects,
+      familyDefects,
+      unreliableSize,
+      options,
+      emitFamilyBecauseUndeclared: false,
     });
-
-    if (Math.abs(fontSizeDeltaPx) > options.fontSizeTolerancePx) {
-      sizeDefects.push({
-        id: `font-size:${measurement.designElementId}`,
-        type: 'font-size',
-        severity: 'error',
-        message:
-          `"${truncate(measurement.text)}" should render at ${expectedCssFontSizePx}px ` +
-          `(${roundTo(measurement.visualHeightPx, 2)}px of ink ÷ ${designProfile.visualToCssRatio} ` +
-          `${designProfile.family} ratio) but the browser reports ${actualCssFontSizePx}px`,
-        expectedCssPx: expectedCssFontSizePx,
-        actualCssPx: actualCssFontSizePx,
-        deltaPx: fontSizeDeltaPx,
-        tolerancePx: options.fontSizeTolerancePx,
-        measuredVisualHeightPx: roundTo(measurement.visualHeightPx, 4),
-        fontFamily: designProfile.family,
-        visualToCssRatio: designProfile.visualToCssRatio,
-        designBox: measurement.designBox,
-        liveBox: measurement.liveBox,
-        designElementId: measurement.designElementId,
-        liveElementId: measurement.liveElementId,
-      });
-    }
-
-    if (options.checkFontWeight && expectedFontWeight !== measurement.live.fontWeight) {
-      weightDefects.push({
-        id: `font-weight:${measurement.designElementId}`,
-        type: 'font-weight',
-        severity: 'warning',
-        message:
-          `"${truncate(measurement.text)}" has ${formatPercent(measurement.strokeDensity)} ink ` +
-          `coverage in the design, which is weight ${expectedFontWeight}, but the browser reports ` +
-          `${measurement.live.fontWeight}`,
-        expectedWeight: expectedFontWeight,
-        actualWeight: measurement.live.fontWeight,
-        strokeDensity: roundTo(measurement.strokeDensity, 6),
-        fontFamily: designProfile.family,
-        designBox: measurement.designBox,
-        liveBox: measurement.liveBox,
-        designElementId: measurement.designElementId,
-        liveElementId: measurement.liveElementId,
-      });
-    }
-
-    if (
-      options.checkFontFamily &&
-      selection !== null &&
-      selection.confident &&
-      liveProfile !== undefined &&
-      selection.family !== liveProfile.family
-    ) {
-      const actualScore =
-        measurement.familyScores.find((score) => score.family === liveProfile.family)?.score ?? 0;
-      familyDefects.push({
-        id: `font-family:${measurement.designElementId}`,
-        type: 'font-family',
-        severity: 'warning',
-        message:
-          `"${truncate(measurement.text)}" matches ${selection.family} ` +
-          `(SSIM ${selection.score}) better than the rendered ${liveProfile.family} ` +
-          `(SSIM ${roundTo(actualScore, 6)})`,
-        expectedFamily: selection.family,
-        actualFamily: liveProfile.family,
-        expectedFamilyScore: selection.score,
-        actualFamilyScore: roundTo(actualScore, 6),
-        scoreMargin: selection.margin,
-        designBox: measurement.designBox,
-        liveBox: measurement.liveBox,
-        designElementId: measurement.designElementId,
-        liveElementId: measurement.liveElementId,
-      });
-    } else if (options.checkFontFamily && liveProfile === undefined) {
-      // Live switched to an unknown face (e.g. Georgia) while the design ratio still
-      // comes from a calibrated family. Still emit size/weight using that ratio, and
-      // call out the family mismatch instead of dropping the whole measurement.
-      familyDefects.push({
-        id: `font-family:${measurement.designElementId}`,
-        type: 'font-family',
-        severity: 'warning',
-        message:
-          `"${truncate(measurement.text)}" renders with unregistered font stack ` +
-          `"${measurement.live.fontFamilyStack}" (size/weight checked against ` +
-          `${designProfile.family})`,
-        expectedFamily: designProfile.family,
-        actualFamily: measurement.live.fontFamilyStack,
-        expectedFamilyScore: selection?.score ?? 0,
-        actualFamilyScore: 0,
-        scoreMargin: selection?.margin ?? 0,
-        designBox: measurement.designBox,
-        liveBox: measurement.liveBox,
-        designElementId: measurement.designElementId,
-        liveElementId: measurement.liveElementId,
-      });
-    }
   }
 
-  return { findings, sizeDefects, weightDefects, familyDefects, skipped };
+  return {
+    findings,
+    sizeDefects,
+    weightDefects,
+    familyDefects,
+    skipped,
+    unreliableSize,
+    undeclaredStacks: [...undeclaredStacks].sort(),
+  };
 }
 
 export function typographyDefects(result: TypographyCheckResult): readonly Defect[] {
@@ -263,29 +253,258 @@ export function typographyDefects(result: TypographyCheckResult): readonly Defec
 }
 
 /**
- * The ratio used for size math must come from the family actually drawn in the
- * design. The reference-render winner is the best evidence for that; the live
- * family is the fallback when the winner is unregistered or too close to call.
+ * True when design ink weight clearly disagrees with live CSS weight.
+ *
+ * Adjacent-band jitter (Δ100) and even Δ200 (400↔600 from density noise) dominate
+ * false positives. Emit only when |expected−actual| ≥ minWeightGap (default 300).
+ *
+ * `weightBandMargin` is retained on the options object for callers/config symmetry
+ * with the size gate; adjacent gaps never consult it.
  */
-function resolveDesignProfile(
-  registry: FontRegistry,
-  selection: { family: string; confident: boolean } | null,
-  liveProfile: FontProfile | undefined,
-): FontProfile | null {
-  if (selection !== null && selection.confident) {
-    const selected = registry.find(selection.family);
-    if (selected !== undefined) return selected;
-  }
-  return liveProfile ?? null;
+export function shouldEmitWeightDefect(
+  _strokeDensity: number,
+  expectedWeight: number,
+  actualWeight: number,
+  _profile: FontProfile,
+  options: Pick<TypographyCheckOptions, 'weightBandMargin' | 'minWeightGap'> = {
+    weightBandMargin: DEFAULT_TYPOGRAPHY_CHECK_OPTIONS.weightBandMargin,
+    minWeightGap: DEFAULT_TYPOGRAPHY_CHECK_OPTIONS.minWeightGap,
+  },
+): boolean {
+  if (expectedWeight === actualWeight) return false;
+  return Math.abs(expectedWeight - actualWeight) >= options.minWeightGap;
 }
 
 /**
- * When the live face is unknown (Georgia, system UI, …) and no reference-render
- * winner is available, still measure size/weight against a calibrated body face
- * rather than dropping the element. Prefer Open Sans when present.
+ * Whether a size delta should be trusted given how much ink the design crop held.
+ *
+ * Small deltas need a healthy ink÷box fill (partial labels / button chrome look like
+ * 4–5px size bugs). Seed-scale deltas (|Δ| ≥ largeSizeDeltaPx) may use a looser fill
+ * so real heading drops still fire on padded line boxes.
  */
-function fallbackDesignProfile(registry: FontRegistry): FontProfile | null {
-  return registry.find('Open Sans') ?? registry.profiles[0] ?? null;
+export function assessInkSizeReliability(
+  measurement: Pick<TextMeasurement, 'visualHeightPx' | 'designBox' | 'live'>,
+  expectedCssFontSizePx: number,
+  options: Pick<
+    TypographyCheckOptions,
+    | 'designPixelRatio'
+    | 'minInkHeightPx'
+    | 'minInkBoxFill'
+    | 'largeSizeDeltaPx'
+    | 'minInkBoxFillLargeDelta'
+  >,
+): { reliable: boolean; reason: string } {
+  const inkCssPx = measurement.visualHeightPx / options.designPixelRatio;
+  if (inkCssPx < options.minInkHeightPx) {
+    return {
+      reliable: false,
+      reason:
+        `design ink height ${roundTo(inkCssPx, 2)}px is below the ${options.minInkHeightPx}px ` +
+        `reliability floor (likely a clipped or chrome-heavy crop)`,
+    };
+  }
+
+  const height = boxHeight(measurement.designBox);
+  const fill = height > 0 ? measurement.visualHeightPx / height : 1;
+  const absDelta = Math.abs(measurement.live.fontSizePx - expectedCssFontSizePx);
+  const minFill =
+    absDelta >= options.largeSizeDeltaPx
+      ? options.minInkBoxFillLargeDelta
+      : options.minInkBoxFill;
+
+  if (fill < minFill) {
+    return {
+      reliable: false,
+      reason:
+        `design ink fills ${formatPercent(fill)} of its ${roundTo(height, 1)}px box ` +
+        `(need ≥ ${formatPercent(minFill)} for a ${roundTo(absDelta, 1)}px size delta)`,
+    };
+  }
+
+  return { reliable: true, reason: '' };
+}
+
+function emitMeasuredDefects(input: {
+  readonly measurement: TextMeasurement;
+  readonly sizeWeightProfile: FontProfile;
+  readonly familyLabel: string;
+  readonly selection: ReturnType<typeof selectFontFamily> | null;
+  readonly liveProfile: FontProfile | undefined;
+  readonly actualFamily: string;
+  readonly findings: TypographyFinding[];
+  readonly sizeDefects: FontSizeDefect[];
+  readonly weightDefects: FontWeightDefect[];
+  readonly familyDefects: FontFamilyDefect[];
+  readonly unreliableSize: { measurement: TextMeasurement; reason: string }[];
+  readonly options: TypographyCheckOptions;
+  readonly emitFamilyBecauseUndeclared: boolean;
+}): void {
+  const {
+    measurement,
+    sizeWeightProfile,
+    familyLabel,
+    selection,
+    liveProfile,
+    actualFamily,
+    findings,
+    sizeDefects,
+    weightDefects,
+    familyDefects,
+    unreliableSize,
+    options,
+    emitFamilyBecauseUndeclared,
+  } = input;
+
+  const inkCssFontSizePx = deriveCssFontSize(
+    measurement.visualHeightPx,
+    sizeWeightProfile,
+    options.designPixelRatio,
+  );
+  const useFit =
+    measurement.sizeFit !== undefined &&
+    measurement.sizeFit.confident &&
+    measurement.sizeFit.method === 'render-fit';
+  const expectedCssFontSizePx = useFit ? measurement.sizeFit!.cssFontSizePx : inkCssFontSizePx;
+  const sizeEstimateMethod = useFit ? ('render-fit' as const) : ('ink-ratio' as const);
+  const actualCssFontSizePx = measurement.live.fontSizePx;
+  const fontSizeDeltaPx = roundTo(actualCssFontSizePx - expectedCssFontSizePx, 4);
+  const expectedFontWeight = classifyFontWeight(measurement.strokeDensity, sizeWeightProfile);
+
+  const reliability = assessInkSizeReliability(measurement, expectedCssFontSizePx, options);
+
+  findings.push({
+    designElementId: measurement.designElementId,
+    liveElementId: measurement.liveElementId,
+    text: measurement.text,
+    expectedFamily: familyLabel,
+    expectedFamilyConfident: selection?.confident ?? false,
+    familyMargin: selection?.margin ?? 0,
+    expectedCssFontSizePx,
+    actualCssFontSizePx,
+    fontSizeDeltaPx,
+    expectedFontWeight,
+    actualFontWeight: measurement.live.fontWeight,
+    strokeDensity: roundTo(measurement.strokeDensity, 6),
+    visualHeightPx: roundTo(measurement.visualHeightPx, 4),
+    visualToCssRatio: sizeWeightProfile.visualToCssRatio,
+    actualFamily,
+    sizeEstimateMethod,
+    inkSizeReliable: reliability.reliable,
+  });
+
+  if (Math.abs(fontSizeDeltaPx) > options.fontSizeTolerancePx) {
+    if (!reliability.reliable) {
+      unreliableSize.push({ measurement, reason: reliability.reason });
+    } else {
+      sizeDefects.push({
+        id: `font-size:${measurement.designElementId}`,
+        type: 'font-size',
+        severity: 'error',
+        message: useFit
+          ? `"${truncate(measurement.text)}" should render at ${expectedCssFontSizePx}px ` +
+            `(render-fit score ${roundTo(measurement.sizeFit!.score, 3)} in ${sizeWeightProfile.family}) ` +
+            `but the browser reports ${actualCssFontSizePx}px`
+          : `"${truncate(measurement.text)}" should render at ${expectedCssFontSizePx}px ` +
+            `(${roundTo(measurement.visualHeightPx, 2)}px of ink ÷ ${sizeWeightProfile.visualToCssRatio} ` +
+            `${sizeWeightProfile.family} ratio) but the browser reports ${actualCssFontSizePx}px`,
+        expectedCssPx: expectedCssFontSizePx,
+        actualCssPx: actualCssFontSizePx,
+        deltaPx: fontSizeDeltaPx,
+        tolerancePx: options.fontSizeTolerancePx,
+        measuredVisualHeightPx: roundTo(measurement.visualHeightPx, 4),
+        fontFamily: sizeWeightProfile.family,
+        visualToCssRatio: sizeWeightProfile.visualToCssRatio,
+        designBox: measurement.designBox,
+        liveBox: measurement.liveBox,
+        designElementId: measurement.designElementId,
+        liveElementId: measurement.liveElementId,
+      });
+    }
+  }
+
+  if (
+    options.checkFontWeight &&
+    shouldEmitWeightDefect(
+      measurement.strokeDensity,
+      expectedFontWeight,
+      measurement.live.fontWeight,
+      sizeWeightProfile,
+      options,
+    )
+  ) {
+    weightDefects.push({
+      id: `font-weight:${measurement.designElementId}`,
+      type: 'font-weight',
+      severity: 'warning',
+      message:
+        `"${truncate(measurement.text)}" has ${formatPercent(measurement.strokeDensity)} ink ` +
+        `coverage in the design, which is weight ${expectedFontWeight}, but the browser reports ` +
+        `${measurement.live.fontWeight}`,
+      expectedWeight: expectedFontWeight,
+      actualWeight: measurement.live.fontWeight,
+      strokeDensity: roundTo(measurement.strokeDensity, 6),
+      fontFamily: sizeWeightProfile.family,
+      designBox: measurement.designBox,
+      liveBox: measurement.liveBox,
+      designElementId: measurement.designElementId,
+      liveElementId: measurement.liveElementId,
+    });
+  }
+
+  if (!options.checkFontFamily) return;
+
+  if (emitFamilyBecauseUndeclared) {
+    familyDefects.push({
+      id: `font-family:${measurement.designElementId}`,
+      type: 'font-family',
+      severity: 'warning',
+      message:
+        selection !== null && selection.confident
+          ? `"${truncate(measurement.text)}" matches declared face ${selection.family} ` +
+            `(SSIM ${selection.score}) but renders with undeclared stack ` +
+            `"${measurement.live.fontFamilyStack}"`
+          : `"${truncate(measurement.text)}" renders with undeclared font stack ` +
+            `"${measurement.live.fontFamilyStack}" (declared type system: ${sizeWeightProfile.family})`,
+      expectedFamily: selection?.confident ? selection.family : sizeWeightProfile.family,
+      actualFamily: measurement.live.fontFamilyStack,
+      expectedFamilyScore: selection?.score ?? 0,
+      actualFamilyScore: 0,
+      scoreMargin: selection?.margin ?? 0,
+      designBox: measurement.designBox,
+      liveBox: measurement.liveBox,
+      designElementId: measurement.designElementId,
+      liveElementId: measurement.liveElementId,
+    });
+    return;
+  }
+
+  if (
+    selection !== null &&
+    selection.confident &&
+    liveProfile !== undefined &&
+    selection.family !== liveProfile.family
+  ) {
+    const actualScore =
+      measurement.familyScores.find((score) => score.family === liveProfile.family)?.score ?? 0;
+    familyDefects.push({
+      id: `font-family:${measurement.designElementId}`,
+      type: 'font-family',
+      severity: 'warning',
+      message:
+        `"${truncate(measurement.text)}" matches ${selection.family} ` +
+        `(SSIM ${selection.score}) better than the rendered ${liveProfile.family} ` +
+        `(SSIM ${roundTo(actualScore, 6)})`,
+      expectedFamily: selection.family,
+      actualFamily: liveProfile.family,
+      expectedFamilyScore: selection.score,
+      actualFamilyScore: roundTo(actualScore, 6),
+      scoreMargin: selection.margin,
+      designBox: measurement.designBox,
+      liveBox: measurement.liveBox,
+      designElementId: measurement.designElementId,
+      liveElementId: measurement.liveElementId,
+    });
+  }
 }
 
 function truncate(text: string, maxLength = 40): string {
@@ -303,5 +522,23 @@ function assertOptions(options: TypographyCheckOptions): void {
   }
   if (!(options.designPixelRatio > 0)) {
     throw new RangeError('checkTypography() requires designPixelRatio > 0');
+  }
+  if (options.weightBandMargin < 0) {
+    throw new RangeError('checkTypography() requires a non-negative weightBandMargin');
+  }
+  if (options.minWeightGap < 0) {
+    throw new RangeError('checkTypography() requires a non-negative minWeightGap');
+  }
+  if (options.minInkHeightPx < 0) {
+    throw new RangeError('checkTypography() requires a non-negative minInkHeightPx');
+  }
+  if (options.minInkBoxFill < 0 || options.minInkBoxFill > 1) {
+    throw new RangeError('checkTypography() requires minInkBoxFill within [0, 1]');
+  }
+  if (options.minInkBoxFillLargeDelta < 0 || options.minInkBoxFillLargeDelta > 1) {
+    throw new RangeError('checkTypography() requires minInkBoxFillLargeDelta within [0, 1]');
+  }
+  if (options.largeSizeDeltaPx < 0) {
+    throw new RangeError('checkTypography() requires a non-negative largeSizeDeltaPx');
   }
 }

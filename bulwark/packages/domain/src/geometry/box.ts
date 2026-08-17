@@ -157,6 +157,54 @@ export function translateBox(box: BoundingBox, dx: number, dy: number): Bounding
   return createBox(box.xMin + dx, box.yMin + dy, box.xMax + dx, box.yMax + dy);
 }
 
+/**
+ * Maps `inner` from inside `fromOuter` onto the corresponding region of `toOuter`
+ * by normalised coordinates. Used to project a live text-leaf DOM rect onto the
+ * matched design detector box so typography crops the label, not button chrome.
+ *
+ * Returns null when the outer box is empty or the mapped box would be empty.
+ */
+export function mapRelativeBox(
+  fromOuter: BoundingBox,
+  inner: BoundingBox,
+  toOuter: BoundingBox,
+): BoundingBox | null {
+  const fromW = boxWidth(fromOuter);
+  const fromH = boxHeight(fromOuter);
+  if (!(fromW > 0) || !(fromH > 0)) return null;
+
+  const clipped = boxIntersection(inner, fromOuter) ?? inner;
+  const x0 = (clipped.xMin - fromOuter.xMin) / fromW;
+  const y0 = (clipped.yMin - fromOuter.yMin) / fromH;
+  const x1 = (clipped.xMax - fromOuter.xMin) / fromW;
+  const y1 = (clipped.yMax - fromOuter.yMin) / fromH;
+
+  const toW = boxWidth(toOuter);
+  const toH = boxHeight(toOuter);
+  const mapped = createBox(
+    toOuter.xMin + x0 * toW,
+    toOuter.yMin + y0 * toH,
+    toOuter.xMin + x1 * toW,
+    toOuter.yMin + y1 * toH,
+  );
+  if (boxWidth(mapped) <= 0 || boxHeight(mapped) <= 0) return null;
+  return mapped;
+}
+
+/**
+ * True when `inner` is a meaningfully tighter crop of `outer` (text leaf inside
+ * button chrome). Near-identical boxes are not worth remapping.
+ */
+export function isMeaningfullyTighter(outer: BoundingBox, inner: BoundingBox): boolean {
+  const outerArea = boxArea(outer);
+  if (!(outerArea > 0)) return false;
+  const clipped = boxIntersection(inner, outer);
+  if (clipped === null) return false;
+  const heightRatio = boxHeight(clipped) / boxHeight(outer);
+  const areaRatio = boxArea(clipped) / outerArea;
+  return heightRatio <= 0.85 || areaRatio <= 0.75;
+}
+
 function clampToRange(value: number, min: number, max: number): number {
   if (value < min) return min;
   if (value > max) return max;

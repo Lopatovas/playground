@@ -23,23 +23,27 @@ export const EXIT_DEFECTS_FOUND = 1;
  */
 export async function runCommand(context: CliContext, options: RunCommandOptions): Promise<number> {
   const prepared = await prepareRun(context, options.configPath);
-  const result = await prepared.runner.run();
+  try {
+    const result = await prepared.runner.run();
 
-  switch (options.format) {
-    case 'json':
-      context.stdout(canonicalStringify(result.report).trimEnd());
-      break;
-    case 'lines':
-      if (result.report.defects.length > 0) {
-        context.stdout(formatDefectsAsLines(result.report.defects));
-      }
-      break;
-    default:
-      context.stdout(formatReportSummary(result.report, { color: options.color }));
-      context.stdout(`  report: ${result.reportPath}`);
-      context.stdout(`  open the overlay with: bulwark serve --run ${prepared.runDirectory}`);
+    switch (options.format) {
+      case 'json':
+        context.stdout(canonicalStringify(result.report).trimEnd());
+        break;
+      case 'lines':
+        if (result.report.defects.length > 0) {
+          context.stdout(formatDefectsAsLines(result.report.defects));
+        }
+        break;
+      default:
+        context.stdout(formatReportSummary(result.report, { color: options.color }));
+        context.stdout(`  report: ${result.reportPath}`);
+        context.stdout(`  open the overlay with: bulwark serve --run ${prepared.runDirectory}`);
+    }
+
+    const failOnDefects = options.failOnDefects ?? prepared.loaded.config.output.failOnDefects;
+    return failOnDefects && !result.report.summary.passed ? EXIT_DEFECTS_FOUND : EXIT_OK;
+  } finally {
+    await prepared.services.rasterizer?.close?.();
   }
-
-  const failOnDefects = options.failOnDefects ?? prepared.loaded.config.output.failOnDefects;
-  return failOnDefects && !result.report.summary.passed ? EXIT_DEFECTS_FOUND : EXIT_OK;
 }

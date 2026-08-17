@@ -1,3 +1,113 @@
+/* ---- fixture font kits (generated) ---- */
+/* font-kit: landing */
+.page-landing {
+  --font-body: 'Open Sans', sans-serif;
+  --font-display: 'Open Sans', sans-serif;
+}
+
+/* font-kit: workspace */
+.page-complex {
+  --font-body: 'DM Sans', sans-serif;
+  --font-display: 'DM Sans', sans-serif;
+}
+
+/* font-kit: admin */
+.page-admin {
+  --font-body: 'Source Sans 3', sans-serif;
+  --font-display: 'Source Sans 3', sans-serif;
+}
+
+/* font-kit: settings */
+.page-settings {
+  --font-body: 'Nunito', sans-serif;
+  --font-display: 'Nunito', sans-serif;
+}
+
+/* font-kit: mobile-feed */
+.page-mobile-feed {
+  --font-body: 'Rubik', sans-serif;
+  --font-display: 'Rubik', sans-serif;
+}
+
+/* font-kit: brand-hero */
+.page-brand-hero {
+  --font-body: 'Outfit', sans-serif;
+  --font-display: 'Oswald', sans-serif;
+}
+
+/* font-kit: pricing */
+.page-pricing {
+  --font-body: 'Manrope', sans-serif;
+  --font-display: 'Manrope', sans-serif;
+}
+
+/* font-kit: dashboard-vivid */
+.page-dashboard-vivid {
+  --font-body: 'Space Grotesk', sans-serif;
+  --font-display: 'Space Grotesk', sans-serif;
+}
+
+/* font-kit: promo-mobile */
+.page-promo-mobile {
+  --font-body: 'Exo 2', sans-serif;
+  --font-display: 'Exo 2', sans-serif;
+}
+
+/* font-kit: eshop */
+.page-eshop {
+  --font-body: 'Poppins', sans-serif;
+  --font-display: 'Poppins', sans-serif;
+}
+
+/* font-kit: marketplace */
+.page-marketplace {
+  --font-body: 'Mulish', sans-serif;
+  --font-display: 'Mulish', sans-serif;
+}
+
+/* font-kit: food-delivery */
+.page-food-delivery {
+  --font-body: 'Outfit', sans-serif;
+  --font-display: 'Outfit', sans-serif;
+}
+
+/* font-kit: booking */
+.page-booking {
+  --font-body: 'Libre Franklin', sans-serif;
+  --font-display: 'Libre Franklin', sans-serif;
+}
+
+/* font-kit: fintech */
+.page-fintech {
+  --font-body: 'Sora', sans-serif;
+  --font-display: 'Sora', sans-serif;
+}
+
+/* font-kit: docs */
+.page-docs {
+  --font-body: 'Source Serif 4', serif;
+  --font-display: 'Source Serif 4', serif;
+}
+
+/* font-kit: portfolio */
+.page-portfolio {
+  --font-body: 'Work Sans', sans-serif;
+  --font-display: 'Cormorant Garamond', serif;
+}
+
+/* font-kit: analytics-web */
+.page-analytics-web {
+  --font-body: 'IBM Plex Sans', sans-serif;
+  --font-display: 'IBM Plex Serif', serif;
+}
+
+/* font-kit: analytics-mobile */
+.page-analytics-mobile {
+  --font-body: 'IBM Plex Sans', sans-serif;
+  --font-display: 'IBM Plex Sans', sans-serif;
+}
+/* ---- end fixture font kits ---- */
+
 /* Fixture layouts beyond landing/workspace (absolute geometry for deterministic QA). */
 
 /* ---- Admin customers table (960x640) ---- */
@@ -17,7 +127,8 @@
 }
 
 body.defect-title-size.page-admin {
-  --ad-title-size: 18px;
+  /* ~10px CSS drop: clears fontSizePx tol 3 when the title is DOM-associated */
+  --ad-title-size: 14px;
 }
 
 body.defect-col-shift {
@@ -143,12 +254,12 @@ body.defect-side-spacing {
   left: 24px;
   top: 20px;
   width: 280px;
-  height: 32px;
+  height: auto;
   color: #0f172a;
   font-family: var(--font-display);
   font-size: var(--ad-title-size);
   font-weight: 700;
-  line-height: 32px;
+  line-height: 1.2;
 }
 
 .ad-search {
@@ -274,13 +385,17 @@ body.defect-side-spacing {
 
 .page-settings {
   --st-title-size: 26px;
+  --st-value-size: 13px;
   --st-value-left: 200px;
   --st-prefs-top: 300px;
   --st-save: #9a3412;
 }
 
 body.defect-title-size.page-settings {
-  --st-title-size: 20px;
+  /* Title drop + profile values (DOM-backed) so the seed stays measurable when h1
+     fails vision↔DOM association. */
+  --st-title-size: 14px;
+  --st-value-size: 6px;
 }
 
 body.defect-label-gap {
@@ -314,12 +429,12 @@ body.defect-pref-shift {
   left: 40px;
   top: 28px;
   width: 400px;
-  height: 34px;
+  height: auto;
   color: #1c1917;
   font-family: var(--font-display);
   font-size: var(--st-title-size);
   font-weight: 700;
-  line-height: 34px;
+  line-height: 1.2;
 }
 
 .st-card--profile {
@@ -379,7 +494,7 @@ body.defect-pref-shift {
   background: #fafaf9;
   border: 1px solid #d6d3d1;
   color: #1c1917;
-  font-size: 13px;
+  font-size: var(--st-value-size);
   font-weight: 400;
   line-height: 32px;
 }

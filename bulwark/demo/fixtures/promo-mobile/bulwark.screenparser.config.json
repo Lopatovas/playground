@@ -35,14 +35,47 @@
   "tolerances": {
     "spacingPx": 2,
     "positionPx": 2,
-    "fontSizePx": 1,
+    "fontSizePx": 3,
     "deltaE": 4,
     "minFamilyMargin": 0.02
   },
   "typography": {
     "candidateFamilies": [
-      "Mark Pro",
-      "Open Sans"
+      "Exo 2"
+    ],
+    "profiles": [
+      {
+        "family": "Exo 2",
+        "aliases": [],
+        "visualToCssRatio": 0.644,
+        "weightBands": [
+          {
+            "weight": 300,
+            "minStrokeDensity": 0,
+            "maxStrokeDensity": 0.13
+          },
+          {
+            "weight": 400,
+            "minStrokeDensity": 0.13,
+            "maxStrokeDensity": 0.25
+          },
+          {
+            "weight": 500,
+            "minStrokeDensity": 0.25,
+            "maxStrokeDensity": 0.32
+          },
+          {
+            "weight": 600,
+            "minStrokeDensity": 0.32,
+            "maxStrokeDensity": 0.38
+          },
+          {
+            "weight": 700,
+            "minStrokeDensity": 0.38,
+            "maxStrokeDensity": 1
+          }
+        ]
+      }
     ]
   },
   "output": {

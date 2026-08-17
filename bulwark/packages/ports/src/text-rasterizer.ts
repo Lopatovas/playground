@@ -31,6 +31,16 @@ export interface TextRenderResult {
 export interface TextRasterizer {
   readonly name: string;
   render(request: TextRenderRequest): Promise<TextRenderResult>;
+  /**
+   * Optional batch render of the same string at many sizes (one document).
+   * Used by size-fit to cut Playwright round-trips.
+   */
+  renderMany?(
+    request: Omit<TextRenderRequest, 'fontSizePx'>,
+    sizesPx: readonly number[],
+  ): Promise<readonly (TextRenderResult & { readonly fontSizePx: number })[]>;
   /** Families the renderer can actually resolve, for start-up validation. */
   listAvailableFamilies?(): Promise<readonly string[]>;
+  /** Release browsers / pages held open across renders. */
+  close?(): Promise<void>;
 }

@@ -84,3 +84,16 @@ raw `totalDefects`.
 For the **color gate**, use seed↔defect hex matching (descriptions like
 `#live instead of #design`). Accepted baseline, architecture notes, and future
 work: [docs/color-gate.md](../../docs/color-gate.md).
+
+## Typography fonts
+
+Each fixture declares calibrated faces in its Bulwark configs (see
+[`font-kits.json`](./font-kits.json)). Refresh after kit changes:
+
+```sh
+node demo/scripts/apply-fixture-font-kits.mjs
+node demo/scripts/calibrate-font-profiles.mjs --write-configs
+node demo/scripts/capture-fixture-designs.mjs
+```
+
+Notes: [docs/typography.md](../../docs/typography.md).

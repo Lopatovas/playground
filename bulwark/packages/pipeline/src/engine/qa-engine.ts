@@ -192,6 +192,8 @@ export class QaEngine {
         candidateFamilies: this.config.checks.fontFamily
           ? this.config.typography.candidateFamilies
           : [],
+        enableSizeFit: this.config.typography.enableSizeFit,
+        preferPageTextBoxes: this.config.typography.preferPageTextBoxes,
       },
     );
     const typographyMeasurements = await typographyMeasurer.measure(
@@ -208,11 +210,28 @@ export class QaEngine {
       designPixelRatio: this.config.design.pixelRatio,
       checkFontWeight: this.config.checks.fontWeight,
       checkFontFamily: this.config.checks.fontFamily,
+      weightBandMargin: 0.04,
+      minWeightGap: 300,
+      minInkHeightPx: 6,
+      minInkBoxFill: 0.45,
+      largeSizeDeltaPx: 6,
+      minInkBoxFillLargeDelta: 0.35,
     });
     if (this.config.checks.fontSize) defects.push(...typography.sizeDefects);
     defects.push(...typography.weightDefects, ...typography.familyDefects);
     for (const skipped of typography.skipped) {
       warnings.push(`Skipped typography for "${skipped.measurement.text}": ${skipped.reason}`);
+    }
+    for (const unreliable of typography.unreliableSize) {
+      warnings.push(
+        `Suppressed font-size for "${unreliable.measurement.text}": ${unreliable.reason}`,
+      );
+    }
+    if (typography.undeclaredStacks.length > 0) {
+      warnings.push(
+        `Undeclared live font stack(s) (size/weight used declared profiles; ` +
+          `family reported once per stack): ${typography.undeclaredStacks.join('; ')}`,
+      );
     }
 
     const colorMeasurer = new ColorMeasurer(

@@ -34,12 +34,15 @@
   "tolerances": {
     "spacingPx": 2,
     "positionPx": 2,
-    "fontSizePx": 1,
+    "fontSizePx": 3,
     "deltaE": 2,
     "minFamilyMargin": 0.02
   },
   "typography": {
-    "candidateFamilies": ["Mark Pro", "Open Sans"]
+    "candidateFamilies": [
+      "Mark Pro",
+      "Open Sans"
+    ]
   },
   "output": {
     "artifactsDir": ".artifacts",

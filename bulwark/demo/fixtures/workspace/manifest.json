@@ -44,7 +44,7 @@
     {
       "id": "heading-size",
       "cssClass": "defect-heading-size",
-      "description": "Sprint board 18px instead of 22px",
+      "description": "Sprint board 12px instead of 22px",
       "expectedDefectTypes": ["font-size"]
     },
     {

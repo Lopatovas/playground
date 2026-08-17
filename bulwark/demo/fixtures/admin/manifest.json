@@ -47,7 +47,7 @@
     {
       "id": "title-size",
       "cssClass": "defect-title-size",
-      "description": "Customers heading 18px instead of 24px",
+      "description": "Customers heading 14px instead of 24px",
       "expectedDefectTypes": ["font-size"]
     },
     {

@@ -24,7 +24,7 @@ describe('parseConfig', () => {
     expect(config.tolerances).toEqual({
       spacingPx: 2,
       positionPx: 2,
-      fontSizePx: 1,
+      fontSizePx: 3,
       deltaE: 4,
       minFamilyMargin: 0.02,
     });
@@ -45,6 +45,8 @@ describe('parseConfig', () => {
     expect(config.color.maxInkShareMismatch).toBe(0.55);
     expect(config.color.solidRegionProposal).toBe(true);
     expect(config.typography.candidateFamilies).toEqual(['Mark Pro', 'Open Sans']);
+    expect(config.typography.enableSizeFit).toBe(false);
+    expect(config.typography.preferPageTextBoxes).toBe(false);
     expect(config.output.artifactsDir).toBe('.artifacts');
     expect(config.output.failOnDefects).toBe(true);
   });
@@ -87,7 +89,7 @@ describe('parseConfig', () => {
     expect(config.tolerances.spacingPx).toBe(4);
     expect(config.tolerances.deltaE).toBe(3);
     // Untouched siblings still receive their defaults.
-    expect(config.tolerances.fontSizePx).toBe(1);
+    expect(config.tolerances.fontSizePx).toBe(3);
     expect(config.services.recognizer).toMatchObject({ kind: 'paddleocr', timeoutMs: 60_000 });
     expect(config.services.cacheDir).toBe('.bulwark-cache');
   });

@@ -1,5 +1,11 @@
 import type { BoundingBox, DetectedElement, ElementKind, Size, SurfaceId } from '@bulwark/domain';
-import { compareElementsInReadingOrder, intersectionOverUnion, scaleBox } from '@bulwark/domain';
+import {
+  boxArea,
+  boxIntersection,
+  compareElementsInReadingOrder,
+  intersectionOverUnion,
+  scaleBox,
+} from '@bulwark/domain';
 import type { DetectionResult, LiveDomElement } from '@bulwark/ports';
 
 /**
@@ -100,8 +106,9 @@ export interface DomAssociation {
  * and the stylesheet says 18px" instead of only "these pixels differ".
  *
  * Where several nodes cover the same region — a button wrapping a span wrapping text —
- * the deepest node that carries text wins for text elements, since that is the node
- * whose font actually applies.
+ * the deepest node that carries text wins for text-bearing detections, since that is
+ * the node whose font actually applies. ScreenParser labels buttons as `icon`, so
+ * icons get the same text-leaf preference as `text`.
  */
 export function associateDomElements(
   elements: readonly SurfaceElement[],
@@ -112,19 +119,37 @@ export function associateDomElements(
   const unassociated: string[] = [];
 
   for (const surfaceElement of elements) {
-    const wantsText = surfaceElement.element.kind === 'text';
+    const wantsText = prefersTextLeaf(surfaceElement.element.kind);
     const overlapping = domElements
-      .map((dom) => ({ dom, iou: intersectionOverUnion(surfaceElement.element.box, dom.box) }))
-      .filter((candidate) => candidate.iou >= options.minIou);
+      .map((dom) => ({
+        dom,
+        iou: intersectionOverUnion(surfaceElement.element.box, dom.box),
+        containment: containmentRatio(dom.box, surfaceElement.element.box),
+      }))
+      .filter((candidate) =>
+        wantsText
+          ? candidate.iou >= options.minIou || candidate.containment >= 0.7
+          : candidate.iou >= options.minIou,
+      );
 
-    // A text element prefers a node that actually renders text, but falls back to
-    // the best geometric match rather than losing its styles entirely.
+    // A text-bearing element prefers a node that actually renders text, but falls
+    // back to the best geometric match rather than losing its styles entirely.
     const textCarrying = overlapping.filter((candidate) => candidate.dom.text !== null);
-    const candidates = wantsText && textCarrying.length > 0 ? textCarrying : overlapping;
+    const usingTextLeaves = wantsText && textCarrying.length > 0;
+    const candidates = usingTextLeaves ? textCarrying : overlapping;
 
     candidates.sort((a, b) => {
-      if (a.iou !== b.iou) return b.iou - a.iou;
-      if (a.dom.depth !== b.dom.depth) return b.dom.depth - a.dom.depth;
+      if (usingTextLeaves) {
+        // Prefer the tightest text leaf still inside the vision box (label vs chrome).
+        const areaA = boxArea(a.dom.box);
+        const areaB = boxArea(b.dom.box);
+        if (areaA !== areaB) return areaA - areaB;
+        if (a.dom.depth !== b.dom.depth) return b.dom.depth - a.dom.depth;
+        if (a.iou !== b.iou) return b.iou - a.iou;
+      } else {
+        if (a.iou !== b.iou) return b.iou - a.iou;
+        if (a.dom.depth !== b.dom.depth) return b.dom.depth - a.dom.depth;
+      }
       return a.dom.id < b.dom.id ? -1 : 1;
     });
 
@@ -146,6 +171,23 @@ export function associateDomElements(
   }
 
   return { elements: associated, unassociatedElementIds: unassociated };
+}
+
+/**
+ * Detector kinds that usually wrap or are labelled text (ScreenParser maps Button →
+ * `icon`). Pure `image` stays geometry-only so decorative photos don't steal nearby copy.
+ */
+export function prefersTextLeaf(kind: ElementKind): boolean {
+  return kind === 'text' || kind === 'icon' || kind === 'container' || kind === 'unknown';
+}
+
+/** Share of `inner` that sits inside `outer` (1 = fully contained). */
+function containmentRatio(inner: BoundingBox, outer: BoundingBox): number {
+  const area = boxArea(inner);
+  if (!(area > 0)) return 0;
+  const overlap = boxIntersection(inner, outer);
+  if (overlap === null) return 0;
+  return boxArea(overlap) / area;
 }
 
 /** Classifies a DOM node when the live surface is read from the DOM alone. */

@@ -1,13 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { createBox } from '@bulwark/domain';
 import type { DetectionResult, LiveDomElement } from '@bulwark/ports';
-import { associateDomElements, domElementKind, normalizeDetection } from './normalize.js';
+import { associateDomElements, domElementKind, normalizeDetection, prefersTextLeaf } from './normalize.js';
 
 function detection(
   regions: readonly {
     box: readonly [number, number, number, number];
     label: string;
-    kind?: 'text' | 'icon' | 'container';
+    kind?: 'text' | 'icon' | 'container' | 'image' | 'unknown';
   }[],
   size = { width: 800, height: 600 },
 ): DetectionResult {
@@ -210,14 +210,61 @@ describe('associateDomElements', () => {
     expect(result.elements[0]?.dom).toBeUndefined();
   });
 
-  it('honours a stricter overlap requirement', () => {
-    const loose = domElement({ id: 'main', box: createBox(40, 180, 400, 300) });
-    expect(associateDomElements(elements, [loose], { minIou: 0.9 }).unassociatedElementIds).toEqual(
-      ['live-001'],
+  it('prefers a text leaf inside Button/icon chrome over the wrapper', () => {
+    const iconElements = normalizeDetection(
+      detection([{ box: [56, 192, 256, 240], label: 'Button', kind: 'icon' }]),
+      { surface: 'live', pixelRatio: 1, imageSize: { width: 800, height: 600 } },
     );
-    expect(associateDomElements(elements, [loose], { minIou: 0.2 }).unassociatedElementIds).toEqual(
-      [],
+    const wrapper = domElement({
+      id: 'main>button',
+      box: createBox(56, 192, 256, 240),
+      tagName: 'button',
+      depth: 3,
+    });
+    const label = domElement({
+      id: 'main>button>span',
+      box: createBox(80, 204, 220, 228),
+      tagName: 'span',
+      text: 'Sign in',
+      depth: 4,
+    });
+
+    const result = associateDomElements(iconElements, [wrapper, label]);
+    expect(result.elements[0]?.dom?.id).toBe('main>button>span');
+    expect(result.elements[0]?.element.text).toBe('Sign in');
+  });
+
+  it('does not force text leaves onto pure image detections', () => {
+    const imageElements = normalizeDetection(
+      detection([{ box: [56, 192, 256, 240], label: 'Hero', kind: 'image' }]),
+      { surface: 'live', pixelRatio: 1, imageSize: { width: 800, height: 600 } },
     );
+    const photo = domElement({
+      id: 'main>img',
+      box: createBox(56, 192, 256, 240),
+      tagName: 'img',
+      depth: 3,
+    });
+    const caption = domElement({
+      id: 'main>p',
+      box: createBox(60, 200, 200, 230),
+      tagName: 'p',
+      text: 'Caption',
+      depth: 3,
+    });
+
+    const result = associateDomElements(imageElements, [photo, caption]);
+    expect(result.elements[0]?.dom?.id).toBe('main>img');
+  });
+});
+
+describe('prefersTextLeaf', () => {
+  it('treats text, icon, container, and unknown as text-bearing', () => {
+    expect(prefersTextLeaf('text')).toBe(true);
+    expect(prefersTextLeaf('icon')).toBe(true);
+    expect(prefersTextLeaf('container')).toBe(true);
+    expect(prefersTextLeaf('unknown')).toBe(true);
+    expect(prefersTextLeaf('image')).toBe(false);
   });
 });
 

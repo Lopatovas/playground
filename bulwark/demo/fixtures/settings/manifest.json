@@ -33,7 +33,7 @@
     {
       "id": "title-size",
       "cssClass": "defect-title-size",
-      "description": "Account settings 20px instead of 26px",
+      "description": "Account settings 14px instead of 26px (profile values 6px instead of 13px)",
       "expectedDefectTypes": ["font-size"]
     },
     {

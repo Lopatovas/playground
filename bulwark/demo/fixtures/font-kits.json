@@ -1,0 +1,138 @@
+{
+  "description": "Per-fixture design typefaces for typography stress. Each fixture is a small closed set; profiles are calibrated into Bulwark configs.",
+  "defaultWeightBands": [
+    { "weight": 300, "minStrokeDensity": 0, "maxStrokeDensity": 0.13 },
+    { "weight": 400, "minStrokeDensity": 0.13, "maxStrokeDensity": 0.25 },
+    { "weight": 500, "minStrokeDensity": 0.25, "maxStrokeDensity": 0.32 },
+    { "weight": 600, "minStrokeDensity": 0.32, "maxStrokeDensity": 0.38 },
+    { "weight": 700, "minStrokeDensity": 0.38, "maxStrokeDensity": 1 }
+  ],
+  "fixtures": {
+    "landing": {
+      "body": "Open Sans",
+      "display": "Open Sans",
+      "googleCss": "https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap",
+      "pageClass": "page-landing",
+      "html": "landing.html"
+    },
+    "workspace": {
+      "body": "DM Sans",
+      "display": "DM Sans",
+      "googleCss": "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&display=swap",
+      "pageClass": "page-complex",
+      "html": ["workspace.html", "complex.html"]
+    },
+    "admin": {
+      "body": "Source Sans 3",
+      "display": "Source Sans 3",
+      "googleCss": "https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap",
+      "pageClass": "page-admin",
+      "html": "admin.html"
+    },
+    "settings": {
+      "body": "Nunito",
+      "display": "Nunito",
+      "googleCss": "https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap",
+      "pageClass": "page-settings",
+      "html": "settings.html"
+    },
+    "mobile-feed": {
+      "body": "Rubik",
+      "display": "Rubik",
+      "googleCss": "https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;700&display=swap",
+      "pageClass": "page-mobile-feed",
+      "html": "mobile-feed.html"
+    },
+    "brand-hero": {
+      "body": "Outfit",
+      "display": "Oswald",
+      "googleCss": "https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Oswald:wght@600;700&display=swap",
+      "pageClass": "page-brand-hero",
+      "html": "brand-hero.html"
+    },
+    "pricing": {
+      "body": "Manrope",
+      "display": "Manrope",
+      "googleCss": "https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap",
+      "pageClass": "page-pricing",
+      "html": "pricing.html"
+    },
+    "dashboard-vivid": {
+      "body": "Space Grotesk",
+      "display": "Space Grotesk",
+      "googleCss": "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap",
+      "pageClass": "page-dashboard-vivid",
+      "html": "dashboard-vivid.html"
+    },
+    "promo-mobile": {
+      "body": "Exo 2",
+      "display": "Exo 2",
+      "googleCss": "https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800&display=swap",
+      "pageClass": "page-promo-mobile",
+      "html": "promo-mobile.html"
+    },
+    "eshop": {
+      "body": "Poppins",
+      "display": "Poppins",
+      "googleCss": "https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap",
+      "pageClass": "page-eshop",
+      "html": "eshop.html"
+    },
+    "marketplace": {
+      "body": "Mulish",
+      "display": "Mulish",
+      "googleCss": "https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800&display=swap",
+      "pageClass": "page-marketplace",
+      "html": "marketplace.html"
+    },
+    "food-delivery": {
+      "body": "Outfit",
+      "display": "Outfit",
+      "googleCss": "https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap",
+      "pageClass": "page-food-delivery",
+      "html": "food-delivery.html"
+    },
+    "booking": {
+      "body": "Libre Franklin",
+      "display": "Libre Franklin",
+      "googleCss": "https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;600;700;800&display=swap",
+      "pageClass": "page-booking",
+      "html": "booking.html"
+    },
+    "fintech": {
+      "body": "Sora",
+      "display": "Sora",
+      "googleCss": "https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap",
+      "pageClass": "page-fintech",
+      "html": "fintech.html"
+    },
+    "docs": {
+      "body": "Source Serif 4",
+      "display": "Source Serif 4",
+      "googleCss": "https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap",
+      "pageClass": "page-docs",
+      "html": "docs.html"
+    },
+    "portfolio": {
+      "body": "Work Sans",
+      "display": "Cormorant Garamond",
+      "googleCss": "https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700&family=Cormorant+Garamond:wght@600;700&display=swap",
+      "pageClass": "page-portfolio",
+      "html": "portfolio.html"
+    },
+    "analytics-web": {
+      "body": "IBM Plex Sans",
+      "display": "IBM Plex Serif",
+      "googleCss": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@600&display=swap",
+      "pageClass": "page-analytics-web",
+      "html": "analytics-web.html"
+    },
+    "analytics-mobile": {
+      "body": "IBM Plex Sans",
+      "display": "IBM Plex Sans",
+      "googleCss": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+      "pageClass": "page-analytics-mobile",
+      "html": "analytics-mobile.html"
+    }
+  }
+}

@@ -2,10 +2,11 @@ import { describe, expect, it } from 'vitest';
 import {
   DEFAULT_TYPOGRAPHY_CHECK_OPTIONS,
   checkTypography,
+  shouldEmitWeightDefect,
   typographyDefects,
 } from './typography-check.js';
 import type { TextMeasurement } from './typography-check.js';
-import { FontRegistry } from '../typography/font-profile.js';
+import { FontRegistry, OPEN_SANS_PROFILE } from '../typography/font-profile.js';
 import { createBox } from '../geometry/box.js';
 
 function measurement(overrides: Partial<TextMeasurement> = {}): TextMeasurement {
@@ -54,7 +55,7 @@ describe('checkTypography', () => {
       expectedCssPx: 24,
       actualCssPx: 18,
       deltaPx: -6,
-      tolerancePx: 1,
+      tolerancePx: 3,
       fontFamily: 'Mark Pro',
       visualToCssRatio: 0.82,
       designElementId: 'cta-label',
@@ -63,12 +64,39 @@ describe('checkTypography', () => {
     expect(result.sizeDefects[0]?.message).toContain('browser reports 18px');
   });
 
-  it('tolerates a one-pixel rounding difference', () => {
+  it('tolerates up to three pixels of ink/CSS disagreement', () => {
     const result = checkTypography([
-      measurement({ live: { fontFamilyStack: 'Mark Pro', fontSizePx: 25, fontWeight: 400 } }),
+      measurement({ live: { fontFamilyStack: 'Mark Pro', fontSizePx: 27, fontWeight: 400 } }),
     ]);
     expect(result.sizeDefects).toHaveLength(0);
-    expect(result.findings[0]?.fontSizeDeltaPx).toBe(1);
+    expect(result.findings[0]?.fontSizeDeltaPx).toBe(3);
+  });
+
+  it('flags a four-pixel size drift', () => {
+    const result = checkTypography([
+      measurement({ live: { fontFamilyStack: 'Mark Pro', fontSizePx: 28, fontWeight: 400 } }),
+    ]);
+    expect(result.sizeDefects).toHaveLength(1);
+    expect(result.sizeDefects[0]?.deltaPx).toBe(4);
+  });
+
+  it("uses the live family's ratio even when SSIM prefers another face", () => {
+    const result = checkTypography([
+      measurement({
+        visualHeightPx: 17,
+        familyScores: [
+          { family: 'Open Sans', score: 0.95 },
+          { family: 'Mark Pro', score: 0.6 },
+        ],
+        live: { fontFamilyStack: '"Mark Pro", sans-serif', fontSizePx: 21, fontWeight: 400 },
+      }),
+    ]);
+
+    // 17 / 0.82 Mark Pro ≈ 21; Open Sans 0.85 would have yielded 20.
+    expect(result.findings[0]?.expectedCssFontSizePx).toBe(21);
+    expect(result.findings[0]?.visualToCssRatio).toBe(0.82);
+    expect(result.findings[0]?.expectedFamily).toBe('Open Sans');
+    expect(result.familyDefects).toHaveLength(1);
   });
 
   it('uses the family-specific ratio, so the same ink height implies different sizes', () => {
@@ -88,6 +116,38 @@ describe('checkTypography', () => {
     expect(openSans.findings[0]?.expectedCssFontSizePx).toBe(20);
   });
 
+  it('suppresses small size deltas when the design crop is ink-poor', () => {
+    const result = checkTypography([
+      measurement({
+        // Tall box, short ink → fill ~0.23; |Δ|=4 needs fill ≥ 0.45.
+        designBox: createBox(40, 160, 200, 190),
+        visualHeightPx: 7,
+        live: { fontFamilyStack: 'Mark Pro', fontSizePx: 13, fontWeight: 400 },
+      }),
+    ]);
+    expect(result.findings[0]?.expectedCssFontSizePx).toBe(9);
+    expect(result.findings[0]?.fontSizeDeltaPx).toBe(4);
+    expect(result.findings[0]?.inkSizeReliable).toBe(false);
+    expect(result.sizeDefects).toHaveLength(0);
+    expect(result.unreliableSize).toHaveLength(1);
+    expect(result.unreliableSize[0]?.reason).toMatch(/fills/i);
+  });
+
+  it('still flags seed-scale size drops on moderately padded line boxes', () => {
+    const result = checkTypography([
+      measurement({
+        // ink 18 → expected 22; live 14 → |Δ|=8; fill = 18/40 = 0.45 ≥ large-delta floor 0.35.
+        designBox: createBox(40, 160, 200, 200),
+        visualHeightPx: 18,
+        live: { fontFamilyStack: 'Mark Pro', fontSizePx: 14, fontWeight: 400 },
+      }),
+    ]);
+    expect(result.findings[0]?.expectedCssFontSizePx).toBe(22);
+    expect(result.findings[0]?.fontSizeDeltaPx).toBe(-8);
+    expect(result.findings[0]?.inkSizeReliable).toBe(true);
+    expect(result.sizeDefects).toHaveLength(1);
+  });
+
   it('scales ink measured from a 2x design export back to CSS pixels', () => {
     const result = checkTypography([measurement({ visualHeightPx: 39.36 })], new FontRegistry(), {
       ...DEFAULT_TYPOGRAPHY_CHECK_OPTIONS,
@@ -97,7 +157,7 @@ describe('checkTypography', () => {
     expect(result.sizeDefects).toHaveLength(0);
   });
 
-  it('flags a bold design rendered at regular weight', () => {
+  it('flags a bold design rendered at regular weight (large weight gap)', () => {
     const result = checkTypography([measurement({ strokeDensity: 0.41 })]);
 
     expect(result.weightDefects).toHaveLength(1);
@@ -109,6 +169,29 @@ describe('checkTypography', () => {
       strokeDensity: 0.41,
     });
     expect(result.weightDefects[0]?.message).toContain('41% ink coverage');
+  });
+
+  it('ignores Δ200 weight gaps as density noise', () => {
+    const result = checkTypography([
+      measurement({
+        strokeDensity: 0.33, // classifies as 600
+        live: { fontFamilyStack: 'Mark Pro', fontSizePx: 24, fontWeight: 400 },
+      }),
+    ]);
+    expect(result.findings[0]?.expectedFontWeight).toBe(600);
+    expect(result.weightDefects).toHaveLength(0);
+  });
+
+  it('ignores one-notch weight jitter inside the live band margin', () => {
+    // Density classifies as 700 (>=0.38) but sits near the 600/700 edge; live is 600.
+    const result = checkTypography([
+      measurement({
+        strokeDensity: 0.39,
+        live: { fontFamilyStack: 'Mark Pro', fontSizePx: 24, fontWeight: 600 },
+      }),
+    ]);
+    expect(result.findings[0]?.expectedFontWeight).toBe(700);
+    expect(result.weightDefects).toHaveLength(0);
   });
 
   it('flags the wrong family when the reference render is a clear winner', () => {
@@ -173,11 +256,11 @@ describe('checkTypography', () => {
     expect(result.familyDefects).toHaveLength(0);
   });
 
-  it('flags an unregistered live stack instead of skipping size/weight', () => {
+  it('flags an undeclared live stack using a declared profile for size/weight', () => {
     const result = checkTypography([
       measurement({
         familyScores: [],
-        visualHeightPx: 10.2, // ~12px Open Sans
+        visualHeightPx: 10.2,
         strokeDensity: 0.42,
         live: {
           fontFamilyStack: 'Georgia, "Times New Roman", serif',
@@ -187,25 +270,53 @@ describe('checkTypography', () => {
       }),
     ]);
 
-    expect(result.skipped).toHaveLength(0);
-    expect(result.findings).toHaveLength(1);
+    expect(result.undeclaredStacks.some((s) => s.includes('Georgia'))).toBe(true);
     expect(result.familyDefects).toHaveLength(1);
     expect(result.familyDefects[0]?.actualFamily).toContain('Georgia');
+    expect(result.familyDefects[0]?.message).toContain('undeclared font stack');
+    // Size/weight still run against a declared profile (Open Sans first alphabetically
+    // among defaults when Mark Pro wins the name sort — registry sorts by family).
+    expect(result.findings.length).toBe(1);
     expect(result.sizeDefects.length + result.weightDefects.length).toBeGreaterThan(0);
   });
 
-  it('skips only when the registry itself has no usable ratio', () => {
-    // Empty registry can't be constructed; an empty-score Comic Sans pick with a
-    // registry that doesn't include that family still falls back to Open Sans.
+  it('lists undeclared stacks once when many nodes share the same wrong face', () => {
+    const stack = 'Georgia, "Times New Roman", serif';
     const result = checkTypography([
       measurement({
-        familyScores: [{ family: 'Comic Sans MS', score: 0.99 }],
-        live: { fontFamilyStack: 'Comic Sans MS, cursive', fontSizePx: 24, fontWeight: 400 },
+        designElementId: 'a',
+        liveElementId: 'a',
+        familyScores: [],
+        live: { fontFamilyStack: stack, fontSizePx: 16, fontWeight: 400 },
+      }),
+      measurement({
+        designElementId: 'b',
+        liveElementId: 'b',
+        text: 'Other',
+        familyScores: [],
+        live: { fontFamilyStack: stack, fontSizePx: 16, fontWeight: 400 },
       }),
     ]);
+    expect(result.undeclaredStacks).toEqual([stack]);
+    expect(result.familyDefects).toHaveLength(1);
+  });
 
-    expect(result.skipped).toHaveLength(0);
+  it('skips size/weight when the SSIM winner is not in the host registry and live is unknown', () => {
+    const emptyish = new FontRegistry([OPEN_SANS_PROFILE]);
+    const result = checkTypography(
+      [
+        measurement({
+          familyScores: [{ family: 'Comic Sans MS', score: 0.99 }],
+          live: { fontFamilyStack: 'Comic Sans MS, cursive', fontSizePx: 24, fontWeight: 400 },
+        }),
+      ],
+      emptyish,
+    );
+
+    // Live undeclared → falls back to Open Sans profile in registry for size/weight + family
+    expect(result.undeclaredStacks.length).toBe(1);
     expect(result.familyDefects[0]?.type).toBe('font-family');
+    expect(result.findings[0]?.expectedFamily).toBe('Open Sans');
   });
 
   it('measures against the live family when no reference renders were provided', () => {
@@ -227,5 +338,52 @@ describe('checkTypography', () => {
         designPixelRatio: 0,
       }),
     ).toThrow(RangeError);
+  });
+
+  it('prefers a confident render-fit size over ink÷ratio', () => {
+    const result = checkTypography([
+      measurement({
+        sizeFit: { cssFontSizePx: 18, score: 0.72, confident: true, method: 'render-fit' },
+        live: { fontFamilyStack: '"Mark Pro", sans-serif', fontSizePx: 24, fontWeight: 400 },
+      }),
+    ]);
+    expect(result.findings[0]?.sizeEstimateMethod).toBe('render-fit');
+    expect(result.findings[0]?.expectedCssFontSizePx).toBe(18);
+    expect(result.sizeDefects).toHaveLength(1);
+    expect(result.sizeDefects[0]?.message).toContain('render-fit');
+  });
+
+  it('ignores an unconfident render-fit and keeps ink÷ratio', () => {
+    const result = checkTypography([
+      measurement({
+        sizeFit: { cssFontSizePx: 30, score: 0.2, confident: false, method: 'render-fit' },
+      }),
+    ]);
+    expect(result.findings[0]?.sizeEstimateMethod).toBe('ink-ratio');
+    expect(result.findings[0]?.expectedCssFontSizePx).toBe(24);
+    expect(result.sizeDefects).toHaveLength(0);
+  });
+});
+
+describe('shouldEmitWeightDefect', () => {
+  it('suppresses gaps below the configured minimum and keeps large gaps', () => {
+    expect(
+      shouldEmitWeightDefect(0.39, 700, 600, OPEN_SANS_PROFILE, {
+        weightBandMargin: 0.04,
+        minWeightGap: 300,
+      }),
+    ).toBe(false);
+    expect(
+      shouldEmitWeightDefect(0.33, 600, 400, OPEN_SANS_PROFILE, {
+        weightBandMargin: 0.04,
+        minWeightGap: 300,
+      }),
+    ).toBe(false);
+    expect(
+      shouldEmitWeightDefect(0.41, 700, 400, OPEN_SANS_PROFILE, {
+        weightBandMargin: 0.04,
+        minWeightGap: 300,
+      }),
+    ).toBe(true);
   });
 });

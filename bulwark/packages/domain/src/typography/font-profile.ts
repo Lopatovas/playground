@@ -29,31 +29,42 @@ export interface FontProfile {
   readonly weightBands: readonly FontWeightBand[];
 }
 
-export const MARK_PRO_PROFILE: FontProfile = {
-  family: 'Mark Pro',
-  aliases: ['MarkPro', 'Mark Pro Regular', 'FF Mark Pro'],
-  visualToCssRatio: 0.82,
-  weightBands: [
-    { weight: 300, minStrokeDensity: 0, maxStrokeDensity: 0.13 },
-    { weight: 400, minStrokeDensity: 0.13, maxStrokeDensity: 0.25 },
-    { weight: 500, minStrokeDensity: 0.25, maxStrokeDensity: 0.32 },
-    { weight: 600, minStrokeDensity: 0.32, maxStrokeDensity: 0.38 },
-    { weight: 700, minStrokeDensity: 0.38, maxStrokeDensity: 1 },
-  ],
-};
+/**
+ * Shared density→weight bands used until a face is calibrated on real renders.
+ * Hosts should replace these after `calibrate-font-profiles` when weight QA matters.
+ */
+export const DEFAULT_WEIGHT_BANDS: readonly FontWeightBand[] = [
+  { weight: 300, minStrokeDensity: 0, maxStrokeDensity: 0.13 },
+  { weight: 400, minStrokeDensity: 0.13, maxStrokeDensity: 0.25 },
+  { weight: 500, minStrokeDensity: 0.25, maxStrokeDensity: 0.32 },
+  { weight: 600, minStrokeDensity: 0.32, maxStrokeDensity: 0.38 },
+  { weight: 700, minStrokeDensity: 0.38, maxStrokeDensity: 1 },
+];
 
-export const OPEN_SANS_PROFILE: FontProfile = {
-  family: 'Open Sans',
-  aliases: ['OpenSans', 'Open Sans Regular'],
-  visualToCssRatio: 0.85,
-  weightBands: [
-    { weight: 300, minStrokeDensity: 0, maxStrokeDensity: 0.13 },
-    { weight: 400, minStrokeDensity: 0.13, maxStrokeDensity: 0.25 },
-    { weight: 500, minStrokeDensity: 0.25, maxStrokeDensity: 0.32 },
-    { weight: 600, minStrokeDensity: 0.32, maxStrokeDensity: 0.38 },
-    { weight: 700, minStrokeDensity: 0.38, maxStrokeDensity: 1 },
-  ],
-};
+/** Builds a profile with default weight bands (ratio still must be calibrated). */
+export function fontProfile(
+  family: string,
+  visualToCssRatio: number,
+  aliases: readonly string[] = [],
+): FontProfile {
+  return {
+    family,
+    aliases,
+    visualToCssRatio,
+    weightBands: DEFAULT_WEIGHT_BANDS,
+  };
+}
+
+export const MARK_PRO_PROFILE: FontProfile = fontProfile('Mark Pro', 0.82, [
+  'MarkPro',
+  'Mark Pro Regular',
+  'FF Mark Pro',
+]);
+
+export const OPEN_SANS_PROFILE: FontProfile = fontProfile('Open Sans', 0.85, [
+  'OpenSans',
+  'Open Sans Regular',
+]);
 
 export const DEFAULT_FONT_PROFILES: readonly FontProfile[] = [MARK_PRO_PROFILE, OPEN_SANS_PROFILE];
 

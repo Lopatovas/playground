@@ -20,10 +20,16 @@ export interface PlaywrightTextRasterizerOptions {
  * Availability is measured rather than trusted: `document.fonts.check` reports true
  * for a family the browser will silently substitute, so the width of the string is
  * compared against the same string in a generic fallback.
+ *
+ * A single BrowserContext/Page is reused across renders. {@link renderMany} packs
+ * multiple sizes into one document for size-fit sweeps.
  */
 export class PlaywrightTextRasterizer implements TextRasterizer {
   readonly name = 'playwright-canvas';
   private browser: Browser | null = null;
+  private context: import('playwright').BrowserContext | null = null;
+  private page: Page | null = null;
+  private readonly availability = new Map<string, boolean>();
 
   constructor(private readonly options: PlaywrightTextRasterizerOptions = {}) {}
 
@@ -32,22 +38,19 @@ export class PlaywrightTextRasterizer implements TextRasterizer {
       throw new ServiceError(this.name, 'cannot render an empty string as a reference');
     }
 
-    const browser = await this.ensureBrowser();
-    const context = await browser.newContext({ deviceScaleFactor: 1, colorScheme: 'light' });
+    const page = await this.ensurePage();
     try {
-      const page = await context.newPage();
       await page.setContent(buildDocument(request), { waitUntil: 'load' });
       await page.evaluate(() => document.fonts.ready);
 
-      const available = await evaluateFontAvailability(
+      const available = await this.isFamilyAvailable(
         page,
         request.fontFamily,
         request.text,
         request.fontSizePx,
       );
 
-      const target = page.locator('#sample');
-      const buffer = await target.screenshot({ type: 'png', animations: 'disabled' });
+      const buffer = await page.locator('#sample').screenshot({ type: 'png', animations: 'disabled' });
       const raster = decodePng(new Uint8Array(buffer));
 
       return {
@@ -64,8 +67,59 @@ export class PlaywrightTextRasterizer implements TextRasterizer {
         {},
         { cause: error },
       );
-    } finally {
-      await context.close();
+    }
+  }
+
+  async renderMany(
+    request: Omit<TextRenderRequest, 'fontSizePx'>,
+    sizesPx: readonly number[],
+  ): Promise<readonly (TextRenderResult & { readonly fontSizePx: number })[]> {
+    if (request.text.trim().length === 0) {
+      throw new ServiceError(this.name, 'cannot render an empty string as a reference');
+    }
+    const uniqueSizes = [...new Set(sizesPx.map((size) => Math.round(size)))].filter(
+      (size) => size > 0,
+    );
+    if (uniqueSizes.length === 0) return [];
+
+    const page = await this.ensurePage();
+    try {
+      await page.setContent(buildMultiDocument(request, uniqueSizes), { waitUntil: 'load' });
+      await page.evaluate(() => document.fonts.ready);
+
+      const available = await this.isFamilyAvailable(
+        page,
+        request.fontFamily,
+        request.text,
+        uniqueSizes[0]!,
+      );
+      const resolvedFontFamily = available
+        ? request.fontFamily
+        : `${request.fontFamily} (substituted)`;
+
+      const results: (TextRenderResult & { readonly fontSizePx: number })[] = [];
+      for (const size of uniqueSizes) {
+        const buffer = await page
+          .locator(`#sample-${size}`)
+          .screenshot({ type: 'png', animations: 'disabled' });
+        const raster = decodePng(new Uint8Array(buffer));
+        results.push({
+          fontSizePx: size,
+          image: new Uint8Array(buffer),
+          width: raster.width,
+          height: raster.height,
+          resolvedFontFamily,
+        });
+      }
+      return results;
+    } catch (error) {
+      if (error instanceof ServiceError) throw error;
+      throw new ServiceError(
+        this.name,
+        `failed to batch-render "${request.text}" in ${request.fontFamily}`,
+        {},
+        { cause: error },
+      );
     }
   }
 
@@ -73,31 +127,50 @@ export class PlaywrightTextRasterizer implements TextRasterizer {
     const families = this.options.expectedFamilies ?? [];
     if (families.length === 0) return [];
 
-    const browser = await this.ensureBrowser();
-    const context = await browser.newContext();
-    try {
-      const page = await context.newPage();
-      await page.setContent('<body></body>');
-      await page.evaluate(() => document.fonts.ready);
-      const available: string[] = [];
-      for (const family of families) {
-        const isAvailable = await evaluateFontAvailability(
-          page,
-          family,
-          'HAMBURGEFONTSIV hamburgefonts',
-          48,
-        );
-        if (isAvailable) available.push(family);
-      }
-      return available;
-    } finally {
-      await context.close();
+    const page = await this.ensurePage();
+    await page.setContent('<body></body>');
+    await page.evaluate(() => document.fonts.ready);
+    const available: string[] = [];
+    for (const family of families) {
+      const isAvailable = await this.isFamilyAvailable(
+        page,
+        family,
+        'HAMBURGEFONTSIV hamburgefonts',
+        48,
+      );
+      if (isAvailable) available.push(family);
     }
+    return available;
   }
 
   async close(): Promise<void> {
+    await this.context?.close();
+    this.context = null;
+    this.page = null;
+    this.availability.clear();
     await this.browser?.close();
     this.browser = null;
+  }
+
+  private async isFamilyAvailable(
+    page: Page,
+    family: string,
+    text: string,
+    sizePx: number,
+  ): Promise<boolean> {
+    const cached = this.availability.get(family);
+    if (cached !== undefined) return cached;
+    const available = await evaluateFontAvailability(page, family, text, sizePx);
+    this.availability.set(family, available);
+    return available;
+  }
+
+  private async ensurePage(): Promise<Page> {
+    if (this.page !== null) return this.page;
+    const browser = await this.ensureBrowser();
+    this.context = await browser.newContext({ deviceScaleFactor: 1, colorScheme: 'light' });
+    this.page = await this.context.newPage();
+    return this.page;
   }
 
   private async ensureBrowser(): Promise<Browser> {
@@ -144,6 +217,38 @@ function buildDocument(request: TextRenderRequest): string {
   }
 </style></head>
 <body><span id="sample">${escapeHtml(request.text)}</span></body></html>`;
+}
+
+function buildMultiDocument(
+  request: Omit<TextRenderRequest, 'fontSizePx'>,
+  sizesPx: readonly number[],
+): string {
+  const letterSpacing =
+    request.letterSpacingPx === undefined ? 'normal' : `${request.letterSpacingPx}px`;
+  const samples = sizesPx
+    .map(
+      (size) =>
+        `<span id="sample-${size}" class="sample" style="font-size:${size}px">${escapeHtml(request.text)}</span>`,
+    )
+    .join('\n');
+  return `<!doctype html>
+<html><head><meta charset="utf-8"><style>
+  html, body { margin: 0; padding: 8px; background: ${escapeCss(request.backgroundColor)}; }
+  .sample {
+    display: block;
+    margin: 8px 0;
+    padding: 4px 6px;
+    background: ${escapeCss(request.backgroundColor)};
+    color: ${escapeCss(request.color)};
+    font-family: ${escapeCss(request.fontFamily)}, sans-serif;
+    font-weight: ${request.fontWeight};
+    letter-spacing: ${letterSpacing};
+    line-height: 1.2;
+    white-space: pre;
+    -webkit-font-smoothing: antialiased;
+  }
+</style></head>
+<body>${samples}</body></html>`;
 }
 
 function evaluateFontAvailability(

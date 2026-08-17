@@ -13,6 +13,8 @@ import {
   horizontalOverlap,
   inflateBox,
   intersectionOverUnion,
+  isMeaningfullyTighter,
+  mapRelativeBox,
   scaleBox,
   toPixelBox,
   translateBox,
@@ -150,5 +152,24 @@ describe('box transforms', () => {
       xMax: 110,
       yMax: 204,
     });
+  });
+
+  it('maps an inner rect onto a sibling outer by normalised coordinates', () => {
+    const fromOuter = createBox(0, 0, 100, 50);
+    const inner = createBox(10, 10, 90, 40);
+    const toOuter = createBox(200, 100, 400, 200);
+    expect(mapRelativeBox(fromOuter, inner, toOuter)).toEqual({
+      xMin: 220,
+      yMin: 120,
+      xMax: 380,
+      yMax: 180,
+    });
+  });
+
+  it('detects meaningfully tighter text leaves inside chrome', () => {
+    const chrome = createBox(0, 0, 200, 48);
+    const label = createBox(24, 12, 176, 36);
+    expect(isMeaningfullyTighter(chrome, label)).toBe(true);
+    expect(isMeaningfullyTighter(chrome, chrome)).toBe(false);
   });
 });

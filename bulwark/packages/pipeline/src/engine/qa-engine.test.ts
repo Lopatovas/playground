@@ -345,7 +345,7 @@ describe('QaEngine configuration', () => {
     expect(report.tolerances).toEqual({
       spacingPx: 2,
       positionPx: 2,
-      fontSizePx: 1,
+      fontSizePx: 3,
       deltaE: 4,
       minFamilyMargin: 0.02,
     });

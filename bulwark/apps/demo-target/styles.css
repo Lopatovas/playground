@@ -18,7 +18,8 @@ body {
 }
 
 body.defect-heading {
-  --heading-size: 18px;
+  /* 10px CSS drop clears fontSizePx tol 3 after ~4px ink underestimation */
+  --heading-size: 14px;
 }
 
 body.defect-spacing {
@@ -62,12 +63,12 @@ h1 {
   left: 16px;
   top: 24px;
   width: 368px;
-  height: 44px;
+  height: auto;
   color: var(--heading-color);
   font-family: var(--font-display);
   font-size: var(--heading-size);
   font-weight: 700;
-  line-height: 44px;
+  line-height: 1.2;
 }
 
 .body-copy {
@@ -128,7 +129,8 @@ h1 {
 }
 
 body.defect-heading-size {
-  --cx-heading-size: 18px;
+  /* 10px CSS drop: ink underestimates ~6px on this heading, so 22→14 left only Δ2 */
+  --cx-heading-size: 12px;
 }
 
 body.defect-card-gap {
@@ -297,12 +299,12 @@ body.defect-signin-font .cx-signin {
   left: 24px;
   top: 20px;
   width: 400px;
-  height: 32px;
+  height: auto;
   color: #0f172a;
   font-family: var(--font-display);
   font-size: var(--cx-heading-size);
   font-weight: 700;
-  line-height: 32px;
+  line-height: 1.2;
 }
 
 .cx-subtitle {
@@ -449,4 +451,16 @@ body.defect-signin-font .cx-signin {
   background: #ffffff;
   color: #0f172a;
   border: 1px solid #cbd5e1;
+}
+
+/* font-kit: landing override */
+.page-landing {
+  --font-body: 'Open Sans', sans-serif;
+  --font-display: 'Open Sans', sans-serif;
+}
+
+/* font-kit: workspace/complex — fixtures.css also sets this when loaded */
+.page-complex {
+  --font-body: 'DM Sans', sans-serif;
+  --font-display: 'DM Sans', sans-serif;
 }

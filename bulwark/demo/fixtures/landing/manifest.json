@@ -19,7 +19,7 @@
     {
       "id": "heading",
       "cssClass": "defect-heading",
-      "description": "Heading font-size 18px instead of 24px",
+      "description": "Heading font-size 14px instead of 24px",
       "expectedDefectTypes": ["font-size", "position"]
     },
     {
