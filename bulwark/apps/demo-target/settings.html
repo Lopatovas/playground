@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bulwark · Settings</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/fixtures.css" />
+  </head>
+  <body class="page-settings __PAGE_CLASSES__">
+    <main class="scene scene--settings" aria-label="Settings form fixture, __PAGE_VARIANT__ variant">
+      <p id="defect-summary" class="sr-only">__DEFECT_SUMMARY__</p>
+
+      <h1 class="st-title">Account settings</h1>
+
+      <section class="st-card st-card--profile">
+        <h2 class="st-section">Profile</h2>
+        <div class="st-label st-label--name">Full name</div>
+        <div class="st-value st-value--name">Ada Lovelace</div>
+        <div class="st-label st-label--email">Email</div>
+        <div class="st-value st-value--email">ada@analytical.engine</div>
+        <div class="st-label st-label--company">Company</div>
+        <div class="st-value st-value--company">Difference Engines</div>
+      </section>
+
+      <section class="st-card st-card--prefs">
+        <h2 class="st-section">Preferences</h2>
+        <div class="st-pref st-pref--1">
+          <span class="st-pref-label">Email digests</span>
+          <span class="st-pref-state">On</span>
+        </div>
+        <div class="st-pref st-pref--2">
+          <span class="st-pref-label">Weekly summary</span>
+          <span class="st-pref-state">Off</span>
+        </div>
+        <div class="st-pref st-pref--3">
+          <span class="st-pref-label">Beta features</span>
+          <span class="st-pref-state">On</span>
+        </div>
+      </section>
+
+      <p class="st-hint">Changes apply to this workspace only</p>
+      <a class="st-btn st-btn--save" href="#save">Save changes</a>
+      <a class="st-btn st-btn--cancel" href="#cancel">Cancel</a>
+    </main>
+  </body>
+</html>

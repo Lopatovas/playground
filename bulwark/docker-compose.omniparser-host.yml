@@ -1,0 +1,22 @@
+# Use a detector running on the Mac host (real OmniParser YOLO) instead of the
+# heuristic container. Start host detector on :8801 first, then:
+#   docker compose -f docker-compose.yml -f docker-compose.omniparser-host.yml up -d --build
+services:
+  omniparser:
+    profiles: ['disabled-heuristic']
+
+  api:
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    environment:
+      BULWARK_CONFIG: /config/bulwark.config.json
+      BULWARK_ARTIFACTS_DIR: /data/artifacts
+      BULWARK_DASHBOARD_ORIGINS: http://localhost:8080,http://127.0.0.1:8080
+      PORT: '4190'
+    volumes:
+      - ./demo/complex/bulwark.host.config.json:/config/bulwark.config.json:ro
+      - ./demo/complex/design:/config/design:ro
+      - artifacts:/data/artifacts
+    depends_on:
+      demo-target:
+        condition: service_healthy

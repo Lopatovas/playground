@@ -1,0 +1,24 @@
+{
+  "name": "@bulwark/ports",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Boundary interfaces between Bulwark's pure analysis and the outside world",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -b --pretty",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@bulwark/domain": "workspace:*",
+    "@bulwark/imaging": "workspace:*"
+  }
+}

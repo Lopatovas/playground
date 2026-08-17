@@ -1,0 +1,96 @@
+{
+  "id": "brand-hero",
+  "name": "Brand hero marketing",
+  "description": "Saturated full-bleed marketing surface \u2014 loud CTA fill, headline ink, badge fills, link accent.",
+  "device": "desktop",
+  "viewport": {
+    "width": 800,
+    "height": 600,
+    "deviceScaleFactor": 1
+  },
+  "flattenBackground": "#ff2d55",
+  "routes": {
+    "correct": "/brand-hero",
+    "broken": "/brand-hero-broken"
+  },
+  "template": "brand-hero.html",
+  "sceneSelector": "main.scene",
+  "expectedLeafCount": 8,
+  "expectedLeaves": [
+    {
+      "id": "brand",
+      "text": "VoltPack",
+      "role": "text"
+    },
+    {
+      "id": "headline",
+      "text": "Ship loud color",
+      "role": "heading"
+    },
+    {
+      "id": "sub",
+      "text": "Marketing UIs",
+      "role": "text"
+    },
+    {
+      "id": "cta",
+      "text": "Start free",
+      "role": "button"
+    },
+    {
+      "id": "badge-live",
+      "text": "Live",
+      "role": "badge"
+    },
+    {
+      "id": "badge-fast",
+      "text": "Fast",
+      "role": "badge"
+    },
+    {
+      "id": "badge-bold",
+      "text": "Bold",
+      "role": "badge"
+    },
+    {
+      "id": "docs",
+      "text": "Read the docs",
+      "role": "link"
+    }
+  ],
+  "seeds": [
+    {
+      "id": "cta-color",
+      "cssClass": "defect-cta-color",
+      "description": "CTA fill #ff7a90 instead of #ff4d6d",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    },
+    {
+      "id": "headline-ink",
+      "cssClass": "defect-headline-ink",
+      "description": "Headline ink #fff1a8 instead of #ffe566",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    },
+    {
+      "id": "badge-color",
+      "cssClass": "defect-badge-color",
+      "description": "Badge fill #2dd4bf instead of #00c2a8",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    },
+    {
+      "id": "link-ink",
+      "cssClass": "defect-link-ink",
+      "description": "Docs link #fda4af instead of #ff8fab",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    }
+  ],
+  "detectionNotes": "Expect ~7\u201310 boxes. Stage fill is decorative; badges are small solid fills."
+}

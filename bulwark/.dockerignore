@@ -1,0 +1,15 @@
+**/node_modules
+**/dist
+**/dist-types
+**/coverage
+**/.artifacts
+**/.bulwark-cache
+**/.DS_Store
+**/*.log
+**/__pycache__
+**/*.tsbuildinfo
+.git
+.github
+docs
+demo/.artifacts
+**/.vite

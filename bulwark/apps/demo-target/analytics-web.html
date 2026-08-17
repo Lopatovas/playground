@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bulwark · Analytics web</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/fixtures.css" />
+  </head>
+  <body class="page-analytics-web __PAGE_CLASSES__">
+    <main
+      class="scene scene--analytics-web"
+      aria-label="Analytics web fixture, __PAGE_VARIANT__ variant"
+    >
+      <p id="defect-summary" class="sr-only">__DEFECT_SUMMARY__</p>
+
+      <header class="aw-top">
+        <p class="aw-brand">Northwind</p>
+        <h1 class="aw-title">Operations pulse</h1>
+        <a class="aw-range" href="#range">Last 30 days</a>
+        <button class="aw-export" type="button">Export CSV</button>
+      </header>
+
+      <article class="aw-kpi aw-kpi--a">
+        <h2 class="aw-kpi-label">Active users</h2>
+        <p class="aw-kpi-value aw-kpi-value--a">48.2k</p>
+        <p class="aw-kpi-delta aw-kpi-delta--up">+6.1%</p>
+      </article>
+      <article class="aw-kpi aw-kpi--b">
+        <h2 class="aw-kpi-label">Conversion</h2>
+        <p class="aw-kpi-value aw-kpi-value--b">3.8%</p>
+        <p class="aw-kpi-delta aw-kpi-delta--down">−0.4%</p>
+      </article>
+      <article class="aw-kpi aw-kpi--c">
+        <h2 class="aw-kpi-label">MRR</h2>
+        <p class="aw-kpi-value aw-kpi-value--c">$192k</p>
+        <p class="aw-kpi-delta aw-kpi-delta--up">+2.9%</p>
+      </article>
+      <article class="aw-kpi aw-kpi--d">
+        <h2 class="aw-kpi-label">Tickets</h2>
+        <p class="aw-kpi-value aw-kpi-value--d">126</p>
+        <p class="aw-kpi-delta aw-kpi-delta--flat">0.0%</p>
+      </article>
+
+      <section class="aw-panel aw-panel--pie" aria-label="Traffic mix pie chart">
+        <h2 class="aw-panel-title">Traffic mix</h2>
+        <div class="aw-pie" role="img" aria-label="Pie chart of traffic sources"></div>
+        <ul class="aw-legend">
+          <li class="aw-legend-item">
+            <span class="aw-swatch aw-swatch--organic"></span>
+            <span class="aw-legend-text">Organic</span>
+          </li>
+          <li class="aw-legend-item">
+            <span class="aw-swatch aw-swatch--paid"></span>
+            <span class="aw-legend-text">Paid</span>
+          </li>
+          <li class="aw-legend-item">
+            <span class="aw-swatch aw-swatch--referral"></span>
+            <span class="aw-legend-text">Referral</span>
+          </li>
+          <li class="aw-legend-item">
+            <span class="aw-swatch aw-swatch--direct"></span>
+            <span class="aw-legend-text">Direct</span>
+          </li>
+        </ul>
+      </section>
+
+      <section class="aw-panel aw-panel--bars" aria-label="Weekly revenue bars">
+        <h2 class="aw-panel-title">Weekly revenue</h2>
+        <div class="aw-bars" role="img" aria-label="Bar chart">
+          <div class="aw-bar aw-bar--1"></div>
+          <div class="aw-bar aw-bar--2"></div>
+          <div class="aw-bar aw-bar--3"></div>
+          <div class="aw-bar aw-bar--4"></div>
+          <div class="aw-bar aw-bar--5"></div>
+          <div class="aw-bar aw-bar--6"></div>
+          <div class="aw-bar aw-bar--7"></div>
+        </div>
+      </section>
+
+      <section class="aw-panel aw-panel--line" aria-label="Latency trend">
+        <h2 class="aw-panel-title">p95 latency</h2>
+        <svg class="aw-line" viewBox="0 0 360 120" role="img" aria-label="Line chart">
+          <polyline
+            class="aw-line-stroke"
+            fill="none"
+            points="8,88 58,72 108,78 158,44 208,52 258,30 308,38 352,22"
+          />
+          <circle class="aw-line-dot" cx="352" cy="22" r="5" />
+        </svg>
+        <p class="aw-line-meta">142 ms · within SLO</p>
+      </section>
+
+      <section class="aw-panel aw-panel--table" aria-label="Top funnels">
+        <h2 class="aw-panel-title">Top funnels</h2>
+        <div class="aw-row aw-row--1">
+          <span class="aw-row-name">Checkout</span>
+          <span class="aw-row-val">62%</span>
+        </div>
+        <div class="aw-row aw-row--2">
+          <span class="aw-row-name">Trial start</span>
+          <span class="aw-row-val">41%</span>
+        </div>
+        <div class="aw-row aw-row--3">
+          <span class="aw-row-name">Invite accept</span>
+          <span class="aw-row-val">28%</span>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

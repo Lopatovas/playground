@@ -1,0 +1,50 @@
+{
+  "name": "simple-heuristic",
+  "target": {
+    "url": "http://demo-target:4173/broken",
+    "viewport": {
+      "width": 800,
+      "height": 600,
+      "deviceScaleFactor": 1
+    },
+    "fullPage": false,
+    "waitForSelector": "main.scene",
+    "settleMs": 100,
+    "stabilize": true
+  },
+  "design": {
+    "imagePath": "design/figma-screenshot.png",
+    "pixelRatio": 1,
+    "flattenBackground": "#f8fafc"
+  },
+  "services": {
+    "detector": {
+      "kind": "omniparser",
+      "baseUrl": "http://omniparser-heuristic:8801",
+      "timeoutMs": 60000
+    },
+    "recognizer": {
+      "kind": "ink-projection"
+    },
+    "rasterizer": {
+      "kind": "disabled"
+    }
+  },
+  "tolerances": {
+    "spacingPx": 2,
+    "positionPx": 2,
+    "fontSizePx": 3,
+    "deltaE": 2,
+    "minFamilyMargin": 0.02
+  },
+  "typography": {
+    "candidateFamilies": [
+      "Mark Pro",
+      "Open Sans"
+    ]
+  },
+  "output": {
+    "artifactsDir": ".artifacts",
+    "failOnDefects": true
+  }
+}

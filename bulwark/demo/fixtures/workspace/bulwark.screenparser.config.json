@@ -1,0 +1,89 @@
+{
+  "name": "workspace-screenparser",
+  "target": {
+    "fullPage": false,
+    "waitForSelector": "main.scene",
+    "settleMs": 150,
+    "stabilize": true,
+    "url": "http://demo-target:4173/workspace-broken",
+    "viewport": {
+      "width": 800,
+      "height": 600,
+      "deviceScaleFactor": 1
+    }
+  },
+  "design": {
+    "pixelRatio": 1,
+    "imagePath": "design/figma-screenshot.png",
+    "flattenBackground": "#eef2f7"
+  },
+  "services": {
+    "detector": {
+      "kind": "screenparser",
+      "baseUrl": "http://screenparser:8804",
+      "minConfidence": 0.1,
+      "maxOverlap": 0.45,
+      "timeoutMs": 900000
+    },
+    "recognizer": {
+      "kind": "ink-projection"
+    },
+    "rasterizer": {
+      "kind": "disabled"
+    }
+  },
+  "tolerances": {
+    "spacingPx": 2,
+    "positionPx": 2,
+    "fontSizePx": 3,
+    "deltaE": 4,
+    "minFamilyMargin": 0.02
+  },
+  "typography": {
+    "candidateFamilies": [
+      "DM Sans"
+    ],
+    "profiles": [
+      {
+        "family": "DM Sans",
+        "aliases": [],
+        "visualToCssRatio": 0.6716,
+        "weightBands": [
+          {
+            "weight": 300,
+            "minStrokeDensity": 0,
+            "maxStrokeDensity": 0.13
+          },
+          {
+            "weight": 400,
+            "minStrokeDensity": 0.13,
+            "maxStrokeDensity": 0.25
+          },
+          {
+            "weight": 500,
+            "minStrokeDensity": 0.25,
+            "maxStrokeDensity": 0.32
+          },
+          {
+            "weight": 600,
+            "minStrokeDensity": 0.32,
+            "maxStrokeDensity": 0.38
+          },
+          {
+            "weight": 700,
+            "minStrokeDensity": 0.38,
+            "maxStrokeDensity": 1
+          }
+        ]
+      }
+    ]
+  },
+  "output": {
+    "artifactsDir": ".artifacts",
+    "failOnDefects": true
+  },
+  "color": {
+    "liveSource": "raster",
+    "inkDeltaE": 5
+  }
+}

@@ -1,0 +1,6 @@
+# Extra deps for OmniParser YOLO (CPU). Torch/torchvision are installed from the
+# PyTorch CPU index in Docker; local setup script installs them from PyPI.
+numpy>=1.26.4,<2
+opencv-python-headless>=4.8,<4.11
+ultralytics>=8.3.0,<8.5
+huggingface_hub>=0.24.0

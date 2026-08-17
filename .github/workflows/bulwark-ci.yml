@@ -1,0 +1,48 @@
+name: Bulwark CI
+
+on:
+  push:
+    paths:
+      - 'bulwark/**'
+      - '.github/workflows/bulwark-ci.yml'
+  pull_request:
+    paths:
+      - 'bulwark/**'
+      - '.github/workflows/bulwark-ci.yml'
+
+defaults:
+  run:
+    working-directory: bulwark
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.3
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: bulwark/pnpm-lock.yaml
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify
+        run: pnpm run verify
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Vision service unit tests
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r services/omniparser/requirements.txt -r services/paddleocr/requirements.txt
+          python -m unittest discover -s services/omniparser/tests -v
+          python -m unittest discover -s services/paddleocr/tests -v

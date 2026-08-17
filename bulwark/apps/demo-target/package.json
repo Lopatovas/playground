@@ -1,0 +1,10 @@
+{
+  "name": "@bulwark/demo-target",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Tiny static landing page with seeded visual defects for the Bulwark demo",
+  "scripts": {
+    "serve": "node ./server.mjs"
+  }
+}

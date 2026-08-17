@@ -1,0 +1,6 @@
+# Optional local install of the real OCR stack (CPU).
+# Prefer Docker for Mac; this file documents the pins used in the image.
+paddlepaddle==2.6.2
+paddleocr==2.7.3
+opencv-python-headless>=4.8,<4.11
+numpy>=1.26.4,<2

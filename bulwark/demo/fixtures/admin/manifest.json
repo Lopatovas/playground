@@ -1,0 +1,79 @@
+{
+  "id": "admin",
+  "name": "Admin customers table",
+  "description": "Desktop admin shell with left nav and a multi-column data table — stresses dense cell inventory.",
+  "device": "desktop",
+  "viewport": { "width": 960, "height": 640, "deviceScaleFactor": 1 },
+  "flattenBackground": "#f1f5f9",
+  "routes": { "correct": "/admin", "broken": "/admin-broken" },
+  "template": "admin.html",
+  "sceneSelector": "main.scene",
+  "expectedLeafCount": 32,
+  "expectedLeaves": [
+    { "id": "brand", "text": "Ledgerly", "role": "logo" },
+    { "id": "top-dash", "text": "Dashboard", "role": "link" },
+    { "id": "top-users", "text": "Users", "role": "link" },
+    { "id": "top-billing", "text": "Billing", "role": "link" },
+    { "id": "side-accounts", "text": "Accounts", "role": "link" },
+    { "id": "side-invoices", "text": "Invoices", "role": "link" },
+    { "id": "side-reports", "text": "Reports", "role": "link" },
+    { "id": "side-settings", "text": "Settings", "role": "link" },
+    { "id": "title", "text": "Customers", "role": "heading" },
+    { "id": "search", "text": "Search customers", "role": "text" },
+    { "id": "new", "text": "New account", "role": "button" },
+    { "id": "h-name", "text": "Name", "role": "label" },
+    { "id": "h-plan", "text": "Plan", "role": "label" },
+    { "id": "h-seats", "text": "Seats", "role": "label" },
+    { "id": "h-status", "text": "Status", "role": "label" },
+    { "id": "r1-name", "text": "Northwind Labs", "role": "text" },
+    { "id": "r1-plan", "text": "Growth", "role": "text" },
+    { "id": "r1-seats", "text": "24", "role": "text" },
+    { "id": "r1-status", "text": "Active", "role": "text" },
+    { "id": "r2-name", "text": "Brightside Co", "role": "text" },
+    { "id": "r2-plan", "text": "Starter", "role": "text" },
+    { "id": "r2-seats", "text": "6", "role": "text" },
+    { "id": "r2-status", "text": "Trial", "role": "text" },
+    { "id": "r3-name", "text": "Orbit Systems", "role": "text" },
+    { "id": "r3-plan", "text": "Enterprise", "role": "text" },
+    { "id": "r3-seats", "text": "120", "role": "text" },
+    { "id": "r3-status", "text": "Active", "role": "text" },
+    { "id": "r4-name", "text": "Pine & Co", "role": "text" },
+    { "id": "r4-plan", "text": "Growth", "role": "text" },
+    { "id": "r4-seats", "text": "18", "role": "text" },
+    { "id": "r4-status", "text": "Paused", "role": "text" },
+    { "id": "footer", "text": "Showing 4 of 128", "role": "text" }
+  ],
+  "seeds": [
+    {
+      "id": "title-size",
+      "cssClass": "defect-title-size",
+      "description": "Customers heading 14px instead of 24px",
+      "expectedDefectTypes": ["font-size"]
+    },
+    {
+      "id": "col-shift",
+      "cssClass": "defect-col-shift",
+      "description": "Status column shifted right 24px",
+      "expectedDefectTypes": ["position", "spacing"]
+    },
+    {
+      "id": "row-gap",
+      "cssClass": "defect-row-gap",
+      "description": "Table body rows use taller row height / extra gap",
+      "expectedDefectTypes": ["position", "spacing"]
+    },
+    {
+      "id": "new-color",
+      "cssClass": "defect-new-color",
+      "description": "New account button #0d9488 instead of #0f766e",
+      "expectedDefectTypes": ["color"]
+    },
+    {
+      "id": "side-spacing",
+      "cssClass": "defect-side-spacing",
+      "description": "Sidebar Invoices item shifted down",
+      "expectedDefectTypes": ["position", "spacing"]
+    }
+  ],
+  "detectionNotes": "Expect ~30–34 leaf boxes. Table cells are the hard part — OmniParser usually collapses rows."
+}

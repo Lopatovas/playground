@@ -1,0 +1,126 @@
+{
+  "id": "food-delivery",
+  "name": "Food delivery menu",
+  "description": "Mobile restaurant list: filter chips, promo tags, free-delivery ink, sticky cart CTA.",
+  "device": "mobile",
+  "viewport": {
+    "width": 390,
+    "height": 844,
+    "deviceScaleFactor": 1
+  },
+  "flattenBackground": "#fff7ed",
+  "routes": {
+    "correct": "/food-delivery",
+    "broken": "/food-delivery-broken"
+  },
+  "template": "food-delivery.html",
+  "sceneSelector": "main.scene",
+  "expectedLeafCount": 14,
+  "expectedLeaves": [
+    {
+      "id": "time",
+      "text": "9:41",
+      "role": "text"
+    },
+    {
+      "id": "title",
+      "text": "Dinner near you",
+      "role": "heading"
+    },
+    {
+      "id": "chip-all",
+      "text": "All",
+      "role": "link"
+    },
+    {
+      "id": "chip-pizza",
+      "text": "Pizza",
+      "role": "link"
+    },
+    {
+      "id": "chip-sushi",
+      "text": "Sushi",
+      "role": "link"
+    },
+    {
+      "id": "r1",
+      "text": "Noon Oven",
+      "role": "heading"
+    },
+    {
+      "id": "tag",
+      "text": "20% off",
+      "role": "badge"
+    },
+    {
+      "id": "r2",
+      "text": "Harbor Roll",
+      "role": "heading"
+    },
+    {
+      "id": "free",
+      "text": "Free delivery",
+      "role": "badge"
+    },
+    {
+      "id": "r3",
+      "text": "Green Bowl",
+      "role": "heading"
+    },
+    {
+      "id": "cart",
+      "text": "View cart",
+      "role": "button"
+    },
+    {
+      "id": "t1",
+      "text": "",
+      "role": "image"
+    },
+    {
+      "id": "t2",
+      "text": "",
+      "role": "image"
+    },
+    {
+      "id": "t3",
+      "text": "",
+      "role": "image"
+    }
+  ],
+  "seeds": [
+    {
+      "id": "chip-color",
+      "cssClass": "defect-chip-color",
+      "description": "Active chip #f97316 instead of #ea580c",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    },
+    {
+      "id": "tag-color",
+      "cssClass": "defect-tag-color",
+      "description": "Promo tag #ef4444 instead of #dc2626",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    },
+    {
+      "id": "free-ink",
+      "cssClass": "defect-free-ink",
+      "description": "Free delivery ink #16a34a instead of #15803d",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    },
+    {
+      "id": "cart-color",
+      "cssClass": "defect-cart-color",
+      "description": "Cart bar #c2410c instead of #9a3412",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    }
+  ],
+  "detectionNotes": "Food thumbs skip. Sticky cart is strong fill; chips/tags are small fills."
+}

@@ -1,0 +1,5 @@
+# Runtime deps always installed (heuristic path).
+fastapi
+numpy>=1.26.4,<2
+pillow
+uvicorn[standard]

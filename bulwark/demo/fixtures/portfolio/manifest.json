@@ -1,0 +1,106 @@
+{
+  "id": "portfolio",
+  "name": "Portfolio",
+  "description": "Designer portfolio: project photos skip, near-black CTA, name/nav/mail ink on quiet chrome.",
+  "device": "desktop",
+  "viewport": {
+    "width": 800,
+    "height": 600,
+    "deviceScaleFactor": 1
+  },
+  "flattenBackground": "#fafaf9",
+  "routes": {
+    "correct": "/portfolio",
+    "broken": "/portfolio-broken"
+  },
+  "template": "portfolio.html",
+  "sceneSelector": "main.scene",
+  "expectedLeafCount": 10,
+  "expectedLeaves": [
+    {
+      "id": "name",
+      "text": "Ada North",
+      "role": "text"
+    },
+    {
+      "id": "work",
+      "text": "Work",
+      "role": "link"
+    },
+    {
+      "id": "about",
+      "text": "About",
+      "role": "link"
+    },
+    {
+      "id": "title",
+      "text": "Selected work",
+      "role": "heading"
+    },
+    {
+      "id": "s1",
+      "text": "",
+      "role": "image"
+    },
+    {
+      "id": "s2",
+      "text": "",
+      "role": "image"
+    },
+    {
+      "id": "p1",
+      "text": "Atlas redesign",
+      "role": "heading"
+    },
+    {
+      "id": "p2",
+      "text": "Harbor marks",
+      "role": "heading"
+    },
+    {
+      "id": "cta",
+      "text": "Hire me",
+      "role": "button"
+    },
+    {
+      "id": "mail",
+      "text": "ada@example.com",
+      "role": "link"
+    }
+  ],
+  "seeds": [
+    {
+      "id": "cta-color",
+      "cssClass": "defect-cta-color",
+      "description": "Hire me #404040 instead of #171717",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    },
+    {
+      "id": "name-ink",
+      "cssClass": "defect-name-ink",
+      "description": "Name ink #404040 instead of #171717",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    },
+    {
+      "id": "mail-ink",
+      "cssClass": "defect-mail-ink",
+      "description": "Mail link #737373 instead of #525252",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    },
+    {
+      "id": "nav-ink",
+      "cssClass": "defect-nav-ink",
+      "description": "Nav links #737373 instead of #404040",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    }
+  ],
+  "detectionNotes": "Low-chroma near-black fills/ink \u2014 stresses \u0394E tolerance on subtle drifts."
+}

@@ -1,0 +1,59 @@
+{
+  "id": "settings",
+  "name": "Settings form",
+  "description": "Desktop settings form with labeled fields, preference rows, and dual actions — label/value pairing stress.",
+  "device": "desktop",
+  "viewport": { "width": 800, "height": 600, "deviceScaleFactor": 1 },
+  "flattenBackground": "#faf7f2",
+  "routes": { "correct": "/settings", "broken": "/settings-broken" },
+  "template": "settings.html",
+  "sceneSelector": "main.scene",
+  "expectedLeafCount": 18,
+  "expectedLeaves": [
+    { "id": "title", "text": "Account settings", "role": "heading" },
+    { "id": "sec-profile", "text": "Profile", "role": "heading" },
+    { "id": "label-name", "text": "Full name", "role": "label" },
+    { "id": "value-name", "text": "Ada Lovelace", "role": "text" },
+    { "id": "label-email", "text": "Email", "role": "label" },
+    { "id": "value-email", "text": "ada@analytical.engine", "role": "text" },
+    { "id": "label-company", "text": "Company", "role": "label" },
+    { "id": "value-company", "text": "Difference Engines", "role": "text" },
+    { "id": "sec-prefs", "text": "Preferences", "role": "heading" },
+    { "id": "pref-mail", "text": "Email digests", "role": "label" },
+    { "id": "pref-mail-state", "text": "On", "role": "text" },
+    { "id": "pref-week", "text": "Weekly summary", "role": "label" },
+    { "id": "pref-week-state", "text": "Off", "role": "text" },
+    { "id": "pref-beta", "text": "Beta features", "role": "label" },
+    { "id": "pref-beta-state", "text": "On", "role": "text" },
+    { "id": "hint", "text": "Changes apply to this workspace only", "role": "text" },
+    { "id": "save", "text": "Save changes", "role": "button" },
+    { "id": "cancel", "text": "Cancel", "role": "button" }
+  ],
+  "seeds": [
+    {
+      "id": "title-size",
+      "cssClass": "defect-title-size",
+      "description": "Account settings 14px instead of 26px (profile values 6px instead of 13px)",
+      "expectedDefectTypes": ["font-size"]
+    },
+    {
+      "id": "label-gap",
+      "cssClass": "defect-label-gap",
+      "description": "Form value fields shifted right (label/control gap)",
+      "expectedDefectTypes": ["position", "spacing"]
+    },
+    {
+      "id": "save-color",
+      "cssClass": "defect-save-color",
+      "description": "Save button #c2410c instead of #9a3412",
+      "expectedDefectTypes": ["color"]
+    },
+    {
+      "id": "pref-shift",
+      "cssClass": "defect-pref-shift",
+      "description": "Preferences block shifted down 20px",
+      "expectedDefectTypes": ["position", "spacing"]
+    }
+  ],
+  "detectionNotes": "Expect ~16–20 boxes. Watch for merging label+value into one box."
+}

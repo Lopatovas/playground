@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Bulwark — newsletter frames</title>
+    <style>
+      :root {
+        --bg: #0b0f14;
+        --panel: #121821;
+        --line: #243041;
+        --ink: #e8eef7;
+        --muted: #9aabbf;
+        --accent: #3dd6c6;
+        --fail: #ff6b6b;
+        --warn: #f0b429;
+      }
+      * { box-sizing: border-box; }
+      html, body {
+        margin: 0;
+        width: 1440px;
+        height: 900px;
+        overflow: hidden;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+      }
+      .frame {
+        width: 1440px;
+        height: 900px;
+        padding: 36px 40px;
+        display: none;
+        flex-direction: column;
+        gap: 22px;
+        background:
+          radial-gradient(900px 420px at 8% -10%, rgba(61, 214, 198, 0.14), transparent 55%),
+          radial-gradient(700px 380px at 100% 0%, rgba(88, 120, 180, 0.16), transparent 50%),
+          var(--bg);
+      }
+      .frame.is-active { display: flex; }
+      .topline {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 24px;
+      }
+      .mark {
+        margin: 0;
+        color: var(--accent);
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        font-size: 12px;
+        font-weight: 600;
+      }
+      h1 {
+        margin: 4px 0 0;
+        font-size: 34px;
+        font-weight: 650;
+        letter-spacing: -0.03em;
+      }
+      .sub {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 15px;
+        max-width: 42rem;
+        line-height: 1.45;
+      }
+      .pill {
+        border: 1px solid color-mix(in srgb, var(--fail) 55%, transparent);
+        background: color-mix(in srgb, var(--fail) 16%, transparent);
+        color: #ffd4d4;
+        border-radius: 999px;
+        padding: 8px 14px;
+        font-size: 13px;
+        white-space: nowrap;
+      }
+      .grid-2 {
+        flex: 1;
+        min-height: 0;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+      }
+      .grid-workbench {
+        flex: 1;
+        min-height: 0;
+        display: grid;
+        grid-template-columns: 1.35fr 0.85fr;
+        gap: 18px;
+      }
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+      .card__label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--line);
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .card__label strong { color: var(--ink); letter-spacing: 0; text-transform: none; font-size: 13px; }
+      .card__body {
+        flex: 1;
+        min-height: 0;
+        display: grid;
+        place-items: center;
+        background: #0f1520;
+        padding: 16px;
+      }
+      .card__body img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        border-radius: 8px;
+        box-shadow: 0 18px 40px rgba(0,0,0,0.35);
+      }
+      .defects {
+        padding: 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        overflow: hidden;
+      }
+      .defect {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 12px 14px;
+        background: #161e29;
+      }
+      .defect--active {
+        border-color: color-mix(in srgb, var(--fail) 55%, transparent);
+        background: color-mix(in srgb, var(--fail) 10%, #161e29);
+      }
+      .defect__meta {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 6px;
+        font-size: 11px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .sev { color: var(--fail); font-weight: 700; }
+      .type { color: var(--muted); }
+      .defect p {
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.4;
+      }
+      .stats {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .stat {
+        border: 1px solid var(--line);
+        background: color-mix(in srgb, var(--panel) 80%, transparent);
+        border-radius: 10px;
+        padding: 10px 12px;
+        min-width: 110px;
+      }
+      .stat b { display: block; font-size: 18px; }
+      .stat span { color: var(--muted); font-size: 12px; }
+    </style>
+  </head>
+  <body>
+    <!-- Frame A: clear design vs live -->
+    <section class="frame is-active" id="frame-compare">
+      <div class="topline">
+        <div>
+          <p class="mark">Bulwark</p>
+          <h1>Design PNG vs live Playwright</h1>
+          <p class="sub">
+            Deterministic visual QA for AI coding loops — position, spacing, typography, and color
+            checked against a fixture screenshot.
+          </p>
+        </div>
+        <div class="pill">brand-hero · 16 defects · FAIL</div>
+      </div>
+      <div class="grid-2">
+        <article class="card">
+          <div class="card__label"><span>Design</span><strong>figma-screenshot.png</strong></div>
+          <div class="card__body"><img src="_assets/brand-design.png" alt="Design" /></div>
+        </article>
+        <article class="card">
+          <div class="card__label"><span>Live</span><strong>Playwright capture</strong></div>
+          <div class="card__body"><img src="_assets/brand-live.png" alt="Live" /></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Frame B: workbench story with defects -->
+    <section class="frame" id="frame-defects">
+      <div class="topline">
+        <div>
+          <p class="mark">Bulwark</p>
+          <h1>Agent-readable defect report</h1>
+          <p class="sub">
+            Soft recall on planted seeds stayed high; precision is the open problem — which is why
+            this R&amp;D spike is parked.
+          </p>
+        </div>
+        <div class="stats">
+          <div class="stat"><b>100%</b><span>color recall</span></div>
+          <div class="stat"><b>~24%</b><span>type precision</span></div>
+          <div class="stat"><b>~6s</b><span>median runtime</span></div>
+        </div>
+      </div>
+      <div class="grid-workbench">
+        <article class="card">
+          <div class="card__label"><span>Live capture</span><strong>dashboard-vivid</strong></div>
+          <div class="card__body"><img src="_assets/vivid-live.png" alt="Live vivid" /></div>
+        </article>
+        <article class="card">
+          <div class="card__label"><span>Defects</span><strong>sample findings</strong></div>
+          <div class="defects">
+            <div class="defect defect--active">
+              <div class="defect__meta"><span class="sev">error</span><span class="type">position</span></div>
+              <p>“Heading” is offset by −20.5px horizontally (tolerance ±2px).</p>
+            </div>
+            <div class="defect">
+              <div class="defect__meta"><span class="sev">error</span><span class="type">font-size</span></div>
+              <p>“Ship loud color” should render at 40px but the browser reports a different size.</p>
+            </div>
+            <div class="defect">
+              <div class="defect__meta"><span class="sev">error</span><span class="type">spacing</span></div>
+              <p>Extra vertical space between elements: design 77px, live 86px (+9px).</p>
+            </div>
+            <div class="defect">
+              <div class="defect__meta"><span class="sev">error</span><span class="type">color</span></div>
+              <p>Live fills diverge from the design palette beyond the ΔE threshold.</p>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Frame C: complex app shell compare -->
+    <section class="frame" id="frame-complex">
+      <div class="topline">
+        <div>
+          <p class="mark">Bulwark</p>
+          <h1>Dense UI shells still light up</h1>
+          <p class="sub">
+            NovaDesk complex fixture — good for showing that the pipeline runs on app chrome, not
+            only marketing pages.
+          </p>
+        </div>
+        <div class="pill">complex · 33 defects · FAIL</div>
+      </div>
+      <div class="grid-2">
+        <article class="card">
+          <div class="card__label"><span>Design</span><strong>complex</strong></div>
+          <div class="card__body"><img src="_assets/complex-design.png" alt="Complex design" /></div>
+        </article>
+        <article class="card">
+          <div class="card__label"><span>Live</span><strong>complex-broken</strong></div>
+          <div class="card__body"><img src="_assets/complex-live.png" alt="Complex live" /></div>
+        </article>
+      </div>
+    </section>
+  </body>
+</html>

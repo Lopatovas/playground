@@ -1,0 +1,13 @@
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+.artifacts/
+.bulwark-cache/
+.DS_Store
+*.log
+__pycache__/
+*.py[cod]
+services/omniparser/.venv/
+services/omniparser/weights/
+services/paddleocr/.venv/

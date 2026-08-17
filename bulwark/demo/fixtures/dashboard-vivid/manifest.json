@@ -1,0 +1,116 @@
+{
+  "id": "dashboard-vivid",
+  "name": "Dashboard vivid KPIs",
+  "description": "Four saturated KPI tiles plus a chart block \u2014 many distinct solid fills in one viewport.",
+  "device": "desktop",
+  "viewport": {
+    "width": 960,
+    "height": 640,
+    "deviceScaleFactor": 1
+  },
+  "flattenBackground": "#0f172a",
+  "routes": {
+    "correct": "/dashboard-vivid",
+    "broken": "/dashboard-vivid-broken"
+  },
+  "template": "dashboard-vivid.html",
+  "sceneSelector": "main.scene",
+  "expectedLeafCount": 12,
+  "expectedLeaves": [
+    {
+      "id": "title",
+      "text": "Pulse",
+      "role": "heading"
+    },
+    {
+      "id": "sub",
+      "text": "KPI tiles",
+      "role": "text"
+    },
+    {
+      "id": "l-signups",
+      "text": "Signups",
+      "role": "heading"
+    },
+    {
+      "id": "v-signups",
+      "text": "2.4k",
+      "role": "text"
+    },
+    {
+      "id": "l-revenue",
+      "text": "Revenue",
+      "role": "heading"
+    },
+    {
+      "id": "v-revenue",
+      "text": "$81k",
+      "role": "text"
+    },
+    {
+      "id": "l-churn",
+      "text": "Churn",
+      "role": "heading"
+    },
+    {
+      "id": "v-churn",
+      "text": "1.8%",
+      "role": "text"
+    },
+    {
+      "id": "l-nps",
+      "text": "NPS",
+      "role": "heading"
+    },
+    {
+      "id": "v-nps",
+      "text": "64",
+      "role": "text"
+    },
+    {
+      "id": "chart-label",
+      "text": "Weekly trend",
+      "role": "text"
+    },
+    {
+      "id": "chart",
+      "text": "",
+      "role": "image"
+    }
+  ],
+  "seeds": [
+    {
+      "id": "kpi-teal",
+      "cssClass": "defect-kpi-teal",
+      "description": "Signups tile #2dd4bf instead of #14b8a6",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    },
+    {
+      "id": "kpi-coral",
+      "cssClass": "defect-kpi-coral",
+      "description": "Revenue tile #fb7185 instead of #f43f5e",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    },
+    {
+      "id": "kpi-amber",
+      "cssClass": "defect-kpi-amber",
+      "description": "Churn tile #fbbf24 instead of #f59e0b",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    },
+    {
+      "id": "value-ink",
+      "cssClass": "defect-value-ink",
+      "description": "Signups value ink #a7f3d0 instead of #ecfdf5",
+      "expectedDefectTypes": [
+        "color"
+      ]
+    }
+  ],
+  "detectionNotes": "Chart/bars may over-segment. KPI tiles should be strong Button/container fill candidates."
+}

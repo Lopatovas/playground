@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bulwark · Analytics mobile</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/fixtures.css" />
+  </head>
+  <body class="page-analytics-mobile __PAGE_CLASSES__">
+    <main
+      class="scene scene--analytics-mobile"
+      aria-label="Analytics mobile fixture, __PAGE_VARIANT__ variant"
+    >
+      <p id="defect-summary" class="sr-only">__DEFECT_SUMMARY__</p>
+
+      <div class="am-status">9:41</div>
+      <p class="am-brand">Northwind</p>
+      <h1 class="am-title">Insights</h1>
+      <a class="am-link" href="#share">Share report</a>
+
+      <div class="am-segments" role="tablist" aria-label="Range">
+        <button class="am-seg am-seg--on" type="button">7d</button>
+        <button class="am-seg am-seg--off" type="button">30d</button>
+        <button class="am-seg am-seg--off" type="button">90d</button>
+      </div>
+
+      <article class="am-kpi am-kpi--a">
+        <h2 class="am-kpi-label">Users</h2>
+        <p class="am-kpi-value am-kpi-value--a">12.4k</p>
+      </article>
+      <article class="am-kpi am-kpi--b">
+        <h2 class="am-kpi-label">Revenue</h2>
+        <p class="am-kpi-value am-kpi-value--b">$38k</p>
+      </article>
+      <article class="am-kpi am-kpi--c">
+        <h2 class="am-kpi-label">Churn</h2>
+        <p class="am-kpi-value am-kpi-value--c">1.9%</p>
+      </article>
+      <article class="am-kpi am-kpi--d">
+        <h2 class="am-kpi-label">NPS</h2>
+        <p class="am-kpi-value am-kpi-value--d">58</p>
+      </article>
+
+      <section class="am-card am-card--donut" aria-label="Channel mix">
+        <h2 class="am-card-title">Channels</h2>
+        <div class="am-donut" role="img" aria-label="Donut chart of channels"></div>
+        <ul class="am-legend">
+          <li class="am-legend-item">
+            <span class="am-swatch am-swatch--web"></span>
+            <span class="am-legend-text">Web</span>
+          </li>
+          <li class="am-legend-item">
+            <span class="am-swatch am-swatch--ios"></span>
+            <span class="am-legend-text">iOS</span>
+          </li>
+          <li class="am-legend-item">
+            <span class="am-swatch am-swatch--android"></span>
+            <span class="am-legend-text">Android</span>
+          </li>
+        </ul>
+      </section>
+
+      <section class="am-card am-card--ranks" aria-label="Top products">
+        <h2 class="am-card-title">Top products</h2>
+        <div class="am-rank am-rank--1">
+          <span class="am-rank-name">Atlas Pro</span>
+          <div class="am-rank-track"><div class="am-rank-fill am-rank-fill--1"></div></div>
+        </div>
+        <div class="am-rank am-rank--2">
+          <span class="am-rank-name">Beacon</span>
+          <div class="am-rank-track"><div class="am-rank-fill am-rank-fill--2"></div></div>
+        </div>
+        <div class="am-rank am-rank--3">
+          <span class="am-rank-name">Quill</span>
+          <div class="am-rank-track"><div class="am-rank-fill am-rank-fill--3"></div></div>
+        </div>
+      </section>
+
+      <section class="am-card am-card--spark" aria-label="Session sparkline">
+        <h2 class="am-card-title">Sessions</h2>
+        <div class="am-spark" role="img" aria-label="Sparkline">
+          <div class="am-spark-bar am-spark-bar--1"></div>
+          <div class="am-spark-bar am-spark-bar--2"></div>
+          <div class="am-spark-bar am-spark-bar--3"></div>
+          <div class="am-spark-bar am-spark-bar--4"></div>
+          <div class="am-spark-bar am-spark-bar--5"></div>
+          <div class="am-spark-bar am-spark-bar--6"></div>
+          <div class="am-spark-bar am-spark-bar--7"></div>
+        </div>
+        <p class="am-spark-meta">Peak Tue · 4.1k</p>
+      </section>
+    </main>
+  </body>
+</html>
