@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bilietas + forma — spausdinti</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Permanent+Marker&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; }
     body {
@@ -45,84 +48,267 @@
     <p>Chrome / Edge → <strong>Ctrl+P</strong> · A4 · 100 % · įjunkite spausdinti fonus.</p>
   </div>
 
-  <div class="page ticket-v4">
+  <div class="page ticket-boarding">
     <style>
-      .ticket-v4 {
-        background: linear-gradient(160deg, #ff6b35 0%, #f7931e 25%, #00a8e8 75%, #007ea7 100%);
-        padding: 10mm !important;
-      }
-      .ticket-v4 .postcard {
-        background: #fff;
-        border-radius: 20px;
-        min-height: calc(297mm - 20mm);
-        padding: 28px 32px;
-        position: relative;
-        overflow: hidden;
-      }
-      .ticket-v4 .postcard::before {
-        content: "";
-        position: absolute;
-        top: -60px;
-        right: -60px;
-        width: 200px;
-        height: 200px;
-        background: rgba(0,168,232,.15);
-        border-radius: 50%;
-      }
-      .ticket-v4 .stamp {
-        position: absolute;
-        top: 24px;
-        right: 28px;
-        width: 90px;
-        height: 90px;
-        border: 3px solid #c41e3a;
-        border-radius: 8px;
+      .ticket-boarding {
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
+        min-height: calc(297mm - 24mm);
+        padding: 8mm !important;
+        background: #fff;
+      }
+      .ticket-boarding .hint {
+        margin-top: 14px;
+        font-size: 0.75rem;
+        color: #666;
         text-align: center;
-        font-size: 0.55rem;
+        max-width: 180mm;
+      }
+      .boarding-pass {
+        display: flex;
+        width: 186mm;
+        height: 92mm;
+        border: 2px solid #1a1a1a;
+        border-radius: 6px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 6px 18px rgba(0,0,0,.12);
+      }
+      .bp-spine {
+        width: 22mm;
+        background: #f7d100;
+        border-right: 2px solid #1a1a1a;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 8px 4px;
+        position: relative;
+      }
+      .bp-spine .plane-top {
+        width: 28px;
+        height: 28px;
+        margin-bottom: 6px;
+      }
+      .bp-spine .vert-title {
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        font-family: "Permanent Marker", cursive;
+        font-size: 1.35rem;
+        letter-spacing: 0.06em;
+        margin: auto 0;
+      }
+      .bp-spine .micro {
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        font-size: 5.5px;
+        line-height: 1.35;
+        max-height: 48mm;
+        text-align: center;
+        opacity: 0.85;
+      }
+      .bp-main {
+        flex: 1;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+      .bp-map {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.55;
+      }
+      .bp-content {
+        position: relative;
+        z-index: 1;
+        flex: 1;
+        padding: 10px 14px 0;
+        display: flex;
+        flex-direction: column;
+      }
+      .bp-head {
+        display: flex;
+        align-items: flex-end;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .bp-origin {
+        font-family: "Bebas Neue", Impact, sans-serif;
+        font-size: 2.6rem;
+        line-height: 0.9;
+        letter-spacing: 0.04em;
+      }
+      .bp-tag {
+        background: #f7d100;
+        border: 2px solid #1a1a1a;
+        padding: 4px 10px;
+        font-size: 0.62rem;
         font-weight: 800;
-        color: #c41e3a;
-        transform: rotate(-8deg);
-        line-height: 1.2;
+        letter-spacing: 0.04em;
+        line-height: 1.35;
+        max-width: 42mm;
       }
-      .ticket-v4 h2 { font-size: 2.4rem; margin: 0 0 8px; color: #007ea7; }
-      .ticket-v4 .lead { font-size: 1.15rem; color: #444; margin-bottom: 24px; max-width: 85%; }
-      .ticket-v4 .box {
-        border: 2px solid #ff6b35;
-        border-radius: 12px;
-        padding: 20px;
-        margin: 20px 0;
-        background: #fffaf5;
+      .bp-duration {
+        margin-left: auto;
+        background: #f7d100;
+        border: 2px solid #1a1a1a;
+        padding: 6px 10px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        transform: rotate(-2deg);
       }
-      .ticket-v4 .box h3 { margin: 0 0 10px; color: #ff6b35; font-size: 1rem; }
-      .ticket-v4 ul { margin: 0; padding-left: 1.2rem; line-height: 1.8; }
-      .ticket-v4 .big { font-size: 1.5rem; font-weight: 700; color: #007ea7; margin: 16px 0; }
+      .bp-sub {
+        margin-top: 6px;
+        font-size: 0.72rem;
+        font-weight: 600;
+      }
+      .bp-valid {
+        margin-top: auto;
+        background: #f7d100;
+        border-top: 2px solid #1a1a1a;
+        padding: 7px 12px;
+        font-size: 0.68rem;
+        font-weight: 800;
+        letter-spacing: 0.03em;
+      }
+      .bp-barcode {
+        width: 10mm;
+        background: repeating-linear-gradient(
+          90deg,
+          #111 0 1.2px,
+          #fff 1.2px 3px,
+          #111 3px 4px,
+          #fff 4px 7px
+        );
+        border-left: 1px solid #ccc;
+        border-right: 2px solid #1a1a1a;
+      }
+      .bp-stub {
+        width: 52mm;
+        padding: 10px 10px 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        position: relative;
+      }
+      .bp-stub .plane-tr {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 26px;
+        height: 26px;
+      }
+      .bp-field label {
+        display: block;
+        font-size: 0.58rem;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        margin-bottom: 3px;
+      }
+      .bp-field .val {
+        background: #f7d100;
+        border: 2px solid #1a1a1a;
+        padding: 5px 8px;
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+      }
+      .bp-field .val.sm { font-size: 0.68rem; }
+      .bp-qr {
+        width: 22mm;
+        height: 22mm;
+        border: 2px solid #1a1a1a;
+        background: #fff;
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        grid-template-rows: repeat(7, 1fr);
+        gap: 1px;
+        padding: 3px;
+        margin-top: 2px;
+      }
+      .bp-qr span { background: #111; }
+      .bp-qr span:nth-child(3n) { background: #fff; }
+      .bp-qr span:nth-child(5n+2) { background: #fff; }
     </style>
-    <div class="postcard">
-      <div class="stamp">KELIONĖS<br>KUPONAS<br>2026</div>
-      <h2>Kelionė į Turkiją</h2>
-      <p class="lead">Tėti, su 50-uoju gimtadieniu dovanojame <strong>all inclusive</strong> atostogas Turkijoje.</p>
-      <p class="big">🌴 ☀️ 🏖️</p>
-      <div class="box">
-        <h3>Ką gauni?</h3>
-        <ul>
-          <li>Skrydžiai iš Lietuvos (datos — tavo pasirinkimas)</li>
-          <li>Poilsis 5★ kurorte, viskas įskaičiuota</li>
-          <li>Organizavimą padarysime mes — tau reikia tik pasirinkti datas</li>
-        </ul>
+
+    <div class="boarding-pass" role="img" aria-label="Dovanų kelionės bilietas į Turkiją">
+      <aside class="bp-spine">
+        <svg class="plane-top" viewBox="0 0 24 24" fill="#111" aria-hidden="true">
+          <path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+        </svg>
+        <div class="vert-title">BILIETAS</div>
+        <div class="micro">NETIKRAS SKRYDŽIO BILIETAS · DOVANA · UŽPILDYK FORMĄ KITAME LAPE</div>
+      </aside>
+
+      <div class="bp-main">
+        <svg class="bp-map" viewBox="0 0 520 260" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <rect width="520" height="260" fill="#f4f1ea"/>
+          <g fill="#b8aa96" opacity="0.85">
+            <path d="M40 120c30-40 80-55 120-35 25 12 45 40 35 70-15 45-70 60-110 40-35-18-55-50-45-75z"/>
+            <path d="M130 55c45-20 95-10 120 25 20 28 10 65-25 80-40 18-85 0-100-35-12-28 0-58 5-70z"/>
+            <path d="M250 40c55-5 90 25 85 60-5 40-50 65-95 50-35-12-55-45-40-75 10-22 30-40 50-45z"/>
+            <path d="M330 90c35-15 75 0 85 35 10 38-25 70-65 65-35-5-60-35-50-65 8-25 20-32 30-35z"/>
+            <path d="M200 130c25 15 35 45 20 70-18 30-60 35-85 15-22-18-25-50-5-70 18-18 45-22 70-15z"/>
+          </g>
+          <path d="M248 92 C 285 98, 318 118, 342 138" fill="none" stroke="#111" stroke-width="2.5" stroke-dasharray="7 6"/>
+          <circle cx="248" cy="92" r="7" fill="#f7d100" stroke="#111" stroke-width="2"/>
+          <circle cx="248" cy="92" r="2.5" fill="#111"/>
+          <g transform="translate(348 128) rotate(35)">
+            <path d="M0 0 L-14 5 L-5 0 L-14 -5 Z" fill="#111"/>
+            <rect x="-5" y="-2" width="16" height="4" fill="#111"/>
+          </g>
+          <text x="228" y="82" font-size="11" font-weight="700" fill="#111">LT</text>
+          <text x="352" y="158" font-size="11" font-weight="700" fill="#111">TR</text>
+        </svg>
+        <div class="bp-content">
+          <div class="bp-head">
+            <div class="bp-origin">LIETUVA</div>
+            <div class="bp-tag">50 MEČIO DOVANA<br>ALL INCLUSIVE</div>
+            <div class="bp-duration">5–7 d.</div>
+          </div>
+          <p class="bp-sub">Tėti — datas pasirink formoje (kitas lapas). Mes užsakysime kelionę.</p>
+          <div class="bp-valid">DOVANŲ KUPONAS · DATOS — PAGAL FORMĄ · GALIOJA IKI: 2027.01.01</div>
+        </div>
       </div>
-      <div class="box">
-        <h3>Ką daryti toliau?</h3>
-        <ul>
-          <li>Atidaryk pridedamą <strong>„Išsaugok datą“</strong> formą</li>
-          <li>Pažymėk, kada gali išvykti</li>
-          <li>Grąžink užpildytą formą — tada užsakysime kelionę</li>
-        </ul>
-      </div>
-      <p style="margin-top:32px;font-size:1.1rem"><strong>Tavo šeima</strong></p>
+
+      <div class="bp-barcode" aria-hidden="true"></div>
+
+      <aside class="bp-stub">
+        <svg class="plane-tr" viewBox="0 0 24 24" fill="#111" aria-hidden="true">
+          <path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+        </svg>
+        <div class="bp-field">
+          <label>KELIONĖ Į:</label>
+          <div class="val">TURKIJA</div>
+        </div>
+        <div class="bp-field">
+          <label>REISO NR.</label>
+          <div class="val">LT-TR-50</div>
+        </div>
+        <div class="bp-field">
+          <label>TIPAS</label>
+          <div class="val sm">ALL INCLUSIVE</div>
+        </div>
+        <div class="bp-field">
+          <label>DAUGIAU INFORMACIJOS:</label>
+          <div class="bp-qr" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+      </aside>
     </div>
+    <p class="hint">Galite kirpti palei bilieto kraštus. Kitame lape — „Išsaugok datą“ forma.</p>
   </div>
 
   <div class="page form-page">
