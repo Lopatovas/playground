@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tėčio 50-mečio dovana — spausdinimas</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: #e8e8e8;
+      margin: 0;
+      padding: 24px;
+      color: #1a1a1a;
+    }
+    .no-print {
+      max-width: 210mm;
+      margin: 0 auto 24px;
+      padding: 16px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.1);
+    }
+    .no-print h1 { font-size: 1.25rem; margin: 0 0 8px; }
+    .no-print p { margin: 0 0 12px; font-size: 0.95rem; line-height: 1.5; }
+    .no-print ul { margin: 0; padding-left: 1.25rem; }
+    @media print {
+      body { background: #fff; padding: 0; }
+      .no-print { display: none !important; }
+      .page { box-shadow: none !important; margin: 0 !important; page-break-after: always; }
+      .page:last-child { page-break-after: auto; }
+    }
+    @page { size: A4; margin: 12mm; }
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto 24px;
+      background: #fff;
+      box-shadow: 0 4px 20px rgba(0,0,0,.12);
+      padding: 12mm;
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+  <div class="no-print">
+    <h1>Spausdinimo instrukcija</h1>
+    <p>Atidarykite šį failą naršyklėje (Chrome arba Edge), paspauskite <strong>Ctrl+P</strong> (Mac: <strong>Cmd+P</strong>).</p>
+    <ul>
+      <li>Popierius: <strong>A4</strong></li>
+      <li>Mastelis: <strong>100 %</strong> (be „Talpinti į puslapį“, jei galima)</li>
+      <li>Fonai / grafika: <strong>įjungti</strong> (spausdinti fonus)</li>
+      <li>Kiekvienas bilietas ir forma — atskiras lapas</li>
+    </ul>
+    <p>Pasirinkite, kurį bilietą norite (1–4), ir atspausdinkite formą paskutiniame lape.</p>
+  </div>
+
+  <!-- VARIANTAS 1: Klasikinis bilietas -->
+  <div class="page ticket-v1">
+    <style>
+      .ticket-v1 .wrap { border: 3px solid #0d4f8b; border-radius: 12px; overflow: hidden; }
+      .ticket-v1 .head {
+        background: linear-gradient(135deg, #0d4f8b 0%, #1a7fc4 100%);
+        color: #fff;
+        padding: 14px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .ticket-v1 .head h2 { margin: 0; font-size: 1.1rem; letter-spacing: 0.08em; }
+      .ticket-v1 .head span { font-size: 0.75rem; opacity: 0.9; }
+      .ticket-v1 .body { display: grid; grid-template-columns: 1fr 28px 1fr; }
+      .ticket-v1 .main { padding: 20px 24px; }
+      .ticket-v1 .stub {
+        background: #f0f6fc;
+        padding: 20px 16px;
+        border-left: 2px dashed #0d4f8b;
+        font-size: 0.8rem;
+      }
+      .ticket-v1 .perforation {
+        background: repeating-linear-gradient(
+          to bottom,
+          #fff 0, #fff 4px,
+          #ccc 4px, #ccc 8px
+        );
+      }
+      .ticket-v1 .label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.06em; color: #666; margin-bottom: 2px; }
+      .ticket-v1 .value { font-size: 1.35rem; font-weight: 700; color: #0d4f8b; margin-bottom: 14px; }
+      .ticket-v1 .value.sm { font-size: 1rem; }
+      .ticket-v1 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      .ticket-v1 .banner {
+        margin-top: 16px;
+        padding: 12px 16px;
+        background: #fff8e6;
+        border: 1px solid #e6c200;
+        border-radius: 8px;
+        text-align: center;
+        font-size: 0.95rem;
+      }
+      .ticket-v1 .footer-note { margin-top: 20px; font-size: 0.75rem; color: #555; text-align: center; }
+      .ticket-v1 .gift-badge {
+        position: absolute;
+        top: 18mm;
+        right: 18mm;
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: #c41e3a;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-size: 0.65rem;
+        font-weight: 700;
+        line-height: 1.2;
+        transform: rotate(12deg);
+        box-shadow: 0 2px 8px rgba(0,0,0,.2);
+      }
+    </style>
+    <div class="gift-badge">50 MEČIO<br>DOVANA</div>
+    <div class="wrap">
+      <div class="head">
+        <h2>KELIONĖS KUPONAS</h2>
+        <span>Nr. LT-TR-50-2026</span>
+      </div>
+      <div class="body">
+        <div class="main">
+          <div class="label">Kryptis</div>
+          <div class="value">TURKIJA · ALL INCLUSIVE</div>
+          <div class="grid2">
+            <div>
+              <div class="label">Išvykimas</div>
+              <div class="value sm">LIETUVA (VNO / KUN / PLQ)</div>
+            </div>
+            <div>
+              <div class="label">Atvykimas</div>
+              <div class="value sm">ANTALija / Alanija / Bodrumas*</div>
+            </div>
+          </div>
+          <div class="grid2">
+            <div>
+              <div class="label">Keleivis</div>
+              <div class="value sm">TĖTIS</div>
+            </div>
+            <div>
+              <div class="label">Data</div>
+              <div class="value sm">PAGAL TAVO PASIRINKIMĄ ✦</div>
+            </div>
+          </div>
+          <div class="banner">
+            <strong>Netikras bilietas:</strong> tikros kelionės datas pasirinksi užpildęs formą — tada mes viską užsakysime.<br>
+            Pridedamoje formoje nurodyk pageidaujamas išvykimo ir grįžimo datas.
+          </div>
+        </div>
+        <div class="perforation"></div>
+        <div class="stub">
+          <div class="label">Kuponas</div>
+          <div class="value sm" style="margin-bottom:8px">1× ALL INCLUSIVE</div>
+          <div class="label">Galioja</div>
+          <div class="value sm">iki kelionės užsakymo</div>
+          <div class="label" style="margin-top:12px">Barcode</div>
+          <div style="font-family: monospace; font-size: 1.4rem; letter-spacing: 2px;">||||| 50 | TR |||||</div>
+          <p style="margin-top:16px;font-size:0.7rem;line-height:1.4">* Galutinį kurortą pasirinksime kartu pagal sezoną ir pasiūlymus.</p>
+        </div>
+      </div>
+    </div>
+    <p class="footer-note">Šeima · 50-asis gimtadienis · 2026</p>
+  </div>
+
+  <!-- VARIANTAS 2: Auksinis bilietas -->
+  <div class="page ticket-v2">
+    <style>
+      .ticket-v2 { background: linear-gradient(180deg, #1a1208 0%, #2d2210 40%, #1a1208 100%); color: #f5e6c8; }
+      .ticket-v2 .inner {
+        border: 4px double #c9a227;
+        border-radius: 16px;
+        padding: 24px 28px;
+        min-height: calc(297mm - 24mm);
+        background: radial-gradient(ellipse at top, #3d3020 0%, #1a1208 70%);
+      }
+      .ticket-v2 h1 {
+        text-align: center;
+        font-size: 2rem;
+        margin: 0 0 8px;
+        color: #e8c547;
+        letter-spacing: 0.12em;
+        font-weight: 300;
+      }
+      .ticket-v2 .sub { text-align: center; font-size: 0.85rem; letter-spacing: 0.2em; opacity: 0.85; margin-bottom: 32px; }
+      .ticket-v2 .ornament { text-align: center; color: #c9a227; font-size: 1.5rem; margin: 16px 0; }
+      .ticket-v2 .card {
+        background: rgba(0,0,0,.35);
+        border: 1px solid #c9a227;
+        border-radius: 12px;
+        padding: 24px;
+        margin: 20px 0;
+      }
+      .ticket-v2 .card p { margin: 0 0 12px; line-height: 1.6; font-size: 1.05rem; }
+      .ticket-v2 .highlight { color: #e8c547; font-size: 1.4rem; font-weight: 600; text-align: center; margin: 24px 0; }
+      .ticket-v2 .details { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 0.9rem; }
+      .ticket-v2 .details div { border-bottom: 1px solid rgba(201,162,39,.4); padding-bottom: 8px; }
+      .ticket-v2 .details strong { display: block; color: #c9a227; font-size: 0.7rem; letter-spacing: 0.1em; margin-bottom: 4px; }
+      .ticket-v2 .sign { text-align: center; margin-top: 40px; font-style: italic; opacity: 0.9; }
+    </style>
+    <div class="inner">
+      <h1>AUKSO BILIETAS</h1>
+      <p class="sub">KELIONĖ · TURKIJA · ALL INCLUSIVE</p>
+      <div class="ornament">✦ ✦ ✦</div>
+      <p class="highlight">TURKIJA · VISKAS ĮSKAIČIUOTA</p>
+      <div class="card">
+        <p>Tėti,</p>
+        <p>Su <strong style="color:#e8c547">50-uoju</strong> gimtadieniu dovanojame kelionę į Turkiją — <strong>all inclusive</strong>. Šis lapas nėra tikras skrydžio bilietas; tai kvietimas pasirinkti datas.</p>
+        <p>Datų dar nėra — <strong>jas nurodysi formoje</strong> (kitas lapas). Kai grąžinsi užpildytą formą, užsakysime kelionę.</p>
+      </div>
+      <div class="details">
+        <div><strong>KELEIVIS</strong> Tėtis</div>
+        <div><strong>KRYPTIS</strong> Turkija</div>
+        <div><strong>TIPAS</strong> All inclusive</div>
+        <div><strong>DATA</strong> Tavo pasirinktos dienos</div>
+        <div><strong>IŠVYKTI</strong> Iš Lietuvos</div>
+        <div><strong>DOVANA</strong> 50-asis gimtadienis</div>
+      </div>
+      <p class="sign">Tavo šeima</p>
+    </div>
+  </div>
+
+  <!-- VARIANTAS 3: Įlaipinimo kortelė -->
+  <div class="page ticket-v3">
+    <style>
+      .ticket-v3 .boarding {
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 8px 0 #333;
+        border: 1px solid #ddd;
+      }
+      .ticket-v3 .top-bar {
+        background: #222;
+        color: #fff;
+        padding: 10px 20px;
+        font-size: 0.8rem;
+        display: flex;
+        justify-content: space-between;
+      }
+      .ticket-v3 .content {
+        display: grid;
+        grid-template-columns: 1fr 120px;
+        background: #fafafa;
+      }
+      .ticket-v3 .left { padding: 24px; }
+      .ticket-v3 .right {
+        background: #fff;
+        border-left: 3px dashed #999;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      .ticket-v3 .airline { font-size: 1.8rem; font-weight: 800; color: #e30; letter-spacing: -1px; margin-bottom: 4px; }
+      .ticket-v3 .tagline { font-size: 0.7rem; color: #666; margin-bottom: 20px; }
+      .ticket-v3 .route {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin: 20px 0;
+      }
+      .ticket-v3 .city { font-size: 2.2rem; font-weight: 700; }
+      .ticket-v3 .city small { display: block; font-size: 0.65rem; font-weight: 400; color: #666; }
+      .ticket-v3 .plane { font-size: 2rem; color: #0d4f8b; }
+      .ticket-v3 .fields { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 24px; }
+      .ticket-v3 .f label { font-size: 0.6rem; color: #888; text-transform: uppercase; }
+      .ticket-v3 .f div { font-size: 1rem; font-weight: 600; }
+      .ticket-v3 .qr-placeholder {
+        width: 88px;
+        height: 88px;
+        border: 2px solid #333;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2px;
+        padding: 4px;
+        margin-bottom: 8px;
+      }
+      .ticket-v3 .qr-placeholder span { background: #333; }
+      .ticket-v3 .qr-placeholder span:nth-child(odd) { background: #fff; }
+      .ticket-v3 .mock { font-size: 0.65rem; color: #c00; font-weight: 700; text-align: center; margin-top: 16px; padding: 8px; border: 1px dashed #c00; border-radius: 4px; }
+      .ticket-v3 .bottom-strip {
+        background: #0d4f8b;
+        color: #fff;
+        padding: 14px 24px;
+        font-size: 0.85rem;
+        text-align: center;
+      }
+    </style>
+    <div class="boarding">
+      <div class="top-bar">
+        <span>ĮLAIPINIMO KORTELĖ · DOVANŲ LEIDIMAS</span>
+        <span>LT50 → TR∞</span>
+      </div>
+      <div class="content">
+        <div class="left">
+          <div class="airline">ŠEIMOS AVIACIJA</div>
+          <div class="tagline">Specialus reisas: 50-mečio proga</div>
+          <div class="route">
+            <div class="city">LT<small>Lietuva</small></div>
+            <div class="plane">✈</div>
+            <div class="city">TR<small>Turkija</small></div>
+          </div>
+          <div class="fields">
+            <div class="f"><label>Keleivis</label><div>TĖTIS</div></div>
+            <div class="f"><label>Skrydis</label><div>LT-TR-50</div></div>
+            <div class="f"><label>Vartai</label><div>—</div></div>
+            <div class="f"><label>Vieta</label><div>ALL INC</div></div>
+            <div class="f"><label>Data</label><div>PAGAL FORMĄ</div></div>
+            <div class="f"><label>Grupė</label><div>ŠEIMA</div></div>
+          </div>
+          <div class="mock">NE TIKRAS SKRYDIS — TIKRA DOVANA. Datos bus patvirtintos po formos užpildymo.</div>
+        </div>
+        <div class="right">
+          <div class="qr-placeholder" aria-hidden="true">
+            <span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span>
+          </div>
+          <div style="font-size:0.65rem;text-align:center">LT-TR-50</div>
+        </div>
+      </div>
+      <div class="bottom-strip">Turkija · All inclusive · 50-mečio proga · šeima</div>
+    </div>
+  </div>
+
+  <!-- VARIANTAS 4: Spalvingas atvirukas -->
+  <div class="page ticket-v4">
+    <style>
+      .ticket-v4 {
+        background: linear-gradient(160deg, #ff6b35 0%, #f7931e 25%, #00a8e8 75%, #007ea7 100%);
+        padding: 10mm !important;
+      }
+      .ticket-v4 .postcard {
+        background: #fff;
+        border-radius: 20px;
+        min-height: calc(297mm - 20mm);
+        padding: 28px 32px;
+        position: relative;
+        overflow: hidden;
+      }
+      .ticket-v4 .postcard::before {
+        content: "";
+        position: absolute;
+        top: -60px;
+        right: -60px;
+        width: 200px;
+        height: 200px;
+        background: rgba(0,168,232,.15);
+        border-radius: 50%;
+      }
+      .ticket-v4 .stamp {
+        position: absolute;
+        top: 24px;
+        right: 28px;
+        width: 90px;
+        height: 90px;
+        border: 3px solid #c41e3a;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-size: 0.55rem;
+        font-weight: 800;
+        color: #c41e3a;
+        transform: rotate(-8deg);
+        line-height: 1.2;
+      }
+      .ticket-v4 h2 { font-size: 2.4rem; margin: 0 0 8px; color: #007ea7; }
+      .ticket-v4 .lead { font-size: 1.15rem; color: #444; margin-bottom: 24px; max-width: 85%; }
+      .ticket-v4 .box {
+        border: 2px solid #ff6b35;
+        border-radius: 12px;
+        padding: 20px;
+        margin: 20px 0;
+        background: #fffaf5;
+      }
+      .ticket-v4 .box h3 { margin: 0 0 10px; color: #ff6b35; font-size: 1rem; }
+      .ticket-v4 ul { margin: 0; padding-left: 1.2rem; line-height: 1.8; }
+      .ticket-v4 .big { font-size: 1.5rem; font-weight: 700; color: #007ea7; margin: 16px 0; }
+    </style>
+    <div class="postcard">
+      <div class="stamp">KELIONĖS<br>KUPONAS<br>2026</div>
+      <h2>Kelionė į Turkiją</h2>
+      <p class="lead">Tėti, su 50-uoju gimtadieniu dovanojame <strong>all inclusive</strong> atostogas Turkijoje.</p>
+      <p class="big">🌴 ☀️ 🏖️</p>
+      <div class="box">
+        <h3>Ką gauni?</h3>
+        <ul>
+          <li>Skrydžiai iš Lietuvos (datos — tavo pasirinkimas)</li>
+          <li>Poilsis 5★ kurorte, viskas įskaičiuota</li>
+          <li>Organizavimą padarysime mes — tau reikia tik pasirinkti datas</li>
+        </ul>
+      </div>
+      <div class="box">
+        <h3>Ką daryti toliau?</h3>
+        <ul>
+          <li>Atidaryk pridedamą <strong>„Išsaugok datą“</strong> formą</li>
+          <li>Pažymėk, kada gali išvykti</li>
+          <li>Grąžink užpildytą formą — tada užsakysime kelionę</li>
+        </ul>
+      </div>
+      <p style="margin-top:32px;font-size:1.1rem"><strong>Tavo šeima</strong></p>
+    </div>
+  </div>
+
+  <!-- FORMA -->
+  <div class="page form-page">
+    <style>
+      .form-page h1 { text-align: center; font-size: 1.6rem; margin: 0 0 6px; color: #0d4f8b; }
+      .form-page .subtitle { text-align: center; color: #555; margin-bottom: 24px; font-size: 0.95rem; }
+      .form-page .intro {
+        background: #f0f6fc;
+        border-left: 4px solid #0d4f8b;
+        padding: 12px 16px;
+        margin-bottom: 24px;
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+      .form-page section { margin-bottom: 22px; }
+      .form-page section h2 {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #0d4f8b;
+        border-bottom: 2px solid #0d4f8b;
+        padding-bottom: 6px;
+        margin: 0 0 14px;
+      }
+      .form-page .field { margin-bottom: 16px; }
+      .form-page .field label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; }
+      .form-page .field .hint { font-size: 0.75rem; color: #666; font-weight: 400; }
+      .form-page .line {
+        border-bottom: 1.5px solid #333;
+        min-height: 28px;
+        margin-top: 4px;
+      }
+      .form-page .line.tall { min-height: 56px; }
+      .form-page .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+      .form-page .checkboxes { display: flex; flex-wrap: wrap; gap: 12px 24px; font-size: 0.9rem; }
+      .form-page .cb { display: flex; align-items: center; gap: 8px; }
+      .form-page .cb-box {
+        width: 18px; height: 18px; border: 2px solid #333; border-radius: 3px; flex-shrink: 0;
+      }
+      .form-page .signatures { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 28px; }
+      .form-page .sig-line { border-bottom: 1.5px solid #333; min-height: 32px; margin-top: 40px; }
+      .form-page .footer-form { text-align: center; font-size: 0.75rem; color: #777; margin-top: 20px; }
+    </style>
+    <h1>Išsaugok datą</h1>
+    <p class="subtitle">Turkija · All inclusive · Tėčio 50-mečio dovana</p>
+    <div class="intro">
+      Tėti, užpildyk šią formą, kad galėtume užsakyti kelionę. Jei tinka kelios datos — įrašyk alternatyvas. Klausimus ar pastabas rašyk apačioje.
+    </div>
+
+    <section>
+      <h2>1. Keliautojas</h2>
+      <div class="field">
+        <label>Vardas, pavardė (kaip paso)</label>
+        <div class="line"></div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>Gimimo data</label>
+          <div class="line"></div>
+        </div>
+        <div class="field">
+          <label>Telefono numeris (susisiekimui)</label>
+          <div class="line"></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>2. Pageidaujamos kelionės datos</h2>
+      <div class="row2">
+        <div class="field">
+          <label>Pirmoji pageidaujama išvykimo data</label>
+          <div class="line"></div>
+        </div>
+        <div class="field">
+          <label>Grįžimo data (arba kelionės trukmė dienomis)</label>
+          <div class="line"></div>
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>Antroji alternatyva — išvykimas</label>
+          <div class="line"></div>
+        </div>
+        <div class="field">
+          <label>Antroji alternatyva — grįžimas / trukmė</label>
+          <div class="line"></div>
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>Trečioji alternatyva — išvykimas</label>
+          <div class="line"></div>
+        </div>
+        <div class="field">
+          <label>Trečioji alternatyva — grįžimas / trukmė</label>
+          <div class="line"></div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Datos, kuriomis <em>negali</em> keliauti <span class="hint">(atostogos darbe, renginiai ir pan.)</span></label>
+        <div class="line tall"></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>3. Kelionės pageidavimai</h2>
+      <div class="field">
+        <label>Pageidaujama kelionės trukmė</label>
+        <div class="checkboxes">
+          <div class="cb"><span class="cb-box"></span> 7 naktys</div>
+          <div class="cb"><span class="cb-box"></span> 10 naktų</div>
+          <div class="cb"><span class="cb-box"></span> 14 naktų</div>
+          <div class="cb"><span class="cb-box"></span> Kita: <span style="border-bottom:1px solid #999; min-width:80px; display:inline-block">&nbsp;</span></div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Išvykimas iš Lietuvos</label>
+        <div class="checkboxes">
+          <div class="cb"><span class="cb-box"></span> Vilnius</div>
+          <div class="cb"><span class="cb-box"></span> Kaunas</div>
+          <div class="cb"><span class="cb-box"></span> Palanga</div>
+          <div class="cb"><span class="cb-box"></span> Bet kuris — svarbiausia kaina / laikas</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Kurorto / regiono pageidavimas <span class="hint">(nebūtina)</span></label>
+        <div class="checkboxes">
+          <div class="cb"><span class="cb-box"></span> Antalija</div>
+          <div class="cb"><span class="cb-box"></span> Alanija</div>
+          <div class="cb"><span class="cb-box"></span> Side / Belek</div>
+          <div class="cb"><span class="cb-box"></span> Bodrumas</div>
+          <div class="cb"><span class="cb-box"></span> Patikėkite jums</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Kambario tipas</label>
+        <div class="checkboxes">
+          <div class="cb"><span class="cb-box"></span> Standartinis</div>
+          <div class="cb"><span class="cb-box"></span> Su vaizdu į jūrą</div>
+          <div class="cb"><span class="cb-box"></span> Viskas geriausia pagal pasiūlymą</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Keliaujate vienas ar su mumis?</label>
+        <div class="checkboxes">
+          <div class="cb"><span class="cb-box"></span> Vienas</div>
+          <div class="cb"><span class="cb-box"></span> Su partneriu / partnere</div>
+          <div class="cb"><span class="cb-box"></span> Su šeima (kiek žmonių: <span style="border-bottom:1px solid #999; min-width:40px; display:inline-block">&nbsp;</span>)</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>4. Pasas ir sveikata</h2>
+      <div class="field">
+        <label>Ar pasas galioja bent 6 mėn. po grįžimo?</label>
+        <div class="checkboxes">
+          <div class="cb"><span class="cb-box"></span> Taip</div>
+          <div class="cb"><span class="cb-box"></span> Ne / reikės atnaujinti</div>
+          <div class="cb"><span class="cb-box"></span> Nežinau</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Specialūs pageidavimai ar sveikatos pastabos <span class="hint">(maistas, mobilumas, vaistai — jei svarbu kelionei)</span></label>
+        <div class="line tall"></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>5. Papildomai</h2>
+      <div class="field">
+        <label>Ką labiausiai norėtum patirti Turkijoje?</label>
+        <div class="line tall"></div>
+      </div>
+      <div class="field">
+        <label>Pastabos mums</label>
+        <div class="line tall"></div>
+      </div>
+    </section>
+
+    <div class="signatures">
+      <div>
+        <label style="font-size:0.8rem">Data</label>
+        <div class="sig-line"></div>
+      </div>
+      <div>
+        <label style="font-size:0.8rem">Parašas</label>
+        <div class="sig-line"></div>
+      </div>
+    </div>
+    <p class="footer-form">Užpildytą formą grąžink šeimai — tada užsakysime kelionę.</p>
+  </div>
+</body>
+</html>
