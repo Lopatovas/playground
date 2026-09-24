@@ -10,7 +10,8 @@
   "changed": [
     {
       "file": "src/auth/session.ts",
-      "layer": "auth",
+      "layer": "shared",
+      "layerWhy": "used by a store/api module, not itself transport",
       "lineCount": 8,
       "exports": [
         "getSession",
@@ -60,32 +61,24 @@
         },
         {
           "id": "reach.user-facing",
-          "severity": "raise",
+          "severity": "info",
           "why": [
             "/customers",
             "/customers/:id"
           ]
         },
         {
-          "id": "layer.auth",
+          "id": "layer.shared",
           "severity": "raise",
           "why": [
-            "path"
+            "used by a store/api module, not itself transport"
           ]
         },
         {
           "id": "layer.data-flow",
           "severity": "raise",
           "why": [
-            "auth"
-          ]
-        },
-        {
-          "id": "contract.exports",
-          "severity": "raise",
-          "why": [
-            "getSession",
-            "requireSession"
+            "shared"
           ]
         },
         {
@@ -105,10 +98,10 @@
       ],
       "risk": "spine",
       "reasons": [
-        "layer=auth",
+        "layer=shared (used by a store/api module, not itself transport)",
         "consumers=6",
         "routes=2",
-        "flags=reach.wide,reach.multi-route,reach.user-facing,layer.auth,layer.data-flow,contract.exports,test.present,surface.auth",
+        "flags=reach.wide,reach.multi-route,reach.user-facing,layer.shared,layer.data-flow,test.present,surface.auth",
         "lines=8 (fact, not used for risk)"
       ]
     }

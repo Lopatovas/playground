@@ -59,6 +59,7 @@ Also: imports, exports, changed symbols, changed routes, shared components, shar
 | [S05](./S05-classify-shared-vs-isolated.md) | Classify shared vs isolated | Yes |
 | [S06](./S06-framework-adapters.md) | Framework adapters | Yes (one adapter) |
 | [S07](./S07-compose-attention-flags.md) | Compose attention flags | Yes |
+| [S08](./S08-detect-layers.md) | Detect layers from anchors and the DAG | Yes |
 
 ## Dependencies
 

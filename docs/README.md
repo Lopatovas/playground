@@ -23,6 +23,7 @@ Until we have Bitbucket access, dogfood is the local fixture: [fixtures/README.m
 | [mvp.md](./mvp.md) | What we build first |
 | [tools.md](./tools.md) | Open-source tools we absorb instead of rebuilding |
 | [attention-flags.md](./attention-flags.md) | Deterministic flags beyond blast radius |
+| [layer-detection.md](./layer-detection.md) | How layers are assigned without folder names |
 | [epics/](./epics/README.md) | Epics, stories, and tasks |
 | [../fixtures/README.md](../fixtures/README.md) | Deterministic sample app + sample PRs |
 

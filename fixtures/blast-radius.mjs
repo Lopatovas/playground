@@ -73,19 +73,144 @@ function parseImports(file) {
     .map(relSrc);
 }
 
-function layerFor(file) {
-  if (file.includes("/api/httpClient.")) return "http";
-  if (file.includes("/api/") && file.endsWith(".test.ts")) return "test";
-  if (file.includes("/api/")) return "api";
-  if (file.includes("/auth/")) return "auth";
-  if (file.includes("/stores/")) return "store";
-  if (file.includes("/pages/") && file.endsWith(".test.ts")) return "test";
-  if (file.includes("/pages/")) return "page";
-  if (file.includes("/components/")) return "component";
-  if (file.endsWith("routes.ts")) return "routes";
-  if (file.endsWith("main.ts")) return "app";
-  if (file.includes(".test.")) return "test";
-  return "other";
+function readShop(file) {
+  return readFileSync(join(shopRoot, file), "utf8");
+}
+
+function isTestFile(file) {
+  return /\.(test|spec)\./.test(file);
+}
+
+function isRouteTable(file) {
+  return /path:\s*["'][^"']+["']\s*,\s*page:\s*[A-Za-z0-9_]+/.test(readShop(file));
+}
+
+function isHttpClient(file, graph) {
+  const local = graph.imports[file] ?? [];
+  if (local.length) return false;
+  const text = readShop(file);
+  return (
+    /\bexport function (get|post|put|patch|del|request)\b/.test(text) ||
+    /\b(fetch|axios|ky|ofetch)\b/.test(text)
+  );
+}
+
+function parseRoutePairs(file) {
+  const pairs = [];
+  const re = /path:\s*"([^"]+)"\s*,\s*page:\s*([A-Za-z0-9_]+)/g;
+  for (const match of readShop(file).matchAll(re)) {
+    pairs.push({ path: match[1], page: match[2] });
+  }
+  return pairs;
+}
+
+function fileForExportName(name, graph) {
+  const suffix = `/${name}.ts`;
+  return graph.files.find((file) => file.endsWith(suffix) && !isTestFile(file));
+}
+
+function inferLayers(graph) {
+  const layer = {};
+  const why = {};
+  const assign = (file, next, reason) => {
+    if (!file || layer[file]) return;
+    layer[file] = next;
+    why[file] = reason;
+  };
+
+  for (const file of graph.files) {
+    if (isTestFile(file)) assign(file, "test", "test filename");
+  }
+
+  for (const file of graph.files) {
+    if (layer[file] || !isRouteTable(file)) continue;
+    assign(file, "routes", "exports a route table { path, page }");
+    for (const pair of parseRoutePairs(file)) {
+      const pageFile = fileForExportName(pair.page, graph);
+      assign(pageFile, "page", `registered as ${pair.path} in ${file}`);
+    }
+  }
+
+  for (const file of graph.files) {
+    if (layer[file]) continue;
+    if ((graph.imports[file] ?? []).some((dep) => layer[dep] === "routes")) {
+      assign(file, "app", "imports the route table");
+    }
+  }
+
+  for (const file of graph.files) {
+    if (!layer[file] && isHttpClient(file, graph)) {
+      assign(file, "http", "transport: no local imports, exports get/post or uses fetch/axios");
+    }
+  }
+
+  let grew = true;
+  while (grew) {
+    grew = false;
+    for (const file of graph.files) {
+      if (layer[file]) continue;
+      const httpDeps = (graph.imports[file] ?? []).filter((dep) => layer[dep] === "http" || layer[dep] === "api");
+      const appImporters = (graph.importedBy[file] ?? []).filter((imp) => layer[imp] !== "test");
+      if (httpDeps.length && appImporters.length) {
+        assign(
+          file,
+          "api",
+          `imports ${httpDeps.join(", ")} (${httpDeps.map((dep) => layer[dep]).join("/")}) and has app importers`
+        );
+        grew = true;
+      }
+    }
+  }
+
+  for (const file of graph.files) {
+    if (layer[file]) continue;
+    const deps = graph.imports[file] ?? [];
+    const importers = graph.importedBy[file] ?? [];
+    if (deps.some((dep) => layer[dep] === "api") && importers.some((imp) => layer[imp] === "page")) {
+      assign(file, "store", "imported by a page and imports an api module");
+    }
+  }
+
+  for (const file of graph.files) {
+    if (layer[file]) continue;
+    const deps = graph.imports[file] ?? [];
+    const importers = graph.importedBy[file] ?? [];
+    if (
+      deps.some((dep) => layer[dep] === "store" || layer[dep] === "api") &&
+      importers.some((imp) => layer[imp] === "page")
+    ) {
+      assign(file, "composable", "imported by a page and imports store/api");
+    }
+  }
+
+  grew = true;
+  while (grew) {
+    grew = false;
+    for (const file of graph.files) {
+      if (layer[file]) continue;
+      const deps = graph.imports[file] ?? [];
+      if (deps.some((dep) => ["http", "api", "store"].includes(layer[dep]))) continue;
+      const importers = graph.importedBy[file] ?? [];
+      if (importers.some((imp) => layer[imp] === "page" || layer[imp] === "component")) {
+        assign(file, "component", "used by a page/component and does not import http/api/store");
+        grew = true;
+      }
+    }
+  }
+
+  for (const file of graph.files) {
+    if (layer[file]) continue;
+    const importers = graph.importedBy[file] ?? [];
+    if (importers.some((imp) => layer[imp] === "store" || layer[imp] === "api")) {
+      assign(file, "shared", "used by a store/api module, not itself transport");
+    }
+  }
+
+  for (const file of graph.files) {
+    if (!layer[file]) assign(file, "other", "no spine rule matched");
+  }
+
+  return { layer, why };
 }
 
 function exportedNames(file) {
@@ -119,7 +244,11 @@ function buildGraph() {
     }
   }
   for (const file of files) importedBy[file].sort();
-  return { files, imports, importedBy };
+  const graph = { files, imports, importedBy };
+  const inferred = inferLayers(graph);
+  graph.layer = inferred.layer;
+  graph.layerWhy = inferred.why;
+  return graph;
 }
 
 function collectReach(importedBy, start) {
@@ -142,34 +271,24 @@ function collectReach(importedBy, start) {
   };
 }
 
-function parseRouteTable() {
-  const text = readFileSync(join(shopRoot, "src/routes.ts"), "utf8");
-  const pairs = [];
-  const re = /path:\s*"([^"]+)"\s*,\s*page:\s*([A-Za-z0-9_]+)/g;
-  for (const match of text.matchAll(re)) {
-    pairs.push({ path: match[1], page: match[2] });
-  }
-  return pairs;
-}
-
-function routesFrom(files) {
-  const pairs = parseRouteTable();
+function routesFrom(graph, files) {
   const pageNames = new Set(
     files
-      .filter((file) => layerFor(file) === "page")
+      .filter((file) => graph.layer[file] === "page")
       .map((file) => file.split("/").pop().replace(/\.ts$/, ""))
   );
+  const pairs = graph.files.filter((file) => graph.layer[file] === "routes").flatMap(parseRoutePairs);
   return [
     ...new Set(pairs.filter((pair) => pageNames.has(pair.page)).map((pair) => pair.path)),
   ].sort();
 }
 
-function pagesIn(files) {
-  return files.filter((file) => layerFor(file) === "page").sort();
+function pagesIn(graph, files) {
+  return files.filter((file) => graph.layer[file] === "page").sort();
 }
 
-function testsIn(files) {
-  return files.filter((file) => layerFor(file) === "test").sort();
+function testsIn(graph, files) {
+  return files.filter((file) => graph.layer[file] === "test").sort();
 }
 
 function flag(id, severity, why) {
@@ -189,11 +308,11 @@ function flagsFor(node, graph) {
     flags.push(flag("reach.user-facing", severity, node.routes));
   }
 
-  if (node.layer === "http") flags.push(flag("layer.http", "raise", ["path"]));
-  if (node.layer === "api") flags.push(flag("layer.api", "raise", ["path"]));
-  if (node.layer === "auth") flags.push(flag("layer.auth", "raise", ["path"]));
-  if (node.layer === "store") flags.push(flag("layer.store", "raise", ["path"]));
-  if (["api", "store", "http", "auth"].includes(node.layer)) {
+  if (node.layer === "http") flags.push(flag("layer.http", "raise", [node.layerWhy]));
+  if (node.layer === "api") flags.push(flag("layer.api", "raise", [node.layerWhy]));
+  if (node.layer === "store") flags.push(flag("layer.store", "raise", [node.layerWhy]));
+  if (node.layer === "shared") flags.push(flag("layer.shared", "raise", [node.layerWhy]));
+  if (["api", "store", "http", "shared"].includes(node.layer)) {
     flags.push(flag("layer.data-flow", "raise", [node.layer]));
   }
   if (node.layer === "component" && node.routeCount <= 1) {
@@ -201,7 +320,7 @@ function flagsFor(node, graph) {
   }
   if (node.layer === "routes") flags.push(flag("layer.routes", "raise", ["router"]));
 
-  if (["api", "store", "http", "auth"].includes(node.layer) && node.exports.length) {
+  if (["api", "store", "http", "shared"].includes(node.layer) && node.exports.length) {
     flags.push(flag("contract.exports", "raise", node.exports));
   }
 
@@ -285,22 +404,23 @@ function analyzePr(graph, pr) {
     const allConsumers = [...new Set([...reach.direct, ...reach.transitive])].sort();
     const node = {
       file,
-      layer: layerFor(file),
+      layer: graph.layer[file],
+      layerWhy: graph.layerWhy[file],
       lineCount: lineCount(file),
       exports: exportedNames(file),
       fanOut: (graph.imports[file] ?? []).length,
       directConsumers: reach.direct,
       consumerCount: allConsumers.length,
       consumers: allConsumers,
-      pages: pagesIn(allConsumers),
-      tests: testsIn([...allConsumers, file]),
-      routes: routesFrom([file, ...allConsumers]),
+      pages: pagesIn(graph, allConsumers),
+      tests: testsIn(graph, [...allConsumers, file]),
+      routes: routesFrom(graph, [file, ...allConsumers]),
     };
     node.routeCount = node.routes.length;
     node.flags = flagsFor(node, graph);
     node.risk = riskFromFlags(node.flags);
     node.reasons = [
-      `layer=${node.layer}`,
+      `layer=${node.layer} (${node.layerWhy})`,
       `consumers=${node.consumerCount}`,
       `routes=${node.routeCount}`,
       `flags=${node.flags.map((item) => item.id).join(",") || "—"}`,

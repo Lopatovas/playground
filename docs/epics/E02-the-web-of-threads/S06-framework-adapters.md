@@ -12,7 +12,7 @@ The graph model stays generic. Adapter Zero is TS/JS modules — that is enough 
 
 ### In
 
-- Adapter interface: discover files, parse symbols, parse routes, tag layers
+- Adapter interface: discover files, parse symbols, parse **layer anchors** (router, defineStore, file routes). Core walks the DAG — see [layer-detection.md](../../../layer-detection.md)
 - Adapter Zero: TS/JS modules (MVP floor)
 - Adapter One when a real PR needs it: Vue SFC / Vue Router / Pinia **or** React/Next
 - Capability flags so a PHP+Vue repo can use Vue where files are Vue, and file-level elsewhere

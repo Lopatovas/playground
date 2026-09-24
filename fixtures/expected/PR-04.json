@@ -11,6 +11,7 @@
     {
       "file": "src/pages/MarketingLandingPage.ts",
       "layer": "page",
+      "layerWhy": "registered as /marketing in src/routes.ts",
       "lineCount": 24,
       "exports": [
         "MarketingLandingPage"
@@ -57,7 +58,7 @@
       ],
       "risk": "low",
       "reasons": [
-        "layer=page",
+        "layer=page (registered as /marketing in src/routes.ts)",
         "consumers=2",
         "routes=1",
         "flags=reach.user-facing,test.gap,noise.isolated-page",

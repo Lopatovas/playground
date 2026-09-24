@@ -28,6 +28,7 @@
     {
       "file": "src/api/customerApi.ts",
       "layer": "api",
+      "layerWhy": "imports src/api/httpClient.ts (http) and has app importers",
       "lineCount": 14,
       "exports": [
         "searchCustomers",
@@ -91,7 +92,7 @@
           "id": "layer.api",
           "severity": "raise",
           "why": [
-            "path"
+            "imports src/api/httpClient.ts (http) and has app importers"
           ]
         },
         {
@@ -129,7 +130,7 @@
       ],
       "risk": "spine",
       "reasons": [
-        "layer=api",
+        "layer=api (imports src/api/httpClient.ts (http) and has app importers)",
         "consumers=7",
         "routes=2",
         "flags=reach.wide,reach.multi-route,reach.user-facing,layer.api,layer.data-flow,contract.exports,test.present",
@@ -139,6 +140,7 @@
     {
       "file": "src/pages/CustomerPage.ts",
       "layer": "page",
+      "layerWhy": "registered as /customers in src/routes.ts",
       "lineCount": 17,
       "exports": [
         "CustomerPage"
@@ -203,7 +205,7 @@
       ],
       "risk": "medium",
       "reasons": [
-        "layer=page",
+        "layer=page (registered as /customers in src/routes.ts)",
         "consumers=3",
         "routes=1",
         "flags=reach.user-facing,test.present,noise.isolated-page,change.high-fan-out",

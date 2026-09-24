@@ -37,12 +37,14 @@ MVP = we can compute it on loom-shop or with git/AST we already planned. Later =
 
 | ID | Raise when | Source | MVP |
 | --- | --- | --- | --- |
-| `layer.http` | HTTP client / transport | path + imports | Yes |
-| `layer.api` | Shared API / service module | path + exports | Yes |
-| `layer.store` | Pinia/Vuex/Redux/store | path + adapter | Yes |
-| `layer.data-flow` | API or store (state/network) | derived | Yes |
-| `layer.ui-leaf` | Component/page, one route | graph | Yes |
-| `layer.routes` | Router table changed | path | Yes |
+| `layer.http` | HTTP client / transport | DAG: no local imports + fetch/get/post | Yes |
+| `layer.api` | Shared API / service | DAG: imports http, has app importers | Yes |
+| `layer.store` | State module | DAG: imports api, imported by a page (or `defineStore`) | Yes |
+| `layer.data-flow` | API, store, http, or shared helper | derived | Yes |
+| `layer.ui-leaf` | Component/page, one route | DAG | Yes |
+| `layer.routes` | Router table | exports `{ path, page }` / createRouter | Yes |
+
+Layer method: [layer-detection.md](./layer-detection.md). Folder names do not assign these.
 
 ### Contract (did the public shape move?)
 

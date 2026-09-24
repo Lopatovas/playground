@@ -11,6 +11,7 @@
     {
       "file": "src/api/customerApi.ts",
       "layer": "api",
+      "layerWhy": "imports src/api/httpClient.ts (http) and has app importers",
       "lineCount": 14,
       "exports": [
         "searchCustomers",
@@ -74,7 +75,7 @@
           "id": "layer.api",
           "severity": "raise",
           "why": [
-            "path"
+            "imports src/api/httpClient.ts (http) and has app importers"
           ]
         },
         {
@@ -105,7 +106,7 @@
       ],
       "risk": "spine",
       "reasons": [
-        "layer=api",
+        "layer=api (imports src/api/httpClient.ts (http) and has app importers)",
         "consumers=7",
         "routes=2",
         "flags=reach.wide,reach.multi-route,reach.user-facing,layer.api,layer.data-flow,contract.exports,test.present",

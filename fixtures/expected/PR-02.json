@@ -11,6 +11,7 @@
     {
       "file": "src/components/SettingsHeading.ts",
       "layer": "component",
+      "layerWhy": "used by a page/component and does not import http/api/store",
       "lineCount": 4,
       "exports": [
         "SettingsHeading"
@@ -51,7 +52,7 @@
       ],
       "risk": "low",
       "reasons": [
-        "layer=component",
+        "layer=component (used by a page/component and does not import http/api/store)",
         "consumers=3",
         "routes=1",
         "flags=reach.user-facing,layer.ui-leaf",
