@@ -35,7 +35,8 @@ The reviewer opens a session and sees a High Seat: header (PR/branch identity, f
 
 - [ ] Choose UI stack (likely a local web app)
 - [ ] Implement shell layout
-- [ ] Header identity fields
+- [ ] Header identity fields from the Bitbucket PR (id, title, base → head)
+- [ ] Affordances for "drafts" and "what's new" (E08 fills them)
 - [ ] Empty/error/loading per pane
 - [ ] Stub panes wired to session JSON
 - [ ] Basic visual pass: dense, calm, not a marketing page

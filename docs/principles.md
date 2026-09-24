@@ -17,14 +17,17 @@ Do not ship:
 - "LGTM" agents
 - generic quality opinions
 - autonomous approval
+- an LLM restatement of the Jira ticket as "what this PR is"
 
-A model may classify small structured facts. It must not be the reviewer.
+A model may classify small structured facts (Jev). It must not be the reviewer. Understanding comes from the change and the UI.
 
-## 3. Reduce search cost
+## 3. Focus is a job, not a sort of the file list
 
-The problem is not lack of information. It is finding the relevant information.
+The problem is not lack of information. It is deciding what deserves minutes.
 
-Scryglass should answer: **where should I look first?**
+A heading component on one page and a shared API abstraction are not the same event. Scryglass should answer: **where should I look first?**
+
+If the UI still leads with LOC or path alphabet, job 2 has failed.
 
 ## 4. Human judgment is the last layer
 
@@ -37,6 +40,8 @@ Never block a PR on a Whisper Mark. Never call model output a review, an approva
 ## 5. Visual understanding is first-class
 
 For frontend work, code alone is insufficient. The reviewer should be able to answer "what does this PR actually do?" by seeing the application.
+
+The Mirror is for **comprehension**, not visual-regression gating. A still that shows the feature is a win even if we never compute a pixel diff.
 
 Prefer the real app. Storybook is a useful extra source, not the only one.
 
@@ -55,3 +60,19 @@ The product must remain useful if Jev is offline.
 ## 8. Never present a guess as a verdict
 
 Whisper Marks are signals. UI language, colors, and receipts must keep that obvious. Confidence belongs next to the mark. Blocking decisions do not.
+
+## 9. Comments belong on the pull request
+
+Drafts may live in Scryglass. Published comments must land on the **PR**, not only on a commit. That is the Bitbucket failure we are replacing.
+
+Scryglass publishes the reviewer's words. It does not write them.
+
+## 10. Hosts and frameworks are adapters
+
+One Bitbucket instance is enough for MVP. The interface must allow another Bitbucket, GitHub, and GitLab later.
+
+Language analysis has a generic JS/TS floor. Vue, React, Next, PHP, and Electron get better through adapters. A stack we do not understand must still open as a session and a diff.
+
+## 11. Tickets are optional
+
+Do not require the reviewer to read the ticket. Do not make a ticket summary the product. A PR title or a link is enough. The change and the Mirror explain the feature.

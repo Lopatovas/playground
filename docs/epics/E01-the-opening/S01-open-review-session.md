@@ -1,4 +1,4 @@
-# E01-S01 — Open a review session
+# E01-S01 — Open a review session from a PR URL
 
 **Epic:** E01 The Opening  
 **MVP:** Yes  
@@ -6,43 +6,46 @@
 
 ## Outcome
 
-A reviewer can start Scryglass with either a PR URL or a local `head` + `base` pair and get a session identity back: repo, base ref, head ref, and resolved SHAs.
+The chapter lead pastes a Bitbucket PR URL and gets a session identity: host, project, repo, PR id, base, head, SHAs. That is the normal door into Scryglass.
 
 ## Scope
 
 ### In
 
-- CLI and/or UI entry: `scryglass open <pr-url>` and `scryglass open --base main --head HEAD`
-- Resolve refs to immutable SHAs
-- Fail clearly if the repo, base, or head cannot be resolved
-- Record who opened it and when (local user is enough)
+- `scryglass open <pr-url>` and a High Seat "open" field
+- Parse Bitbucket PR URLs for the one instance we care about now
+- Resolve identity via the host adapter (title, authors, base, source, SHAs)
+- Escape hatch: `--base` / `--head` against an already-local repo
+- Same PR id → resume the existing session (see E08)
 
 ### Out
 
-- Fetching the PR conversation / ticket
-- Cloning a remote repo from scratch (assume a local checkout, or make clone a later task)
-- Any analysis beyond identity
+- Manual clone by the reviewer (that is S05)
+- Ticket body fetch as a required step
+- GitHub / GitLab URL success in MVP (parse-and-say-unsupported is OK)
 
 ## Acceptance criteria
 
-- [ ] Opening with `--base` and `--head` produces a session with both SHAs
-- [ ] Opening with a PR URL either resolves to those refs or explains that host support is not wired
-- [ ] A missing / invalid ref fails with a readable error, not a stack trace
-- [ ] Re-opening the same base+head pair can resume or explicitly create a new session
+- [ ] A valid Bitbucket PR URL produces a session with host, PR id, base SHA, head SHA
+- [ ] An unsupported host URL fails with "no adapter", not a stack trace
+- [ ] `--base` / `--head` still works without a URL
+- [ ] Opening the same PR URL a second time resumes the same session id
+- [ ] Auth failure from Bitbucket is readable ("token missing / denied")
 
 ## Tasks
 
-- [ ] Define the `ReviewSessionIdentity` shape (`id`, `repoPath`, `baseRef`, `headRef`, `baseSha`, `headSha`, `prUrl?`, `openedAt`)
-- [ ] Implement local git ref resolution
-- [ ] Add PR URL parser (host, project, id) without requiring API success in MVP
-- [ ] Wire the `open` command / first-run UI
-- [ ] Write tests for good refs, bad refs, and detached HEAD
+- [ ] Define `ReviewSessionIdentity` (`id`, `host`, `prId`, `prUrl`, `repoSlug`, `baseRef`, `headRef`, `baseSha`, `headSha`, `title`, `openedAt`)
+- [ ] Bitbucket URL parser
+- [ ] Host-adapter `resolvePullRequest(url)`
+- [ ] Resume-by-`(host, prId)`
+- [ ] Tests: good URL, bad URL, unsupported host, missing token
 
 ## Depends on
 
-- E07-S01 for how the tool is invoked
+- E07-S01
+- E07 host adapter story
 
 ## Open questions
 
-- Resume vs always-new session when the same PR is opened twice
-- Do we `git fetch` automatically, or only use what is already local?
+- App password vs workspace token vs existing browser session
+- Do we store the PR title as the "feature" hint in the header?

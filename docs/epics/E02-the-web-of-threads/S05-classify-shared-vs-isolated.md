@@ -6,7 +6,7 @@
 
 ## Outcome
 
-Each changed file/symbol gets a deterministic impact class from graph facts: isolated leaf vs shared abstraction vs API/state spine. This is the first attention order. Jev may refine it later. It must not replace it.
+Job 2's core rule: each changed file/symbol gets a deterministic impact class from graph facts. A one-page heading is quiet. A shared API abstraction is loud. Jev may refine this later. It must not replace it.
 
 ## Scope
 
@@ -25,9 +25,9 @@ Each changed file/symbol gets a deterministic impact class from graph facts: iso
 
 ## Acceptance criteria
 
-- [ ] A new leaf component with 1 consumer ranks below a shared API with many consumers
+- [ ] A heading / leaf component used on one page ranks below a shared API abstraction
 - [ ] Rank is explained with counts and layer, not vibes
-- [ ] LOC is not an input
+- [ ] LOC is not an input (a 3,000-line isolated page can still be `isolated`)
 - [ ] Ties are stable (name / path sort)
 - [ ] The same graph produces the same class
 
@@ -37,7 +37,7 @@ Each changed file/symbol gets a deterministic impact class from graph facts: iso
 - [ ] Implement scoring from counts + layer only
 - [ ] Store `impactClass`, `reasons[]`, and raw counts on each node
 - [ ] Document the rules in this folder when they stabilize
-- [ ] Fixture tests matching the brief's `customerApi` vs `CustomerCard` example
+- [ ] Fixture tests: `customerApi` (many consumers) vs `PageHeading` (one page) vs `CustomerCard` (leaf)
 
 ## Depends on
 

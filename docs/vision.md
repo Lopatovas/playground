@@ -1,83 +1,96 @@
 # Vision
 
-## The problem
+## Who this is for
 
-Frontend PRs routinely contain thousands of changed lines, especially once code generation is cheap. Traditional diff review assumes the reviewer can scan the whole change. That assumption is now false.
+The first user is a frontend chapter lead. They sit across many client and internal codebases. A week can include Vue, React, Next, a PHP app with Vue injected, and an Electron shell.
 
-The scarce resource is **human cognitive search**.
+They do not need another AI that "reviews" the PR. They need three things Bitbucket (and Jira) do not give them.
 
-A 3,000-line isolated feature can be less important than a 50-line edit to a shared API abstraction. Line count is almost useless as a risk signal. Reviewers need to know *what could matter* before they read.
+## The three jobs
 
-## The job
+### 1. Understand what the PR is
 
-Scryglass makes important information visible **before and during** review.
+Jira is often a 2,000-line AI spec. That text is a poor interface for "what did they build?" Another model summarizing the ticket loses more of the same context.
 
-A reviewer should open a huge frontend PR and answer these questions within minutes:
+Answer this from the change and the UI:
 
-1. What feature did they build?
-2. What does it actually look like?
-3. What routes and states changed?
-4. What shared code changed?
-5. What has the largest blast radius?
-6. Where is business / state / data-flow logic?
-7. Which areas deserve attention first?
-8. Can I jump from a signal to the relevant code and UI?
+- What feature showed up?
+- What does it look like?
+- What routes and states are involved?
 
-The metric is not "did the tool review the PR?"
+Visuals are a **comprehension tool**. They are not a visual-QA product.
 
-The metric is: **how much less time did the human need to understand the PR well enough to review it properly?**
+### 2. Understand where focus should go
 
-## Three layers
+Not every changed line deserves the same minutes. A heading component on one page is almost noise. A change to how the shared API abstraction works is the review.
+
+Line count cannot make this distinction. Scryglass must.
+
+Answer:
+
+- What is shared vs isolated?
+- What has blast radius?
+- Where is data-flow / state / business logic?
+- Where should I look first?
+
+The Web of Threads computes this from repository facts. Whisper Marks may refine it. Neither is a verdict.
+
+### 3. Actually review, with a better UX
+
+Bitbucket is a poor review surface: consecutive sittings lose context, comments on a commit do not live on the PR, and the diff is a file list.
+
+Scryglass is the place to:
+
+- navigate from a high-focus node to code, consumers, and UI
+- draft inline and general comments
+- publish them in a batch **onto the pull request**
+- come back when the author pushes and see what is new, with old comments still in context
+
+The human still judges. Scryglass carries the seat, the map, the mirror, and the pen.
+
+## The scarce resource
+
+Frontend PRs routinely contain thousands of changed lines. The expensive part is **seeing** what it is, **choosing** what deserves attention, and **not losing** the review when the branch moves.
+
+## How the jobs sit in the system
 
 ```text
-                    PR
-                     │
-        ┌────────────┼────────────┐
-        ↓            ↓            ↓
-   Git / AST       Playwright     Jev
-        │            │            │
-        ↓            ↓            ↓
-  Impact Graph    UI Preview   Attention
-        │            │            │
-        └────────────┼────────────┘
-                     ↓
-                 High Seat
-                     │
-                     ↓
+                 Bitbucket PR
+                      │
+         ┌────────────┼────────────┐
+         ↓            ↓            ↓
+      Mirror      Web + Marks    Palimpsest
+         │            │            │
+    what is it    where to look   the review
+         │            │            │
+         └────────────┼────────────┘
+                      ↓
+                  High Seat
+                      │
+                      ↓
               HUMAN JUDGMENT
+                      │
+                      ↓
+              published to the PR
 ```
 
-1. **Deterministic analysis** — repository facts: what changed, which symbols, who consumes them, which routes and tests are involved, what is shared vs isolated. Never invented by a model.
-2. **Whisper Marks (Jev)** — a generic, very fast classifier that highlights things worth looking at. It can be wrong. That is acceptable. It is never presented as authority.
-3. **Human review** — the engineer judges. The UI makes signal → context → code → rendered result one click.
-
-## What the reviewer sees
-
-The High Seat is a local cockpit. Opening a PR should immediately show:
-
-- **Living Mirror** — the actual feature, preferably the real app, not only Storybook. Base vs PR. Desktop / tablet / mobile. Loading / empty / populated / error.
-- **Web of Threads** — semantic impact, not LOC. Shared abstractions light up harder than isolated new pages.
-- **Whisper Marks** — an attention map. Bars and categories, never "this is bad" or "LGTM".
-- **Code / diff** — a review surface that can jump between changed symbol, source context, consumers, graph, rendered UI, tests, and the original diff.
+1. **Deterministic analysis** — repository facts. Never invented by a model. This is how job 2 stays honest.
+2. **Whisper Marks (Jev)** — TypeSafe's fast typed classifier. Signals only. Stubbed until we have access.
+3. **Human review** — judgment, comments, and the next sitting.
 
 ## What Scryglass is not
 
 - An autonomous approver
-- An AI comment bot
+- An AI comment bot (it publishes *your* comments)
 - A replacement for tests or CI
-- Another Jira, Git client, or ticket reader
+- Another Jira, or a ticket-summarizer
+- Another generic Git client
 - A system that treats line count as risk
 - A system that assumes model output is correct
-
-AI may exist behind the scenes. The primary system must work without it.
+- A visual-regression SaaS
 
 ## First useful product
 
-The smallest useful Scryglass is one target repository where a reviewer can:
+Paste a Bitbucket PR URL. Scryglass fetches and checks the change out. The High Seat shows **what it is** and **what to look at first** (shared API above a one-page heading). Comments draft locally and publish to the PR. A second open of the same PR shows what is new.
 
-1. Point it at a PR or branch pair
-2. See what changed at symbol / impact level
-3. See the feature rendered
-4. Jump from a high-impact node into code and UI
-
-Attention classification and a polished receipt can arrive after that loop works.
+Jev, extra hosts, and a polished Chronicle can arrive after that loop is something the chapter lead would actually use instead of Bitbucket's diff.

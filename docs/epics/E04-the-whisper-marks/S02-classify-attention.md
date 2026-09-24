@@ -1,28 +1,26 @@
 # E04-S02 — Classify attention with Jev
 
 **Epic:** E04 The Whisper Marks  
-**MVP:** After MVP if Jev is not already a clear API  
+**MVP:** Stub in MVP; live client after TypeSafe access  
 **Status:** Draft
 
 ## Outcome
 
-Jev answers small classification questions and returns a mark. It does not narrate the PR.
+Each changed symbol can receive typed marks from Jev — or from a stub that uses the same shape. Jev does not narrate the PR. It cannot write comments.
 
-Questions we care about:
+Jev question primitives ([TypeSafe docs](https://docs.typesafe.ai/primitives)):
 
-- Likely architectural / shared?
-- Likely broad impact?
-- Likely business logic?
-- Unusual vs surrounding code?
-- Likely UI-only?
-- Likely data-flow / state-management?
-- Does this symbol deserve extra human attention?
+- **Noul** — yes/no probability (shared? business logic? UI-only?)
+- **Choice** — one of a closed set (layer: `api | store | ui | unknown`)
+- **Score** — ordered attention (`low | medium | high`)
+
+One request can ask several questions against one small `state` payload from E04-S01. Answers come back with probabilities and confidence.
 
 ## Scope
 
 ### In
 
-Example output:
+Example composed mark (our model, after Jev answers):
 
 ```json
 {
@@ -37,9 +35,9 @@ Example output:
 }
 ```
 
-- Fast, bounded calls
-- Timeouts and failures become "unmarked"
-- Stub classifier for local dev (rules on `isShared` + layer)
+- Parallel questions per node; batch nodes if the API allows
+- Timeouts → unmarked
+- Deterministic stub (rules on `isShared` + layer) so the High Seat works offline
 
 ### Out
 
@@ -47,29 +45,30 @@ Example output:
 - Comments posted to the host
 - Correctness opinions
 - Retry storms that block the UI
+- Feeding the whole PR as a "review this" prompt (Jev cannot emit that anyway)
 
 ## Acceptance criteria
 
+- [ ] Stub and live client share one `AttentionMark` type
 - [ ] A high-consumer API node can come back `attention: high` with categories
 - [ ] A leaf card can come back `low` / `ui-only`
-- [ ] Jev down → nodes stay unclassified, cockpit still works
+- [ ] Jev down or no key → unmarked, cockpit still works
 - [ ] Output cannot contain an `approval` or `review` field
-- [ ] Calls are logged as classifications, not reviews
+- [ ] We never send a ticket body as `state` in MVP
 
 ## Tasks
 
-- [ ] Document the Jev adapter interface
-- [ ] Implement a deterministic stub (so High Seat can be built)
-- [ ] Implement the real Jev client when the API is known
-- [ ] Timeouts, circuit breaker, per-session cache
+- [ ] Map our questions onto Choice / Score / Noul
+- [ ] Deterministic stub
+- [ ] TypeSafe client behind a flag (no key required to run Scryglass)
+- [ ] Timeouts, cache per `(headSha, symbol)`
 - [ ] Contract tests for schema and failure modes
 
 ## Depends on
 
 - E04-S01
-- A real Jev endpoint or a decision to stay on the stub
 
 ## Open questions
 
-- Exact Jev API, auth, and latency
-- Do we ever send a hunk to judge "unusual vs surrounding code"?
+- API key storage once access exists
+- Short hunk in `state` or graph facts only

@@ -2,11 +2,14 @@
 
 **Practical name:** Fast attention classification (Jev)  
 **Status:** Draft  
-**MVP:** Optional — deterministic ranks from E02-S05 can ship first
+**MVP:** Optional sharpener — job 2 already works from E02-S05  
+**Job:** 2 — where focus should go
 
 ## Intent
 
-Jev is a generic, very fast classifier. It does not review the PR. It answers small questions that help a human look in the right place. It can be wrong. That is acceptable. It must never be presented as authoritative.
+Jev is [TypeSafe AI's System One model](https://typesafe.ai/blog/introducing-system-one-models-and-jev): unstructured state in, typed decisions out. It does not generate prose. It answers small questions (Choice, Score, Noul) that help a human look in the right place. It can be semantically wrong. That is acceptable. It must never be presented as authoritative.
+
+We do not have API access yet. The contract and a deterministic stub ship first.
 
 Scryglass must not say "this code is bad." It may say "this is likely shared, data-flow, and worth a look."
 
@@ -40,7 +43,7 @@ Deterministic graphs answer *reach*. They do not always answer *weirdness* or *b
 | ID | Title | MVP |
 | --- | --- | --- |
 | [S01](./S01-attention-input-contract.md) | Attention input contract | Yes (even before Jev) |
-| [S02](./S02-classify-attention.md) | Classify attention with Jev | After MVP if Jev is unclear |
+| [S02](./S02-classify-attention.md) | Classify attention with Jev | After access (stub in MVP) |
 | [S03](./S03-compose-attention-map.md) | Compose the attention map | Yes (can be deterministic-only) |
 | [S04](./S04-attention-guardrails.md) | Attention guardrails | Yes |
 
@@ -51,6 +54,6 @@ Deterministic graphs answer *reach*. They do not always answer *weirdness* or *b
 
 ## Open questions
 
-- What is Jev today — API, local model, existing internal service?
-- Latency budget so the cockpit does not wait on a "review"
+- TypeSafe key / early access
 - How we show disagreement between graph rank and Jev rank
+- Whether we ever send a short hunk, or only structured graph facts

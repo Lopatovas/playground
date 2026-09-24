@@ -16,7 +16,8 @@ The session is a directory (or equivalent) on disk. The Opening, the Web, the Mi
 - Schema version so later epics can migrate
 - Write identity, git facts, and symbols
 - Leave extension points for graph, previews, attention, receipt
-- Load an existing session by id
+- Load an existing session by id or by `(host, prId)`
+- Slots for Palimpsest: last-reviewed SHA, draft comments
 
 ### Out
 

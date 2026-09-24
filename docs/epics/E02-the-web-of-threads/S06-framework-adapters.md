@@ -1,20 +1,21 @@
 # E02-S06 — Framework adapters
 
 **Epic:** E02 The Web of Threads  
-**MVP:** Yes (one adapter)  
+**MVP:** Yes (generic floor; one framework adapter only if a dogfood PR needs it)  
 **Status:** Draft
 
 ## Outcome
 
-The graph model stays generic. Framework knowledge lives in adapters that can see Vue SFCs, router tables, Pinia stores — or later React hooks, Next routes, server/client boundaries.
+The graph model stays generic. Adapter Zero is TS/JS modules — that is enough for job 2 on many PRs. Vue, React, and Next make routes and templates better. PHP and Electron still get a session and a file-level map.
 
 ## Scope
 
 ### In
 
 - Adapter interface: discover files, parse symbols, parse routes, tag layers
-- First adapter: Vue (SFC, `<script setup>`, template component refs, Vue Router, Pinia/Vuex, API/service folders) **or** React/Next if that is the first repo
-- Generic fallback: TS/JS modules only
+- Adapter Zero: TS/JS modules (MVP floor)
+- Adapter One when a real PR needs it: Vue SFC / Vue Router / Pinia **or** React/Next
+- Capability flags so a PHP+Vue repo can use Vue where files are Vue, and file-level elsewhere
 
 ### Out
 
@@ -45,5 +46,5 @@ The graph model stays generic. Framework knowledge lives in adapters that can se
 
 ## Open questions
 
-- Confirm first framework with the real target repo
-- How much Vue template resolution is required before the graph is "good enough"
+- Which real PR we dogfood first (that picks Adapter One)
+- How much template resolution job 2 needs before a shared API still outranks a heading

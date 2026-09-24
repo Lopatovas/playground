@@ -2,7 +2,8 @@
 
 **Practical name:** Review cockpit UI  
 **Status:** Draft  
-**MVP:** Yes (thin three-pane)
+**MVP:** Yes (thin three-pane)  
+**Job:** 3 — review UX (also the surface for jobs 1 and 2)
 
 ## Intent
 
@@ -35,21 +36,23 @@ Analysis that cannot be navigated does not reduce search cost. Bitbucket's diff 
 - Clicking `customerApi.ts` shows its diff, consumers, routes, attention, tests, and a path to UI
 - Attention chrome is visibly non-authoritative
 - The reviewer never has to start from a 3,000-line file list
+- The seat has a place to write (E08 owns the comment model; the High Seat shows the pen)
 
 ## In scope
 
-- Shell and header
+- Shell and header (PR title from Bitbucket, not a Jira dump)
 - Change map pane
 - Center stage (code + preview)
 - Context pane
 - Linked selection
 - Attention visualization
+- Surfaces for draft comments (implemented in E08)
 
 ## Out of scope
 
 - Rebuilding a generic Git client
-- Host comment threads in MVP
 - Ticket body as a required panel
+- Publishing mechanics (E08)
 
 ## Stories
 
@@ -68,6 +71,7 @@ Analysis that cannot be navigated does not reduce search cost. Bitbucket's diff 
 - E02 graph (map and context are empty without it)
 - E03 stills when present
 - E04 map when present
+- E08 for the pen and the second sitting
 
 ## Open questions
 

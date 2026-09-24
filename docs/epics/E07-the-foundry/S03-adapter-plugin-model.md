@@ -6,7 +6,7 @@
 
 ## Outcome
 
-Framework-specific intelligence is isolated. The rest of Scryglass speaks files, symbols, routes, layers, and render targets. Adding React later should not rewrite The Opening or the High Seat.
+Language- and framework-specific intelligence is isolated. The rest of Scryglass speaks files, symbols, routes, layers, and render targets. Adding React, or surviving PHP+Vue, should not rewrite The Opening or the High Seat. Generic JS/TS is Adapter Zero.
 
 ## Scope
 

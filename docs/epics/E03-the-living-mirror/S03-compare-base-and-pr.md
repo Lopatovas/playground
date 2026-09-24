@@ -6,7 +6,7 @@
 
 ## Outcome
 
-The reviewer can see the same route/state on **base**, **PR**, and a **visual diff**, then jump to the live PR. Viewport, browser, and (as far as we can) data stay fixed.
+The reviewer can see the same route/state on **base**, **PR**, and a **visual diff**, then jump to the live PR. This is to understand what the feature changed, not to fail a CI gate. Viewport, browser, and (as far as we can) data stay fixed.
 
 ## Scope
 

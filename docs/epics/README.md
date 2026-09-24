@@ -1,53 +1,57 @@
 # Epics
 
-Seven epics cover Scryglass. Each folder has an `epic.md` plus one file per story. Stories contain tasks.
+Eight epics cover Scryglass. Each folder has an `epic.md` plus one file per story. Stories contain tasks.
 
 Status on everything is **Draft**. We iterate here.
 
-## Map
+## Map (by job)
 
 ```text
-E07 The Foundry ──────────────────────────────── floor
+E07 Foundry + E01 Opening ──────────────── floor
+
+Job 1  what it is     E03 Living Mirror
+Job 2  where to look  E02 Web of Threads → E04 Whisper Marks
+Job 3  review UX      E05 High Seat → E08 Palimpsest
+
+E06 Chronicle ──────────────── later
+```
+
+```text
+E07 The Foundry
         │
         ▼
-E01 The Opening ── session, git facts, symbols
+E01 The Opening
         │
         ▼
-E02 The Web of Threads ── impact graph from repository facts
+E02 The Web of Threads ── job 2
         │
-        ├──────────► E03 The Living Mirror ── render + compare UI
+        ├──────────► E03 The Living Mirror ── job 1
         │
-        └──────────► E04 The Whisper Marks ── optional attention signals
+        └──────────► E04 The Whisper Marks ── job 2 (optional sharpener)
                         │
                         ▼
-                   E05 The High Seat ── the cockpit
+                   E05 The High Seat ── job 3 surface
                         │
-                        ▼
-                   E06 The Chronicle ── the receipt
+                        ├──────────► E08 The Palimpsest ── job 3
+                        │
+                        └──────────► E06 The Chronicle ── later
 ```
 
 ## How to read a story
-
-Every story file uses the same shape:
 
 - **Outcome** — what the reviewer can do
 - **Scope** — in / out
 - **Acceptance criteria** — testable
 - **Tasks** — implementation slices
 - **Depends on** — other stories
-- **Open questions** — things we should decide together
+- **Open questions** — leftover decisions
 
-MVP tags:
-
-- **MVP** — needed for the first useful loop
-- **After MVP** — real, but not the first cut
-- **Stretch** — only if it falls out cheaply
+MVP tags: **MVP** / **After MVP** / **Stretch**
 
 ## Iteration notes
 
-This is a first decomposition. Likely cuts in the next pass:
-
-- E03-S04 / S05 / S06 may collapse until one repo's preview story is real
-- E04 can wait if Jev is undefined; E02 ranks can fill the attention map
-- E06 can stay a session JSON export until the cockpit loop is loved
-- E07-S03 (plugin model) may be premature if we only have one adapter
+- All three jobs are in MVP. Do not ship a cockpit that only diffs.
+- E02 is the floor of job 2. If `customerApi` does not outrank a one-page heading, the epic failed.
+- E04 may stay stubbed. Job 2 does not wait on TypeSafe.
+- E08 is core (job 3). Do not slip it behind Chronicle.
+- E02/E03 degrade on PHP/Electron; session + Palimpsest must still work.

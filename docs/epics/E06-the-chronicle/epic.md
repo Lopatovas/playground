@@ -2,7 +2,8 @@
 
 **Practical name:** Review receipt  
 **Status:** Draft  
-**MVP:** After MVP (session JSON is enough until the cockpit loop is loved)
+**MVP:** After MVP (session JSON is enough until the cockpit loop is loved)  
+**Job:** later — not one of the three
 
 ## Intent
 

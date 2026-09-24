@@ -12,17 +12,18 @@ The session names the units that actually changed: functions, classes, component
 
 ### In
 
-- TypeScript / JavaScript via compiler API or ts-morph
-- Vue SFC `<script>` / `<script setup>` if Vue is the first adapter
+- TypeScript / JavaScript via compiler API or ts-morph (the floor for every repo)
+- Framework extras (Vue SFC, React components) only when an adapter is present
 - Map each hunk to overlapping symbols
 - Record new vs modified vs deleted symbols
 - Export / public-API vs local helper when the AST makes it obvious
+- PHP / other languages: file-level change is enough in MVP; do not fake symbols
 
 ### Out
 
 - Full-repo dependency graph (E02)
 - Template-only Vue changes that need the Vue adapter's template pass (note them, deeper work in E02-S06)
-- React / Next-specific units unless that is the first adapter
+- Deep PHP or Electron-main-process analysis
 - LLM-based "this file seems to define a service"
 
 ## Acceptance criteria
@@ -44,7 +45,7 @@ The session names the units that actually changed: functions, classes, component
 ## Depends on
 
 - E01-S02
-- E07-S03 / E02-S06 for framework-specific symbol kinds (can start TS-only)
+- E07-S03 / E02-S06 for framework-specific symbol kinds (TS/JS first)
 
 ## Open questions
 

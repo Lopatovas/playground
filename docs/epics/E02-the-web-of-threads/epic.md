@@ -2,17 +2,18 @@
 
 **Practical name:** Deterministic impact graph  
 **Status:** Draft  
-**MVP:** Yes
+**MVP:** Yes  
+**Job:** 2 — where focus should go
 
 ## Intent
 
-From changed symbols, compute what the change can reach. The graph is made of repository facts: imports, exports, consumers, routes, tests, shared utilities.
+This is job 2. From changed symbols, compute what the change can reach so the reviewer does not spend equal time on a one-page heading and a shared API abstraction.
 
-A model does not draw these edges.
+The graph is made of repository facts: imports, exports, consumers, routes, tests, shared utilities. A model does not draw these edges.
 
 ## Why this epic exists
 
-Raw LOC hides the real review problem. Editing `customerApi.ts` (87 consumers, 14 features) is a different event from adding `CustomerCard.vue` (1 consumer). The Web is how Scryglass says that without guessing.
+Raw LOC hides the real review problem. Editing `customerApi.ts` (87 consumers, 14 features) is a different event from changing a heading on one page. The Web is how Scryglass says that without guessing. If this ranking is wrong, Scryglass is a prettier file list.
 
 Useful spine:
 

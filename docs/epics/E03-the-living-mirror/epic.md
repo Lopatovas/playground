@@ -2,17 +2,20 @@
 
 **Practical name:** Visual preview and base vs PR comparison  
 **Status:** Draft  
-**MVP:** Yes (stills + compare)
+**MVP:** Yes (stills + compare)  
+**Job:** 1 — what the PR is
 
 ## Intent
 
-Let the reviewer see what the feature actually is before reading 3,000 lines.
+Let the reviewer see what the feature actually is before reading 3,000 lines or a 2,000-line AI Jira spec.
 
-The Mirror launches the real application when it can, opens affected routes and states, and shows **BASE | PR | DIFF**. Storybook is a secondary source. Commercial visual platforms are optional, never required.
+The Mirror exists for **comprehension**. Scryglass may checkout and boot the PR app itself. A still that answers "oh, it's a customer search" is the win. **BASE | PR | DIFF** is useful when cheap; it is not a QA gate. Storybook is secondary. Commercial visual platforms are optional, never required.
 
 ## Why this epic exists
 
-Frontend review that never looks at the UI is incomplete. Code cannot answer "what did they build?" as fast as a rendered route.
+Tickets are a bad interface for "what did they build?" Code is a slow one. A rendered route is fast.
+
+This is not a visual-regression product.
 
 ## Outcomes
 
@@ -36,6 +39,7 @@ Frontend review that never looks at the UI is incomplete. Code cannot answer "wh
 - Depending on Chromatic / Percy / Happo for the core loop
 - Replacing visual QA as a discipline
 - Declaring a visual diff a product defect automatically
+- Replacing the ticket with an LLM summary of the ticket
 
 ## Stories
 

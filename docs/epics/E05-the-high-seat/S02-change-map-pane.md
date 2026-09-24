@@ -6,7 +6,7 @@
 
 ## Outcome
 
-The left pane is a semantic map of the change, not a file tree sorted by LOC. Shared spine nodes are obvious. Isolated leaves are present but visually quieter. Nodes are clickable.
+The left pane is job 2 made visible: a semantic map of the change, not a file tree sorted by LOC. A shared API is obvious. A one-page heading is present but quiet. Nodes are clickable.
 
 ## Scope
 
@@ -26,7 +26,7 @@ The left pane is a semantic map of the change, not a file tree sorted by LOC. Sh
 
 ## Acceptance criteria
 
-- [ ] `customerApi` style nodes appear above leaf cards in default order
+- [ ] `customerApi` appears above a one-page heading / leaf card in default order
 - [ ] Each row/node shows name + impact class, not "+3842"
 - [ ] Clicking a node selects it (S05)
 - [ ] Reviewer can still reach a LOW isolated file
