@@ -13,7 +13,7 @@ Job 2 is a **bundle of named flags**, not a consumer count. Blast radius is one 
 ### In
 
 - Emit `{ id, severity, why[] }` per changed file and per PR
-- MVP families: reach, layer, contract.exports, test.gap/present, change.cross-layer / spine-and-ui, surface.auth/billing, noise.isolated-page
+- MVP families: reach, layer, `ui.network`, contract.exports, test.gap/present, change.cross-layer / spine-and-ui, surface.auth/billing, noise.isolated-page
 - Derive spine/high/medium/low from the published rule (not from LOC)
 - Show flags in fixture output and later in the High Seat
 
@@ -27,6 +27,7 @@ Job 2 is a **bundle of named flags**, not a consumer count. Blast radius is one 
 
 - [ ] `customerApi` carries `layer.api`, `reach.wide`, `reach.multi-route`, `test.present` — not only a consumer number
 - [ ] `SettingsHeading` carries `layer.ui-leaf` / `noise.isolated-page`, not `reach.wide`
+- [ ] `FetchingHeading` carries `ui.network` and stays `layer=component` / risk **low** — not `layer.http` / `layer.api`
 - [ ] A billing/API file with no spec carries `test.gap`
 - [ ] An `auth/` or `session` path carries `surface.auth`
 - [ ] Mixed UI+API PR carries `change.spine-and-ui`

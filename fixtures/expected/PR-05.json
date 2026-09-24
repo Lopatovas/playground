@@ -11,7 +11,7 @@
     {
       "file": "src/api/billingApi.ts",
       "layer": "api",
-      "layerWhy": "imports src/api/httpClient.ts (http) and has app importers",
+      "layerWhy": "imports src/api/httpClient.ts and is used outside a single page/component",
       "lineCount": 6,
       "exports": [
         "listInvoices"
@@ -47,7 +47,7 @@
           "id": "layer.api",
           "severity": "raise",
           "why": [
-            "imports src/api/httpClient.ts (http) and has app importers"
+            "imports src/api/httpClient.ts and is used outside a single page/component"
           ]
         },
         {
@@ -82,7 +82,7 @@
       ],
       "risk": "high",
       "reasons": [
-        "layer=api (imports src/api/httpClient.ts (http) and has app importers)",
+        "layer=api (imports src/api/httpClient.ts and is used outside a single page/component)",
         "consumers=4",
         "routes=1",
         "flags=reach.user-facing,layer.api,layer.data-flow,contract.exports,test.gap,surface.billing",

@@ -37,12 +37,15 @@ MVP = we can compute it on loom-shop or with git/AST we already planned. Later =
 
 | ID | Raise when | Source | MVP |
 | --- | --- | --- | --- |
-| `layer.http` | HTTP client / transport | DAG: no local imports + fetch/get/post | Yes |
-| `layer.api` | Shared API / service | DAG: imports http, has app importers | Yes |
+| `layer.http` | Shared HTTP client / transport | DAG: transport used by a non-UI module | Yes |
+| `layer.api` | Shared API / service | DAG: imports http, used outside a single page/component | Yes |
 | `layer.store` | State module | DAG: imports api, imported by a page (or `defineStore`) | Yes |
 | `layer.data-flow` | API, store, http, or shared helper | derived | Yes |
 | `layer.ui-leaf` | Component/page, one route | DAG | Yes |
 | `layer.routes` | Router table | exports `{ path, page }` / createRouter | Yes |
+| `ui.network` | Page or component calls `fetch` / imports http | DAG | Yes |
+
+`ui.network` does **not** change the layer. A heading that fetches stays `component`. See [layer-detection.md](./layer-detection.md) §3.
 
 Layer method: [layer-detection.md](./layer-detection.md). Folder names do not assign these.
 

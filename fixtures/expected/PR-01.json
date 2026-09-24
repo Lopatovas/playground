@@ -11,7 +11,7 @@
     {
       "file": "src/api/customerApi.ts",
       "layer": "api",
-      "layerWhy": "imports src/api/httpClient.ts (http) and has app importers",
+      "layerWhy": "imports src/api/httpClient.ts and is used outside a single page/component",
       "lineCount": 14,
       "exports": [
         "searchCustomers",
@@ -75,7 +75,7 @@
           "id": "layer.api",
           "severity": "raise",
           "why": [
-            "imports src/api/httpClient.ts (http) and has app importers"
+            "imports src/api/httpClient.ts and is used outside a single page/component"
           ]
         },
         {
@@ -106,7 +106,7 @@
       ],
       "risk": "spine",
       "reasons": [
-        "layer=api (imports src/api/httpClient.ts (http) and has app importers)",
+        "layer=api (imports src/api/httpClient.ts and is used outside a single page/component)",
         "consumers=7",
         "routes=2",
         "flags=reach.wide,reach.multi-route,reach.user-facing,layer.api,layer.data-flow,contract.exports,test.present",

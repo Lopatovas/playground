@@ -82,6 +82,14 @@
           ]
         },
         {
+          "id": "contract.exports",
+          "severity": "raise",
+          "why": [
+            "getSession",
+            "requireSession"
+          ]
+        },
+        {
           "id": "test.present",
           "severity": "info",
           "why": [
@@ -101,7 +109,7 @@
         "layer=shared (used by a store/api module, not itself transport)",
         "consumers=6",
         "routes=2",
-        "flags=reach.wide,reach.multi-route,reach.user-facing,layer.shared,layer.data-flow,test.present,surface.auth",
+        "flags=reach.wide,reach.multi-route,reach.user-facing,layer.shared,layer.data-flow,contract.exports,test.present,surface.auth",
         "lines=8 (fact, not used for risk)"
       ]
     }

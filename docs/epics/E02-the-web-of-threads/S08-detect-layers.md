@@ -15,7 +15,7 @@ Method: [layer-detection.md](../../../layer-detection.md).
 ### In
 
 - Anchor: test filenames, route tables (and later Vue Router / Next file routes), HTTP transport modules
-- Walk: api ← imports http; store ← imports api + imported by page; component ← used by page, no http/api
+- Walk: api ← imports http and used outside a single page/component; store ← imports api + imported by page; component ← used by page (**may import http**; that is `ui.network`)
 - `shared` for store/api helpers that are not transport
 - Persist `layer` + `layerWhy` on the session node
 - Path may be logged as a hint; graph wins
@@ -30,8 +30,9 @@ Method: [layer-detection.md](../../../layer-detection.md).
 ## Acceptance criteria
 
 - [ ] On loom-shop, `customerApi.ts` is `api` even if the classifier cannot see the string `src/api`
-- [ ] `SettingsHeading.ts` is `component` because a page imports it and it does not import http/api
-- [ ] `httpClient.ts` is `http` because it is transport with no local domain imports
+- [ ] `SettingsHeading.ts` is `component` because a page imports it
+- [ ] `FetchingHeading.ts` (imports `httpClient`, calls `fetch`) is still `component` with `ui.network` — never `page`, `http`, or `api`
+- [ ] `httpClient.ts` is `http` because it is shared transport used by API modules, not because it contains `fetch`
 - [ ] `session.ts` is `shared` (used by a store), with `surface.auth` from the name/path — not `layer.auth`
 - [ ] A file with no matching rule is `other`, not guessed
 - [ ] Each node has a human-readable `layerWhy`

@@ -22,6 +22,7 @@ routes → pages → stores / leaf UI → API → httpClient
 
 - `customerApi` is a shared API abstraction (many stores, pages, routes, a test).
 - `SettingsHeading` is a heading used on one page.
+- `FetchingHeading` is the same shape but calls `fetch` and imports `httpClient`. Layer stays `component`; the flag is `ui.network`.
 - `MarketingLandingPage` is a large isolated page (LOC must not become risk).
 
 ## Sample PRs
@@ -34,6 +35,7 @@ routes → pages → stores / leaf UI → API → httpClient
 | [PR-04](./prs/PR-04-isolated-large-page.json) | Big isolated marketing page | **low** despite more lines than the API | the page itself |
 | [PR-05](./prs/PR-05-billing-api-no-test.json) | Billing API, smaller reach, no spec | **high** (`test.gap` + `surface.billing`) | `billingApi.ts` |
 | [PR-06](./prs/PR-06-auth-session.json) | Session helper | **spine** (`surface.auth` + wide reach) | `session.ts` |
+| [PR-07](./prs/PR-07-fetching-heading.json) | Heading that fetches | **low** (`component` + `ui.network`) | `FetchingHeading.ts` |
 
 Flags are the point. PR-05 is the proof that **reach is not enough**: fewer consumers than `customerApi`, still raised.
 

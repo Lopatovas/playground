@@ -85,13 +85,30 @@ function isRouteTable(file) {
   return /path:\s*["'][^"']+["']\s*,\s*page:\s*[A-Za-z0-9_]+/.test(readShop(file));
 }
 
-function isHttpClient(file, graph) {
-  const local = graph.imports[file] ?? [];
-  if (local.length) return false;
+function looksLikeTransport(file) {
   const text = readShop(file);
   return (
     /\bexport function (get|post|put|patch|del|request)\b/.test(text) ||
     /\b(fetch|axios|ky|ofetch)\b/.test(text)
+  );
+}
+
+function usesNetwork(file, graph, layer) {
+  const deps = graph.imports[file] ?? [];
+  return looksLikeTransport(file) || deps.some((dep) => layer[dep] === "http");
+}
+
+function onlyUiImporters(file, graph, layer) {
+  const importers = (graph.importedBy[file] ?? []).filter((imp) => layer[imp] !== "test");
+  if (!importers.length) return false;
+  return importers.every((imp) => ["page", "component"].includes(layer[imp]));
+}
+
+function onlyKnownPageImporters(file, graph, layer) {
+  const importers = (graph.importedBy[file] ?? []).filter((imp) => layer[imp] !== "test");
+  return (
+    importers.length > 0 &&
+    importers.every((imp) => ["page", "app", "routes"].includes(layer[imp]))
   );
 }
 
@@ -113,9 +130,14 @@ function inferLayers(graph) {
   const layer = {};
   const why = {};
   const assign = (file, next, reason) => {
-    if (!file || layer[file]) return;
+    if (!file || layer[file]) return false;
     layer[file] = next;
     why[file] = reason;
+    return true;
+  };
+  const unassign = (file) => {
+    delete layer[file];
+    delete why[file];
   };
 
   for (const file of graph.files) {
@@ -138,27 +160,51 @@ function inferLayers(graph) {
     }
   }
 
+  // HTTP: shared transport. A heading that calls fetch is only imported by a
+  // page, so it never lands here. A helper imported by that heading might —
+  // demoted after components exist.
   for (const file of graph.files) {
-    if (!layer[file] && isHttpClient(file, graph)) {
-      assign(file, "http", "transport: no local imports, exports get/post or uses fetch/axios");
-    }
+    if (layer[file] || !looksLikeTransport(file)) continue;
+    const importers = (graph.importedBy[file] ?? []).filter((imp) => layer[imp] !== "test");
+    if (!importers.length || onlyKnownPageImporters(file, graph, layer)) continue;
+    assign(file, "http", "shared transport: used by at least one non-page module");
   }
+
+  const growComponents = () => {
+    let grew = true;
+    while (grew) {
+      grew = false;
+      for (const file of graph.files) {
+        if (layer[file]) continue;
+        const importers = graph.importedBy[file] ?? [];
+        if (importers.some((imp) => layer[imp] === "page" || layer[imp] === "component")) {
+          grew = assign(
+            file,
+            "component",
+            "used by a page/component (network use is ui.network, not a layer)"
+          );
+        }
+      }
+    }
+  };
 
   let grew = true;
   while (grew) {
     grew = false;
     for (const file of graph.files) {
       if (layer[file]) continue;
-      const httpDeps = (graph.imports[file] ?? []).filter((dep) => layer[dep] === "http" || layer[dep] === "api");
+      const httpDeps = (graph.imports[file] ?? []).filter(
+        (dep) => layer[dep] === "http" || layer[dep] === "api"
+      );
+      if (!httpDeps.length) continue;
+      if (onlyUiImporters(file, graph, layer)) continue;
       const appImporters = (graph.importedBy[file] ?? []).filter((imp) => layer[imp] !== "test");
-      if (httpDeps.length && appImporters.length) {
-        assign(
-          file,
-          "api",
-          `imports ${httpDeps.join(", ")} (${httpDeps.map((dep) => layer[dep]).join("/")}) and has app importers`
-        );
-        grew = true;
-      }
+      if (!appImporters.length) continue;
+      grew = assign(
+        file,
+        "api",
+        `imports ${httpDeps.join(", ")} and is used outside a single page/component`
+      );
     }
   }
 
@@ -183,20 +229,30 @@ function inferLayers(graph) {
     }
   }
 
-  grew = true;
-  while (grew) {
-    grew = false;
+  growComponents();
+
+  // fetch-in-UI leftovers: transport/API used only by page/component is a flag.
+  let demoted = true;
+  while (demoted) {
+    demoted = false;
     for (const file of graph.files) {
-      if (layer[file]) continue;
-      const deps = graph.imports[file] ?? [];
-      if (deps.some((dep) => ["http", "api", "store"].includes(layer[dep]))) continue;
-      const importers = graph.importedBy[file] ?? [];
-      if (importers.some((imp) => layer[imp] === "page" || layer[imp] === "component")) {
-        assign(file, "component", "used by a page/component and does not import http/api/store");
-        grew = true;
+      if (layer[file] === "http" && onlyUiImporters(file, graph, layer)) {
+        unassign(file);
+        demoted = true;
+      }
+      if (layer[file] === "api") {
+        const httpDeps = (graph.imports[file] ?? []).filter(
+          (dep) => layer[dep] === "http" || layer[dep] === "api"
+        );
+        if (!httpDeps.length || onlyUiImporters(file, graph, layer)) {
+          unassign(file);
+          demoted = true;
+        }
       }
     }
   }
+
+  growComponents();
 
   for (const file of graph.files) {
     if (layer[file]) continue;
@@ -319,6 +375,11 @@ function flagsFor(node, graph) {
     flags.push(flag("layer.ui-leaf", "info", ["single-route component"]));
   }
   if (node.layer === "routes") flags.push(flag("layer.routes", "raise", ["router"]));
+  if (["page", "component"].includes(node.layer) && usesNetwork(node.file, graph, graph.layer)) {
+    flags.push(
+      flag("ui.network", "raise", ["UI talks to the network", `layer stays ${node.layer}`])
+    );
+  }
 
   if (["api", "store", "http", "shared"].includes(node.layer) && node.exports.length) {
     flags.push(flag("contract.exports", "raise", node.exports));
@@ -487,6 +548,29 @@ function renderText(report) {
   return lines.join("\n");
 }
 
+function assertLayerInvariants(graph) {
+  const expect = {
+    "src/pages/SettingsPage.ts": "page",
+    "src/components/SettingsHeading.ts": "component",
+    "src/components/FetchingHeading.ts": "component",
+    "src/api/httpClient.ts": "http",
+    "src/api/customerApi.ts": "api",
+  };
+  const errors = [];
+  for (const [file, want] of Object.entries(expect)) {
+    const got = graph.layer[file];
+    if (got !== want) errors.push(`${file}: layer=${got} want=${want}`);
+  }
+  for (const banned of ["page", "http", "api"]) {
+    if (graph.layer["src/components/FetchingHeading.ts"] === banned) {
+      errors.push(`FetchingHeading must not be ${banned}`);
+    }
+  }
+  if (errors.length) {
+    throw new Error(`layer invariants failed:\n${errors.join("\n")}`);
+  }
+}
+
 function parseArgs(argv) {
   const args = { pr: null, check: false, write: false };
   for (let i = 2; i < argv.length; i += 1) {
@@ -500,6 +584,7 @@ function parseArgs(argv) {
 function main() {
   const args = parseArgs(process.argv);
   const graph = buildGraph();
+  assertLayerInvariants(graph);
   let prs = loadPrs();
   if (args.pr) {
     prs = prs.filter((pr) => pr.id === args.pr || pr.id === `PR-${args.pr}`);
