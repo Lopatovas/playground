@@ -33,7 +33,8 @@ For each changed symbol or file, Scryglass lists who uses it and how wide the ch
 
 ## Tasks
 
-- [ ] Build reverse index from S01
+- [ ] Prefer `blast-radius file|files --format json` (downstream consumers are the product)
+- [ ] Build reverse index from S01 only if the CLI is unavailable
 - [ ] Slice subgraph for changed files/symbols
 - [ ] Compute counts used later by the High Seat context pane
 - [ ] Handle new files (consumers = 0 or only self)

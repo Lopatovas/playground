@@ -39,7 +39,13 @@ routes → pages → stores / leaf UI → API → httpClient
 node fixtures/blast-radius.mjs
 node fixtures/blast-radius.mjs --pr PR-01
 node fixtures/blast-radius.mjs --check
+
+# Same ranking from the OSS engine we intend to wrap:
+npx blast-radius-cli --repo-root fixtures/loom-shop --format tree \
+  file src/api/customerApi.ts
 ```
+
+`blast-radius-cli` (MIT) already reports customerApi as **moderate / 7 files** and SettingsHeading as **minor / 3 files**. We still add our layer tags (api spine vs one-page heading). See [docs/tools.md](../docs/tools.md).
 
 `--check` compares output to `expected/` and exits non-zero on drift.
 

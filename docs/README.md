@@ -21,6 +21,7 @@ Until we have Bitbucket access, dogfood is the local fixture: [fixtures/README.m
 | [principles.md](./principles.md) | Constraints every epic must obey |
 | [glossary.md](./glossary.md) | Shared language |
 | [mvp.md](./mvp.md) | What we build first |
+| [tools.md](./tools.md) | Open-source tools we absorb instead of rebuilding |
 | [epics/](./epics/README.md) | Epics, stories, and tasks |
 | [../fixtures/README.md](../fixtures/README.md) | Deterministic sample app + sample PRs |
 

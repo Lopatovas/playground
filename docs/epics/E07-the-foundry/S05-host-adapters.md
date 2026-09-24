@@ -39,7 +39,7 @@ One configured Bitbucket instance (base URL + token).
 ## Tasks
 
 - [ ] Write `HostAdapter` interface
-- [ ] Bitbucket implementation (Cloud or DC — pick from the real instance)
+- [ ] Bitbucket REST: PR get + **PR comments** (never commit comments). Thin client, no Gerrit/Review Board.
 - [ ] Credential config (env + local secret file)
 - [ ] Contract tests with recorded fixtures
 - [ ] Document how Adapter Two (GitHub) would map

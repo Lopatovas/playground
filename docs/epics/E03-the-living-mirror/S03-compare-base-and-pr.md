@@ -41,7 +41,7 @@ BASE ↔ PR → visual diff
 
 - [ ] Worktree or second checkout strategy for base
 - [ ] Reuse S02 capture against base
-- [ ] Choose a local differ (Playwright screenshots, pixelmatch, odiff)
+- [ ] Use **odiff** / playwright-odiff (absorb). Playwright stills for capture. No Chromatic/Percy.
 - [ ] Store `{ base, pr, diff, mismatchPercent }`
 - [ ] Document flake sources (time, data, animations)
 - [ ] Tests with a fixture that changes a color / label

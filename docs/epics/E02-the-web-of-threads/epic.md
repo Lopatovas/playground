@@ -11,7 +11,7 @@ This is job 2. From changed files/symbols, **compute** blast radius so the revie
 
 The graph is made of repository facts: imports, exports, consumers, routes, tests. A model does not draw these edges. Jev does not set risk.
 
-Until we have a real Bitbucket PR, the contract lives in [fixtures/](../../../fixtures/README.md): `loom-shop` plus `blast-radius.mjs`. If that script ranks a heading above `customerApi`, the story is wrong.
+Until we have a real Bitbucket PR, the contract lives in [fixtures/](../../../fixtures/README.md). **Do not write another graph engine.** Wrap [blast-radius-cli](https://github.com/ehermanson/blast-radius) (verified on loom-shop) and keep `blast-radius.mjs --check` as the golden. Add layer tags on top so a shared API is a spine, not merely "moderate." Fallback: dependency-cruiser. See [tools.md](../../tools.md).
 
 ## Why this epic exists
 

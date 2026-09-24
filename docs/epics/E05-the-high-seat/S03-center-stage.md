@@ -34,7 +34,7 @@ The middle pane is where the reviewer *looks*. They can toggle or split **diff**
 
 ## Tasks
 
-- [ ] Diff renderer (Monaco, CodeMirror, or a purpose-built hunk view)
+- [ ] Absorb `@pierre/diffs` or Monaco `DiffEditor` — do not write a hunk renderer
 - [ ] Symbol-to-hunk mapping from E01-S03
 - [ ] Image viewer for stills and visual diffs
 - [ ] Toggle/split controls

@@ -34,7 +34,7 @@ The left pane is job 2 made visible: a semantic map of the change, not a file tr
 
 ## Tasks
 
-- [ ] Spike React Flow vs Cytoscape vs a dense tree for 40–200 nodes
+- [ ] Absorb React Flow or Cytoscape (see [tools.md](../../../tools.md)); tree is fine for the first slice
 - [ ] Map session graph → view model
 - [ ] Default grouping and sort
 - [ ] Selection + keyboard j/k

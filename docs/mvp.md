@@ -30,7 +30,7 @@ Foundry (runtime + Bitbucket adapter)
                             → Chronicle
 ```
 
-Job 2 ships before Jev and is proven on [fixtures/](../fixtures/README.md) until Bitbucket access exists. A graph that puts `customerApi` above `SettingsHeading` is already the product. Jev only sharpens it.
+Job 2 ships before Jev and is proven on [fixtures/](../fixtures/README.md) until Bitbucket access exists. **First implementation wraps `blast-radius-cli`**, then we add layer tags. See [tools.md](./tools.md). A graph that puts `customerApi` above `SettingsHeading` is already the product. Jev only sharpens it.
 
 ## MVP in
 

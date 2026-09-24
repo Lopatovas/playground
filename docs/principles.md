@@ -6,6 +6,8 @@ Every epic, story, and UI copy must obey these. If a design violates one, the de
 
 Git, AST, imports, consumers, routes, tests, screenshots — computed. Risk and key points come from that graph, not from a model. Jev may classify a small structured payload. It may not draw edges, invent blast radius, write the "what is this PR" story, or set risk. If Jev is offline, Scryglass still works.
 
+**Prefer absorbing open-source engines.** Graph, diff, and browser tools are not our moat. Wrap them. Our moat is the three jobs in one seat, plus Bitbucket comments that survive a second sitting. See [tools.md](./tools.md).
+
 ## 1. Do not optimize for line count
 
 LOC is almost useless here. Three thousand lines can be normal. Ask: **what changed that could matter?**
