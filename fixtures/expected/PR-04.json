@@ -1,0 +1,71 @@
+{
+  "id": "PR-04",
+  "title": "Add a long marketing landing page",
+  "what": "A large isolated page. Many lines, one route, no shared API. LOC must not rank this above an API change.",
+  "risk": "low",
+  "keyPoints": [
+    "src/pages/MarketingLandingPage.ts"
+  ],
+  "flags": [],
+  "changed": [
+    {
+      "file": "src/pages/MarketingLandingPage.ts",
+      "layer": "page",
+      "layerWhy": "registered as /marketing in src/routes.ts",
+      "lineCount": 24,
+      "exports": [
+        "MarketingLandingPage"
+      ],
+      "fanOut": 0,
+      "directConsumers": [
+        "src/routes.ts"
+      ],
+      "consumerCount": 2,
+      "consumers": [
+        "src/main.ts",
+        "src/routes.ts"
+      ],
+      "pages": [],
+      "tests": [],
+      "routes": [
+        "/marketing"
+      ],
+      "routeCount": 1,
+      "flags": [
+        {
+          "id": "reach.user-facing",
+          "severity": "info",
+          "why": [
+            "/marketing"
+          ]
+        },
+        {
+          "id": "test.gap",
+          "severity": "raise",
+          "why": [
+            "no colocated spec",
+            "no test in consumer cone"
+          ]
+        },
+        {
+          "id": "noise.isolated-page",
+          "severity": "demote",
+          "why": [
+            "one route",
+            "consumers=2"
+          ]
+        }
+      ],
+      "risk": "low",
+      "reasons": [
+        "layer=page (registered as /marketing in src/routes.ts)",
+        "consumers=2",
+        "routes=1",
+        "flags=reach.user-facing,test.gap,noise.isolated-page",
+        "lines=24 (fact, not used for risk)"
+      ]
+    }
+  ],
+  "deterministic": true,
+  "jev": null
+}

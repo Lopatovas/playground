@@ -1,0 +1,6 @@
+{
+  "id": "PR-03",
+  "title": "Customer search UI plus API query change",
+  "changed": ["src/api/customerApi.ts", "src/pages/CustomerPage.ts"],
+  "what": "A visible customer-search tweak and a change to the shared API it calls. The API is the risky part."
+}

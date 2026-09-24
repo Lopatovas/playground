@@ -1,0 +1,73 @@
+{
+  "id": "PR-07",
+  "title": "Settings heading that fetches stays a heading",
+  "what": "A page heading now calls fetch and imports httpClient. That is ui.network, not a promotion to page, http, or api.",
+  "risk": "low",
+  "keyPoints": [
+    "src/components/FetchingHeading.ts"
+  ],
+  "flags": [],
+  "changed": [
+    {
+      "file": "src/components/FetchingHeading.ts",
+      "layer": "component",
+      "layerWhy": "used by a page/component (network use is ui.network, not a layer)",
+      "lineCount": 8,
+      "exports": [
+        "FetchingHeading"
+      ],
+      "fanOut": 1,
+      "directConsumers": [
+        "src/pages/SettingsPage.ts"
+      ],
+      "consumerCount": 3,
+      "consumers": [
+        "src/main.ts",
+        "src/pages/SettingsPage.ts",
+        "src/routes.ts"
+      ],
+      "pages": [
+        "src/pages/SettingsPage.ts"
+      ],
+      "tests": [],
+      "routes": [
+        "/settings"
+      ],
+      "routeCount": 1,
+      "flags": [
+        {
+          "id": "reach.user-facing",
+          "severity": "info",
+          "why": [
+            "/settings"
+          ]
+        },
+        {
+          "id": "layer.ui-leaf",
+          "severity": "info",
+          "why": [
+            "single-route component"
+          ]
+        },
+        {
+          "id": "ui.network",
+          "severity": "raise",
+          "why": [
+            "UI talks to the network",
+            "layer stays component"
+          ]
+        }
+      ],
+      "risk": "low",
+      "reasons": [
+        "layer=component (used by a page/component (network use is ui.network, not a layer))",
+        "consumers=3",
+        "routes=1",
+        "flags=reach.user-facing,layer.ui-leaf,ui.network",
+        "lines=8 (fact, not used for risk)"
+      ]
+    }
+  ],
+  "deterministic": true,
+  "jev": null
+}

@@ -1,0 +1,6 @@
+{
+  "id": "PR-02",
+  "title": "Tweak the settings page heading",
+  "changed": ["src/components/SettingsHeading.ts"],
+  "what": "Copy/structure of a heading used only on /settings."
+}

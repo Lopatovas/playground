@@ -1,0 +1,119 @@
+{
+  "id": "PR-01",
+  "title": "Tighten customer search in the shared API",
+  "what": "The shared customer API search helper changed. No new screen — this is how several pages talk to the backend.",
+  "risk": "spine",
+  "keyPoints": [
+    "src/api/customerApi.ts"
+  ],
+  "flags": [],
+  "changed": [
+    {
+      "file": "src/api/customerApi.ts",
+      "layer": "api",
+      "layerWhy": "imports src/api/httpClient.ts and is used outside a single page/component",
+      "lineCount": 14,
+      "exports": [
+        "searchCustomers",
+        "getCustomer",
+        "updateCustomer"
+      ],
+      "fanOut": 1,
+      "directConsumers": [
+        "src/api/customerApi.test.ts",
+        "src/stores/useCustomerStore.ts"
+      ],
+      "consumerCount": 7,
+      "consumers": [
+        "src/api/customerApi.test.ts",
+        "src/main.ts",
+        "src/pages/CustomerDetailPage.ts",
+        "src/pages/CustomerPage.test.ts",
+        "src/pages/CustomerPage.ts",
+        "src/routes.ts",
+        "src/stores/useCustomerStore.ts"
+      ],
+      "pages": [
+        "src/pages/CustomerDetailPage.ts",
+        "src/pages/CustomerPage.ts"
+      ],
+      "tests": [
+        "src/api/customerApi.test.ts",
+        "src/pages/CustomerPage.test.ts"
+      ],
+      "routes": [
+        "/customers",
+        "/customers/:id"
+      ],
+      "routeCount": 2,
+      "flags": [
+        {
+          "id": "reach.wide",
+          "severity": "raise",
+          "why": [
+            "consumers=7"
+          ]
+        },
+        {
+          "id": "reach.multi-route",
+          "severity": "raise",
+          "why": [
+            "routes=2",
+            "/customers",
+            "/customers/:id"
+          ]
+        },
+        {
+          "id": "reach.user-facing",
+          "severity": "raise",
+          "why": [
+            "/customers",
+            "/customers/:id"
+          ]
+        },
+        {
+          "id": "layer.api",
+          "severity": "raise",
+          "why": [
+            "imports src/api/httpClient.ts and is used outside a single page/component"
+          ]
+        },
+        {
+          "id": "layer.data-flow",
+          "severity": "raise",
+          "why": [
+            "api"
+          ]
+        },
+        {
+          "id": "contract.exports",
+          "severity": "raise",
+          "why": [
+            "searchCustomers",
+            "getCustomer",
+            "updateCustomer"
+          ]
+        },
+        {
+          "id": "test.present",
+          "severity": "info",
+          "why": [
+            "src/api/customerApi.test.ts",
+            "src/api/customerApi.test.ts",
+            "src/pages/CustomerPage.test.ts"
+          ]
+        }
+      ],
+      "risk": "spine",
+      "reasons": [
+        "layer=api (imports src/api/httpClient.ts and is used outside a single page/component)",
+        "consumers=7",
+        "routes=2",
+        "flags=reach.wide,reach.multi-route,reach.user-facing,layer.api,layer.data-flow,contract.exports,test.present",
+        "lines=14 (fact, not used for risk)"
+      ]
+    }
+  ],
+  "deterministic": true,
+  "jev": null
+}

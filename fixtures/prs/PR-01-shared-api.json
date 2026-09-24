@@ -1,0 +1,6 @@
+{
+  "id": "PR-01",
+  "title": "Tighten customer search in the shared API",
+  "changed": ["src/api/customerApi.ts"],
+  "what": "The shared customer API search helper changed. No new screen — this is how several pages talk to the backend."
+}

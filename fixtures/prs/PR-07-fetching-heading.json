@@ -1,0 +1,6 @@
+{
+  "id": "PR-07",
+  "title": "Settings heading that fetches stays a heading",
+  "changed": ["src/components/FetchingHeading.ts"],
+  "what": "A page heading now calls fetch and imports httpClient. That is ui.network, not a promotion to page, http, or api."
+}

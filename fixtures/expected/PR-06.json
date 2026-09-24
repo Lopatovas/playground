@@ -1,0 +1,119 @@
+{
+  "id": "PR-06",
+  "title": "Tighten session helper",
+  "what": "Auth/session helper used by the customer store. surface.auth must fire even if we already know the reach.",
+  "risk": "spine",
+  "keyPoints": [
+    "src/auth/session.ts"
+  ],
+  "flags": [],
+  "changed": [
+    {
+      "file": "src/auth/session.ts",
+      "layer": "shared",
+      "layerWhy": "used by a store/api module, not itself transport",
+      "lineCount": 8,
+      "exports": [
+        "getSession",
+        "requireSession"
+      ],
+      "fanOut": 0,
+      "directConsumers": [
+        "src/stores/useCustomerStore.ts"
+      ],
+      "consumerCount": 6,
+      "consumers": [
+        "src/main.ts",
+        "src/pages/CustomerDetailPage.ts",
+        "src/pages/CustomerPage.test.ts",
+        "src/pages/CustomerPage.ts",
+        "src/routes.ts",
+        "src/stores/useCustomerStore.ts"
+      ],
+      "pages": [
+        "src/pages/CustomerDetailPage.ts",
+        "src/pages/CustomerPage.ts"
+      ],
+      "tests": [
+        "src/pages/CustomerPage.test.ts"
+      ],
+      "routes": [
+        "/customers",
+        "/customers/:id"
+      ],
+      "routeCount": 2,
+      "flags": [
+        {
+          "id": "reach.wide",
+          "severity": "raise",
+          "why": [
+            "consumers=6"
+          ]
+        },
+        {
+          "id": "reach.multi-route",
+          "severity": "raise",
+          "why": [
+            "routes=2",
+            "/customers",
+            "/customers/:id"
+          ]
+        },
+        {
+          "id": "reach.user-facing",
+          "severity": "info",
+          "why": [
+            "/customers",
+            "/customers/:id"
+          ]
+        },
+        {
+          "id": "layer.shared",
+          "severity": "raise",
+          "why": [
+            "used by a store/api module, not itself transport"
+          ]
+        },
+        {
+          "id": "layer.data-flow",
+          "severity": "raise",
+          "why": [
+            "shared"
+          ]
+        },
+        {
+          "id": "contract.exports",
+          "severity": "raise",
+          "why": [
+            "getSession",
+            "requireSession"
+          ]
+        },
+        {
+          "id": "test.present",
+          "severity": "info",
+          "why": [
+            "src/pages/CustomerPage.test.ts"
+          ]
+        },
+        {
+          "id": "surface.auth",
+          "severity": "raise",
+          "why": [
+            "src/auth/session.ts"
+          ]
+        }
+      ],
+      "risk": "spine",
+      "reasons": [
+        "layer=shared (used by a store/api module, not itself transport)",
+        "consumers=6",
+        "routes=2",
+        "flags=reach.wide,reach.multi-route,reach.user-facing,layer.shared,layer.data-flow,contract.exports,test.present,surface.auth",
+        "lines=8 (fact, not used for risk)"
+      ]
+    }
+  ],
+  "deterministic": true,
+  "jev": null
+}

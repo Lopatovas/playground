@@ -1,0 +1,6 @@
+{
+  "id": "PR-06",
+  "title": "Tighten session helper",
+  "changed": ["src/auth/session.ts"],
+  "what": "Auth/session helper used by the customer store. surface.auth must fire even if we already know the reach."
+}

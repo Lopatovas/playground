@@ -1,0 +1,6 @@
+{
+  "name": "loom-shop",
+  "private": true,
+  "type": "module",
+  "description": "Fixture frontend graph for Scryglass blast-radius samples. Not a real product."
+}
