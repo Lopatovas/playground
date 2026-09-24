@@ -32,6 +32,10 @@ routes → pages → stores / leaf UI → API → httpClient
 | [PR-02](./prs/PR-02-page-heading.json) | Heading on the settings page | **low** (1 route) | `SettingsHeading.ts` |
 | [PR-03](./prs/PR-03-mixed-feature.json) | Search UI + the shared API | **spine** because of the API | `customerApi.ts` first, then the page |
 | [PR-04](./prs/PR-04-isolated-large-page.json) | Big isolated marketing page | **low** despite more lines than the API | the page itself |
+| [PR-05](./prs/PR-05-billing-api-no-test.json) | Billing API, smaller reach, no spec | **high** (`test.gap` + `surface.billing`) | `billingApi.ts` |
+| [PR-06](./prs/PR-06-auth-session.json) | Session helper | **spine** (`surface.auth` + wide reach) | `session.ts` |
+
+Flags are the point. PR-05 is the proof that **reach is not enough**: fewer consumers than `customerApi`, still raised.
 
 ## Run
 

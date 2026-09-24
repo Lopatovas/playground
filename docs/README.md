@@ -22,6 +22,7 @@ Until we have Bitbucket access, dogfood is the local fixture: [fixtures/README.m
 | [glossary.md](./glossary.md) | Shared language |
 | [mvp.md](./mvp.md) | What we build first |
 | [tools.md](./tools.md) | Open-source tools we absorb instead of rebuilding |
+| [attention-flags.md](./attention-flags.md) | Deterministic flags beyond blast radius |
 | [epics/](./epics/README.md) | Epics, stories, and tasks |
 | [../fixtures/README.md](../fixtures/README.md) | Deterministic sample app + sample PRs |
 

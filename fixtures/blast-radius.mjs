@@ -77,6 +77,7 @@ function layerFor(file) {
   if (file.includes("/api/httpClient.")) return "http";
   if (file.includes("/api/") && file.endsWith(".test.ts")) return "test";
   if (file.includes("/api/")) return "api";
+  if (file.includes("/auth/")) return "auth";
   if (file.includes("/stores/")) return "store";
   if (file.includes("/pages/") && file.endsWith(".test.ts")) return "test";
   if (file.includes("/pages/")) return "page";
@@ -85,6 +86,16 @@ function layerFor(file) {
   if (file.endsWith("main.ts")) return "app";
   if (file.includes(".test.")) return "test";
   return "other";
+}
+
+function exportedNames(file) {
+  const text = readFileSync(join(shopRoot, file), "utf8");
+  return [...text.matchAll(/export function (\w+)/g)].map((match) => match[1]);
+}
+
+function colocatedTest(file, files) {
+  const spec = file.replace(/\.ts$/, ".test.ts");
+  return files.includes(spec) ? spec : null;
 }
 
 function lineCount(file) {
@@ -161,29 +172,109 @@ function testsIn(files) {
   return files.filter((file) => layerFor(file) === "test").sort();
 }
 
-function riskFor(node) {
-  const { layer, consumerCount, routeCount } = node;
-  if (layer === "http" || (layer === "api" && (consumerCount >= 3 || routeCount >= 2))) {
+function flag(id, severity, why) {
+  return { id, severity, why: why.filter(Boolean) };
+}
+
+function flagsFor(node, graph) {
+  const flags = [];
+  if (node.consumerCount >= 5) {
+    flags.push(flag("reach.wide", "raise", [`consumers=${node.consumerCount}`]));
+  }
+  if (node.routeCount >= 2) {
+    flags.push(flag("reach.multi-route", "raise", [`routes=${node.routeCount}`, ...node.routes]));
+  }
+  if (node.routeCount >= 1) {
+    const severity = ["api", "store", "http", "auth"].includes(node.layer) ? "raise" : "info";
+    flags.push(flag("reach.user-facing", severity, node.routes));
+  }
+
+  if (node.layer === "http") flags.push(flag("layer.http", "raise", ["path"]));
+  if (node.layer === "api") flags.push(flag("layer.api", "raise", ["path"]));
+  if (node.layer === "auth") flags.push(flag("layer.auth", "raise", ["path"]));
+  if (node.layer === "store") flags.push(flag("layer.store", "raise", ["path"]));
+  if (["api", "store", "http", "auth"].includes(node.layer)) {
+    flags.push(flag("layer.data-flow", "raise", [node.layer]));
+  }
+  if (node.layer === "component" && node.routeCount <= 1) {
+    flags.push(flag("layer.ui-leaf", "info", ["single-route component"]));
+  }
+  if (node.layer === "routes") flags.push(flag("layer.routes", "raise", ["router"]));
+
+  if (["api", "store", "http", "auth"].includes(node.layer) && node.exports.length) {
+    flags.push(flag("contract.exports", "raise", node.exports));
+  }
+
+  const spec = colocatedTest(node.file, graph.files);
+  if (spec || node.tests.length) {
+    flags.push(flag("test.present", "info", spec ? [spec, ...node.tests] : node.tests));
+  } else if (["api", "store", "http", "auth", "page"].includes(node.layer)) {
+    flags.push(flag("test.gap", "raise", ["no colocated spec", "no test in consumer cone"]));
+  }
+
+  if (/auth|session|token|permission/.test(node.file)) {
+    flags.push(flag("surface.auth", "raise", [node.file]));
+  }
+  if (/billing|payment|invoice|payout/.test(node.file)) {
+    flags.push(flag("surface.billing", "raise", [node.file]));
+  }
+
+  if (node.layer === "page" && node.routeCount <= 1 && node.consumerCount <= 3) {
+    flags.push(flag("noise.isolated-page", "demote", ["one route", `consumers=${node.consumerCount}`]));
+  }
+
+  if (node.fanOut >= 4) {
+    flags.push(flag("change.high-fan-out", "info", [`imports=${node.fanOut}`]));
+  }
+
+  return flags;
+}
+
+function prFlagsFor(nodes) {
+  const layers = new Set(nodes.map((node) => node.layer));
+  const flags = [];
+  if (layers.size >= 2) {
+    flags.push(flag("change.cross-layer", "raise", [...layers]));
+  }
+  const spine = nodes.some((node) => ["api", "store", "http", "auth"].includes(node.layer));
+  const ui = nodes.some((node) => ["page", "component"].includes(node.layer));
+  if (spine && ui) {
+    flags.push(flag("change.spine-and-ui", "raise", ["spine file + UI file in the same PR"]));
+  }
+  return flags;
+}
+
+function riskFromFlags(flags) {
+  const ids = new Set(flags.map((item) => item.id));
+  const has = (id) => ids.has(id);
+  if (
+    (has("layer.http") || has("layer.api") || has("layer.auth") || has("surface.auth") || has("surface.billing")) &&
+    (has("reach.wide") || has("reach.multi-route"))
+  ) {
     return "spine";
   }
-  if (layer === "store" && routeCount >= 2) return "high";
-  if (layer === "api") return "high";
-  if (layer === "store" || (layer === "component" && consumerCount >= 4)) return "medium";
-  if (layer === "page" && routeCount <= 1 && consumerCount <= 3) return "low";
-  if (layer === "component" && routeCount <= 1) return "low";
-  if (layer === "test") return "low";
-  return consumerCount >= 6 ? "medium" : "low";
+  if (
+    has("layer.data-flow") ||
+    has("contract.export-removed") ||
+    has("contract.export-signature") ||
+    (has("test.gap") && has("layer.api"))
+  ) {
+    return "high";
+  }
+  if (has("reach.wide") || has("change.spine-and-ui")) return "medium";
+  if (has("noise.isolated-page") || has("layer.ui-leaf")) return "low";
+  return "low";
 }
 
 const RISK_ORDER = { spine: 4, high: 3, medium: 2, low: 1 };
 
 function rankScore(node) {
-  const layerBonus = { http: 20, api: 16, store: 10, routes: 4, page: 3, component: 2, app: 1, test: 0, other: 1 };
+  const raiseCount = node.flags.filter((item) => item.severity === "raise").length;
   return (
-    (layerBonus[node.layer] ?? 0) +
+    RISK_ORDER[node.risk] * 20 +
+    raiseCount * 3 +
     Math.min(node.consumerCount, 20) +
-    node.routeCount * 3 +
-    RISK_ORDER[node.risk] * 5
+    node.routeCount
   );
   // line count is intentionally unused
 }
@@ -196,6 +287,8 @@ function analyzePr(graph, pr) {
       file,
       layer: layerFor(file),
       lineCount: lineCount(file),
+      exports: exportedNames(file),
+      fanOut: (graph.imports[file] ?? []).length,
       directConsumers: reach.direct,
       consumerCount: allConsumers.length,
       consumers: allConsumers,
@@ -204,15 +297,25 @@ function analyzePr(graph, pr) {
       routes: routesFrom([file, ...allConsumers]),
     };
     node.routeCount = node.routes.length;
-    node.risk = riskFor(node);
+    node.flags = flagsFor(node, graph);
+    node.risk = riskFromFlags(node.flags);
     node.reasons = [
       `layer=${node.layer}`,
       `consumers=${node.consumerCount}`,
       `routes=${node.routeCount}`,
+      `flags=${node.flags.map((item) => item.id).join(",") || "—"}`,
       `lines=${node.lineCount} (fact, not used for risk)`,
     ];
     return node;
   });
+
+  const flags = prFlagsFor(nodes);
+  for (const node of nodes) {
+    if (flags.some((item) => item.id === "change.spine-and-ui")) {
+      node.flags = [...node.flags, ...flags.filter((item) => item.id === "change.spine-and-ui")];
+      node.risk = riskFromFlags(node.flags);
+    }
+  }
 
   nodes.sort((a, b) => rankScore(b) - rankScore(a) || a.file.localeCompare(b.file));
 
@@ -227,6 +330,7 @@ function analyzePr(graph, pr) {
     what: pr.what,
     risk: overallRisk,
     keyPoints: nodes.slice(0, 3).map((node) => node.file),
+    flags,
     changed: nodes,
     deterministic: true,
     jev: null,
@@ -244,13 +348,15 @@ function renderText(report) {
   const lines = [
     `PR ${report.id}  ${report.title}`,
     `WHAT   ${report.what}`,
-    `RISK   ${report.risk}   (deterministic; Jev unused)`,
+    `RISK   ${report.risk}   (deterministic flags; Jev unused)`,
     `KEYS   ${report.keyPoints.join(", ")}`,
+    `PR     ${(report.flags || []).map((item) => item.id).join(", ") || "—"}`,
     "",
   ];
   for (const node of report.changed) {
     lines.push(
       `${node.risk.padEnd(6)}  ${node.file}`,
+      `        ${node.flags.map((item) => `${item.severity}:${item.id}`).join(" · ") || "—"}`,
       `        ${node.reasons.join(" · ")}`,
       `        routes: ${node.routes.join(", ") || "—"}`,
       `        pages:  ${node.pages.join(", ") || "—"}`,

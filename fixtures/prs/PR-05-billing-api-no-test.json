@@ -1,0 +1,6 @@
+{
+  "id": "PR-05",
+  "title": "Change invoice listing in billing API",
+  "changed": ["src/api/billingApi.ts"],
+  "what": "Shared billing API, one route, no spec. Reach is smaller than customerApi — test.gap and surface.billing must still raise."
+}

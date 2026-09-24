@@ -18,14 +18,20 @@ Example payload:
 {
   "symbol": "customerApi.searchCustomers",
   "file": "src/api/customerApi.ts",
-  "changedLines": 42,
-  "consumerCount": 87,
-  "routeCount": 14,
-  "isShared": true,
   "changeType": "modified",
-  "layer": "api"
+  "changedLines": 42,
+  "layer": "api",
+  "flags": [
+    { "id": "layer.api", "severity": "raise", "why": ["path"] },
+    { "id": "reach.wide", "severity": "raise", "why": ["consumers=87"] },
+    { "id": "reach.multi-route", "severity": "raise", "why": ["routes=14"] },
+    { "id": "contract.exports", "severity": "raise", "why": ["searchCustomers"] },
+    { "id": "test.present", "severity": "info", "why": ["customerApi.test.ts"] }
+  ]
 }
 ```
+
+The payload **is** the flag bundle. Blast radius is one family of flags, not the whole input. Jev may add `jev.*` flags only.
 
 - One payload per changed symbol or file
 - Versioned schema

@@ -29,8 +29,9 @@
 | **Job 2** | Understand where focus should go (shared API > one-page heading). |
 | **Job 3** | Actually review: comments on the PR, consecutive sittings. |
 | **Focus** | Where the reviewer should spend minutes. Not a verdict, not LOC. |
-| **Risk** | Computed from blast radius and layer (spine / high / medium / low). Not Jev. |
-| **Key points** | The few changed nodes that deserve minutes. Sorted by the graph. |
+| **Risk** | Derived from the flag bundle (spine / high / medium / low). Not Jev. Not LOC. |
+| **Attention flag** | Named computed fact (`reach.wide`, `test.gap`, `surface.auth`, …) with a why. |
+| **Key points** | The few changed nodes that deserve minutes. Sorted by flags, then reach. |
 | **loom-shop** | Local fixture app used as dogfood until Bitbucket access exists. |
 
 ## Language we will not use for Jev output

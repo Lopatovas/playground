@@ -34,7 +34,7 @@ Job 2's core rule: each changed file/symbol gets a deterministic impact class fr
 ## Tasks
 
 - [ ] Define classes: `isolated`, `feature-local`, `shared`, `spine` (names TBD)
-- [ ] Implement scoring from counts + layer only
+- [ ] Implement scoring from the flag bundle in S07 (counts + layer are inputs to flags, not the only rank)
 - [ ] Store `impactClass`, `reasons[]`, and raw counts on each node
 - [ ] Document the rules in this folder when they stabilize
 - [ ] Fixture tests: `customerApi` (many consumers) vs `SettingsHeading` (one page) vs a large isolated page

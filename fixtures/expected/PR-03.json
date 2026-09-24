@@ -7,11 +7,34 @@
     "src/api/customerApi.ts",
     "src/pages/CustomerPage.ts"
   ],
+  "flags": [
+    {
+      "id": "change.cross-layer",
+      "severity": "raise",
+      "why": [
+        "api",
+        "page"
+      ]
+    },
+    {
+      "id": "change.spine-and-ui",
+      "severity": "raise",
+      "why": [
+        "spine file + UI file in the same PR"
+      ]
+    }
+  ],
   "changed": [
     {
       "file": "src/api/customerApi.ts",
       "layer": "api",
       "lineCount": 14,
+      "exports": [
+        "searchCustomers",
+        "getCustomer",
+        "updateCustomer"
+      ],
+      "fanOut": 1,
       "directConsumers": [
         "src/api/customerApi.test.ts",
         "src/stores/useCustomerStore.ts"
@@ -39,11 +62,77 @@
         "/customers/:id"
       ],
       "routeCount": 2,
+      "flags": [
+        {
+          "id": "reach.wide",
+          "severity": "raise",
+          "why": [
+            "consumers=7"
+          ]
+        },
+        {
+          "id": "reach.multi-route",
+          "severity": "raise",
+          "why": [
+            "routes=2",
+            "/customers",
+            "/customers/:id"
+          ]
+        },
+        {
+          "id": "reach.user-facing",
+          "severity": "raise",
+          "why": [
+            "/customers",
+            "/customers/:id"
+          ]
+        },
+        {
+          "id": "layer.api",
+          "severity": "raise",
+          "why": [
+            "path"
+          ]
+        },
+        {
+          "id": "layer.data-flow",
+          "severity": "raise",
+          "why": [
+            "api"
+          ]
+        },
+        {
+          "id": "contract.exports",
+          "severity": "raise",
+          "why": [
+            "searchCustomers",
+            "getCustomer",
+            "updateCustomer"
+          ]
+        },
+        {
+          "id": "test.present",
+          "severity": "info",
+          "why": [
+            "src/api/customerApi.test.ts",
+            "src/api/customerApi.test.ts",
+            "src/pages/CustomerPage.test.ts"
+          ]
+        },
+        {
+          "id": "change.spine-and-ui",
+          "severity": "raise",
+          "why": [
+            "spine file + UI file in the same PR"
+          ]
+        }
+      ],
       "risk": "spine",
       "reasons": [
         "layer=api",
         "consumers=7",
         "routes=2",
+        "flags=reach.wide,reach.multi-route,reach.user-facing,layer.api,layer.data-flow,contract.exports,test.present",
         "lines=14 (fact, not used for risk)"
       ]
     },
@@ -51,6 +140,10 @@
       "file": "src/pages/CustomerPage.ts",
       "layer": "page",
       "lineCount": 17,
+      "exports": [
+        "CustomerPage"
+      ],
+      "fanOut": 5,
       "directConsumers": [
         "src/pages/CustomerPage.test.ts",
         "src/routes.ts"
@@ -69,11 +162,51 @@
         "/customers"
       ],
       "routeCount": 1,
-      "risk": "low",
+      "flags": [
+        {
+          "id": "reach.user-facing",
+          "severity": "info",
+          "why": [
+            "/customers"
+          ]
+        },
+        {
+          "id": "test.present",
+          "severity": "info",
+          "why": [
+            "src/pages/CustomerPage.test.ts",
+            "src/pages/CustomerPage.test.ts"
+          ]
+        },
+        {
+          "id": "noise.isolated-page",
+          "severity": "demote",
+          "why": [
+            "one route",
+            "consumers=3"
+          ]
+        },
+        {
+          "id": "change.high-fan-out",
+          "severity": "info",
+          "why": [
+            "imports=5"
+          ]
+        },
+        {
+          "id": "change.spine-and-ui",
+          "severity": "raise",
+          "why": [
+            "spine file + UI file in the same PR"
+          ]
+        }
+      ],
+      "risk": "medium",
       "reasons": [
         "layer=page",
         "consumers=3",
         "routes=1",
+        "flags=reach.user-facing,test.present,noise.isolated-page,change.high-fan-out",
         "lines=17 (fact, not used for risk)"
       ]
     }

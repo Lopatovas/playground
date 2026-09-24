@@ -6,11 +6,16 @@
   "keyPoints": [
     "src/components/SettingsHeading.ts"
   ],
+  "flags": [],
   "changed": [
     {
       "file": "src/components/SettingsHeading.ts",
       "layer": "component",
       "lineCount": 4,
+      "exports": [
+        "SettingsHeading"
+      ],
+      "fanOut": 0,
       "directConsumers": [
         "src/pages/SettingsPage.ts"
       ],
@@ -28,11 +33,28 @@
         "/settings"
       ],
       "routeCount": 1,
+      "flags": [
+        {
+          "id": "reach.user-facing",
+          "severity": "info",
+          "why": [
+            "/settings"
+          ]
+        },
+        {
+          "id": "layer.ui-leaf",
+          "severity": "info",
+          "why": [
+            "single-route component"
+          ]
+        }
+      ],
       "risk": "low",
       "reasons": [
         "layer=component",
         "consumers=3",
         "routes=1",
+        "flags=reach.user-facing,layer.ui-leaf",
         "lines=4 (fact, not used for risk)"
       ]
     }

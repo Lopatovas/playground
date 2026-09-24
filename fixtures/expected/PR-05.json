@@ -1,0 +1,94 @@
+{
+  "id": "PR-05",
+  "title": "Change invoice listing in billing API",
+  "what": "Shared billing API, one route, no spec. Reach is smaller than customerApi — test.gap and surface.billing must still raise.",
+  "risk": "high",
+  "keyPoints": [
+    "src/api/billingApi.ts"
+  ],
+  "flags": [],
+  "changed": [
+    {
+      "file": "src/api/billingApi.ts",
+      "layer": "api",
+      "lineCount": 6,
+      "exports": [
+        "listInvoices"
+      ],
+      "fanOut": 1,
+      "directConsumers": [
+        "src/stores/useBillingStore.ts"
+      ],
+      "consumerCount": 4,
+      "consumers": [
+        "src/main.ts",
+        "src/pages/BillingPage.ts",
+        "src/routes.ts",
+        "src/stores/useBillingStore.ts"
+      ],
+      "pages": [
+        "src/pages/BillingPage.ts"
+      ],
+      "tests": [],
+      "routes": [
+        "/billing"
+      ],
+      "routeCount": 1,
+      "flags": [
+        {
+          "id": "reach.user-facing",
+          "severity": "raise",
+          "why": [
+            "/billing"
+          ]
+        },
+        {
+          "id": "layer.api",
+          "severity": "raise",
+          "why": [
+            "path"
+          ]
+        },
+        {
+          "id": "layer.data-flow",
+          "severity": "raise",
+          "why": [
+            "api"
+          ]
+        },
+        {
+          "id": "contract.exports",
+          "severity": "raise",
+          "why": [
+            "listInvoices"
+          ]
+        },
+        {
+          "id": "test.gap",
+          "severity": "raise",
+          "why": [
+            "no colocated spec",
+            "no test in consumer cone"
+          ]
+        },
+        {
+          "id": "surface.billing",
+          "severity": "raise",
+          "why": [
+            "src/api/billingApi.ts"
+          ]
+        }
+      ],
+      "risk": "high",
+      "reasons": [
+        "layer=api",
+        "consumers=4",
+        "routes=1",
+        "flags=reach.user-facing,layer.api,layer.data-flow,contract.exports,test.gap,surface.billing",
+        "lines=6 (fact, not used for risk)"
+      ]
+    }
+  ],
+  "deterministic": true,
+  "jev": null
+}

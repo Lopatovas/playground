@@ -8,7 +8,10 @@ Researched against [loom-shop](../fixtures/README.md). **Deterministic except Je
 
 | Need | Absorb | Why |
 | --- | --- | --- |
-| Blast radius / risk (job 2) | **[blast-radius-cli](https://github.com/ehermanson/blast-radius)** first | Already answers "how far does this change reach?" with JSON, export-level graphs, Vue `<script>` imports, `git diff --name-only \| blast-radius files -`. Ran on loom-shop: shared API = 7 files / `moderate`; settings heading = 3 files / `minor`; large isolated page = 2 files / `minor`. |
+| Reach (one attention family) | **[blast-radius-cli](https://github.com/ehermanson/blast-radius)** first | How far. Not enough alone — see [attention-flags.md](./attention-flags.md). |
+| Complexity delta | **lizard** | `complexity.up` vs base |
+| Churn / coupling | **git log**, optional Code Maat | `history.hotspot`, unusual co-change |
+| Export / signature | **ts-morph** | `contract.export-removed` / signature |
 | Vue SFC + mature fallback | **[dependency-cruiser](https://github.com/sverweij/dependency-cruiser)** | `--affected <base>` is literally PR impact. Real Vue 2/3 SFC support via `@vue/compiler-sfc`. Use when blast-radius misses template-only components or we need a widely adopted engine. |
 | Template component refs | **`@vue/compiler-sfc`** | Fill the known hole: Vue/Svelte tools often miss components used only in `<template>`. |
 | Changed symbols | **ts-morph** / TS compiler API | Compiler-grade names and references. Heavier; use after the file graph exists. |

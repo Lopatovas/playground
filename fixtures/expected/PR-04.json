@@ -6,11 +6,16 @@
   "keyPoints": [
     "src/pages/MarketingLandingPage.ts"
   ],
+  "flags": [],
   "changed": [
     {
       "file": "src/pages/MarketingLandingPage.ts",
       "layer": "page",
       "lineCount": 24,
+      "exports": [
+        "MarketingLandingPage"
+      ],
+      "fanOut": 0,
       "directConsumers": [
         "src/routes.ts"
       ],
@@ -25,11 +30,37 @@
         "/marketing"
       ],
       "routeCount": 1,
+      "flags": [
+        {
+          "id": "reach.user-facing",
+          "severity": "info",
+          "why": [
+            "/marketing"
+          ]
+        },
+        {
+          "id": "test.gap",
+          "severity": "raise",
+          "why": [
+            "no colocated spec",
+            "no test in consumer cone"
+          ]
+        },
+        {
+          "id": "noise.isolated-page",
+          "severity": "demote",
+          "why": [
+            "one route",
+            "consumers=2"
+          ]
+        }
+      ],
       "risk": "low",
       "reasons": [
         "layer=page",
         "consumers=2",
         "routes=1",
+        "flags=reach.user-facing,test.gap,noise.isolated-page",
         "lines=24 (fact, not used for risk)"
       ]
     }

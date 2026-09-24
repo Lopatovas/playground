@@ -1,30 +1,27 @@
 {
-  "id": "PR-01",
-  "title": "Tighten customer search in the shared API",
-  "what": "The shared customer API search helper changed. No new screen — this is how several pages talk to the backend.",
+  "id": "PR-06",
+  "title": "Tighten session helper",
+  "what": "Auth/session helper used by the customer store. surface.auth must fire even if we already know the reach.",
   "risk": "spine",
   "keyPoints": [
-    "src/api/customerApi.ts"
+    "src/auth/session.ts"
   ],
   "flags": [],
   "changed": [
     {
-      "file": "src/api/customerApi.ts",
-      "layer": "api",
-      "lineCount": 14,
+      "file": "src/auth/session.ts",
+      "layer": "auth",
+      "lineCount": 8,
       "exports": [
-        "searchCustomers",
-        "getCustomer",
-        "updateCustomer"
+        "getSession",
+        "requireSession"
       ],
-      "fanOut": 1,
+      "fanOut": 0,
       "directConsumers": [
-        "src/api/customerApi.test.ts",
         "src/stores/useCustomerStore.ts"
       ],
-      "consumerCount": 7,
+      "consumerCount": 6,
       "consumers": [
-        "src/api/customerApi.test.ts",
         "src/main.ts",
         "src/pages/CustomerDetailPage.ts",
         "src/pages/CustomerPage.test.ts",
@@ -37,7 +34,6 @@
         "src/pages/CustomerPage.ts"
       ],
       "tests": [
-        "src/api/customerApi.test.ts",
         "src/pages/CustomerPage.test.ts"
       ],
       "routes": [
@@ -50,7 +46,7 @@
           "id": "reach.wide",
           "severity": "raise",
           "why": [
-            "consumers=7"
+            "consumers=6"
           ]
         },
         {
@@ -71,7 +67,7 @@
           ]
         },
         {
-          "id": "layer.api",
+          "id": "layer.auth",
           "severity": "raise",
           "why": [
             "path"
@@ -81,35 +77,39 @@
           "id": "layer.data-flow",
           "severity": "raise",
           "why": [
-            "api"
+            "auth"
           ]
         },
         {
           "id": "contract.exports",
           "severity": "raise",
           "why": [
-            "searchCustomers",
-            "getCustomer",
-            "updateCustomer"
+            "getSession",
+            "requireSession"
           ]
         },
         {
           "id": "test.present",
           "severity": "info",
           "why": [
-            "src/api/customerApi.test.ts",
-            "src/api/customerApi.test.ts",
             "src/pages/CustomerPage.test.ts"
+          ]
+        },
+        {
+          "id": "surface.auth",
+          "severity": "raise",
+          "why": [
+            "src/auth/session.ts"
           ]
         }
       ],
       "risk": "spine",
       "reasons": [
-        "layer=api",
-        "consumers=7",
+        "layer=auth",
+        "consumers=6",
         "routes=2",
-        "flags=reach.wide,reach.multi-route,reach.user-facing,layer.api,layer.data-flow,contract.exports,test.present",
-        "lines=14 (fact, not used for risk)"
+        "flags=reach.wide,reach.multi-route,reach.user-facing,layer.auth,layer.data-flow,contract.exports,test.present,surface.auth",
+        "lines=8 (fact, not used for risk)"
       ]
     }
   ],

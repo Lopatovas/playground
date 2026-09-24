@@ -26,12 +26,16 @@ Visuals are a **comprehension tool**. They are not a visual-QA product.
 
 Not every changed line deserves the same minutes. A heading component on one page is almost noise. A change to how the shared API abstraction works is the review — that is **risk**, from blast radius, not from a model vibe.
 
-Answer, from the graph only:
+Answer from a **bundle of computed flags**, not from reach alone:
 
-- How wide can this spread? (consumers, routes, tests)
-- What is shared vs isolated?
-- What are the key points — the few nodes that deserve minutes?
-- Where is data-flow / state / API spine?
+- How wide? (`reach.*`)
+- What kind of code? (`layer.*`, `surface.auth` / billing)
+- Did a contract move? (`contract.*`)
+- Are there tests? (`test.gap` / `test.present`)
+- Did this PR cross layers? (`change.spine-and-ui`)
+- What are the key points?
+
+Blast radius is necessary and not sufficient. See [attention-flags.md](./attention-flags.md).
 
 Line count cannot do this. Jev must not be required to do this. The Web of Threads computes it. Whisper Marks may refine it. Neither is a verdict.
 
