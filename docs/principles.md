@@ -33,7 +33,7 @@ The problem is not lack of information. It is deciding what deserves minutes.
 
 A heading component on one page and a shared API abstraction are not the same event. Scryglass should answer: **where should I look first?**
 
-If the UI still leads with LOC or path alphabet, job 2 has failed.
+Blast radius is one input. Attention is a **bundle of computed flags** (layer, contract, tests, surface, change shape, history). If the UI still leads with LOC, path alphabet, or a single consumer count, job 2 has failed.
 
 ## 4. Human judgment is the last layer
 
