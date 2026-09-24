@@ -37,7 +37,8 @@ Job 2's core rule: each changed file/symbol gets a deterministic impact class fr
 - [ ] Implement scoring from counts + layer only
 - [ ] Store `impactClass`, `reasons[]`, and raw counts on each node
 - [ ] Document the rules in this folder when they stabilize
-- [ ] Fixture tests: `customerApi` (many consumers) vs `PageHeading` (one page) vs `CustomerCard` (leaf)
+- [ ] Fixture tests: `customerApi` (many consumers) vs `SettingsHeading` (one page) vs a large isolated page
+- [ ] `node fixtures/blast-radius.mjs --check` stays green (current dogfood until Bitbucket access)
 
 ## Depends on
 

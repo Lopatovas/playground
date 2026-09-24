@@ -1,0 +1,6 @@
+{
+  "id": "PR-04",
+  "title": "Add a long marketing landing page",
+  "changed": ["src/pages/MarketingLandingPage.ts"],
+  "what": "A large isolated page. Many lines, one route, no shared API. LOC must not rank this above an API change."
+}

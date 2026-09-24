@@ -1,0 +1,52 @@
+{
+  "id": "PR-01",
+  "title": "Tighten customer search in the shared API",
+  "what": "The shared customer API search helper changed. No new screen — this is how several pages talk to the backend.",
+  "risk": "spine",
+  "keyPoints": [
+    "src/api/customerApi.ts"
+  ],
+  "changed": [
+    {
+      "file": "src/api/customerApi.ts",
+      "layer": "api",
+      "lineCount": 14,
+      "directConsumers": [
+        "src/api/customerApi.test.ts",
+        "src/stores/useCustomerStore.ts"
+      ],
+      "consumerCount": 7,
+      "consumers": [
+        "src/api/customerApi.test.ts",
+        "src/main.ts",
+        "src/pages/CustomerDetailPage.ts",
+        "src/pages/CustomerPage.test.ts",
+        "src/pages/CustomerPage.ts",
+        "src/routes.ts",
+        "src/stores/useCustomerStore.ts"
+      ],
+      "pages": [
+        "src/pages/CustomerDetailPage.ts",
+        "src/pages/CustomerPage.ts"
+      ],
+      "tests": [
+        "src/api/customerApi.test.ts",
+        "src/pages/CustomerPage.test.ts"
+      ],
+      "routes": [
+        "/customers",
+        "/customers/:id"
+      ],
+      "routeCount": 2,
+      "risk": "spine",
+      "reasons": [
+        "layer=api",
+        "consumers=7",
+        "routes=2",
+        "lines=14 (fact, not used for risk)"
+      ]
+    }
+  ],
+  "deterministic": true,
+  "jev": null
+}

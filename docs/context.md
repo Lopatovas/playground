@@ -19,7 +19,7 @@ So "the target" is **the app inside the PR**, not Scryglass, and it is not one b
 ## Three jobs
 
 1. **Understand what the PR is.** Jira specs are often AI-generated walls of text. Running that through another model loses more context. The source of truth is the change and, especially, **what it looks like**. Visuals exist to answer "what feature is this trying to ship?", not to be a visual-regression product.
-2. **Understand where focus should go.** A heading component on one page does not deserve the same attention as a change to a shared API abstraction. This is a separate job from "what is the feature." Line count cannot do it. The Web of Threads can. Jev may refine it later.
+2. **How risky it is, and what the key points are.** Volume causes skimming. A heading on one page does not deserve the same minutes as a shared API change. Risk and key points are **computed** (imports, consumers, routes). Jev is not allowed to invent that graph. Line count cannot do it.
 3. **Actually review, with a better UX.** Bitbucket is bad at consecutive review. Comments written against a commit do not show up on the PR. Scryglass is where comments are drafted, then **published to the pull request**. Coming back later must show what is new, keep old comments in context, and let them continue.
 
 ## Host
@@ -37,7 +37,8 @@ We do **not** have access yet. Design the contract and stub the client. Do not b
 ## What this changed in the map
 
 - "One Vue repo, local git only, no comments" is no longer the MVP story.
-- **Job 2 is first-class.** E02 is not a nice graph. It is how focus is decided.
+- **Job 2 is first-class and deterministic.** E02 is not a nice graph. It is how **risk** and **key points** are computed. Jev may not invent that.
+- **No host access yet.** Dogfood is `fixtures/loom-shop` + `fixtures/blast-radius.mjs`.
 - **The Palimpsest (E08)** is a core epic (job 3), not a later nice-to-have.
 - Host checkout is Scryglass's job.
 - Tickets stay optional. We will not sell an LLM Jira summary as understanding.

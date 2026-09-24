@@ -2,6 +2,10 @@
 
 Every epic, story, and UI copy must obey these. If a design violates one, the design is wrong.
 
+**Platform rule: deterministic except Jev.**
+
+Git, AST, imports, consumers, routes, tests, screenshots — computed. Risk and key points come from that graph, not from a model. Jev may classify a small structured payload. It may not draw edges, invent blast radius, write the "what is this PR" story, or set risk. If Jev is offline, Scryglass still works.
+
 ## 1. Do not optimize for line count
 
 LOC is almost useless here. Three thousand lines can be normal. Ask: **what changed that could matter?**
@@ -49,13 +53,13 @@ Prefer the real app. Storybook is a useful extra source, not the only one.
 
 The Web of Threads is derived from git, AST, imports, router config, tests, and similar facts.
 
-A model may *rank* nodes. It may not *invent* edges.
+A model may *annotate* nodes. It may not *invent* edges, consumer counts, or routes.
 
 ## 7. Deterministic first, probabilistic second
 
-If a fact can be computed, compute it. Use Jev on small structured inputs when a fast "look here" signal is still useful.
+If a fact can be computed, compute it. Risk is a fact-shaped score (reach, layer, sharing), never a Jev verdict.
 
-The product must remain useful if Jev is offline.
+Use Jev only on small structured inputs when a fast extra "look here" signal is still useful. The product must remain useful if Jev is offline.
 
 ## 8. Never present a guess as a verdict
 

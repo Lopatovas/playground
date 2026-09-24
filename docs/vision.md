@@ -4,7 +4,9 @@
 
 The first user is a frontend chapter lead. They sit across many client and internal codebases. A week can include Vue, React, Next, a PHP app with Vue injected, and an Electron shell.
 
-They do not need another AI that "reviews" the PR. They need three things Bitbucket (and Jira) do not give them.
+They do not need another AI that "reviews" the PR. Volume has already pushed them into skimming. They need a **deterministic** way to know what a change is, how risky it is, and which few points deserve minutes — then a better place to actually review.
+
+**Deterministic except Jev.** The graph, the blast radius, the risk, the key points: computed. Jev is optional classification on top.
 
 ## The three jobs
 
@@ -20,20 +22,18 @@ Answer this from the change and the UI:
 
 Visuals are a **comprehension tool**. They are not a visual-QA product.
 
-### 2. Understand where focus should go
+### 2. How risky it is, and what the key points are
 
-Not every changed line deserves the same minutes. A heading component on one page is almost noise. A change to how the shared API abstraction works is the review.
+Not every changed line deserves the same minutes. A heading component on one page is almost noise. A change to how the shared API abstraction works is the review — that is **risk**, from blast radius, not from a model vibe.
 
-Line count cannot make this distinction. Scryglass must.
+Answer, from the graph only:
 
-Answer:
-
+- How wide can this spread? (consumers, routes, tests)
 - What is shared vs isolated?
-- What has blast radius?
-- Where is data-flow / state / business logic?
-- Where should I look first?
+- What are the key points — the few nodes that deserve minutes?
+- Where is data-flow / state / API spine?
 
-The Web of Threads computes this from repository facts. Whisper Marks may refine it. Neither is a verdict.
+Line count cannot do this. Jev must not be required to do this. The Web of Threads computes it. Whisper Marks may refine it. Neither is a verdict.
 
 ### 3. Actually review, with a better UX
 
@@ -50,7 +50,7 @@ The human still judges. Scryglass carries the seat, the map, the mirror, and the
 
 ## The scarce resource
 
-Frontend PRs routinely contain thousands of changed lines. The expensive part is **seeing** what it is, **choosing** what deserves attention, and **not losing** the review when the branch moves.
+Frontend PRs routinely contain thousands of changed lines. The expensive part is **seeing** what it is, **knowing the risk and the key points**, and **not losing** the review when the branch moves. Skimming is the failure mode we are designing against.
 
 ## How the jobs sit in the system
 
@@ -61,7 +61,7 @@ Frontend PRs routinely contain thousands of changed lines. The expensive part is
          ↓            ↓            ↓
       Mirror      Web + Marks    Palimpsest
          │            │            │
-    what is it    where to look   the review
+    what is it    risk / key points   the review
          │            │            │
          └────────────┼────────────┘
                       ↓

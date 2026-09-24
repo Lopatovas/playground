@@ -1,0 +1,83 @@
+{
+  "id": "PR-03",
+  "title": "Customer search UI plus API query change",
+  "what": "A visible customer-search tweak and a change to the shared API it calls. The API is the risky part.",
+  "risk": "spine",
+  "keyPoints": [
+    "src/api/customerApi.ts",
+    "src/pages/CustomerPage.ts"
+  ],
+  "changed": [
+    {
+      "file": "src/api/customerApi.ts",
+      "layer": "api",
+      "lineCount": 14,
+      "directConsumers": [
+        "src/api/customerApi.test.ts",
+        "src/stores/useCustomerStore.ts"
+      ],
+      "consumerCount": 7,
+      "consumers": [
+        "src/api/customerApi.test.ts",
+        "src/main.ts",
+        "src/pages/CustomerDetailPage.ts",
+        "src/pages/CustomerPage.test.ts",
+        "src/pages/CustomerPage.ts",
+        "src/routes.ts",
+        "src/stores/useCustomerStore.ts"
+      ],
+      "pages": [
+        "src/pages/CustomerDetailPage.ts",
+        "src/pages/CustomerPage.ts"
+      ],
+      "tests": [
+        "src/api/customerApi.test.ts",
+        "src/pages/CustomerPage.test.ts"
+      ],
+      "routes": [
+        "/customers",
+        "/customers/:id"
+      ],
+      "routeCount": 2,
+      "risk": "spine",
+      "reasons": [
+        "layer=api",
+        "consumers=7",
+        "routes=2",
+        "lines=14 (fact, not used for risk)"
+      ]
+    },
+    {
+      "file": "src/pages/CustomerPage.ts",
+      "layer": "page",
+      "lineCount": 17,
+      "directConsumers": [
+        "src/pages/CustomerPage.test.ts",
+        "src/routes.ts"
+      ],
+      "consumerCount": 3,
+      "consumers": [
+        "src/main.ts",
+        "src/pages/CustomerPage.test.ts",
+        "src/routes.ts"
+      ],
+      "pages": [],
+      "tests": [
+        "src/pages/CustomerPage.test.ts"
+      ],
+      "routes": [
+        "/customers"
+      ],
+      "routeCount": 1,
+      "risk": "low",
+      "reasons": [
+        "layer=page",
+        "consumers=3",
+        "routes=1",
+        "lines=17 (fact, not used for risk)"
+      ]
+    }
+  ],
+  "deterministic": true,
+  "jev": null
+}

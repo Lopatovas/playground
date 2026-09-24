@@ -3,13 +3,15 @@
 **Practical name:** Deterministic impact graph  
 **Status:** Draft  
 **MVP:** Yes  
-**Job:** 2 — where focus should go
+**Job:** 2 — how risky, and the key points
 
 ## Intent
 
-This is job 2. From changed symbols, compute what the change can reach so the reviewer does not spend equal time on a one-page heading and a shared API abstraction.
+This is job 2. From changed files/symbols, **compute** blast radius so the reviewer does not spend equal time on a one-page heading and a shared API abstraction.
 
-The graph is made of repository facts: imports, exports, consumers, routes, tests, shared utilities. A model does not draw these edges.
+The graph is made of repository facts: imports, exports, consumers, routes, tests. A model does not draw these edges. Jev does not set risk.
+
+Until we have a real Bitbucket PR, the contract lives in [fixtures/](../../../fixtures/README.md): `loom-shop` plus `blast-radius.mjs`. If that script ranks a heading above `customerApi`, the story is wrong.
 
 ## Why this epic exists
 

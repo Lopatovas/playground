@@ -6,9 +6,11 @@ Scryglass is a local review cockpit for large frontend PRs. It is **not** an AI 
 
 Three jobs:
 
-1. **Understand what the PR is** — from the change and the UI, not from a 2,000-line AI Jira spec.
-2. **Understand where focus should go** — a heading on one page is noise; a shared API abstraction change is the review.
+1. **What it is** — from the change and the UI, not from a 2,000-line AI Jira spec.
+2. **How risky it is, and the key points** — computed from imports / blast radius. A heading on one page is noise; a shared API change is the review. Jev is optional on top.
 3. **Actually review** — a better UX than Bitbucket: comments on the PR, consecutive sittings that keep context.
+
+Until we have Bitbucket access, dogfood is the local fixture: [fixtures/README.md](../fixtures/README.md).
 
 ## How to read these docs
 
@@ -20,6 +22,7 @@ Three jobs:
 | [glossary.md](./glossary.md) | Shared language |
 | [mvp.md](./mvp.md) | What we build first |
 | [epics/](./epics/README.md) | Epics, stories, and tasks |
+| [../fixtures/README.md](../fixtures/README.md) | Deterministic sample app + sample PRs |
 
 ## The eight epics
 

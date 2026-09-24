@@ -1,0 +1,39 @@
+{
+  "id": "PR-04",
+  "title": "Add a long marketing landing page",
+  "what": "A large isolated page. Many lines, one route, no shared API. LOC must not rank this above an API change.",
+  "risk": "low",
+  "keyPoints": [
+    "src/pages/MarketingLandingPage.ts"
+  ],
+  "changed": [
+    {
+      "file": "src/pages/MarketingLandingPage.ts",
+      "layer": "page",
+      "lineCount": 24,
+      "directConsumers": [
+        "src/routes.ts"
+      ],
+      "consumerCount": 2,
+      "consumers": [
+        "src/main.ts",
+        "src/routes.ts"
+      ],
+      "pages": [],
+      "tests": [],
+      "routes": [
+        "/marketing"
+      ],
+      "routeCount": 1,
+      "risk": "low",
+      "reasons": [
+        "layer=page",
+        "consumers=2",
+        "routes=1",
+        "lines=24 (fact, not used for risk)"
+      ]
+    }
+  ],
+  "deterministic": true,
+  "jev": null
+}

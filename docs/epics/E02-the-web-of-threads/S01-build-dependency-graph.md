@@ -33,7 +33,7 @@ Scryglass can produce a deterministic import/export graph for the target repo (o
 
 ## Tasks
 
-- [ ] Spike ts-morph vs dependency-cruiser vs Madge against the first target repo
+- [ ] Spike ts-morph vs dependency-cruiser vs Madge against `fixtures/loom-shop` (see `fixtures/blast-radius.mjs`)
 - [ ] Define `GraphNode` / `GraphEdge` types (`file`, `symbol`, edge kinds: `imports`, `exports`, `reexports`)
 - [ ] Implement file-level graph first
 - [ ] Add symbol-level edges for exported bindings when available

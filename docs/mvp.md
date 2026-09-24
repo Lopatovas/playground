@@ -7,12 +7,12 @@ Do not build a platform. Build the three jobs they would switch for.
 ## Three MVP jobs
 
 ```text
-1. What is it              2. Where to look           3. Review UX
+1. What is it              2. Risk + key points       3. Review UX
 ─────────────────          ─────────────────          ─────────────────
-Living Mirror stills       Web of Threads             High Seat
-PR title / routes          Shared vs isolated         Draft comments
-                           Attention map (graph)      Publish to the PR
-                           Heading < shared API       What changed since last sitting
+Living Mirror stills       Web of Threads (computed)  High Seat
+Routes / changed symbols   Blast radius               Draft comments
+                           Shared API > heading       Publish to the PR
+                           No Jev required            What changed since last sitting
 ```
 
 Foundry + Opening are the floor: local runtime, Bitbucket adapter, auto-checkout, generic TS/JS analysis.
@@ -30,7 +30,7 @@ Foundry (runtime + Bitbucket adapter)
                             → Chronicle
 ```
 
-Job 2 ships before Jev. A graph that puts `customerApi` above `PageHeading` is already the product. Jev only sharpens it.
+Job 2 ships before Jev and is proven on [fixtures/](../fixtures/README.md) until Bitbucket access exists. A graph that puts `customerApi` above `SettingsHeading` is already the product. Jev only sharpens it.
 
 ## MVP in
 

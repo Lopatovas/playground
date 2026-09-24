@@ -1,0 +1,42 @@
+{
+  "id": "PR-02",
+  "title": "Tweak the settings page heading",
+  "what": "Copy/structure of a heading used only on /settings.",
+  "risk": "low",
+  "keyPoints": [
+    "src/components/SettingsHeading.ts"
+  ],
+  "changed": [
+    {
+      "file": "src/components/SettingsHeading.ts",
+      "layer": "component",
+      "lineCount": 4,
+      "directConsumers": [
+        "src/pages/SettingsPage.ts"
+      ],
+      "consumerCount": 3,
+      "consumers": [
+        "src/main.ts",
+        "src/pages/SettingsPage.ts",
+        "src/routes.ts"
+      ],
+      "pages": [
+        "src/pages/SettingsPage.ts"
+      ],
+      "tests": [],
+      "routes": [
+        "/settings"
+      ],
+      "routeCount": 1,
+      "risk": "low",
+      "reasons": [
+        "layer=component",
+        "consumers=3",
+        "routes=1",
+        "lines=4 (fact, not used for risk)"
+      ]
+    }
+  ],
+  "deterministic": true,
+  "jev": null
+}
