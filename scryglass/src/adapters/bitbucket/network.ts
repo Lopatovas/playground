@@ -128,7 +128,6 @@ function nodeRequest(
         resolve(
           new Response(Buffer.concat(chunks), {
             status: res.statusCode ?? 500,
-            headers: res.headers as HeadersInit,
           }),
         );
       });
