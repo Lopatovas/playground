@@ -45,6 +45,7 @@ export function missingBitbucketHelp(): string {
     "Bitbucket credentials are not configured.",
     "Set BITBUCKET_TOKEN, or BITBUCKET_USERNAME + BITBUCKET_APP_PASSWORD.",
     "For Data Center also set BITBUCKET_URL=https://your-bitbucket.example",
-    'Optional: ~/.scryglass/config.json { "bitbucket": { "username", "appPassword", "token", "url" } }',
+    "Run Scryglass on the same machine as the VPN. Optional CA: BITBUCKET_CA_BUNDLE.",
+    'Optional: ~/.scryglass/config.json { "bitbucket": { "username", "appPassword", "token", "url", "caBundle" } }',
   ].join(" ");
 }

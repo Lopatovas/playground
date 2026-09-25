@@ -31,13 +31,19 @@ const publishSchema = z.object({
 export type AppHealth = {
   ok: true;
   jev: false;
-  hosts: { fixture: boolean; bitbucket: boolean; bitbucketEdition: "cloud" | "datacenter" | null };
+  hosts: {
+    fixture: boolean;
+    bitbucket: boolean;
+    bitbucketEdition: "cloud" | "datacenter" | null;
+    reachable: boolean | null;
+    hint: string | null;
+  };
 };
 
 export type AppServices = {
   reviews: ReviewService;
   comments: CommentService;
-  health?: AppHealth;
+  health?: AppHealth | (() => Promise<AppHealth>);
 };
 
 export function createApp(services: AppServices): express.Express {
@@ -45,14 +51,27 @@ export function createApp(services: AppServices): express.Express {
   app.disable("x-powered-by");
   app.use(express.json({ limit: "1mb" }));
 
-  app.get("/api/health", (_req, res) => {
-    res.json(
-      services.health ?? {
+  app.get("/api/health", async (_req, res, next) => {
+    try {
+      const fallback: AppHealth = {
         ok: true,
         jev: false,
-        hosts: { fixture: true, bitbucket: false, bitbucketEdition: null },
-      },
-    );
+        hosts: {
+          fixture: true,
+          bitbucket: false,
+          bitbucketEdition: null,
+          reachable: null,
+          hint: null,
+        },
+      };
+      const value =
+        typeof services.health === "function"
+          ? await services.health()
+          : (services.health ?? fallback);
+      res.json(value);
+    } catch (error) {
+      next(error);
+    }
   });
 
   app.get("/api/prs", async (_req, res, next) => {

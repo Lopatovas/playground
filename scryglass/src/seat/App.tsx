@@ -20,6 +20,7 @@ export function App() {
   const [prId, setPrId] = useState("PR-01");
   const [url, setUrl] = useState("");
   const [bitbucketReady, setBitbucketReady] = useState(false);
+  const [hostHint, setHostHint] = useState<string | null>(null);
   const [session, setSession] = useState<ReviewSession | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
   const [fileText, setFileText] = useState("");
@@ -37,25 +38,30 @@ export function App() {
     const data = await listPrs();
     setPrs(data.prs);
     const status = await health();
-    setBitbucketReady(status.hosts.bitbucket);
+    setBitbucketReady(status.hosts.bitbucket && status.hosts.reachable !== false);
+    setHostHint(status.hosts.hint);
   }, []);
 
-  const open = useCallback(async (id: string) => {
-    setBusy(true);
-    setError(null);
-    try {
-      const data = await openSession(id);
-      setSession(data.session);
-      const first =
-        data.session.report.keyPoints[0] ?? data.session.report.changed[0]?.file ?? null;
-      setSelected(first);
-      setLine(null);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to open");
-    } finally {
-      setBusy(false);
-    }
-  }, []);
+  const open = useCallback(
+    async (id: string) => {
+      setBusy(true);
+      setError(null);
+      try {
+        const data = await openSession(id);
+        setSession(data.session);
+        const first =
+          data.session.report.keyPoints[0] ?? data.session.report.changed[0]?.file ?? null;
+        setSelected(first);
+        setLine(null);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to open");
+        void loadPrs();
+      } finally {
+        setBusy(false);
+      }
+    },
+    [loadPrs],
+  );
 
   useEffect(() => {
     void loadPrs();
@@ -133,7 +139,7 @@ export function App() {
         >
           <input
             aria-label="Bitbucket PR URL"
-            placeholder="https://bitbucket.org/.../pull-requests/12"
+            placeholder="Bitbucket Cloud or Data Center PR URL"
             value={url}
             onChange={(event) => setUrl(event.target.value)}
           />
@@ -149,8 +155,8 @@ export function App() {
               : "opening"}
             {" · "}
             {bitbucketReady
-              ? "Bitbucket ready"
-              : "fixtures only — set BITBUCKET_TOKEN to open a real PR"}
+              ? (hostHint ?? "Bitbucket reachable")
+              : (hostHint ?? "fixtures only — set BITBUCKET_TOKEN to open a real PR")}
             {" · Jev unused"}
           </p>
         </div>

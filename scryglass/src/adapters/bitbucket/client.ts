@@ -1,6 +1,7 @@
 import { HttpError } from "../../foundry/http-error.js";
 import { bitbucketHeaders } from "./auth.js";
 import type { BitbucketConfig } from "./config.js";
+import { classifyReachError, createBitbucketHttp } from "./network.js";
 import type { BitbucketPrRef } from "./parse-url.js";
 import type { PullRequest } from "../../domain/types.js";
 
@@ -12,14 +13,22 @@ export type FetchedPr = PullRequest & {
   repo: string;
 };
 
-export function createBitbucketClient(config: BitbucketConfig, http: BitbucketHttp = fetch) {
+export function createBitbucketClient(
+  config: BitbucketConfig,
+  http: BitbucketHttp = createBitbucketHttp(config),
+) {
   const headers = bitbucketHeaders(config);
 
   const request = async (url: string, init?: RequestInit): Promise<unknown> => {
-    const response = await http(url, {
-      ...init,
-      headers: { ...headers, ...(init?.headers as Record<string, string> | undefined) },
-    });
+    let response: Response;
+    try {
+      response = await http(url, {
+        ...init,
+        headers: { ...headers, ...(init?.headers as Record<string, string> | undefined) },
+      });
+    } catch (error) {
+      throw new HttpError(503, classifyReachError(error, config.gitHost));
+    }
     const text = await response.text();
     if (!response.ok) {
       throw new HttpError(

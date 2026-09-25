@@ -58,6 +58,16 @@ Scryglass clones into `~/.scryglass/workdirs/…`, ranks the changed files, and 
 
 Token scopes: repository read + `pullrequest` / `pullrequest:write`.
 
+## Behind a VPN
+
+Scryglass is local. It talks to Bitbucket from **this machine**. There is no cloud jump, so a Cloud Agent or any other box that is not on the VPN cannot see your host.
+
+1. Connect to the VPN first.
+2. Run `npm run dev` on that same laptop.
+3. If DNS or TCP fails, High Seat and `GET /api/health` say so: _Can't resolve / Can't reach `<host>`. Connect to the VPN._
+4. Corporate CA: `export BITBUCKET_CA_BUNDLE=/path/to/corp-ca.pem` (or `NODE_EXTRA_CA_CERTS`). Last resort: `BITBUCKET_TLS_INSECURE=1`.
+5. Git checkout honors `HTTPS_PROXY` / `HTTP_PROXY`.
+
 Optional file: `~/.scryglass/config.json`
 
 ```json
@@ -66,7 +76,8 @@ Optional file: `~/.scryglass/config.json`
     "username": "you",
     "appPassword": "…",
     "token": "",
-    "url": "https://bitbucket.org"
+    "url": "https://bitbucket.your-company.com",
+    "caBundle": "/path/to/corp-ca.pem"
   }
 }
 ```
@@ -83,3 +94,5 @@ Tests are the contract:
 - drafts persist; publish is PR-only
 - Bitbucket comments post to `/pullrequests/{id}/comments`, never a commit URL
 - A Bitbucket URL without credentials fails closed
+- Unreachable / VPN-blocked Bitbucket fails as HTTP 503 with a connect-VPN hint
+- Corporate CA is passed to Node and git (`BITBUCKET_CA_BUNDLE`)

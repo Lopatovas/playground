@@ -3,6 +3,7 @@ import { execFileSync } from "node:child_process";
 
 import { authenticatedGitUrl, redactUrl } from "./auth.js";
 import type { BitbucketConfig } from "./config.js";
+import { classifyReachError } from "./network.js";
 
 export type ExecFile = typeof execFileSync;
 
@@ -19,7 +20,7 @@ export function checkoutPullRequest(options: {
   mkdirSync(options.workdir, { recursive: true });
 
   const git = (args: string[]) => {
-    exec("git", args, {
+    exec("git", [...gitTlsArgs(options.config), ...args], {
       cwd: options.workdir,
       encoding: "utf8",
       stdio: ["ignore", "pipe", "pipe"],
@@ -50,8 +51,21 @@ export function checkoutPullRequest(options: {
     }
     git(["checkout", "--force", "FETCH_HEAD"]);
   } catch (error) {
-    const message = error instanceof Error ? error.message : "git failed";
-    throw new Error(`Checkout failed (${redactUrl(authUrl)}): ${redactUrl(message)}`);
+    throw new Error(
+      `Checkout failed (${redactUrl(authUrl)}): ${classifyReachError(error, options.config.gitHost)}`,
+    );
   }
   return options.workdir;
+}
+
+export function gitTlsArgs(
+  config: BitbucketConfig,
+  env: NodeJS.ProcessEnv = process.env,
+): string[] {
+  const args: string[] = [];
+  if (config.caBundle) args.push("-c", `http.sslCAInfo=${config.caBundle}`);
+  if (config.tlsInsecure) args.push("-c", "http.sslVerify=false");
+  const proxy = env.HTTPS_PROXY ?? env.HTTP_PROXY;
+  if (proxy) args.push("-c", `http.proxy=${proxy}`);
+  return args;
 }

@@ -11,6 +11,8 @@ export type BitbucketConfig = {
   username?: string;
   password?: string;
   token?: string;
+  caBundle?: string;
+  tlsInsecure: boolean;
 };
 
 type FileConfig = {
@@ -19,6 +21,8 @@ type FileConfig = {
     username?: string;
     appPassword?: string;
     token?: string;
+    caBundle?: string;
+    tlsInsecure?: boolean;
   };
 };
 
@@ -49,6 +53,8 @@ export function loadBitbucketConfig(
     username,
     password,
     token,
+    caBundle: env.BITBUCKET_CA_BUNDLE ?? file?.caBundle ?? env.NODE_EXTRA_CA_CERTS,
+    tlsInsecure: env.BITBUCKET_TLS_INSECURE === "1" || file?.tlsInsecure === true,
   };
 }
 

@@ -29,7 +29,13 @@ export function openSession(input: string): Promise<{ session: ReviewSession }> 
 
 export function health(): Promise<{
   ok: boolean;
-  hosts: { fixture: boolean; bitbucket: boolean; bitbucketEdition: string | null };
+  hosts: {
+    fixture: boolean;
+    bitbucket: boolean;
+    bitbucketEdition: string | null;
+    reachable: boolean | null;
+    hint: string | null;
+  };
 }> {
   return request("/api/health");
 }

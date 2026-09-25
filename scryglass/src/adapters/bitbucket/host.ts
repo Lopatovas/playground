@@ -8,6 +8,7 @@ import { workdirsDir } from "../../foundry/paths.js";
 import { checkoutPullRequest, type ExecFile } from "./checkout.js";
 import { commentUrl, createBitbucketClient, type BitbucketHttp, type FetchedPr } from "./client.js";
 import type { BitbucketConfig } from "./config.js";
+import { probeBitbucket } from "./network.js";
 import { looksLikeBitbucketUrl, parseBitbucketPrUrl } from "./parse-url.js";
 
 export function createBitbucketHost(options: {
@@ -30,6 +31,10 @@ export function createBitbucketHost(options: {
         throw new HttpError(400, "Paste a Bitbucket pull request URL");
       }
       const ref = parseBitbucketPrUrl(input);
+      const probe = await probeBitbucket(options.config, options.http);
+      if (!probe.reachable) {
+        throw new HttpError(503, probe.hint ?? `Can't reach ${options.config.gitHost}`);
+      }
       const pr = await client.fetchPullRequest(ref);
       const workdir = join(roots, ref.host, ref.workspace, ref.repo, pr.id);
       checkoutPullRequest({

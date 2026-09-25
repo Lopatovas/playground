@@ -15,6 +15,7 @@ const cloudConfig: BitbucketConfig = {
   apiBase: "https://api.bitbucket.org/2.0",
   gitHost: "bitbucket.org",
   token: "test-token",
+  tlsInsecure: false,
 };
 
 describe("Bitbucket client", () => {
