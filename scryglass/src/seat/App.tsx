@@ -40,9 +40,8 @@ export function App() {
   );
 
   const loadPrs = useCallback(async () => {
-    const data = await listPrs();
+    const [data, status] = await Promise.all([listPrs(), health()]);
     setPrs(data.prs);
-    const status = await health();
     setBitbucketReady(status.hosts.bitbucket && status.hosts.reachable !== false);
     setHostHint(status.hosts.hint);
   }, []);
@@ -159,7 +158,11 @@ export function App() {
               ? `${session.host} · ${session.base.slice(0, 8)} → ${session.head.slice(0, 8)}`
               : "opening"}
             {" · "}
-            {bitbucketReady ? "Bitbucket reachable" : "fixtures only"}
+            {bitbucketReady
+              ? "Bitbucket reachable"
+              : isReachAlert(hostHint)
+                ? "Bitbucket unreachable"
+                : "fixtures only"}
             {" · Jev unused"}
           </p>
         </div>
