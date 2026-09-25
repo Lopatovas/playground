@@ -32,3 +32,9 @@ export function publishedDir(home = scryglassHome()): string {
   mkdirSync(dir, { recursive: true });
   return dir;
 }
+
+export function workdirsDir(home = scryglassHome()): string {
+  const dir = join(home, "workdirs");
+  mkdirSync(dir, { recursive: true });
+  return dir;
+}

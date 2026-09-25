@@ -42,4 +42,13 @@ describe("sessions API", () => {
     const { app } = testRuntime();
     await request(app).post("/api/sessions").send({ prId: "PR-99" }).expect(404);
   });
+
+  it("refuses a Bitbucket URL when credentials are missing", async () => {
+    const { app } = testRuntime();
+    const res = await request(app)
+      .post("/api/sessions")
+      .send({ url: "https://bitbucket.org/acme/shop/pull-requests/1" })
+      .expect(400);
+    expect(res.body.error).toMatch(/BITBUCKET_TOKEN|BITBUCKET_USERNAME/);
+  });
 });

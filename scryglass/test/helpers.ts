@@ -9,10 +9,10 @@ export function tempHome(): string {
   return mkdtempSync(join(tmpdir(), "scryglass-"));
 }
 
-export function testRuntime() {
+export function testRuntime(env: NodeJS.ProcessEnv = {}) {
   const home = tempHome();
   return {
-    ...createRuntime({ home, shopRoot: loomShopRoot(), fixturesDir: fixturesRoot() }),
+    ...createRuntime({ home, shopRoot: loomShopRoot(), fixturesDir: fixturesRoot(), env }),
     home,
   };
 }

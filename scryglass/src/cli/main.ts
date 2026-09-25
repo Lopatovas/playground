@@ -12,7 +12,7 @@ function help(): string {
   return [
     "scryglass — local review cockpit",
     "",
-    "  scryglass open [PR-01]   print the deterministic report (then run npm run dev)",
+    "  scryglass open [PR-01]   fixture report, or a Bitbucket PR URL",
     "  scryglass check          compare engine output to fixtures/expected",
     "  scryglass --help         this text",
     "",
@@ -43,7 +43,7 @@ function render(report: ReturnType<typeof analyzeFixtureRepo>["reports"][number]
   return lines.join("\n");
 }
 
-function main(argv: string[]): number {
+async function main(argv: string[]): Promise<number> {
   const args = argv.slice(2);
   if (args.includes("--help") || args[0] === "help") {
     console.info(help());
@@ -52,7 +52,7 @@ function main(argv: string[]): number {
 
   const host = createFixtureHost();
   const fs = createDiskRepoFs(loomShopRoot());
-  const { graph, reports } = analyzeFixtureRepo(fs, host.listPullRequests());
+  const { graph, reports } = analyzeFixtureRepo(fs, await host.listPullRequests());
   assertLayerInvariants(graph);
 
   if (args[0] === "check") {
@@ -84,6 +84,14 @@ function main(argv: string[]): number {
   }
 
   const prFilter = args[0] === "open" ? args[1] : args[0];
+  if (prFilter?.startsWith("http")) {
+    const { createRuntime } = await import("../foundry/container.js");
+    const runtime = createRuntime();
+    const session = await runtime.reviews.open(prFilter);
+    console.info(render(session.report));
+    console.info("High Seat: npm run dev  →  http://127.0.0.1:8787");
+    return 0;
+  }
   const selected = prFilter
     ? reports.filter((report) => report.id === prFilter || report.id === `PR-${prFilter}`)
     : reports;
@@ -101,4 +109,4 @@ function main(argv: string[]): number {
   return 0;
 }
 
-process.exitCode = main(process.argv);
+process.exitCode = await main(process.argv);

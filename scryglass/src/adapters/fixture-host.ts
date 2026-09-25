@@ -2,14 +2,28 @@ import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 import type { HostAdapter } from "./host.js";
-import type { FixturePr, PublishResult, ReviewComment, ReviewSession } from "../domain/types.js";
+import type { PublishResult, PullRequest, ReviewComment, ReviewSession } from "../domain/types.js";
 import { fixturesRoot, loomShopRoot, publishedDir } from "../foundry/paths.js";
 
-function loadPrs(prsRoot: string): FixturePr[] {
+function loadPrs(prsRoot: string): PullRequest[] {
   return readdirSync(prsRoot)
     .filter((name) => name.endsWith(".json"))
     .sort()
-    .map((name) => JSON.parse(readFileSync(join(prsRoot, name), "utf8")) as FixturePr);
+    .map((name) => {
+      const raw = JSON.parse(readFileSync(join(prsRoot, name), "utf8")) as {
+        id: string;
+        title: string;
+        changed: string[];
+        what: string;
+      };
+      return {
+        ...raw,
+        host: "fixture",
+        base: "fixture-base",
+        head: "fixture-head",
+        workdir: loomShopRoot(),
+      };
+    });
 }
 
 export function createFixtureHost(options?: {
@@ -20,24 +34,25 @@ export function createFixtureHost(options?: {
   const prsRoot = join(options?.fixturesDir ?? fixturesRoot(), "prs");
   const shopRoot = options?.shopRoot ?? loomShopRoot();
   const outRoot = options?.publishedRoot ?? publishedDir();
-  const prs = loadPrs(prsRoot);
+  const prs = loadPrs(prsRoot).map((pr) => ({ ...pr, workdir: shopRoot }));
 
   return {
     name: "fixture",
+    configured: true,
     listPullRequests() {
-      return prs;
+      return Promise.resolve(prs);
     },
-    getPullRequest(id) {
+    openPullRequest(id) {
       const found = prs.find((pr) => pr.id === id || pr.id === `PR-${id}`);
       if (!found) {
-        throw new Error(`Unknown PR ${id}`);
+        return Promise.reject(new Error(`Unknown PR ${id}`));
       }
-      return found;
+      return Promise.resolve(found);
     },
-    readWorkdirFile(rel) {
-      return readFileSync(join(shopRoot, rel), "utf8");
+    readWorkdirFile(rel, workdir = shopRoot) {
+      return readFileSync(join(workdir, rel), "utf8");
     },
-    publish(session: ReviewSession, drafts: ReviewComment[]): PublishResult {
+    publish(session: ReviewSession, drafts: ReviewComment[]): Promise<PublishResult> {
       const published = drafts.map((draft, index) => ({
         ...draft,
         status: "published" as const,
@@ -57,7 +72,7 @@ export function createFixtureHost(options?: {
         })),
       };
       writeFileSync(join(outRoot, `${session.prId}.json`), `${JSON.stringify(payload, null, 2)}\n`);
-      return { target: "pullrequest", published, skipped: [] };
+      return Promise.resolve({ target: "pullrequest", published, skipped: [] });
     },
   };
 }

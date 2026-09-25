@@ -6,9 +6,12 @@ import type { CommentService } from "../services/comment-service.js";
 import type { ReviewService } from "../services/review-service.js";
 import { HttpError } from "../foundry/http-error.js";
 
-const openSessionSchema = z.object({
-  prId: z.string().min(1),
-});
+const openSessionSchema = z
+  .object({
+    prId: z.string().min(1).optional(),
+    url: z.string().min(1).optional(),
+  })
+  .refine((body) => Boolean(body.prId ?? body.url), { message: "prId or url is required" });
 
 const draftSchema = z.object({
   body: z.string(),
@@ -25,9 +28,16 @@ const publishSchema = z.object({
   ids: z.array(z.string()).optional(),
 });
 
+export type AppHealth = {
+  ok: true;
+  jev: false;
+  hosts: { fixture: boolean; bitbucket: boolean; bitbucketEdition: "cloud" | "datacenter" | null };
+};
+
 export type AppServices = {
   reviews: ReviewService;
   comments: CommentService;
+  health?: AppHealth;
 };
 
 export function createApp(services: AppServices): express.Express {
@@ -36,20 +46,36 @@ export function createApp(services: AppServices): express.Express {
   app.use(express.json({ limit: "1mb" }));
 
   app.get("/api/health", (_req, res) => {
-    res.json({ ok: true, jev: false, host: "fixture" });
+    res.json(
+      services.health ?? {
+        ok: true,
+        jev: false,
+        hosts: { fixture: true, bitbucket: false, bitbucketEdition: null },
+      },
+    );
   });
 
-  app.get("/api/prs", (_req, res) => {
-    res.json({ prs: services.reviews.listPullRequests() });
+  app.get("/api/prs", async (_req, res, next) => {
+    try {
+      res.json({ prs: await services.reviews.listPullRequests() });
+    } catch (error) {
+      next(error);
+    }
   });
 
   app.get("/api/sessions", (_req, res) => {
     res.json({ sessions: services.reviews.listSessions() });
   });
 
-  app.post("/api/sessions", (req, res) => {
-    const body = openSessionSchema.parse(req.body);
-    res.status(201).json({ session: services.reviews.open(body.prId) });
+  app.post("/api/sessions", async (req, res, next) => {
+    try {
+      const body = openSessionSchema.parse(req.body);
+      const input = body.prId ?? body.url;
+      if (!input) throw new HttpError(400, "prId or url is required");
+      res.status(201).json({ session: await services.reviews.open(input) });
+    } catch (error) {
+      next(error);
+    }
   });
 
   app.get("/api/sessions/:id", (req, res) => {
@@ -90,9 +116,13 @@ export function createApp(services: AppServices): express.Express {
     });
   });
 
-  app.post("/api/sessions/:id/publish", (req, res) => {
-    const body = publishSchema.parse(req.body);
-    res.json({ session: services.comments.publish(req.params.id, body.ids) });
+  app.post("/api/sessions/:id/publish", async (req, res, next) => {
+    try {
+      const body = publishSchema.parse(req.body);
+      res.json({ session: await services.comments.publish(req.params.id, body.ids) });
+    } catch (error) {
+      next(error);
+    }
   });
 
   app.use((error: unknown, _req: Request, res: Response, _next: NextFunction) => {

@@ -1,4 +1,4 @@
-import type { ChangedNode, FixturePr, ImportGraph, Layer, PrReport } from "../domain/types.js";
+import type { ChangedNode, FixturePr, ImportGraph, PrReport } from "../domain/types.js";
 import {
   flagsFor,
   pagesIn,
@@ -37,48 +37,43 @@ function routesFrom(fs: RepoFs, graph: ImportGraph, files: string[]): string[] {
   ].sort();
 }
 
-function requireLayer(graph: ImportGraph, file: string): Layer {
-  const layer = graph.layer[file];
-  if (!layer) {
-    throw new Error(`No layer for ${file}`);
-  }
-  return layer;
-}
-
 export function analyzePr(fs: RepoFs, graph: ImportGraph, pr: FixturePr): PrReport {
-  const nodes: ChangedNode[] = pr.changed.map((file) => {
-    const reach = collectReach(graph.importedBy, file);
-    const allConsumers = [...new Set([...reach.direct, ...reach.transitive])].sort();
-    const node: ChangedNode = {
-      file,
-      layer: requireLayer(graph, file),
-      layerWhy: graph.layerWhy[file] ?? "",
-      lineCount: lineCount(fs, file),
-      exports: exportedNames(fs, file),
-      fanOut: (graph.imports[file] ?? []).length,
-      directConsumers: reach.direct,
-      consumerCount: allConsumers.length,
-      consumers: allConsumers,
-      pages: pagesIn(graph, allConsumers),
-      tests: testsIn(graph, [...allConsumers, file]),
-      routes: routesFrom(fs, graph, [file, ...allConsumers]),
-      routeCount: 0,
-      flags: [],
-      risk: "low",
-      reasons: [],
-    };
-    node.routeCount = node.routes.length;
-    node.flags = flagsFor(node, graph, fs);
-    node.risk = riskFromFlags(node.flags);
-    node.reasons = [
-      `layer=${node.layer} (${node.layerWhy})`,
-      `consumers=${node.consumerCount}`,
-      `routes=${node.routeCount}`,
-      `flags=${node.flags.map((item) => item.id).join(",") || "—"}`,
-      `lines=${node.lineCount} (fact, not used for risk)`,
-    ];
-    return node;
-  });
+  const nodes: ChangedNode[] = pr.changed
+    .filter((file) => fs.exists(file))
+    .map((file) => {
+      const reach = collectReach(graph.importedBy, file);
+      const allConsumers = [...new Set([...reach.direct, ...reach.transitive])].sort();
+      const layer = graph.layer[file] ?? "other";
+      const node: ChangedNode = {
+        file,
+        layer,
+        layerWhy: graph.layerWhy[file] ?? "not on the JS/TS import spine",
+        lineCount: lineCount(fs, file),
+        exports: exportedNames(fs, file),
+        fanOut: (graph.imports[file] ?? []).length,
+        directConsumers: reach.direct,
+        consumerCount: allConsumers.length,
+        consumers: allConsumers,
+        pages: pagesIn(graph, allConsumers),
+        tests: testsIn(graph, [...allConsumers, file]),
+        routes: routesFrom(fs, graph, [file, ...allConsumers]),
+        routeCount: 0,
+        flags: [],
+        risk: "low",
+        reasons: [],
+      };
+      node.routeCount = node.routes.length;
+      node.flags = flagsFor(node, graph, fs);
+      node.risk = riskFromFlags(node.flags);
+      node.reasons = [
+        `layer=${node.layer} (${node.layerWhy})`,
+        `consumers=${node.consumerCount}`,
+        `routes=${node.routeCount}`,
+        `flags=${node.flags.map((item) => item.id).join(",") || "—"}`,
+        `lines=${node.lineCount} (fact, not used for risk)`,
+      ];
+      return node;
+    });
 
   const flags = prFlagsFor(nodes);
   for (const node of nodes) {

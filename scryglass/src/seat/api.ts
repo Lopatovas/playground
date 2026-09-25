@@ -19,11 +19,19 @@ export function listPrs(): Promise<{ prs: FixturePr[] }> {
   return request("/api/prs");
 }
 
-export function openSession(prId: string): Promise<{ session: ReviewSession }> {
+export function openSession(input: string): Promise<{ session: ReviewSession }> {
+  const body = input.startsWith("http") ? { url: input } : { prId: input };
   return request("/api/sessions", {
     method: "POST",
-    body: JSON.stringify({ prId }),
+    body: JSON.stringify(body),
   });
+}
+
+export function health(): Promise<{
+  ok: boolean;
+  hosts: { fixture: boolean; bitbucket: boolean; bitbucketEdition: string | null };
+}> {
+  return request("/api/health");
 }
 
 export function getSession(id: string): Promise<{ session: ReviewSession }> {

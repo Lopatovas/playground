@@ -9,7 +9,7 @@ export type CommentService = {
   addDraft: (sessionId: string, input: { body: string; anchor: CommentAnchor }) => ReviewSession;
   updateDraft: (sessionId: string, commentId: string, body: string) => ReviewSession;
   deleteDraft: (sessionId: string, commentId: string) => ReviewSession;
-  publish: (sessionId: string, ids?: string[]) => ReviewSession;
+  publish: (sessionId: string, ids?: string[]) => Promise<ReviewSession>;
 };
 
 export function createCommentService(deps: {
@@ -67,18 +67,18 @@ export function createCommentService(deps: {
         comments: session.comments.filter((item) => item.id !== commentId),
       });
     },
-    publish(sessionId, ids) {
+    async publish(sessionId, ids) {
       const session = requireSession(sessionId);
       const selected = session.comments.filter((comment) => {
         if (comment.status !== "draft") return false;
         return ids === undefined || ids.includes(comment.id);
       });
       if (!selected.length) throw badRequest("No drafts to publish");
-      const result = deps.host.publish(session, selected);
+      const result = await deps.host.publish(session, selected);
       if (result.target !== "pullrequest") {
         throw new Error("Host adapter refused PR publish target");
       }
-      const publishedIds = new Set(selected.map((comment) => comment.id));
+      const publishedIds = new Set(result.published.map((comment) => comment.id));
       const remaining = session.comments.filter((comment) => !publishedIds.has(comment.id));
       return deps.store.save({
         ...session,

@@ -5,7 +5,7 @@ Local review cockpit. It does not judge. It reveals.
 ```text
 Foundry (Express) → engine (flags / layers) → High Seat (Vite)
         ↑
-   fixture host now, Bitbucket later
+   fixture host + Bitbucket (Cloud or Data Center)
 ```
 
 Job 2 is computed. Jev is not called.
@@ -28,6 +28,49 @@ npm run cli -- check
 
 Sessions write to `SCRYGLASS_HOME` or `~/.scryglass/`. Fixture publishes land in `published/<prId>.json` with `target: "pullrequest"`.
 
+## Open a real Bitbucket PR
+
+Cloud (app password or repository/workspace access token):
+
+```bash
+export BITBUCKET_USERNAME=your-user
+export BITBUCKET_APP_PASSWORD=your-app-password
+# or
+export BITBUCKET_TOKEN=your-workspace-or-repo-token
+```
+
+Data Center / Server:
+
+```bash
+export BITBUCKET_URL=https://bitbucket.your-company.com
+export BITBUCKET_USERNAME=your-user
+export BITBUCKET_APP_PASSWORD=your-http-access-token
+# or BITBUCKET_TOKEN=...
+```
+
+Then `npm run dev` and paste the PR URL in the High Seat, or:
+
+```bash
+npm run cli -- open https://bitbucket.org/workspace/repo/pull-requests/12
+```
+
+Scryglass clones into `~/.scryglass/workdirs/…`, ranks the changed files, and **Publish to PR** posts to the pull request comment API (never a commit comment).
+
+Token scopes: repository read + `pullrequest` / `pullrequest:write`.
+
+Optional file: `~/.scryglass/config.json`
+
+```json
+{
+  "bitbucket": {
+    "username": "you",
+    "appPassword": "…",
+    "token": "",
+    "url": "https://bitbucket.org"
+  }
+}
+```
+
 ## Quality gates
 
 `npm run check` is format + lint + typecheck + tests.
@@ -38,3 +81,5 @@ Tests are the contract:
 - shared API ranks above a one-page heading
 - `FetchingHeading` stays `component` + `ui.network`
 - drafts persist; publish is PR-only
+- Bitbucket comments post to `/pullrequests/{id}/comments`, never a commit URL
+- A Bitbucket URL without credentials fails closed

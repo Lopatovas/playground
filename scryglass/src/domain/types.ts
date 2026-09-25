@@ -56,12 +56,24 @@ export type PrReport = {
   jev: null;
 };
 
-export type FixturePr = {
+export type PullRequest = {
   id: string;
+  host: string;
   title: string;
   changed: string[];
   what: string;
+  base: string;
+  head: string;
+  sourceBranch?: string;
+  destBranch?: string;
+  htmlUrl?: string;
+  cloneUrl?: string;
+  workdir?: string;
+  workspace?: string;
+  repo?: string;
 };
+
+export type FixturePr = PullRequest;
 
 export type ImportGraph = {
   files: string[];
@@ -99,6 +111,8 @@ export type ReviewSession = {
   what: string;
   base: string;
   head: string;
+  htmlUrl: string | null;
+  workdir: string;
   openedAt: string;
   updatedAt: string;
   lastSittingAt: string | null;

@@ -3,17 +3,17 @@ import { describe, expect, it } from "vitest";
 import { testRuntime } from "../helpers.js";
 
 describe("fixture host adapter", () => {
-  it("exposes loom-shop sample PRs without network", () => {
+  it("exposes loom-shop sample PRs without network", async () => {
     const { host } = testRuntime();
-    const ids = host.listPullRequests().map((pr) => pr.id);
+    const ids = (await host.listPullRequests()).map((pr) => pr.id);
     expect(ids).toContain("PR-01");
     expect(ids).toContain("PR-07");
   });
 
-  it("publish payload is PR-scoped", () => {
+  it("publish payload is PR-scoped", async () => {
     const { host, reviews } = testRuntime();
-    const session = reviews.open("PR-01");
-    const result = host.publish(session, [
+    const session = await reviews.open("PR-01");
+    const result = await host.publish(session, [
       {
         id: "c1",
         body: "look at the API",

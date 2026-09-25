@@ -42,8 +42,14 @@ function parseImports(fs: RepoFs, file: string): string[] {
   ].sort();
 }
 
-export function buildGraph(fs: RepoFs, srcDir = "src"): ImportGraph {
-  const files = fs.walk(srcDir);
+export function detectGraphRoots(fs: RepoFs): string[] {
+  const candidates = ["src", "app", "packages", "lib", "frontend", "web"];
+  const found = candidates.filter((dir) => fs.exists(dir));
+  return found.length ? found : ["."];
+}
+
+export function buildGraph(fs: RepoFs, srcDirs: string[] = ["src"]): ImportGraph {
+  const files = [...new Set(srcDirs.flatMap((dir) => fs.walk(dir)))].sort();
   const imports: Record<string, string[]> = {};
   const importedBy: Record<string, string[]> = {};
   for (const file of files) {

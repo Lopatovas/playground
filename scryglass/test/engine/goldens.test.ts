@@ -1,18 +1,26 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
 import { createFixtureHost } from "../../src/adapters/fixture-host.js";
 import { analyzeFixtureRepo } from "../../src/engine/analyze.js";
 import { assertLayerInvariants } from "../../src/engine/layers.js";
 import { createDiskRepoFs } from "../../src/engine/repo-fs.js";
 import { fixturesRoot, loomShopRoot } from "../../src/foundry/paths.js";
+import type { ImportGraph, PrReport } from "../../src/domain/types.js";
 
 describe("engine goldens", () => {
-  const host = createFixtureHost();
-  const fs = createDiskRepoFs(loomShopRoot());
-  const { graph, reports } = analyzeFixtureRepo(fs, host.listPullRequests());
+  let graph: ImportGraph;
+  let reports: PrReport[];
   const expectedRoot = join(fixturesRoot(), "expected");
+
+  beforeAll(async () => {
+    const host = createFixtureHost();
+    const fs = createDiskRepoFs(loomShopRoot());
+    const analyzed = analyzeFixtureRepo(fs, await host.listPullRequests());
+    graph = analyzed.graph;
+    reports = analyzed.reports;
+  });
 
   it("matches every fixture/expected report byte-for-byte", () => {
     const expectedIds = readdirSync(expectedRoot)

@@ -1,7 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import type { ChangedNode, FixturePr, ReviewSession } from "../domain/types.ts";
-import { addComment, closeSitting, listPrs, openSession, publishDrafts, readFile } from "./api.ts";
+import {
+  addComment,
+  closeSitting,
+  health,
+  listPrs,
+  openSession,
+  publishDrafts,
+  readFile,
+} from "./api.ts";
 
 function riskClass(risk: string): string {
   return `risk ${risk}`;
@@ -10,6 +18,8 @@ function riskClass(risk: string): string {
 export function App() {
   const [prs, setPrs] = useState<FixturePr[]>([]);
   const [prId, setPrId] = useState("PR-01");
+  const [url, setUrl] = useState("");
+  const [bitbucketReady, setBitbucketReady] = useState(false);
   const [session, setSession] = useState<ReviewSession | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
   const [fileText, setFileText] = useState("");
@@ -26,6 +36,8 @@ export function App() {
   const loadPrs = useCallback(async () => {
     const data = await listPrs();
     setPrs(data.prs);
+    const status = await health();
+    setBitbucketReady(status.hosts.bitbucket);
   }, []);
 
   const open = useCallback(async (id: string) => {
@@ -112,11 +124,34 @@ export function App() {
             </option>
           ))}
         </select>
+        <form
+          className="open-url"
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (url.trim()) void open(url.trim());
+          }}
+        >
+          <input
+            aria-label="Bitbucket PR URL"
+            placeholder="https://bitbucket.org/.../pull-requests/12"
+            value={url}
+            onChange={(event) => setUrl(event.target.value)}
+          />
+          <button type="submit" disabled={busy || !url.trim()}>
+            Open
+          </button>
+        </form>
         <div className="identity">
           <h1>{session?.title ?? "Opening…"}</h1>
           <p>
-            {session ? `${session.base} → ${session.head}` : "fixture host"} · Jev unused · drafts
-            stay local until publish
+            {session
+              ? `${session.host} · ${session.base.slice(0, 8)} → ${session.head.slice(0, 8)}`
+              : "opening"}
+            {" · "}
+            {bitbucketReady
+              ? "Bitbucket ready"
+              : "fixtures only — set BITBUCKET_TOKEN to open a real PR"}
+            {" · Jev unused"}
           </p>
         </div>
         {session ? (
@@ -191,12 +226,17 @@ export function App() {
           <h2>Context</h2>
           {node ? <Context node={node} /> : <p className="empty">No selection.</p>}
           {session?.lastSittingAt ? (
-            <p className="guard">
-              Last sitting {session.lastSittingAt}. Fixture files are unchanged.
-            </p>
+            <p className="guard">Last sitting {session.lastSittingAt}.</p>
           ) : (
             <p className="guard">First sitting on this PR.</p>
           )}
+          {session?.htmlUrl ? (
+            <p className="guard">
+              <a href={session.htmlUrl} target="_blank" rel="noreferrer">
+                Open on Bitbucket
+              </a>
+            </p>
+          ) : null}
           <div className="compose">
             <textarea
               aria-label="Draft comment"
