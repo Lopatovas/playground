@@ -6,6 +6,10 @@
  *   node fixtures/blast-radius.mjs
  *   node fixtures/blast-radius.mjs --pr PR-01
  *   node fixtures/blast-radius.mjs --check
+ *
+ * Production engine + gates live in scryglass/ (TypeScript). This file stays
+ * as the original teaching harness. `npm test` in scryglass must match
+ * fixtures/expected.
  */
 
 import { readFileSync, readdirSync, writeFileSync, mkdirSync } from "node:fs";

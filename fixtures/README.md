@@ -42,6 +42,7 @@ Flags are the point. PR-05 is the proof that **reach is not enough**: fewer cons
 ## Run
 
 ```bash
+cd scryglass && npm test && npm run cli -- check
 node fixtures/blast-radius.mjs
 node fixtures/blast-radius.mjs --pr PR-01
 node fixtures/blast-radius.mjs --check
