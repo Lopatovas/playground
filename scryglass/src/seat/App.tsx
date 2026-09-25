@@ -15,6 +15,11 @@ function riskClass(risk: string): string {
   return `risk ${risk}`;
 }
 
+function isReachAlert(hint: string | null): boolean {
+  if (!hint) return false;
+  return /VPN|Can't resolve|Can't reach|TLS failed|CA bundle|TLS verification/i.test(hint);
+}
+
 export function App() {
   const [prs, setPrs] = useState<FixturePr[]>([]);
   const [prId, setPrId] = useState("PR-01");
@@ -154,9 +159,7 @@ export function App() {
               ? `${session.host} · ${session.base.slice(0, 8)} → ${session.head.slice(0, 8)}`
               : "opening"}
             {" · "}
-            {bitbucketReady
-              ? (hostHint ?? "Bitbucket reachable")
-              : (hostHint ?? "fixtures only — set BITBUCKET_TOKEN to open a real PR")}
+            {bitbucketReady ? "Bitbucket reachable" : "fixtures only"}
             {" · Jev unused"}
           </p>
         </div>
@@ -176,6 +179,11 @@ export function App() {
             End sitting
           </button>
         </div>
+        {hostHint ? (
+          <p className={`host-hint${isReachAlert(hostHint) ? " error" : ""}`} role="status">
+            {hostHint}
+          </p>
+        ) : null}
       </header>
       <main className="seat">
         <section className="pane" aria-label="Change map">

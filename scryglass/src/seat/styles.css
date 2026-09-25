@@ -115,6 +115,17 @@ button:disabled {
   font-size: 0.8rem;
 }
 
+.host-hint {
+  flex: 1 0 100%;
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.host-hint.error {
+  color: var(--spine);
+}
+
 .risk {
   text-transform: uppercase;
   font-weight: 700;
