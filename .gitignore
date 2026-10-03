@@ -2,5 +2,6 @@
 **/obj/
 **/.godot/
 apps/holdfast/dist/
+!releases/*.apk
 *.user
 .DS_Store

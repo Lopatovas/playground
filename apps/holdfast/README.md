@@ -4,7 +4,7 @@ Godot 4.4 + C#. Domain is OOP (`Card.OnPlay`). JSON in `/content`.
 
 ## Play
 
-Sideload `dist/holdfast.apk` (debug-signed, arm64). Allow unknown sources.
+Sideload [`releases/holdfast-android.apk`](../../releases/holdfast-android.apk) (debug-signed, arm64). Allow unknown sources. GitHub: download that file from the branch or the PR.
 
 Or open `src/Holdfast.Godot` in Godot 4.4 .NET and press Play (portrait).
 
