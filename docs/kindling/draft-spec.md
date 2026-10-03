@@ -4,13 +4,13 @@ Working title. Setting and art come later. This is the mechanical core only.
 
 Challenge anything. Numbers are draft targets, not balance.
 
-**Status:** Slay the Spire fight, roguelite character. Slots/tags/TFT shop are cut — they were a weak copy of a team game. The meta is the bolt-on that stays. Still a draft, not code.
+**Status:** Slay the Spire fight with dice on damage and Block. Roguelite character. Slots/tags/TFT shop are cut. Still a draft, not code.
 
 ## What this is
 
 A one-hero card roguelike in the Slay the Spire family, with an RPG spine between runs.
 
-The fight is still StS: hand, energy, Block, intents. A 10-second clip is a StS clip. Call that a clone.
+The fight is still StS-shaped: hand, energy, Block, intents. The number on the card is not. Damage and Block **roll**. A clip still looks like a card game. Call the structure a clone. The swing is ours.
 
 The thing we will not clone is StS’s meta. StS lets a player who knows the game boot a fresh file and win. Kindling is tuned so a new climber usually dies around floor 4, comes home with currency, and the *character* is visibly further on than last time. Same person. Die, spend, go again. Hades / Rogue Legacy shape, not “unlock a card you might see in twenty runs.”
 
@@ -22,7 +22,7 @@ Final output of the experiment is a playable POC. This doc is the first artifact
 
 - One playable character. Not a guild, not a TFT board of champions.
 - Combat is an **untimed card puzzle**. No APM. No real-time dodging. A turn waits forever. Inspect a card without playing it. Undo nothing mid-resolution — play is immediate — but there is no clock.
-- Combat is honest. Enemy intents are visible before you act.
+- Combat is honest. Enemy intents are visible before you act. Dice are printed on the card (`2d4+1`). You see the range before you play. You do not see the result until it resolves.
 - You play the fight. Not watch-and-hope autobattle.
 - Branching path, Slay the Spire style.
 - Die, then go again. No endless mode in the first slice.
@@ -32,9 +32,9 @@ Final output of the experiment is a playable POC. This doc is the first artifact
 - The game is **beatable**. First win is Brand 0. After that, a finite **Brand** ladder (StS Ascension shape) is why you come back. Each Brand is a named rule, not +10% HP. Beating the top Brand is beating Kindling. No endless number climb.
 - No slots. No tags. No stoke-for-set-bonus. Run build is cards + relics + gold, like StS.
 
-**Combat decision (this draft):** hand, energy, draw pile, discard, Block, intents. No board. No stepping. No push-the-enemy-off-the-tile.
+**Combat decision (this draft):** hand, energy, draw pile, discard, Block, intents. Damage and Block are dice, not flat numbers. No board. No stepping.
 
-Rejected: Hades / Brotato / Vampire Survivors (APM). Peglin (physics). Guildrun spectate-combat. The 7-tile rewrite-the-hit fight (movement management). Dice as the main toy. Wildfrost’s unit board. Three slots and TFT tags on one hero.
+Rejected: Hades / Brotato / Vampire Survivors (APM). Peglin (physics). Guildrun spectate-combat. The 7-tile rewrite-the-hit fight (movement management). Dicey Dungeons (dice as the *whole* toy — allocate rolls to equipment). Wildfrost’s unit board. Three slots and TFT tags on one hero. StS’s fully flat damage/Block.
 
 ## One-sentence pitch
 
@@ -68,7 +68,7 @@ You lose the build. You keep the climber.
 
 ## Why a clone, and what the extras are for
 
-Cards won because sequencing a hand is the fun we want. The line fight was more original and less fun. TFT-on-one-body was a costume. So: StS fight, RPG career.
+Cards won because sequencing a hand is the fun we want. The line fight was more original and less fun. TFT-on-one-body was a costume. So: StS fight, with dice on the numbers, RPG career.
 
 We do not steal names, card text, or art. That is the only authenticity claim that holds.
 
@@ -82,13 +82,30 @@ At the start of your turn: energy is set to the base (draft: 3), you draw up (dr
 
 You play cards. They happen now. Energy cards cost energy. Then you end the turn. Unplayed cards discard. Enemies act exactly as their intents showed.
 
-**Intents** are public: attack for N, block, buff, wait. Prefer exact numbers. No hidden “what will they do.”
+**Intents** are public: attack for N, block, buff, wait. **Enemy numbers stay exact.** You know what is coming. Your answer is the swingy part.
 
-**Block** absorbs incoming attack damage this turn, then falls off. The turn is “answer the hit or spend HP to set up.”
+**Block** absorbs incoming attack damage this turn, then falls off. The turn is still “answer the hit or spend HP to set up,” except you might roll under.
 
 **Powers** stay in play for the rest of the fight. They are how a deck becomes a machine.
 
 Inspect never plays. Fat finger on a phone must not spend the card.
+
+### Dice
+
+StS is a calculator: they hit 9, Guard gives 8, you take 1. Kindling is a calculator with a roll.
+
+- Attack and Block cards print a **dice expression**, not a flat number. Draft faces: `1d4`, `1d6`, `2d4`, plus a small flat (`1d6+2`).
+- The card also shows the range (`3–8`). You may stare at that forever.
+- When the card resolves, the dice roll. That is the number. No hidden modifier after the roll.
+- Flat bonuses (a Power that says +2 to Attacks) add **after** the roll.
+- Energy, draw, and “gain a Power” do not roll unless the card says so.
+- Bands stay tight. No `1d20` on a starter Strike. Wide dice are a rare-card identity, not the default.
+
+Some cards may still be flat (`Block 6`) so “safe” vs “swingy” is a deck choice.
+
+**Example.** They intend 9. You play `Guard — 2d4+2` (range 4–10). You might cover, you might eat 5. You can still play a second Block if you have the energy. That is the new decision: spend more to buy less variance, or gamble the rest of the turn.
+
+Relics can later reroll, bump a face, or set a minimum. First slice can live without those.
 
 ## What you collect (this run)
 
@@ -98,7 +115,7 @@ Starter deck: 8–10 cards. Weak, complete. Mostly cheap Attacks and Blocks, plu
 
 After most fights: pick 1 of 3 cards, or skip. Shops sell cards. Rest or shop can remove.
 
-Cards have a cost and a type (Attack / Skill / Power). Synergy lives in the cards, the way it does in StS — poison-like, block-like, draw-like as *deck* directions, not as a HUD set bonus you socket.
+Cards have a cost, a type (Attack / Skill / Power), and a printed number or dice expression. Synergy lives in the cards — poison-like, block-like, draw-like as *deck* directions, plus safe-flat vs swingy-dice.
 
 ### Relics
 
@@ -124,7 +141,7 @@ About ten nodes. Types visible. Exact enemies and shop stock hidden. Pick a figh
 
 Two enemies. One intends 9. One intends to buff. You have 3 energy and 5 cards. You may stare.
 
-You Block 8 and Strike the buffer, or you play a setup and eat 9 because the next turns pay it back. Cards resolve when played. You end the turn. They do what they showed.
+They intend 9. You play `2d4+2` Block and a `1d6` Strike. The Block comes up 6. You take 3, or you spend the last energy on a second Block. Cards resolve when played, dice and all. You end the turn. They do the 9 they showed.
 
 A few turns later the fight is over.
 
@@ -315,6 +332,6 @@ Engine and art pipeline are not in this spec.
 
 ## What “done” means for this draft
 
-If this card lock, Camp/Ledger, and Brand ladder hold, next is a thin content list: starter deck, eight enemy intents, the boss twist, the 12 Ledger nodes, Brand 1–5 rules. Not code. Not setting.
+If this card lock, dice-on-numbers, Camp/Ledger, and Brand ladder hold, next is a thin content list: starter deck with dice expressions, eight enemy intents, the boss twist, the 12 Ledger nodes, Brand 1–5 rules. Not code. Not setting.
 
 If the RPG career is wrong after all, edit this file first.
