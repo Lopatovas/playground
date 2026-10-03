@@ -4,13 +4,15 @@ Working title. Setting and art come later. This is the mechanical core only.
 
 Challenge anything. Numbers are draft targets, not balance.
 
-**Status:** thought-experiment lock. Combat is cards. The line-and-push fight is dead. Still a draft, not code.
+**Status:** this is a Slay the Spire clone with extra shop furniture. We chose that. Still a draft, not code.
 
 ## What this is
 
-A one-hero card roguelike. You play a hand against visible intents, with all the time you need. You build the run like an autobattler: shop, three slots, public tags.
+A one-hero card roguelike in the Slay the Spire family.
 
-The fight is Slay the Spire family on purpose. Movement-on-a-line was more original and less fun. We are not pretending the screenshot is a new genre. The run layer is where Kindling is supposed to feel like ours.
+Hand, energy, draw pile, Block, visible intents, branching map, card rewards, relics, die and go again. That is StS. We picked it because that fight is more fun than movement management. Shop, slots, and tags are extras. They do not pass the screenshot test. A 10-second clip of a fight is a StS clip.
+
+Call it a clone. Do not dress it up as a new genre.
 
 Final output of the experiment is a playable POC. This doc is the first artifact.
 
@@ -50,21 +52,13 @@ pick a path node
 
 A good run ends with a specialist. A bad run dies as a generalist who never committed.
 
-## Why cards, and what is still ours
+## Why a clone, and what the extras are for
 
-Cards won because the fun is sequencing a hand: this Strike now, this setup now, this Block because they are swinging 14. That is a better phone puzzle than managing a line.
+Cards won because sequencing a hand is the fun we want: this Attack now, this setup now, this Block because they are swinging 14. The line fight was more original and less fun. So we took the clone.
 
-We steal the fight verb from StS. We do not steal names, card text, or art.
+We do not steal names, card text, or art. That is the only authenticity claim that holds.
 
-What is supposed to keep this from being a reskin:
-
-- **A real shop.** Reroll, lock, combine. TFT minute, not a thin merchant.
-- **Three slots.** Items auto-trigger. Your “board” is gear, not a team.
-- **Tags with public breakpoints.** The HUD always shows the count and the next threshold.
-- **Stoke in the fight.** Tags are built on the hero *this fight* by playing tag cards and by what you socketed. Not “I have four Burn cards in the deck so the trait is always on.”
-- **Short one-act climb.** Same person, die, go again, unlock options.
-
-If those four do not change how a run *feels* by node 6, they are decoration and we cut them.
+Shop, slots, and tags are still in the draft as *run seasoning* — a fatter merchant, three auto items, public breakpoints you stoke this fight. They might make a run feel a bit more like TFT between nodes. They do not make the game not-StS. If they fail to matter by node 6, cut them and we have a short StS-like slice. That is an acceptable POC for a playground.
 
 ## Combat
 
