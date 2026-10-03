@@ -46,6 +46,76 @@ pick a path node
 
 A good run ends with a specialist. A bad run dies as a generalist who never committed.
 
+## Player flow (one run, phone in hand)
+
+This is the session, from the player’s seat. Map, shop, death, unlock are from the locks. **The fight beats use a provisional verb** (rewrite the hit on a short line) so the walkthrough is not a blur. If we pick clocks, dice, or stoke, swap only the fight paragraphs. The rest of the day stays.
+
+### You open the game
+
+One character is waiting. First slice: this is the only climber. You see their HP, three empty-looking slots, a small kit of starting actions, and tag counts at 0 / 0 / 0. No story dump. A button: begin the climb.
+
+If you already died once, you also see one new toy you unlocked last time (a starting action, a shop family, a tag that can now roll). You did not get +HP.
+
+### You look at the map
+
+A short branching path. About ten nodes. You can see types from here: fight, elite, shop, rest, event, treasure, boss at the top. You cannot see the exact enemy or the shop stock.
+
+You pick the first fight. You can close the app right now. The run will be here.
+
+### You enter a fight
+
+Enemies appear on a short line with you. Before you touch anything, every incoming hit is drawn on the tiles: who strikes, which spaces, how much. Your slots sit on the portrait, not as a second team.
+
+You may stare. Inspect an enemy. Inspect a slot. Nudge a planned step and take it back. There is no clock.
+
+**Provisional fight beat (rewrite the hit):** a brute two tiles away telegraphs “cleave the two spaces in front of me for 8.” You are on one of those tiles. You can step back and live, step in and strike so they die before they swing, or eat 8 to set up a tag for next turn. You commit. The turn resolves. Their telegraph was the truth.
+
+A fight is a few of these puzzles, not a fifteen-minute exam. When the last enemy is down, you leave.
+
+### You take a reward
+
+Three offers, or skip. A new action, some gold, or a slot component. You are thinking about a tag, not “a slightly bigger Strike.”
+
+If you picked a Burn piece, the Burn pip on the HUD ticks 1/2. The next threshold is visible. Nothing has ignited yet.
+
+### You choose a path
+
+Left is a safe fight. Right is an elite, then a shop. The elite is a harder puzzle and a relic. You are still generic. You take the safe fight, or you gamble. That choice is the map’s whole job.
+
+You can put the phone down between nodes. Same run when you come back.
+
+### You hit the shop (the other half of the game)
+
+Stock: actions, slot parts, maybe a relic, a remove, a reroll, a lock.
+
+This is the TFT minute. You lock a Guard component, reroll once, buy a second Burn piece, socket it. Burn hits 2. The public rule flips on: your hits now apply 1 Burn. You can see it. You did not need to “draw the right card” for the trait to exist — you *bought* the commitment.
+
+You leave gold on the table. No punishment. You leave the shop.
+
+### The run changes shape
+
+By the middle nodes the starter kit should feel wrong in a good way. Slots are full. One tag is live. You start pathing toward the elite because you want the relic that doubles down, or toward rest because you took too many “eat the hit to stoke” turns.
+
+Before each fight you see the enemy types and may swap which item sits in which slot. You may not do that mid-puzzle.
+
+### The elite or the rest
+
+Elite: a puzzle that punishes a generalist. Reward is a relic that rewrites a rule for the rest of the run — leftover setup carries, or the first action is free — not +2 damage.
+
+Rest: heal or upgrade one piece. No new toy.
+
+### The boss, or you die earlier
+
+The boss is one more honest puzzle with a rule twist (a second phase, a tile they own, a tag they invert). If you committed, you have a line. If you picked “whatever,” you probably do not.
+
+HP hits 0: the run is over. No rewind. You see a recap — tags you stacked, where you died, the kit you had. Then the between-run screen.
+
+You win: same recap, plus “you climbed it,” plus the option to unlock a harder modifier next time.
+
+### You go again
+
+Under a minute later you are on the map with the same person and one new option in the pool. That is the forever loop. Not endless floors. Die, go again.
+
 ## Blocking problem: this is a Slay the Spire clone
 
 A screenshot of the current combat section is a StS screenshot: hand, energy, Block that falls off, enemy intent icons, Strike/Guard starter, Powers, relics, branching map, card-pick rewards.
