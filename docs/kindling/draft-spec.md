@@ -368,12 +368,14 @@ Not a Spire. Not their characters. Working title Kindling is a placeholder; it c
 
 Candidate directions (pick, mix, or throw out):
 
-1. **The last fire.** Camp is a hearth. Kindling is fuel. Death is the fire going out. You walk back and feed it. Classes are different ways of keeping it (ember, smoke, coal). Dice are whether the flame catches.
+**From us, earlier:** last fire / Ledger-as-debt / the table / not-a-tower.
 
-2. **The Ledger.** You owe. Each death is a line in the book. The climb is a collection run. Dice are the creditor’s whim. Classes are different debts or different collectors.
+**From the owner, now:**
 
-3. **The table.** Camp is a game table. The mountain is a night of hands. Brands are higher stakes. Classes are different games. Dice are literal.
+5. **The Hold.** A dwarven safe-hold. Adventurers leave to fight through monsters for relics of the past. The gimmick is punching a way *out*. “Death” is a massive injury; an extraction team drags you home. Camp writes itself. Class fantasy is the weak point (everyone is “an adventurer from the hold”).
 
-4. **Not up.** A road, a coast, a mine, a wound in the ground, a city you cannot leave. Same loop. Avoids “another tower.”
+6. **Elemental plane.** Fire / water / earth / air as the whole theme. Draft verbs: fire = damage and burn, water = heal, earth = Block, air = many small hits. Classes write themselves. A full reason to return to a Camp is the weak point.
 
-Do not write lore, names of gods, or a plot until one of these (or a fifth) is the picture.
+7. **Hold cut into elemental strata** (unpicked mix). Safe-hold + extraction from 5. The “outside” is fire galleries, drowned halls, living stone, howling shafts. Classes are hold guilds with exclusive verbs, not generic adventurers. Not locked.
+
+Do not write lore, names of gods, or a plot until one of these is the picture.
