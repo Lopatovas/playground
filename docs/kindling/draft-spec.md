@@ -336,6 +336,16 @@ If this card lock, dice-on-numbers, Camp/Ledger, and Brand ladder hold, next is 
 
 If the RPG career is wrong after all, edit this file first.
 
+## Blockers to an MVP spec
+
+The loop is specified enough to write a first-slice spec. These three are not. Until they are picked, a content list is fiction.
+
+1. **Which world is the MVP.** Hold (exit, injury, extraction) or elemental plane (four verbs). Not both. Camp, death, the map, and the face of the first class all hang on this. Owner prefers these; neither is picked.
+2. **The first class’s exclusive verb.** Even a one-class MVP needs “this kit does X and does not do Y.” No starter deck, card pool, or boss twist without that.
+3. **How many classes in the MVP.** One class → park the grind issue. More than one → must pick shared-Camp vs per-class grind *now*.
+
+Not blockers to writing the spec (tune later): dice swing, look-and-feel, exact Kindling/HP numbers, engine, art pipeline.
+
 ## Open issues (do not solve in passing)
 
 Parked. Theme next. Do not lock a class model until we can picture who these people are.
