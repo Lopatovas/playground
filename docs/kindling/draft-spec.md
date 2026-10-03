@@ -230,8 +230,21 @@ A safest-path generalist should usually lose the boss. A committed tag should fe
 - Endless mode, daily run, leaderboards
 - PvP, accounts, live ops
 - Meta stat sticks
-- Copying names, card text, or art from other games
+- Copying names, card text, art, UI chrome, or audio from other games
+- Calling it Slay the Spire, a Spire, or using Mega Crit character names
 - Final art pipeline (spike that before production)
+
+## Market and IP (not legal advice)
+
+The genre is already full. Dream Quest came first. After StS: Monster Train (and 2), Wildfrost, Vault of the Void, Roguebook, Across the Obelisk, Griftlands, Cobalt Core, StarVaders, Dawncaster, Night of the Full Moon, plus a long tail of Steam “roguelike deckbuilders.” Mega Crit is shipping Slay the Spire 2. A playground StS-like is not a new category. It is another entry.
+
+**Trademark** protects names, logos, and “is this from Mega Crit?” It does not protect “3 energy, 5 cards, Block, intents.” Kindling (or any original title) is not their mark. Using *Slay the Spire*, *the Spire*, *Ironclad*, *Silent*, *Defect*, *Watcher*, *Neow*, or their logo as our name or marketing is how you get a trademark problem.
+
+**Copyright** protects their art, music, code, card wording, and character designs. It does not, in ordinary US practice, protect the rules of the game. Copying Bash / Neutralize / Fiend Fire text, their portraits, or their intent icons is how you get a copyright problem.
+
+**The ugly middle** is look-and-feel. A game that is the same rules *and* the same screen (energy orbs, card frame, map dots, relic row) can still get in trouble as a knockoff even if the name is new. Tetris-style clone cases live here. Original cards, original look, original map language.
+
+We already said: original name, original content, no stolen text or art. That is the bar. This is not a lawyer. If this ever leaves the playground, get one.
 
 ## Platform notes (not locked)
 
