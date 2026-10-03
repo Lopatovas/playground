@@ -15,13 +15,16 @@ Final output of the experiment is a playable POC. This doc is the first artifact
 ## Locked from the scoping talk
 
 - One playable character. Not a guild, not a TFT board of champions.
-- You play combat. Cards resolve when played. Not watch-and-hope autobattle.
-- Combat is honest. Incoming danger is visible before you act.
+- Combat is an **untimed puzzle**. No APM. No real-time dodging, blocking, or aiming. A turn waits forever. The player may think, inspect, and undo tentative picks until they commit.
+- Combat is honest. Incoming danger is visible before you commit.
+- You make the fight decisions. Not watch-and-hope autobattle.
 - Branching path, Slay the Spire style. Path choice is part of the game.
 - Die, then go again. No endless mode in the first slice.
 - Pause and resume mid-run. Phone-first, desktop too.
 - First slice is one short run, end to end, easy to expand.
 - Between runs, this same character gains new *options*, not raw +damage / +HP.
+
+Rejected by the puzzle lock: Hades, Brotato, Vampire Survivors, and any combat whose skill is handspeed. Peglin’s physics toy is also out — the bounce is not a sit-and-think puzzle. Guildrun-style “place then spectate” is out as the *fight* verb; the shop may still be a puzzle.
 
 ## One-sentence pitch
 
@@ -53,13 +56,18 @@ The test we failed: **would a 10-second clip of a fight look like a different ge
 
 Do not write content or code on top of this draft until we pick one sharp change to the inner loop, or we explicitly accept “StS-like with a fatter shop” as the product.
 
-Candidate forks that would actually clear the test, while keeping one hero, honest combat, a path, and die-go-again:
+Wanting a puzzle does **not** escape StS. StS is already an untimed puzzle. The clone problem is the *verb* (spend energy, gain Block, answer this intent), not the pace.
 
-1. **Stoke, don’t just spend.** Tags are built *during* the fight on the hero, not counted from the deck. Cards are fuel. Slots are what ignites at a breakpoint. The turn is “do I light the engine or answer the hit?”
-2. **No draw pile.** Six skills you upgrade and socket, Shogun Showdown style, plus the TFT shop. Card-like decisions, not a Dominion deck.
-3. **A spatial toy.** Cards stay, but they move you or aim on a line / tiny grid (Cobalt Core, Into the Breach). The screenshot changes immediately.
+Candidate **puzzle verbs** that still clear the screenshot test:
+
+1. **Rewrite the hit.** Enemies telegraph tile and damage. Your turn is a puzzle: step away, push them, make them hit each other, or eat it on purpose (Into the Breach, Shogun Showdown, Cobalt Core). Strongest “sit and think” family. One-hero works on a line.
+2. **Change the clocks.** Visible countdowns. Your turn is “who fires next, and can I stall or speed someone?” (Wildfrost). Still a board of units unless we shrink it to one hero plus slots.
+3. **Spend the roll.** Dice into equipment. The puzzle is this roll, not a draw pile (Dicey Dungeons).
+4. **Stoke.** Build tags on the hero during the fight. The puzzle is “can I light the engine this turn without dying?” Cards or skills are fuel. Slots are the payoff.
 
 Shop/tags/slots can stay in any of these. They cannot be the only difference.
+
+Out as combat: real-time action, physics toys, and spectating an autobattle.
 
 ## Combat
 
@@ -71,9 +79,9 @@ Every enemy shows an **intent** before you play: attack for N, block, buff, or w
 
 **Block** absorbs incoming attack damage this turn, then falls off. You choose whether this turn is “answer the hit” or “spend HP to set up.”
 
-That is the whole inner toy. No board positions. No queue-and-watch. No mid-turn rewind.
+That is the whole inner toy in this draft. It is also the StS verb. Treat this section as **not agreed**.
 
-Why: one character + informed decisions + phone. A hex team would fight the “one hero” lock. A hidden autobattle would fight the “honest” lock.
+Whatever verb we pick: no turn clock, no input skill, inspect-anything-before-commit. If we keep cards, lifting one to read it must never play it.
 
 ## What you collect
 
