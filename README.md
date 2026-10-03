@@ -4,4 +4,4 @@ Experimental ideas.
 
 ## Kindling
 
-One-hero card roguelike. Draft spec: [docs/kindling/draft-spec.md](docs/kindling/draft-spec.md).
+Dwarf-hold card roguelike. MVP spec: [docs/kindling/draft-spec.md](docs/kindling/draft-spec.md).
