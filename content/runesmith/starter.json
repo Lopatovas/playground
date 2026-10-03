@@ -1,0 +1,9 @@
+{
+  "classId": "runesmith",
+  "cards": [
+    { "id": "r_strike", "count": 4, "name": "Chip", "type": "Attack", "cost": 1, "dice": "1d6", "text": "Deal {dice} damage." },
+    { "id": "r_guard", "count": 4, "name": "Ward-cut", "type": "Skill", "cost": 1, "dice": "1d4+2", "text": "Gain {dice} Block." },
+    { "id": "r_inscribe", "count": 1, "name": "First Cut", "type": "Skill", "cost": 1, "dice": null, "text": "Inscribe: your next Attack adds +1d4." },
+    { "id": "r_steady", "count": 1, "name": "Steady Hand", "type": "Skill", "cost": 1, "dice": null, "text": "Gain 2 Brace this fight." }
+  ]
+}

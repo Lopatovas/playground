@@ -1,0 +1,16 @@
+{
+  "handSize": 5,
+  "energy": 3,
+  "startingHp": 40,
+  "startingGold": 50,
+  "mapNodes": 10,
+  "cardRewardChoices": 3,
+  "runestones": {
+    "showUp": 4,
+    "perNode": 2,
+    "eliteBonus": 6,
+    "treasureBonus": 4,
+    "doorBonus": 12,
+    "firstSeenBonus": 2
+  }
+}

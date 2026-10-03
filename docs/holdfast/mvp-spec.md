@@ -1,8 +1,8 @@
 # Holdfast — MVP spec
 
-**Holdfast.** The Hold, and what you do in it. Still a draft. Numbers are targets, not balance. No code.
+**Holdfast.** The Hold, and what you do in it. Still a draft. Numbers live in JSON so we can twist them after we play. No engine code yet.
 
-**Status:** name fits the Hold. Design blockers we listed are closed. Challenge it.
+**Status:** name, two classes, dice, Camp, Brand, experiment surface, engine, and art path are locked. Challenge it.
 
 ## What this is
 
@@ -26,6 +26,9 @@ Call the fight a StS-like. Do not steal names, card text, art, or UI chrome.
 - Every body (dwarf and monster) has **Might** and **Brace** this fight — the Strength / Dexterity job. They are how a run scales. They are not a class.
 - Game is beatable at Brand 0. Brand 1–5 is the return loop. Top Brand is beating the game.
 - A naked Warrior is not expected to exit. Die around floor 4, come home, buy a Ledger node.
+- **Content is data.** Hand size, energy, starter copies, dice expressions, Runestone grants, Ledger prices — files under [`content/`](../../content/). Not engine constants.
+- Engine is **Phaser 3 + TypeScript + Vite + PWA**. Argument: [engine.md](engine.md).
+- Art is **AI portraits only**. Frames and `{dice}` text are engine-drawn. Path and spike: [art.md](art.md).
 
 ## Pitch
 
@@ -104,7 +107,7 @@ In-class directions (2–3 decks, same verb):
 - **Fury:** stack Might like anyone can — Warrior just has better payoffs. Secondary.
 - **Guard-and-grit:** Block + Brace the top, Grit the bottom, live through overlap.
 
-Starter identity card: something that gives 1–2 Grit. Starter Attacks/Blocks are generic dice so the guild is the Grit card, not the Strike.
+Starter (first guess, edit the JSON): 4× **Hew** `1d6`, 4× **Raise** `1d4+2`, 1× **Numb** (+2 Grit), 1× **Set Shoulder** (+2 Might). See [`content/warrior/starter.json`](../../content/warrior/starter.json). The guild is Numb, not Hew.
 
 ### Runesmith — Inscribe
 
@@ -119,6 +122,8 @@ The Runesmith does not have Grit. The Warrior does not Inscribe. If a relic talk
 In-class directions: dice-cheat (rerolls, floors), extra dice, persistent shield-runes.
 
 Unlock kit is thin, like Warrior run 1, plus the Hold body you already bought.
+
+Starter (first guess): 4× **Chip** `1d6`, 4× **Ward-cut** `1d4+2`, 1× **First Cut** (Inscribe +1d4 next Attack), 1× **Steady Hand** (+2 Brace). See [`content/runesmith/starter.json`](../../content/runesmith/starter.json).
 
 ## Combat
 
@@ -184,7 +189,7 @@ A floor-4 rope must buy **at least one** Ledger node.
 
 ### Ledger
 
-~12 Hold-wide nodes (Frame + Hearth) plus a short **Spark** branch per class (~6 each).
+~12 Hold-wide nodes (Frame + Hearth) plus a short **Spark** branch per class (~6 each). First prices and a short Spark stub live in [`content/ledger.json`](../../content/ledger.json). Cheap Frame is 6 so a floor-4 rope can buy one.
 
 **Spark (per class)**  
 Cards enter *that* class’s pool. A starter card replaces one Strike for that class.
@@ -245,17 +250,17 @@ Save on leaving a node, menu, or the Hold.
 | ----- | ----------- | ----- |
 | World | Hold | Exit + rope. Thin. |
 | Classes | 2 | Warrior, Runesmith. Hunter later. |
-| Warrior starter | 8–10 | Dice Attack/Block + 1 Grit card |
-| Warrior pool | ~18–22 | Several behind Spark. Grit payoffs, own Might/Brace cards |
-| Runesmith starter | 8–10 | Dice Attack/Block + 1 Inscribe |
-| Runesmith pool | ~18–22 | Several behind Spark. Rune payoffs, own Might/Brace cards |
+| Warrior starter | 10 | In JSON: Hew / Raise / Numb / Set Shoulder |
+| Warrior pool | ~18–22 | Not written. Several behind Spark. Grit payoffs, own Might/Brace cards |
+| Runesmith starter | 10 | In JSON: Chip / Ward-cut / First Cut / Steady Hand |
+| Runesmith pool | ~18–22 | Not written. Several behind Spark. Rune payoffs, own Might/Brace cards |
 | Shared relics | ~6 | Rule rewrites |
 | Class relics | ~4 each | Talk to Grit or Runes |
 | Enemies | ~8 | Tight dice. Must be able to rope a newbie |
 | Elite | 1 | Punishes a mushy deck |
 | Door (boss) | 1 | Tuned for mid-Ledger. Phase or verb-punch at Brand 5 |
 | Events | 2 | One locked behind Hearth |
-| Ledger | ~12 shared + ~6 Spark/class | Frame capped |
+| Ledger | Frame 3 + Hearth 4 in JSON; Spark stubbed | Rest of Spark still to write. Frame capped |
 | Brands | 0 + 1–5 per class | Finite |
 
 Win: beat the door at the Brand you chose. Lose: rope, keep Runestones.
@@ -283,7 +288,7 @@ If Runesmith requires a copy-paste of the Warrior loop with numbers filed off, t
 - Ironclad Strength as the Warrior’s whole identity
 - Shared card pools
 - Their names, card text, art, UI chrome
-- Final art pipeline (spike after this spec holds)
+- Hired modeling, 3D, or generated card text
 
 ## Market and IP (not legal advice)
 
@@ -291,29 +296,34 @@ The genre is full. Trademark is their *name*. Copyright is their art and card te
 
 ## Platform
 
-Phone first. Desktop should work. Big targets. Inspect ≠ play. Engine and art not in this spec.
+Phone first. Desktop should work. Big targets. Inspect ≠ play.
+
+**Engine:** Phaser 3, TypeScript, Vite, PWA. Content loaded from JSON. [engine.md](engine.md).
+
+**Art:** AI-only portraits. Style bible in [art-spike/](art-spike/). Frames and dice strings in the engine. [art.md](art.md).
 
 ## What's left (honest)
 
-**This spec is not blocked** on world, class count, first verb, grind rule, or name.
+**This spec is not blocked** on world, class count, first verb, grind rule, name, engine, or art path.
 
-**Blocked on writing the next doc (content list), not on more systems:**
+**Starters, dice, and Ledger prices are files now.** Twist [`content/`](../../content/). First guesses only.
 
-- Named starter decks with dice expressions
+**Still a writing job (content list), not more systems:**
+
 - ~12 Warrior Grit cards, ~12 Runesmith Rune cards, Might/Brace cards in each pool
-- Eight enemy intents, one elite, the door
-- Ledger nodes and Runestone prices
+- Eight enemy intents, one elite, the door (same JSON shape as starters)
+- The rest of each Spark branch
 
-**Blocked on building a playable, not on this spec:**
+**Still a building job, not this spec:**
 
-- Engine pick (best tool for phone + desktop)
-- Art pipeline spike (the bottleneck you already named)
+- Phaser scaffold that *reads* the JSON (no hardcoded Hew `1d6`)
 - UI that does not look like a Spire with beards
+- Second art pass: img2img the hearth toward the portrait brush; a second Warrior pose *from* the first plate
 
 **Tune later, not blockers:** dice swing vs Grit, exact HP, Hunter as class 3.
 
 ## What “done” means
 
-If this file holds, next is the **content list**. Still not code.
+If this file holds, next writing is the **content list** (pools, enemies, door). Scaffolding Phaser is after that unless we want an empty shell first.
 
-If Grit, Might/Brace, or two-class Camp is wrong, edit this file first.
+If Grit, Might/Brace, two-class Camp, Phaser, or portraits-only is wrong, edit this file first.
