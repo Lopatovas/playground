@@ -1,7 +1,6 @@
 using Godot;
 using Holdfast.Application.HoldCamp;
 using Holdfast.Domain.Actors;
-using Holdfast.Domain.Hold;
 
 namespace Holdfast.GodotGame;
 
@@ -13,74 +12,108 @@ public partial class HoldView : Control
 
     private Label _stones = null!;
     private VBoxContainer _ledger = null!;
-    private Button _runesmith = null!;
+    private PlateTap _runesmith = null!;
+    private PackedScene _plateScene = null!;
 
     public override void _Ready()
     {
         SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
         MouseFilter = MouseFilterEnum.Stop;
+        _plateScene = GD.Load<PackedScene>("res://ui/PlateTap.tscn");
 
         AddChild(UiChrome.Cover("res://art-bible/hold-hearth.jpg"));
 
-        var veil = new ColorRect
+        var title = UiChrome.Text("HOLDFAST", 48, UiChrome.Bold, UiChrome.Gold);
+        title.SetAnchorsPreset(LayoutPreset.TopLeft);
+        title.OffsetLeft = 40;
+        title.OffsetTop = 28;
+        title.OffsetRight = 420;
+        title.OffsetBottom = 80;
+        AddChild(title);
+
+        _stones = UiChrome.Text("", 16, UiChrome.Regular, UiChrome.Muted);
+        _stones.SetAnchorsPreset(LayoutPreset.TopLeft);
+        _stones.OffsetLeft = 42;
+        _stones.OffsetTop = 78;
+        _stones.OffsetRight = 480;
+        _stones.OffsetBottom = 102;
+        AddChild(_stones);
+
+        var walk = _plateScene.Instantiate<PlateTap>();
+        walk.SetAnchorsPreset(LayoutPreset.BottomLeft);
+        walk.OffsetLeft = 48;
+        walk.OffsetTop = -280;
+        walk.OffsetRight = 300;
+        walk.OffsetBottom = -40;
+        walk.Pressed += () => Walk?.Invoke(ClassId.Warrior);
+        AddChild(walk);
+        walk.Bind("Walk as Warrior", "into the dark");
+
+        _runesmith = _plateScene.Instantiate<PlateTap>();
+        _runesmith.SetAnchorsPreset(LayoutPreset.BottomLeft);
+        _runesmith.OffsetLeft = 312;
+        _runesmith.OffsetTop = -280;
+        _runesmith.OffsetRight = 564;
+        _runesmith.OffsetBottom = -40;
+        _runesmith.Pressed += () => Walk?.Invoke(ClassId.Runesmith);
+        AddChild(_runesmith);
+        _runesmith.Bind("Walk as Runesmith", "once the hall is open");
+        _runesmith.Visible = false;
+
+        var peek = new Button
         {
-            Color = new Color(0.02f, 0.015f, 0.01f, 0.28f),
+            Text = "Peek",
+            Flat = true,
+            CustomMinimumSize = new Vector2(64, 28)
+        };
+        peek.AddThemeFontOverride("font", UiChrome.Regular);
+        peek.AddThemeFontSizeOverride("font_size", 14);
+        peek.AddThemeColorOverride("font_color", UiChrome.Muted);
+        peek.AddThemeStyleboxOverride("normal", UiChrome.GhostBox());
+        peek.AddThemeStyleboxOverride("hover", UiChrome.GhostBox());
+        peek.AddThemeStyleboxOverride("pressed", UiChrome.GhostBox());
+        peek.SetAnchorsPreset(LayoutPreset.TopLeft);
+        peek.OffsetLeft = 42;
+        peek.OffsetTop = 104;
+        peek.OffsetRight = 110;
+        peek.OffsetBottom = 128;
+        peek.Pressed += () => Peek?.Invoke();
+        AddChild(peek);
+
+        var book = new TextureRect
+        {
+            Texture = UiChrome.CardPlate,
+            ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
+            StretchMode = TextureRect.StretchModeEnum.KeepAspectCovered,
             MouseFilter = MouseFilterEnum.Ignore
         };
-        veil.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-        AddChild(veil);
-
-        var left = new VBoxContainer
-        {
-            Alignment = BoxContainer.AlignmentMode.Begin
-        };
-        left.SetAnchorsPreset(LayoutPreset.LeftWide);
-        left.OffsetLeft = 36;
-        left.OffsetTop = 28;
-        left.OffsetRight = 420;
-        left.OffsetBottom = -28;
-        left.AddThemeConstantOverride("separation", 10);
-
-        var title = UiChrome.Text("HOLDFAST", 42, UiChrome.Bold, UiChrome.Gold);
-        _stones = UiChrome.Text("", 18, UiChrome.Regular, UiChrome.Muted);
-        var walk = WalkPlate("Walk as Warrior", () => Walk?.Invoke(ClassId.Warrior));
-        _runesmith = WalkPlate("Walk as Runesmith", () => Walk?.Invoke(ClassId.Runesmith));
-        _runesmith.Visible = false;
-        var peek = UiChrome.StoneButton("Peek the dark", () => Peek?.Invoke());
-        peek.CustomMinimumSize = new Vector2(168, 40);
-        peek.SizeFlagsHorizontal = SizeFlags.ShrinkBegin;
-
-        left.AddChild(title);
-        left.AddChild(_stones);
-        left.AddChild(new Control { CustomMinimumSize = new Vector2(0, 8) });
-        left.AddChild(walk);
-        left.AddChild(_runesmith);
-        left.AddChild(peek);
-        AddChild(left);
-
-        var panel = new PanelContainer();
-        panel.SetAnchorsPreset(LayoutPreset.RightWide);
-        panel.OffsetLeft = -360;
-        panel.OffsetTop = 24;
-        panel.OffsetRight = -24;
-        panel.OffsetBottom = -24;
-        panel.AddThemeStyleboxOverride("panel", UiChrome.StoneBox(new Color(0.06f, 0.045f, 0.03f, 0.86f)));
+        book.SetAnchorsPreset(LayoutPreset.RightWide);
+        book.OffsetLeft = -380;
+        book.OffsetTop = 16;
+        book.OffsetRight = -16;
+        book.OffsetBottom = -16;
+        AddChild(book);
 
         var col = new VBoxContainer();
-        col.AddThemeConstantOverride("separation", 8);
-        col.AddChild(UiChrome.Text("Ledger", 24, UiChrome.Bold, UiChrome.Gold));
-        col.AddChild(UiChrome.Text("Cut runestones into the hearth.", 14, UiChrome.Regular, UiChrome.Muted, true));
+        col.SetAnchorsPreset(LayoutPreset.RightWide);
+        col.OffsetLeft = -330;
+        col.OffsetTop = 70;
+        col.OffsetRight = -56;
+        col.OffsetBottom = -70;
+        col.AddThemeConstantOverride("separation", 6);
+        col.AddChild(UiChrome.Text("Ledger", 26, UiChrome.Bold, UiChrome.Ink));
+        col.AddChild(UiChrome.Text("Cut runestones into the hearth.", 13, UiChrome.Regular, new Color(0.28f, 0.18f, 0.10f), true));
+
         var scroll = new ScrollContainer
         {
             SizeFlagsVertical = SizeFlags.ExpandFill,
             HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled
         };
         _ledger = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill };
-        _ledger.AddThemeConstantOverride("separation", 8);
+        _ledger.AddThemeConstantOverride("separation", 4);
         scroll.AddChild(_ledger);
         col.AddChild(scroll);
-        panel.AddChild(col);
-        AddChild(panel);
+        AddChild(col);
     }
 
     public void Bind(HoldService hold)
@@ -98,27 +131,25 @@ public partial class HoldView : Control
         {
             var id = node.Id;
             var can = hold.Progress.Runestones >= node.Cost;
-            var row = UiChrome.StoneButton($"{node.Name}\n{node.Cost} stones", () => Buy?.Invoke(id), can);
-            row.CustomMinimumSize = new Vector2(0, 58);
+            var row = new Button
+            {
+                Text = $"{node.Name}   ·   {node.Cost}",
+                Flat = true,
+                Disabled = !can,
+                AutowrapMode = TextServer.AutowrapMode.Word,
+                CustomMinimumSize = new Vector2(0, 36),
+                SizeFlagsHorizontal = SizeFlags.ExpandFill,
+                Alignment = HorizontalAlignment.Left
+            };
+            row.AddThemeFontOverride("font", UiChrome.Regular);
+            row.AddThemeFontSizeOverride("font_size", 15);
+            row.AddThemeColorOverride("font_color", can ? UiChrome.Ink : new Color(0.45f, 0.38f, 0.30f));
+            row.AddThemeStyleboxOverride("normal", UiChrome.GhostBox());
+            row.AddThemeStyleboxOverride("hover", UiChrome.GhostBox());
+            row.AddThemeStyleboxOverride("pressed", UiChrome.GhostBox());
+            row.AddThemeStyleboxOverride("disabled", UiChrome.GhostBox());
+            row.Pressed += () => Buy?.Invoke(id);
             _ledger.AddChild(row);
         }
-    }
-
-    private static Button WalkPlate(string label, Action onPressed)
-    {
-        var b = new Button
-        {
-            Text = label,
-            CustomMinimumSize = new Vector2(280, 72),
-            SizeFlagsHorizontal = SizeFlags.ShrinkBegin
-        };
-        b.AddThemeFontOverride("font", UiChrome.Bold);
-        b.AddThemeFontSizeOverride("font_size", 22);
-        b.AddThemeColorOverride("font_color", UiChrome.Gold);
-        b.AddThemeStyleboxOverride("normal", UiChrome.StoneBox(new Color(0.08f, 0.06f, 0.04f, 0.82f)));
-        b.AddThemeStyleboxOverride("hover", UiChrome.StoneBox(new Color(0.16f, 0.12f, 0.07f, 0.9f)));
-        b.AddThemeStyleboxOverride("pressed", UiChrome.StoneBox(new Color(0.05f, 0.04f, 0.03f, 0.9f)));
-        b.Pressed += onPressed;
-        return b;
     }
 }

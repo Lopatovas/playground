@@ -8,58 +8,47 @@ public partial class CardPlate : Control
     public int HandIndex { get; private set; }
     public event Action<int>? Chosen;
 
-    private TextureRect _plate = null!;
-    private Label _cost = null!;
     private Label _name = null!;
-    private Label _dice = null!;
-    private Label _body = null!;
+    private Label _line = null!;
     private Button _hit = null!;
 
     public override void _Ready()
     {
-        CustomMinimumSize = new Vector2(140, 168);
+        CustomMinimumSize = new Vector2(168, 224);
         SizeFlagsVertical = SizeFlags.ShrinkEnd;
 
-        _plate = new TextureRect
+        var plate = new TextureRect
         {
             Texture = UiChrome.CardPlate,
             ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
             StretchMode = TextureRect.StretchModeEnum.KeepAspectCovered,
             MouseFilter = MouseFilterEnum.Ignore
         };
-        _plate.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+        plate.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 
-        var pad = new MarginContainer();
+        var pad = new MarginContainer { MouseFilter = MouseFilterEnum.Ignore };
         pad.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-        pad.AddThemeConstantOverride("margin_left", 24);
-        pad.AddThemeConstantOverride("margin_right", 24);
-        pad.AddThemeConstantOverride("margin_top", 28);
-        pad.AddThemeConstantOverride("margin_bottom", 26);
-        pad.MouseFilter = MouseFilterEnum.Ignore;
+        pad.AddThemeConstantOverride("margin_left", 30);
+        pad.AddThemeConstantOverride("margin_right", 30);
+        pad.AddThemeConstantOverride("margin_top", 40);
+        pad.AddThemeConstantOverride("margin_bottom", 36);
 
-        var col = new VBoxContainer();
-        col.AddThemeConstantOverride("separation", 4);
-        _cost = UiChrome.Text("", 16, UiChrome.Bold, UiChrome.Gold);
-        _cost.HorizontalAlignment = HorizontalAlignment.Center;
-        _name = UiChrome.Text("", 18, UiChrome.Bold, UiChrome.Ink);
+        var col = new VBoxContainer
+        {
+            Alignment = BoxContainer.AlignmentMode.Center
+        };
+        col.AddThemeConstantOverride("separation", 8);
+        _name = UiChrome.Text("", 22, UiChrome.Bold, UiChrome.Ink);
         _name.HorizontalAlignment = HorizontalAlignment.Center;
         _name.AutowrapMode = TextServer.AutowrapMode.Word;
-        _dice = UiChrome.Text("", 15, UiChrome.Bold, new Color(0.38f, 0.22f, 0.10f));
-        _dice.HorizontalAlignment = HorizontalAlignment.Center;
-        _body = UiChrome.Text("", 13, UiChrome.Regular, new Color(0.22f, 0.16f, 0.10f), true);
-        _body.HorizontalAlignment = HorizontalAlignment.Center;
-        _body.SizeFlagsVertical = SizeFlags.ExpandFill;
-        col.AddChild(_cost);
+        _line = UiChrome.Text("", 14, UiChrome.Regular, new Color(0.24f, 0.16f, 0.10f), true);
+        _line.HorizontalAlignment = HorizontalAlignment.Center;
+        _line.SizeFlagsVertical = SizeFlags.ExpandFill;
         col.AddChild(_name);
-        col.AddChild(_dice);
-        col.AddChild(_body);
+        col.AddChild(_line);
         pad.AddChild(col);
 
-        _hit = new Button
-        {
-            Flat = true,
-            MouseFilter = MouseFilterEnum.Stop
-        };
+        _hit = new Button { Flat = true };
         _hit.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
         _hit.AddThemeStyleboxOverride("normal", UiChrome.GhostBox());
         _hit.AddThemeStyleboxOverride("hover", UiChrome.GhostBox());
@@ -67,7 +56,7 @@ public partial class CardPlate : Control
         _hit.AddThemeStyleboxOverride("disabled", UiChrome.GhostBox());
         _hit.Pressed += () => Chosen?.Invoke(HandIndex);
 
-        AddChild(_plate);
+        AddChild(plate);
         AddChild(pad);
         AddChild(_hit);
     }
@@ -75,11 +64,10 @@ public partial class CardPlate : Control
     public void Bind(int index, Card card, bool canPlay)
     {
         HandIndex = index;
-        _cost.Text = $"{card.Cost}";
-        _name.Text = card.Name;
         var dice = DiceText(card);
-        _dice.Text = string.IsNullOrEmpty(dice) ? card.Type.ToString() : dice;
-        _body.Text = string.IsNullOrEmpty(dice) ? card.Text : card.Text.Replace("{dice}", dice);
+        var body = string.IsNullOrEmpty(dice) ? card.Text : card.Text.Replace("{dice}", dice);
+        _name.Text = card.Name;
+        _line.Text = $"{card.Cost}  ·  {(string.IsNullOrEmpty(dice) ? card.Type.ToString() : dice)}\n{body}";
         _hit.Disabled = !canPlay;
         Modulate = canPlay ? Colors.White : new Color(0.55f, 0.52f, 0.48f);
     }
