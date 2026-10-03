@@ -1,25 +1,43 @@
 # Engine decision
 
-Phone first, desktop too, card UI, JSON content, playground speed. The bottleneck is *change a number, reload, play* — not Steam on day one.
+The game is not a hand of cards on a still. Intro cinematic, idle/perform on dwarf and enemy, living camp, rope-haul when you drop. Steam and phone stores. Agents implement it and must boot a scene and look.
+
+Language is not a constraint: C# and C++ are both fine.
 
 ## Weighted
 
 | Option | Why it could win | Why it loses |
 | ------ | ---------------- | ------------ |
-| **Phaser 3 + TypeScript + Vite + PWA** | One language. Scenes for Hold / map / fight. JSON import + Vite HMR. AI portraits are PNGs. Phone is a tab. Capacitor later if a store matters. | Canvas text is fiddlier than HTML. Not a native binary. |
-| React + Vite + PWA | Cards and the Ledger *are* UI. Crisp phone text, CSS layout, forms. Same JSON/HMR loop. | Fight juice (dice, fly-ins, map) is extra work. Easy to ship a menu, not a game. |
-| Godot 4 | Real 2D engine. One project to Android, desktop, Steam. Free. | Android export is friction. Slower couch-tune loop. GDScript or C# beside content TS. |
-| Unity | Mobile muscle, StS-shaped tooling. | License, weight, overkill for a 10-node card run. |
-| Unreal | — | 3D tax for a hand of cards. No. |
-| Flutter / Flame | One mobile binary. | Weaker card-UI ecosystem. Dart for no gain. |
-| PixiJS alone | Lighter canvas than Phaser. | We would rebuild scenes Phaser already has. |
+| **Godot 4 + C#** | Native 2D. Scenes for camp, fight, intro, extraction. AnimationPlayer, SpriteFrames, cutout skeletons, GPU particles. One project to Steam, desktop, Android, iOS. Free. C# is official. JSON content still data. | Not TypeScript. Agents need the editor (or a peek scene they can screenshot). GDScript tutorials must be translated. |
+| Phaser + TypeScript + Tauri | Best agent peek (`npm run peek`). Fine card juice. | You would fake Timeline, a living camp, and performing characters in a canvas. That is how the screen breaks while tests pass. |
+| Unity + C# | Timeline, Animator, store SDK soup. Same language. | License, weight, 2D sits on a 3D engine. Agents cannot open that editor here and look. Overkill for this cast. |
+| Unreal + C++ | Film tools. | 3D tax, gigabyte editor, Paper2D is not a 2D pipeline. No. |
+| GodotJS (TypeScript on Godot) | TypeScript comfort. | Community plugin, not official. We do not need it. |
 
-Unreal and Unity are the wrong size. Godot is the right *ship* engine. React is the right *menu* stack. Phaser is the right *experiment* engine: we need a fight scene and a map, not only a Ledger.
+Phaser won when the game was “tune JSON in a tab.” That game is gone. Unity/Unreal do not buy us WC3-grade film; that is still a movie studio. Godot is the 2D director we can actually ship.
 
 ## Decision
 
-**Phaser 3, TypeScript, Vite, content as JSON, ship as a PWA.**
+**Godot 4. Gameplay in C#. Content stays JSON.**
 
-Holdfast’s first job is tuning decks, dice, and Ledger prices, then looking at art on a phone. A browser tab is the fastest way to do that. Card frames and `{dice}` strings are engine-drawn (see [art.md](art.md)), so canvas text is a cost we accept.
+- **C#** for scenes, cards, combat, camp, cutscenes, peek.
+- **C++** (GDExtension) only if we *measure* a hot path. We will not start there. A card fight will not need it.
+- **GDScript:** do not. One language. Agents and you both in C#.
+- **GodotJS:** do not.
 
-If the PWA is not enough after a playable exists, we re-evaluate Godot. We do not start there. If combat juice never needs a canvas, React can still steal the Camp screens later. We do not start with two stacks.
+Ship: desktop + Steam from the same project, phone stores via Godot export. Frames and `{dice}` are engine-drawn ([art.md](art.md)). Art bible stays stills; motion is cutout / frame loops / particles / camera ([art.md](art.md)).
+
+Intro cinematic is a **Godot scene** that reuses camp actors (hearth, dwarf, rope), not a Blizzard CGI file. A video plate is allowed later if we make one that matches the bible.
+
+## Peek contract (non-negotiable)
+
+Unit tests are not enough. Godot makes peek harder; we pay it.
+
+1. Godot is installed in the agent environment.
+2. A `peek` scene boots camp idle, a fight perform, and the rope haul — no full run required.
+3. An agent is not done until that scene is **running and looked at** (screenshot). Green tests on a black viewport fail the contract.
+4. New systems get a peek button or a peek route. Do not hide work behind a Brand 0 clear.
+
+## Not starting
+
+No Godot project in this repo yet. This file is the lock. Scaffold when we want a peek scene, not before.

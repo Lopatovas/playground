@@ -25,6 +25,7 @@ Canonical copies: [`assets/holdfast/art-bible/`](../../assets/holdfast/art-bible
 2. **Portraits only in the PNG.** Frame, energy, `{dice}` string, keywords — engine-drawn.
 3. When new plates already match this bible, train a tiny LoRA. Not before.
 4. Icons: simple painted shapes or engine-drawn, not a new AI roll per icon.
+5. **Motion** (idle, swing, walk, rope haul) is Godot: cutout layers and short frame loops off this bible, plus particles and camera. Not a hired rigger. Not AI video as the in-game dwarf.
 
 Prompt stem for the spike (reuse it):
 

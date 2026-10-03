@@ -1,8 +1,8 @@
 # Holdfast — MVP spec
 
-**Holdfast.** The Hold, and what you do in it. Still a draft. Numbers live in JSON so we can twist them after we play. No engine code yet.
+**Holdfast.** The Hold, and what you do in it. Still a draft. Numbers live in JSON so we can twist them after we play. No engine project yet.
 
-**Status:** name, two classes, dice, Camp, Brand, experiment surface, engine, and art path are locked. Challenge it.
+**Status:** name, two classes, dice, Camp, Brand, experiment surface, engine, and art bible are locked. Challenge it.
 
 ## What this is
 
@@ -27,8 +27,10 @@ Call the fight a StS-like. Do not steal names, card text, art, or UI chrome.
 - Game is beatable at Brand 0. Brand 1–5 is the return loop. Top Brand is beating the game.
 - A naked Warrior is not expected to exit. Die around floor 4, come home, buy a Ledger node.
 - **Content is data.** Hand size, energy, starter copies, dice expressions, Runestone grants, Ledger prices — files under [`content/`](../../content/). Not engine constants.
-- Engine is **Phaser 3 + TypeScript + Vite + PWA**. Argument: [engine.md](engine.md).
-- Art is **AI portraits only**. Frames and `{dice}` text are engine-drawn. Path and spike: [art.md](art.md).
+- Engine is **Godot 4**, gameplay in **C#**. C++ only if we measure a need. Content still JSON. Argument: [engine.md](engine.md).
+- The screen performs: intro scene, idle/act on dwarf and enemy, living camp, rope-haul on the drop. More than a StS still.
+- Agents **boot a peek scene and look**. Unit tests without a screenshot are not done.
+- Art is **AI portraits only**; the four bible plates are locked in [`assets/holdfast/art-bible/`](../../assets/holdfast/art-bible/). Frames and `{dice}` text are engine-drawn. [art.md](art.md).
 
 ## Pitch
 
@@ -298,9 +300,9 @@ The genre is full. Trademark is their *name*. Copyright is their art and card te
 
 Phone first. Desktop should work. Big targets. Inspect ≠ play.
 
-**Engine:** Phaser 3, TypeScript, Vite, PWA. Content loaded from JSON. [engine.md](engine.md).
+**Engine:** Godot 4, C#. Steam/desktop and phone stores from one project. Content from JSON. [engine.md](engine.md).
 
-**Art:** AI-only portraits. Style bible in [art-spike/](art-spike/). Frames and dice strings in the engine. [art.md](art.md).
+**Art:** AI-only portraits. Locked bible in [`assets/holdfast/art-bible/`](../../assets/holdfast/art-bible/). Frames and dice strings in the engine. Motion is cutout / frames / particles / camera, not a hired rigger. [art.md](art.md).
 
 ## What's left (honest)
 
@@ -316,14 +318,15 @@ Phone first. Desktop should work. Big targets. Inspect ≠ play.
 
 **Still a building job, not this spec:**
 
-- Phaser scaffold that *reads* the JSON (no hardcoded Hew `1d6`)
+- Godot project that *reads* the JSON (no hardcoded Hew `1d6`)
+- Peek scene: camp idle, fight perform, rope haul — agents must open it and look
 - UI that does not look like a Spire with beards
-- Second art pass: img2img the hearth toward the portrait brush; a second Warrior pose *from* the first plate
+- Cutout / frame motion off the locked bible; intro as a Godot scene, not a WC3 film
 
 **Tune later, not blockers:** dice swing vs Grit, exact HP, Hunter as class 3.
 
 ## What “done” means
 
-If this file holds, next writing is the **content list** (pools, enemies, door). Scaffolding Phaser is after that unless we want an empty shell first.
+If this file holds, next writing is the **content list** (pools, enemies, door). Scaffolding Godot is after that unless we want an empty peek first.
 
-If Grit, Might/Brace, two-class Camp, Phaser, or portraits-only is wrong, edit this file first.
+If Grit, Might/Brace, two-class Camp, Godot+C#, or the locked bible is wrong, edit this file first.
