@@ -4,6 +4,8 @@ Working title. Setting and art come later. This is the mechanical core only.
 
 Challenge anything. Numbers are draft targets, not balance.
 
+**Status:** challenged. The inner loop as written is a Slay the Spire clone. See “Blocking problem” below. Do not treat the combat section as agreed.
+
 ## What this is
 
 A one-hero card roguelike. You play the fights. You build the run like an autobattler: shop, tags, a small loadout.
@@ -40,6 +42,24 @@ pick a path node
 ```
 
 A good run ends with a specialist. A bad run dies as a generalist who never committed.
+
+## Blocking problem: this is a Slay the Spire clone
+
+A screenshot of the current combat section is a StS screenshot: hand, energy, Block that falls off, enemy intent icons, Strike/Guard starter, Powers, relics, branching map, card-pick rewards.
+
+Shop rerolls, 3 item slots, and tag breakpoints are **between-fight seasoning**. They do not change the thing you do every thirty seconds. StS already has passive relics, keyword synergies (poison, frost, orbs), and a shop. A player who knows StS is at home in this draft immediately. That is good for teaching and bad for “this is our game.”
+
+The test we failed: **would a 10-second clip of a fight look like a different genre?** No.
+
+Do not write content or code on top of this draft until we pick one sharp change to the inner loop, or we explicitly accept “StS-like with a fatter shop” as the product.
+
+Candidate forks that would actually clear the test, while keeping one hero, honest combat, a path, and die-go-again:
+
+1. **Stoke, don’t just spend.** Tags are built *during* the fight on the hero, not counted from the deck. Cards are fuel. Slots are what ignites at a breakpoint. The turn is “do I light the engine or answer the hit?”
+2. **No draw pile.** Six skills you upgrade and socket, Shogun Showdown style, plus the TFT shop. Card-like decisions, not a Dominion deck.
+3. **A spatial toy.** Cards stay, but they move you or aim on a line / tiny grid (Cobalt Core, Into the Breach). The screenshot changes immediately.
+
+Shop/tags/slots can stay in any of these. They cannot be the only difference.
 
 ## Combat
 
