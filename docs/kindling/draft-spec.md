@@ -27,6 +27,7 @@ Final output of the experiment is a playable POC. This doc is the first artifact
 - Pause and resume mid-run. Phone-first, desktop too.
 - First slice is one short climb, end to end, easy to expand. A naked character is **not** expected to finish it.
 - Between runs, this same character grows at a **Camp**. Every run pays, including a floor-4 death. Growth is a mix of tools, access, and a little body. Not an infinite +damage stick.
+- The game is **beatable**. First win is Brand 0. After that, a finite **Brand** ladder (StS Ascension shape) is why you come back. Each Brand is a named rule, not +10% HP. Beating the top Brand is beating Kindling. No endless number climb.
 
 **Combat decision (this draft):** hand, energy, draw pile, discard, Block, intents. No board. No stepping. No push-the-enemy-off-the-tile.
 
@@ -48,8 +49,9 @@ pick a path node
   → next node, harder
   → boss, win or die
   → return to Camp with Kindling
-  → spend on this character’s Ledger
-  → start another run, same person, slightly more built
+  → spend on this character’s Ledger (until it is done)
+  → after the first win: pick a Brand
+  → start another run, same person
 ```
 
 A good run ends with a specialist. A bad run dies as a generalist who never committed.
@@ -179,6 +181,8 @@ HP 0 ends the run. Recap: floors cleared, Kindling earned. Back to Camp. The Led
 
 A new player is supposed to die around floor 4 the first time and still do this loop. A player who already “knows StS” should still be underbuilt for the boss until the Ledger has a few nodes. The mountain is tuned for a grown character, not a theorycrafter on a blank file.
 
+After the first win you pick a Brand at Camp and climb the same map under extra rules. That is the comeback loop. It has a top.
+
 ## The map
 
 One act. ~10 nodes. 2–3 branches most rows. Fight, elite, shop, rest, event, treasure, boss.
@@ -235,7 +239,7 @@ This is most of the feel. You do **not** start with the full game.
 - One extra event type
 
 **Brand (mastery)**  
-After the first win: an optional harder modifier. Not before.
+Not a shop column you buy with Kindling. It is the post-win ladder. See below.
 
 ### How the first hours are supposed to feel
 
@@ -244,13 +248,35 @@ After the first win: an optional harder modifier. Not before.
 | Run 1          | 1 slot, no reroll, thin pool, low HP | Die ~floor 4    |
 | Runs 2–4       | Second slot, a bit of HP, a few pool cards | Floor 6–8    |
 | Mid Ledger     | 3 slots, shop toys, starter swap  | Boss is in reach   |
-| First win      | Brand column opens                | Die-go-again with a twist |
+| First win      | Ledger mostly done. Brand 1 unlocks | You beat the game once |
 
-The climb does not get longer. The climber gets closer to being allowed to finish it.
+The climb does not get longer. The climber gets closer to being allowed to finish it. That is campaign one.
+
+### Brand (the reason you come back)
+
+StS Ascension, stolen cleanly: a finite ladder of harder rules. You choose the Brand at Camp before a run. Winning at Brand N unlocks N+1. You can always play a lower Brand.
+
+**Brand 0** is the first win — the mountain with no extra rules. That is a real win. The game is beatable here.
+
+First slice proves **Brand 1–5**. Later we can grow it toward ~15–20. There is a top. Beating the top Brand is beating Kindling. Stop.
+
+Each rung is a **named rule**, not “enemies have 8% more HP” as the only joke. Draft rungs (names are placeholders):
+
+| Brand | Rule |
+| ----- | ---- |
+| 1 | Elites can appear one node earlier. |
+| 2 | Rest heals less. |
+| 3 | Enemies gain a small start-of-fight buff. |
+| 4 | One extra curse-like dead card in the starter deck. |
+| 5 | Boss takes a second phase, or inverts a tag you leaned on. |
+
+Later rungs can stack. Playing Brand 5 means 1–5 are all on.
+
+A Brand win is a win. Recap, maybe a leftover Spark card into the pool, then the next rung is available. You are not grinding for +damage. You are climbing a harder puzzle on a finished character.
 
 ### What we still will not do
 
-No infinite +1 damage every run. No “I have 400 HP and the act is a corridor.” After the first-slice Ledger is bought, further growth is new tools and optional hardness, not a bigger stick.
+No infinite +1 damage every run. No “I have 400 HP and the act is a corridor.” No endless mode where numbers rise until you die and that is the only end. After the Ledger is bought, the forever loop is Brand, and Brand ends.
 
 ## First-slice content budget
 
@@ -266,9 +292,10 @@ No infinite +1 damage every run. No “I have 400 HP and the act is a corridor.�
 | Boss               | 1           | Tuned for a mid-Ledger character           |
 | Events             | 2           | One may be locked                          |
 | Tags               | 3           | Burn, Guard, Flow                          |
-| Ledger nodes       | ~12         | Spark / Frame / Hearth / Brand             |
+| Ledger nodes       | ~12         | Spark / Frame / Hearth                     |
+| Brands             | 0 + 1–5     | Finite. Expand later. Named rules          |
 
-Win: beat the boss. Lose: HP 0, keep Kindling. Another run after a Camp spend.
+Win: beat the boss at the Brand you chose. Brand 0 is a real win. Beating the top Brand is beating the game. Lose: HP 0, keep Kindling. Another run after a Camp spend.
 
 A safest-path generalist with an empty Ledger should not see the boss. A committed tag on a grown Ledger should feel different by node 6.
 
@@ -279,7 +306,7 @@ A safest-path generalist with an empty Ledger should not see the boss. A committ
 - Party / hex grid / summoned team as the main toy
 - Movement combat, a line of tiles, push-to-dodge
 - Queue-and-watch combat
-- Endless mode, daily run, leaderboards
+- Endless mode, infinite stat climb, daily run, leaderboards
 - PvP, accounts, live ops
 - Infinite meta stat sticks (a capped Frame column is allowed)
 - Copying names, card text, art, UI chrome, or audio from other games
@@ -308,6 +335,6 @@ Engine and art pipeline are not in this spec.
 
 ## What “done” means for this draft
 
-If this card lock holds, next is a thin content list: starter deck, a dozen cards, eight enemy intents, the boss twist. Not code. Not setting.
+If this card lock and Camp/Ledger hold, next is a thin content list: starter deck, eight enemy intents, the boss twist, the 12 Ledger nodes and what they cost. Not code. Not setting.
 
 If cards-plus-shop is wrong after all, edit this file first.
