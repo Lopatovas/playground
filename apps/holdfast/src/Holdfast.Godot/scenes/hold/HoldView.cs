@@ -51,7 +51,7 @@ public partial class HoldView : Control
 
         var book = new TextureRect
         {
-            Texture = GD.Load<Texture2D>("res://art/ledger-book.jpg"),
+            Texture = GD.Load<Texture2D>("res://art/ledger-book.png"),
             ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
             StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered,
             MouseFilter = MouseFilterEnum.Ignore
