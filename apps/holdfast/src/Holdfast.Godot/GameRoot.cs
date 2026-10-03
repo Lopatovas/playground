@@ -33,6 +33,7 @@ public partial class GameRoot : Control
     private FontFile _font = null!;
     private FontFile _bold = null!;
     private bool _busy;
+    private Action? _pendingTap;
 
     public override void _Ready()
     {
@@ -41,9 +42,19 @@ public partial class GameRoot : Control
         _font = GD.Load<FontFile>("res://fonts/LiberationSans-Regular.ttf")
             ?? throw new InvalidOperationException("Missing LiberationSans-Regular.ttf");
         _bold = GD.Load<FontFile>("res://fonts/LiberationSans-Bold.ttf") ?? _font;
+        WarmFont(_font);
+        WarmFont(_bold);
         var theme = new Theme();
         theme.DefaultFont = _font;
         theme.DefaultFontSize = 18;
+        theme.SetFont("font", "Button", _font);
+        theme.SetFontSize("font_size", "Button", 18);
+        theme.SetFont("font", "Label", _font);
+        theme.SetFontSize("font_size", "Label", 18);
+        theme.SetColor("font_color", "Button", Gold);
+        theme.SetColor("font_hover_color", "Button", Gold);
+        theme.SetColor("font_pressed_color", "Button", Gold);
+        theme.SetColor("font_disabled_color", "Button", Muted);
         Theme = theme;
 
         var bg = new ColorRect
@@ -89,12 +100,21 @@ public partial class GameRoot : Control
 
     private void Rebuild(Action<VBoxContainer> fill)
     {
-        foreach (var child in _stack.GetChildren())
+        var next = new VBoxContainer
         {
-            child.QueueFree();
-        }
+            SizeFlagsHorizontal = SizeFlags.ExpandFill,
+            SizeFlagsVertical = SizeFlags.ShrinkBegin
+        };
+        next.AddThemeConstantOverride("separation", 12);
+        fill(next);
 
-        fill(_stack);
+        var parent = _stack.GetParent();
+        var index = _stack.GetIndex();
+        parent.RemoveChild(_stack);
+        _stack.QueueFree();
+        parent.AddChild(next);
+        parent.MoveChild(next, index);
+        _stack = next;
     }
 
     private void Tap(Action action)
@@ -105,14 +125,30 @@ public partial class GameRoot : Control
         }
 
         _busy = true;
+        _pendingTap = action;
+        CallDeferred(MethodName.FlushTap);
+    }
+
+    private void FlushTap()
+    {
+        var action = _pendingTap;
+        _pendingTap = null;
         try
         {
-            action();
+            action?.Invoke();
         }
         catch (Exception ex)
         {
-            _banner = ex.Message;
+            _banner = "The hold holds. Try that again.";
             GD.PushWarning(ex.ToString());
+            try
+            {
+                ShowHold();
+            }
+            catch (Exception fallback)
+            {
+                GD.PushWarning(fallback.ToString());
+            }
         }
         finally
         {
@@ -126,7 +162,8 @@ public partial class GameRoot : Control
         {
             box.AddChild(Portrait("res://art-bible/hold-hearth.jpg", 390, 160));
             box.AddChild(Title("HOLDFAST"));
-            box.AddChild(Line($"Runestones {_hold.Progress.Runestones}   Brand {_hold.Progress.Brand[ClassId.Warrior]}"));
+            box.AddChild(Line($"Runestones {_hold.Progress.Runestones} · Brand {_hold.Progress.Brand[ClassId.Warrior]}"));
+            box.AddChild(Line("sideload 0.1.1"));
             box.AddChild(Btn("Walk as Warrior", () => Tap(() => Begin(ClassId.Warrior))));
             if (_hold.Progress.Unlocked.Contains(ClassId.Runesmith))
             {
@@ -137,7 +174,7 @@ public partial class GameRoot : Control
             foreach (var node in _hold.Available())
             {
                 var id = node.Id;
-                box.AddChild(Btn($"{node.Name}  -  {node.Cost} stones", () => Tap(() =>
+                box.AddChild(Btn($"{node.Name}  ·  {node.Cost} stones", () => Tap(() =>
                 {
                     _hold.Buy(id);
                     _save.WriteHold(_hold.Progress);
@@ -288,9 +325,8 @@ public partial class GameRoot : Control
                 var card = fight.Dwarf.Deck.Hand[i];
                 var idx = i;
                 var dice = DiceText(card);
-                var label = string.IsNullOrEmpty(dice)
-                    ? $"{card.Name}   {card.Cost} energy   {card.Text}"
-                    : $"{card.Name}   {card.Cost} energy   {card.Text.Replace("{dice}", dice)}";
+                var body = string.IsNullOrEmpty(dice) ? card.Text : card.Text.Replace("{dice}", dice);
+                var label = $"{card.Name}  ·  {card.Cost} energy\n{body}";
                 var can = card.Cost <= fight.Dwarf.Energy;
                 box.AddChild(Btn(label, () => Tap(() => PlayCard(idx)), can));
             }
@@ -525,15 +561,25 @@ public partial class GameRoot : Control
         {
             Text = text,
             Disabled = !enabled,
-            AutowrapMode = TextServer.AutowrapMode.Word,
+            AutowrapMode = TextServer.AutowrapMode.WordSmart,
             ClipText = false,
-            CustomMinimumSize = new Vector2(0, 56),
+            TextOverrunBehavior = TextServer.OverrunBehavior.NoTrimming,
+            CustomMinimumSize = new Vector2(0, 62),
             SizeFlagsHorizontal = SizeFlags.ExpandFill
         };
         b.AddThemeFontOverride("font", _font);
-        b.AddThemeFontSizeOverride("font_size", 17);
+        b.AddThemeFontSizeOverride("font_size", 18);
         b.Pressed += onPressed;
         return b;
+    }
+
+    private static void WarmFont(FontFile font)
+    {
+        const string sample = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789/-·+";
+        foreach (var size in new[] { 17, 18, 20, 30 })
+        {
+            font.GetStringSize(sample, HorizontalAlignment.Left, -1, size);
+        }
     }
 
     private static TextureRect Portrait(string path, int width, int height)

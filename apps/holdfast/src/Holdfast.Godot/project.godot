@@ -35,6 +35,7 @@ pointing/emulate_touch_from_mouse=true
 
 [gui]
 
+theme/custom_font="res://fonts/LiberationSans-Regular.ttf"
 theme/default_font_antialiasing=1
 theme/default_font_hinting=1
 
