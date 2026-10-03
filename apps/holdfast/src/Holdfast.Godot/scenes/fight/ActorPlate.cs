@@ -14,7 +14,7 @@ public partial class ActorPlate : Control
 
     public override void _Ready()
     {
-        CustomMinimumSize = new Vector2(220, 320);
+        CustomMinimumSize = new Vector2(340, 420);
         MouseFilter = MouseFilterEnum.Ignore;
 
         var stack = new VBoxContainer
@@ -31,7 +31,7 @@ public partial class ActorPlate : Control
         {
             ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
             StretchMode = TextureRect.StretchModeEnum.KeepAspectCovered,
-            CustomMinimumSize = new Vector2(220, 240),
+            CustomMinimumSize = new Vector2(320, 340),
             SizeFlagsHorizontal = SizeFlags.ShrinkCenter,
             SizeFlagsVertical = SizeFlags.ExpandFill,
             MouseFilter = MouseFilterEnum.Ignore

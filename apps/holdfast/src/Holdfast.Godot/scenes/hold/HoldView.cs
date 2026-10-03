@@ -47,7 +47,8 @@ public partial class HoldView : Control
         _runesmith = WalkPlate("Walk as Runesmith", () => Walk?.Invoke(ClassId.Runesmith));
         _runesmith.Visible = false;
         var peek = UiChrome.StoneButton("Peek the dark", () => Peek?.Invoke());
-        peek.CustomMinimumSize = new Vector2(220, 44);
+        peek.CustomMinimumSize = new Vector2(168, 40);
+        peek.SizeFlagsHorizontal = SizeFlags.ShrinkBegin;
 
         left.AddChild(title);
         left.AddChild(_stones);

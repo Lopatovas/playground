@@ -6,9 +6,9 @@ Godot 4.4 + C#. Domain is OOP (`Card.OnPlay`). JSON in `/content`.
 
 Sideload [`releases/holdfast-android.apk`](../../releases/holdfast-android.apk) (debug-signed, arm64). Allow unknown sources. GitHub: download that file from the branch or the PR.
 
-Or open `src/Holdfast.Godot` in Godot 4.4 .NET and press Play (portrait).
+Or open `src/Holdfast.Godot` in Godot 4.4 .NET and press Play (landscape, 1280×720).
 
-Walk as Warrior. Fight, map, shop, rest, door. Rope pays Runestones. Ledger buys HP.
+The Hold is the hearth room. A fight is two actors on the cavern and a hand of card plates. Walk as Warrior. Map, shop, rest, door still finish a sortie. Rope pays Runestones. Ledger buys HP.
 
 ## Tests
 

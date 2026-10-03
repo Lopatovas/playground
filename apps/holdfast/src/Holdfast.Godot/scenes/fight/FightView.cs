@@ -43,18 +43,18 @@ public partial class FightView : Control
 
         _dwarf = new ActorPlate();
         _dwarf.SetAnchorsPreset(LayoutPreset.BottomLeft);
-        _dwarf.OffsetLeft = 36;
-        _dwarf.OffsetTop = -520;
-        _dwarf.OffsetRight = 270;
-        _dwarf.OffsetBottom = -210;
+        _dwarf.OffsetLeft = 32;
+        _dwarf.OffsetTop = -640;
+        _dwarf.OffsetRight = 420;
+        _dwarf.OffsetBottom = -196;
         AddChild(_dwarf);
 
         _enemy = new ActorPlate();
         _enemy.SetAnchorsPreset(LayoutPreset.BottomRight);
-        _enemy.OffsetLeft = -270;
-        _enemy.OffsetTop = -520;
-        _enemy.OffsetRight = -36;
-        _enemy.OffsetBottom = -210;
+        _enemy.OffsetLeft = -420;
+        _enemy.OffsetTop = -640;
+        _enemy.OffsetRight = -32;
+        _enemy.OffsetBottom = -196;
         AddChild(_enemy);
 
         _strip = UiChrome.Text("", 18, UiChrome.Bold, UiChrome.Gold);
@@ -95,10 +95,17 @@ public partial class FightView : Control
         scroll.AddChild(_hand);
         row.AddChild(scroll);
 
+        var endCol = new VBoxContainer
+        {
+            Alignment = BoxContainer.AlignmentMode.Center,
+            SizeFlagsHorizontal = SizeFlags.ShrinkEnd,
+            SizeFlagsVertical = SizeFlags.ExpandFill
+        };
         var end = UiChrome.StoneButton("End turn", () => EndTurn?.Invoke());
-        end.CustomMinimumSize = new Vector2(120, 160);
-        end.SizeFlagsHorizontal = SizeFlags.ShrinkEnd;
-        row.AddChild(end);
+        end.CustomMinimumSize = new Vector2(128, 52);
+        end.SizeFlagsHorizontal = SizeFlags.ShrinkCenter;
+        endCol.AddChild(end);
+        row.AddChild(endCol);
         tray.AddChild(row);
         AddChild(tray);
     }
