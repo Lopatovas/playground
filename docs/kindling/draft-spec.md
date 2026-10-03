@@ -4,15 +4,15 @@ Working title. Setting and art come later. This is the mechanical core only.
 
 Challenge anything. Numbers are draft targets, not balance.
 
-**Status:** this is a Slay the Spire clone with extra shop furniture. We chose that. Still a draft, not code.
+**Status:** Slay the Spire fight, roguelite character. Shop/slots/tags are extras. The meta is the thing we are changing on purpose. Still a draft, not code.
 
 ## What this is
 
-A one-hero card roguelike in the Slay the Spire family.
+A one-hero card roguelike in the Slay the Spire family, with an RPG spine between runs.
 
-Hand, energy, draw pile, Block, visible intents, branching map, card rewards, relics, die and go again. That is StS. We picked it because that fight is more fun than movement management. Shop, slots, and tags are extras. They do not pass the screenshot test. A 10-second clip of a fight is a StS clip.
+The fight is still StS: hand, energy, Block, intents. A 10-second clip is a StS clip. Call that a clone.
 
-Call it a clone. Do not dress it up as a new genre.
+The thing we will not clone is StS’s meta. StS lets a player who knows the game boot a fresh file and win. Kindling is tuned so a new climber usually dies around floor 4, comes home with currency, and the *character* is visibly further on than last time. Same person. Die, spend, go again. Hades / Rogue Legacy shape, not “unlock a card you might see in twenty runs.”
 
 Final output of the experiment is a playable POC. This doc is the first artifact.
 
@@ -25,8 +25,8 @@ Final output of the experiment is a playable POC. This doc is the first artifact
 - Branching path, Slay the Spire style.
 - Die, then go again. No endless mode in the first slice.
 - Pause and resume mid-run. Phone-first, desktop too.
-- First slice is one short run, end to end, easy to expand.
-- Between runs, this same character gains new *options*, not raw +damage / +HP.
+- First slice is one short climb, end to end, easy to expand. A naked character is **not** expected to finish it.
+- Between runs, this same character grows at a **Camp**. Every run pays, including a floor-4 death. Growth is a mix of tools, access, and a little body. Not an infinite +damage stick.
 
 **Combat decision (this draft):** hand, energy, draw pile, discard, Block, intents. No board. No stepping. No push-the-enemy-off-the-tile.
 
@@ -34,7 +34,7 @@ Rejected: Hades / Brotato / Vampire Survivors (APM). Peglin (physics). Guildrun 
 
 ## One-sentence pitch
 
-You are one climber. Each fight you spend a small hand of cards against visible enemy intents. Between fights you shop, socket gear, and stack tags until the starter deck no longer plays like the starter deck.
+You are one climber. Each fight you spend a small hand of cards against visible enemy intents. Each death you come home weaker than the mountain and richer than last time, and you spend that on this person until the climb is possible.
 
 ## The loop
 
@@ -47,7 +47,9 @@ pick a path node
   → tags may cross a breakpoint and change the rules
   → next node, harder
   → boss, win or die
-  → unlock something for this character, start another run
+  → return to Camp with Kindling
+  → spend on this character’s Ledger
+  → start another run, same person, slightly more built
 ```
 
 A good run ends with a specialist. A bad run dies as a generalist who never committed.
@@ -58,7 +60,7 @@ Cards won because sequencing a hand is the fun we want: this Attack now, this se
 
 We do not steal names, card text, or art. That is the only authenticity claim that holds.
 
-Shop, slots, and tags are still in the draft as *run seasoning* — a fatter merchant, three auto items, public breakpoints you stoke this fight. They might make a run feel a bit more like TFT between nodes. They do not make the game not-StS. If they fail to matter by node 6, cut them and we have a short StS-like slice. That is an acceptable POC for a playground.
+Shop, slots, and tags are still *run seasoning*. The meta is not. If the Camp does not make a floor-4 death feel like the character grew, it has failed.
 
 ## Combat
 
@@ -125,7 +127,9 @@ A live tag should change the next hand, not just add a number.
 
 ### You open the game
 
-One climber. HP, three slots, a small deck, tags at 0/0/0. Begin the climb. If you already died, one new toy is in the pool. No +HP.
+The **Camp**. One climber by a fire. You see their Ledger (the skill tree), current HP max, how many slots they have unlocked, Kindling in the purse.
+
+First boot: the Ledger is almost empty. One slot. Thin starter deck. You are not ready for the boss. Begin the climb anyway.
 
 ### You look at the map
 
@@ -171,7 +175,9 @@ Boss: honest intents plus a twist (second phase, they punish Powers, they invert
 
 ### You go again
 
-HP 0 ends the run. Recap, maybe one unlock. Same person, new option. Die, go again.
+HP 0 ends the run. Recap: floors cleared, Kindling earned. Back to Camp. The Ledger has something you can afford — a bit of HP, a second slot, three cards added to the pool, shop reroll. You buy it. The climber looks different. You go again.
+
+A new player is supposed to die around floor 4 the first time and still do this loop. A player who already “knows StS” should still be underbuilt for the boss until the Ledger has a few nodes. The mountain is tuned for a grown character, not a theorycrafter on a blank file.
 
 ## The map
 
@@ -189,36 +195,82 @@ Stock: cards, slot items / components, sometimes a relic, a remove, reroll, lock
 
 ## Failure and retry
 
-HP is the run. Hit 0, over. No rewind.
+HP is the run. Hit 0, over. No rewind. You keep Kindling from the attempt. That is the point.
 
-Save on leaving a node or opening a menu.
+Save on leaving a node, opening a menu, or sitting at Camp.
 
-## Between runs
+## Between runs — Camp and Ledger
 
-Unlock options: a starter card that replaces one Strike, a fourth tag in the shop pool, a new item family, a new event, an optional harder modifier after a win.
+This is the RPG. StS’s unlock-a-card-into-the-pool is too thin. We want: die at four, sit down, the person is further on.
 
-Do not unlock +5 HP or +1 damage.
+### Kindling (currency)
 
-First slice: one starting kit, 2–3 unlocks.
+Every run pays, including a wipe on node 1.
+
+Draft grant:
+
+- a small show-up amount
+- more per node cleared
+- extra for elite / treasure / boss
+- a first-time bonus the first time you meet an enemy type or node type
+
+A floor-4 death must buy **at least one** Ledger node. If it does not, the numbers are wrong.
+
+### The Ledger
+
+A small tree on this one character. First slice: about **12 nodes**, four columns. You buy from the left. Some nodes require a neighbor.
+
+**Spark (tools)**  
+Cards enter the *run pool*. A starter card replaces one Strike. A Stoke is added to the opening kit.
+
+**Frame (body)**  
+Small, capped: +HP, starting gold. Two or three nodes total in the first slice. Enough that floor 4 stops being a coin flip. Not enough that floor 1 is a joke forever.
+
+**Hearth (access)**  
+This is most of the feel. You do **not** start with the full game.
+
+- Slot 2, then slot 3
+- Shop reroll, then combine
+- The rest site’s upgrade action
+- One extra event type
+
+**Brand (mastery)**  
+After the first win: an optional harder modifier. Not before.
+
+### How the first hours are supposed to feel
+
+| Session        | Character                         | Typical end        |
+| -------------- | --------------------------------- | ------------------ |
+| Run 1          | 1 slot, no reroll, thin pool, low HP | Die ~floor 4    |
+| Runs 2–4       | Second slot, a bit of HP, a few pool cards | Floor 6–8    |
+| Mid Ledger     | 3 slots, shop toys, starter swap  | Boss is in reach   |
+| First win      | Brand column opens                | Die-go-again with a twist |
+
+The climb does not get longer. The climber gets closer to being allowed to finish it.
+
+### What we still will not do
+
+No infinite +1 damage every run. No “I have 400 HP and the act is a corridor.” After the first-slice Ledger is bought, further growth is new tools and optional hardness, not a bigger stick.
 
 ## First-slice content budget
 
 | Thing              | Draft count | Notes                                      |
 | ------------------ | ----------- | ------------------------------------------ |
 | Playable character | 1           | One identity, 2–3 viable directions        |
-| Starter cards      | 8–10        | Weak, complete                             |
-| Card pool          | ~18–24      | Stokes, payoffs, a few Powers              |
-| Slot items         | ~8          | 3 families, common + combined              |
+| Starter cards      | 8–10        | Weak, complete. Tuned for a *naked* climber |
+| Card pool          | ~18–24      | Several locked behind Spark                |
+| Slot items         | ~8          | 3 families. Slots 2–3 locked behind Hearth |
 | Relics             | ~8          | At least 2 change a rule, not a stat       |
-| Enemies            | ~8          | Hit hard, buffer, status, “punish setup”   |
+| Enemies            | ~8          | Early floors must be able to kill a newbie |
 | Elites             | 1           | Tests whether you specialized              |
-| Boss               | 1           | Two-phase or a rule twist                  |
-| Events             | 2           | Real choices                               |
+| Boss               | 1           | Tuned for a mid-Ledger character           |
+| Events             | 2           | One may be locked                          |
 | Tags               | 3           | Burn, Guard, Flow                          |
+| Ledger nodes       | ~12         | Spark / Frame / Hearth / Brand             |
 
-Win: beat the boss. Lose: HP 0. Another run in under a minute.
+Win: beat the boss. Lose: HP 0, keep Kindling. Another run after a Camp spend.
 
-A safest-path generalist should usually lose the boss. A committed tag should feel different by node 6.
+A safest-path generalist with an empty Ledger should not see the boss. A committed tag on a grown Ledger should feel different by node 6.
 
 ## Non-goals (first slice)
 
@@ -229,7 +281,7 @@ A safest-path generalist should usually lose the boss. A committed tag should fe
 - Queue-and-watch combat
 - Endless mode, daily run, leaderboards
 - PvP, accounts, live ops
-- Meta stat sticks
+- Infinite meta stat sticks (a capped Frame column is allowed)
 - Copying names, card text, art, UI chrome, or audio from other games
 - Calling it Slay the Spire, a Spire, or using Mega Crit character names
 - Final art pipeline (spike that before production)
