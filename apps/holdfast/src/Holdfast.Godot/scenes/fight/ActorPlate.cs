@@ -5,13 +5,14 @@ namespace Holdfast.GodotGame;
 
 public partial class ActorPlate : Control
 {
-    private TextureRect _body = null!;
+    private Sprite2D _sprite = null!;
     private Label _name = null!;
     private Label _intent = null!;
     private ColorRect _hpFill = null!;
     private Label _hp = null!;
     private Tween? _idle;
     private bool _facesRight;
+    private Vector2 _rest;
 
     public override void _Ready()
     {
@@ -23,15 +24,12 @@ public partial class ActorPlate : Control
         _intent.OffsetTop = 0;
         _intent.OffsetBottom = 22;
 
-        _body = new TextureRect
+        _sprite = new Sprite2D
         {
-            ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
-            StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered,
-            MouseFilter = MouseFilterEnum.Ignore
+            Centered = true,
+            Scale = new Vector2(0.42f, 0.42f)
         };
-        _body.SetAnchorsPreset(LayoutPreset.FullRect);
-        _body.OffsetTop = 24;
-        _body.OffsetBottom = -40;
+        AddChild(_sprite);
 
         _name = UiChrome.Text("", 18, UiChrome.Bold, UiChrome.Gold);
         _name.HorizontalAlignment = HorizontalAlignment.Center;
@@ -58,18 +56,26 @@ public partial class ActorPlate : Control
         _hp.OffsetTop = -8;
         _hp.OffsetBottom = 10;
 
-        AddChild(_body);
         AddChild(_intent);
         AddChild(_name);
         AddChild(bar);
         AddChild(_hp);
+        Reseat();
         StartIdle();
+    }
+
+    public override void _Notification(int what)
+    {
+        if (what == NotificationResized)
+        {
+            Reseat();
+        }
     }
 
     public void Bind(Actor actor, string bodyPath, string? intent, bool facesRight)
     {
         _facesRight = facesRight;
-        _body.Texture = GD.Load<Texture2D>(bodyPath);
+        _sprite.Texture = GD.Load<Texture2D>(bodyPath);
         _name.Text = actor.Name;
         _intent.Text = intent ?? "";
         _intent.Visible = !string.IsNullOrEmpty(intent);
@@ -77,48 +83,61 @@ public partial class ActorPlate : Control
         _hpFill.AnchorRight = Mathf.Clamp(ratio, 0, 1);
         _hp.Text = actor.Block > 0 ? $"{actor.Hp} / {actor.MaxHp}   Block {actor.Block}" : $"{actor.Hp} / {actor.MaxHp}";
         Modulate = actor.IsDead ? new Color(0.45f, 0.4f, 0.38f) : Colors.White;
+        Reseat();
+        StartIdle();
     }
 
     public void StartIdle()
     {
         _idle?.Kill();
+        Reseat();
         _idle = CreateTween().SetLoops();
-        _idle.TweenProperty(_body, "position:y", -8, 1.15)
+        _idle.TweenProperty(_sprite, "position:y", _rest.Y - 10, 0.9f)
             .SetTrans(Tween.TransitionType.Sine)
             .SetEase(Tween.EaseType.InOut);
-        _idle.TweenProperty(_body, "position:y", 4, 1.15)
+        _idle.TweenProperty(_sprite, "position:y", _rest.Y + 6, 0.9f)
             .SetTrans(Tween.TransitionType.Sine)
             .SetEase(Tween.EaseType.InOut);
     }
 
     public void Strike()
     {
-        Burst(_facesRight ? 56f : -56f, 0.16f, 0.22f);
+        Burst(_facesRight ? 90f : -90f, 0.22f, 0.28f);
     }
 
     public void Guard()
     {
         _idle?.Kill();
         var tw = CreateTween();
-        tw.TweenProperty(_body, "scale", new Vector2(1.06f, 0.94f), 0.12);
-        tw.TweenProperty(_body, "scale", Vector2.One, 0.18);
+        tw.TweenProperty(_sprite, "scale", new Vector2(0.48f, 0.38f), 0.14);
+        tw.TweenProperty(_sprite, "scale", new Vector2(0.42f, 0.42f), 0.2);
         tw.Finished += StartIdle;
     }
 
     public void Flinch()
     {
-        Burst(_facesRight ? -28f : 28f, 0.08f, 0.16f);
+        Burst(_facesRight ? -36f : 36f, 0.1f, 0.2f);
         var flash = CreateTween();
-        flash.TweenProperty(_body, "modulate", new Color(1, 0.55f, 0.45f), 0.06);
-        flash.TweenProperty(_body, "modulate", Colors.White, 0.18);
+        flash.TweenProperty(_sprite, "modulate", new Color(1, 0.5f, 0.42f), 0.08);
+        flash.TweenProperty(_sprite, "modulate", Colors.White, 0.22);
     }
 
     private void Burst(float x, float outTime, float backTime)
     {
         _idle?.Kill();
+        Reseat();
         var tw = CreateTween();
-        tw.TweenProperty(_body, "position:x", x, outTime).SetTrans(Tween.TransitionType.Back);
-        tw.TweenProperty(_body, "position:x", 0, backTime).SetTrans(Tween.TransitionType.Sine);
+        tw.TweenProperty(_sprite, "position:x", _rest.X + x, outTime).SetTrans(Tween.TransitionType.Back);
+        tw.TweenProperty(_sprite, "position:x", _rest.X, backTime).SetTrans(Tween.TransitionType.Sine);
         tw.Finished += StartIdle;
+    }
+
+    private void Reseat()
+    {
+        _rest = new Vector2(Size.X * 0.5f, Size.Y * 0.46f);
+        if (_sprite is not null)
+        {
+            _sprite.Position = _rest;
+        }
     }
 }
