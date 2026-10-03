@@ -22,6 +22,7 @@ Call the fight a StS-like. Do not steal names, card text, art, or UI chrome.
 - RPG currency is **Runestones**. Shared Camp. Exclusive class engines.
 - MVP classes: **Warrior** and **Runesmith**. Hunter/engineer is class 3, not in MVP.
 - Warrior exclusive verb is **Grit** (feel no pain), not Ironclad Strength/Block as the class identity. Block still exists for everyone.
+- Every body (dwarf and monster) has **Might** and **Brace** this fight — the Strength / Dexterity job. They are how a run scales. They are not a class.
 - Game is beatable at Brand 0. Brand 1–5 is the return loop. Top Brand is beating the game.
 - A naked Warrior is not expected to exit. Die around floor 4, come home, buy a Ledger node.
 
@@ -84,25 +85,23 @@ A new class has a baby deck and a grown body. You can still get wrecked. You do 
 
 ### Warrior — Grit
 
-Not Ironclad. Strength-stacking and Block-stacking are generic tools; they are not the guild.
+Not Ironclad. **Might** and **Brace** are generic (see Combat). They are not the guild.
 
 **Grit** is a number on you this fight. Starts at 0. Stacks from Warrior cards. Falls off when the fight ends.
 
 When an enemy attack resolves:
 
-1. They roll their damage `D`.
-2. If `D < Grit`, the hit is nothing. You felt no pain. Block is not spent.
-3. If `D >= Grit`, it is a real hit. Block applies as usual. You take `max(0, D − Block)`.
+1. They roll their damage `D`, then add their **Might**. Call that `Hit`.
+2. If `Hit < Grit`, the hit is nothing. You felt no pain. Block is not spent.
+3. If `Hit >= Grit`, it is a real hit. Your Block (plus **Brace**) applies. You take `max(0, Hit − Block − Brace)`.
 
-You are stacking a **floor**. Nicks bounce. Real swings still put you on the rope.
-
-That is the dice conversation. A `2d4` jab dies to Grit 5. A `2d6+2` boss swing still lands.
+You are stacking a **floor**. Nicks bounce. Real swings, and **monsters that stacked Might**, still put you on the rope. Might is how they punch through Grit.
 
 In-class directions (2–3 decks, same verb):
 
 - **Numb:** stack Grit, ignore the bottom of their band, stab when they buff.
-- **Fury:** still a Warrior — bigger attack dice, spend Grit as a cost or ignore it. Secondary, not the clone of Strength as the whole class.
-- **Guard-and-grit:** Block the top, Grit the bottom, live through overlap.
+- **Fury:** stack Might like anyone can — Warrior just has better payoffs. Secondary.
+- **Guard-and-grit:** Block + Brace the top, Grit the bottom, live through overlap.
 
 Starter identity card: something that gives 1–2 Grit. Starter Attacks/Blocks are generic dice so the guild is the Grit card, not the Strike.
 
@@ -128,21 +127,36 @@ Start of turn: energy 3, draw to 5, start-of-turn effects (Grit does *not* tick 
 
 Play cards. They happen now. Dice on Attack and Block roll on resolve. End turn. Enemies do the telegraphed action; their Attack/Block dice roll.
 
-**Block** (everyone): absorbs this turn, then falls off.
+**Block** (everyone): absorbs this turn, then falls off. Then **Brace** adds to it (see below).
 
-**Grit** (Warrior only): floor against incoming `D`, this fight.
+**Grit** (Warrior only): floor against incoming `Hit`, this fight.
 
 **Runes** (Runesmith only): persist this fight until spent or the fight ends.
 
 Inspect never plays.
 
+### Might and Brace (everyone, including monsters)
+
+This is Strength and Dexterity. Every class and every enemy can stack them. This is how a sortie *and* a monster actually scale. They are not guild verbs.
+
+| Stat | Does | Lasts |
+| ---- | ---- | ----- |
+| **Might** | After an Attack roll, add this much damage | This fight, unless a card says otherwise |
+| **Brace** | After a Block roll, add this much Block | This fight, unless a card says otherwise |
+
+Both start at 0. Cards, Powers, relics, and monster intents can raise or cut them. A monster that intends “gain 2 Might” is exact. Next swing their `2d4` is `2d4+2`. That can cross a Warrior’s Grit.
+
+Warrior and Runesmith both get Might/Brace cards in the **generic slice** of each pool (small shared *effects*, not shared cards — each class has its own “gain 2 Might” card). Monsters use the same two stats. No third generic stat in the MVP.
+
+If a run cannot get bigger without Grit or Runes, Might/Brace have failed. If Warrior’s only plan is Might, Grit has failed.
+
 ### Dice
 
-Printed as `2d4+1` with range `3–9`. Tight bands (`1d4`, `1d6`, `2d4`). No `1d20` on a starter. Flat bonuses add after the roll. Energy and draw do not roll.
+Printed as `2d4+1` with range `3–9`. Tight bands (`1d4`, `1d6`, `2d4`). No `1d20` on a starter. **Might** and **Brace** add after the roll. Energy and draw do not roll.
 
 Some cards may be flat (`Block 6`) so safe vs swingy is a deck choice.
 
-**Example (Warrior).** They intend `2d6` (2–12). You have Grit 5 and play `2d4` Block. If they roll 4, you take 0 (Grit). If they roll 10, Block rolls and you take the rest. You could have stacked more Grit instead of Blocking and gambled they stay under 5.
+**Example (Warrior).** They intend `2d6` and have Might 2. You have Grit 5 and play `2d4` Block with Brace 0. If they roll 4, `Hit` is 6 — Grit fails, Block has to work. If they roll 2, `Hit` is 4 — you shrug it. Their buff turn (“+2 Might”) is why you kill the buffer first.
 
 ## What you collect (this sortie)
 
