@@ -142,8 +142,8 @@ public partial class HoldView : Control
                 Alignment = HorizontalAlignment.Left
             };
             row.AddThemeFontOverride("font", UiChrome.Regular);
-            row.AddThemeFontSizeOverride("font_size", 15);
-            row.AddThemeColorOverride("font_color", can ? UiChrome.Ink : new Color(0.45f, 0.38f, 0.30f));
+            row.AddThemeFontSizeOverride("font_size", 16);
+            row.AddThemeColorOverride("font_color", can ? new Color(0.10f, 0.07f, 0.04f) : new Color(0.40f, 0.32f, 0.22f));
             row.AddThemeStyleboxOverride("normal", UiChrome.GhostBox());
             row.AddThemeStyleboxOverride("hover", UiChrome.GhostBox());
             row.AddThemeStyleboxOverride("pressed", UiChrome.GhostBox());
