@@ -56,6 +56,11 @@ public partial class PlateTap : Control
 
     public void Bind(string title, string? sub = null, bool enabled = true)
     {
+        if (_title is null)
+        {
+            return;
+        }
+
         _title.Text = title;
         _sub.Text = sub ?? "";
         _sub.Visible = !string.IsNullOrEmpty(sub);

@@ -98,8 +98,8 @@ public partial class FightView : Control
         end.CustomMinimumSize = new Vector2(150, 200);
         end.Pressed += () => EndTurn?.Invoke();
         hand.AddChild(end);
-        end.Bind("End turn", "the dark waits");
         AddChild(hand);
+        end.Bind("End turn", "the dark waits");
     }
 
     public void Bind(RunState run, Encounter fight, string banner)
