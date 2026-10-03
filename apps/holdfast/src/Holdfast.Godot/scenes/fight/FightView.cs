@@ -36,18 +36,18 @@ public partial class FightView : Control
 
         _dwarf = new ActorPlate();
         _dwarf.SetAnchorsPreset(LayoutPreset.BottomLeft);
-        _dwarf.OffsetLeft = 20;
-        _dwarf.OffsetTop = -680;
-        _dwarf.OffsetRight = 400;
-        _dwarf.OffsetBottom = -214;
+        _dwarf.OffsetLeft = 8;
+        _dwarf.OffsetTop = -640;
+        _dwarf.OffsetRight = 430;
+        _dwarf.OffsetBottom = -200;
         AddChild(_dwarf);
 
         _enemy = new ActorPlate();
         _enemy.SetAnchorsPreset(LayoutPreset.BottomRight);
-        _enemy.OffsetLeft = -400;
-        _enemy.OffsetTop = -680;
-        _enemy.OffsetRight = -20;
-        _enemy.OffsetBottom = -214;
+        _enemy.OffsetLeft = -430;
+        _enemy.OffsetTop = -640;
+        _enemy.OffsetRight = -8;
+        _enemy.OffsetBottom = -200;
         AddChild(_enemy);
 
         _vitals = UiChrome.Text("", 16, UiChrome.Bold, UiChrome.Gold);
@@ -111,9 +111,9 @@ public partial class FightView : Control
 
     public void Bind(RunState run, Encounter fight, string banner)
     {
-        _dwarf.Bind(run.Dwarf, "res://art/warrior-body.jpg", null, true);
+        _dwarf.Bind(run.Dwarf, PaintedPuppet.Kind.Warrior, null, true);
         var foe = fight.Enemies.FirstOrDefault(e => !e.IsDead) ?? fight.Enemies[0];
-        _enemy.Bind(foe, "res://art/enemy-body.jpg", foe.IsDead ? "Down" : foe.Intent?.Label, false);
+        _enemy.Bind(foe, PaintedPuppet.Kind.Knuckle, foe.IsDead ? "Down" : foe.Intent?.Label, false);
 
         var on = new string('●', Math.Max(0, run.Dwarf.Energy));
         var off = new string('○', Math.Max(0, run.Dwarf.MaxEnergy - run.Dwarf.Energy));
