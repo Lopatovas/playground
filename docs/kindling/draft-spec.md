@@ -56,6 +56,14 @@ pick a path node
 
 A good run ends with a specialist. A bad run dies as a generalist who never committed.
 
+## Two progressions
+
+**Run progression** — this climb only. Cards in the deck, gold, relics, slot items you found, tags you stoked. HP. When the run ends, this is gone (except Kindling earned). Next run the deck is the starter again.
+
+**Character progression** — this person, forever. The Ledger, unlocked slots and shop tools, cards that can *appear* in future runs, max HP from Frame, which Brands you may pick. Death does not take this.
+
+You lose the build. You keep the climber.
+
 ## Why a clone, and what the extras are for
 
 Cards won because sequencing a hand is the fun we want: this Attack now, this setup now, this Block because they are swinging 14. The line fight was more original and less fun. So we took the clone.
@@ -335,6 +343,6 @@ Engine and art pipeline are not in this spec.
 
 ## What “done” means for this draft
 
-If this card lock and Camp/Ledger hold, next is a thin content list: starter deck, eight enemy intents, the boss twist, the 12 Ledger nodes and what they cost. Not code. Not setting.
+If this card lock, Camp/Ledger, and Brand ladder hold, next is a thin content list: starter deck, eight enemy intents, the boss twist, the 12 Ledger nodes, Brand 1–5 rules. Not code. Not setting.
 
 If cards-plus-shop is wrong after all, edit this file first.
