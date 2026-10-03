@@ -2,6 +2,6 @@
 
 Experimental ideas.
 
-## Kindling
+## Holdfast
 
-Dwarf-hold card roguelike. MVP spec: [docs/kindling/draft-spec.md](docs/kindling/draft-spec.md).
+Dwarf-hold card roguelike. MVP spec: [docs/holdfast/mvp-spec.md](docs/holdfast/mvp-spec.md).

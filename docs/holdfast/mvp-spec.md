@@ -1,8 +1,8 @@
-# Kindling — MVP spec
+# Holdfast — MVP spec
 
-Working title. World is the Hold. Still a draft. Numbers are targets, not balance. No code.
+**Holdfast.** The Hold, and what you do in it. Still a draft. Numbers are targets, not balance. No code.
 
-**Status:** blockers answered. This is the MVP spec. Challenge it.
+**Status:** name fits the Hold. Design blockers we listed are closed. Challenge it.
 
 ## What this is
 
@@ -14,6 +14,7 @@ Call the fight a StS-like. Do not steal names, card text, art, or UI chrome.
 
 ## Locked
 
+- The game is **Holdfast**.
 - Hold. Exit, not a Spire. Injury + extraction, not permadeath-as-lore.
 - Untimed card puzzle. Honest dice: expression and range public, result on resolve.
 - Enemy intents show the action and the damage/Block dice. Buffs exact.
@@ -245,9 +246,9 @@ Save on leaving a node, menu, or the Hold.
 | World | Hold | Exit + rope. Thin. |
 | Classes | 2 | Warrior, Runesmith. Hunter later. |
 | Warrior starter | 8–10 | Dice Attack/Block + 1 Grit card |
-| Warrior pool | ~18–22 | Several behind Spark. Grit payoffs, some Fury |
+| Warrior pool | ~18–22 | Several behind Spark. Grit payoffs, own Might/Brace cards |
 | Runesmith starter | 8–10 | Dice Attack/Block + 1 Inscribe |
-| Runesmith pool | ~18–22 | Several behind Spark. Rune payoffs |
+| Runesmith pool | ~18–22 | Several behind Spark. Rune payoffs, own Might/Brace cards |
 | Shared relics | ~6 | Rule rewrites |
 | Class relics | ~4 each | Talk to Grit or Runes |
 | Enemies | ~8 | Tight dice. Must be able to rope a newbie |
@@ -292,16 +293,27 @@ The genre is full. Trademark is their *name*. Copyright is their art and card te
 
 Phone first. Desktop should work. Big targets. Inspect ≠ play. Engine and art not in this spec.
 
-## Still open (tune, not blockers)
+## What's left (honest)
 
-- How swingy is too swingy (dice vs Grit).
-- Exact Runestone grants and Ledger prices.
-- Look-and-feel so this is not a Spire with beards.
-- Art pipeline.
-- Hunter as class 3 after MVP holds.
+**This spec is not blocked** on world, class count, first verb, grind rule, or name.
+
+**Blocked on writing the next doc (content list), not on more systems:**
+
+- Named starter decks with dice expressions
+- ~12 Warrior Grit cards, ~12 Runesmith Rune cards, Might/Brace cards in each pool
+- Eight enemy intents, one elite, the door
+- Ledger nodes and Runestone prices
+
+**Blocked on building a playable, not on this spec:**
+
+- Engine pick (best tool for phone + desktop)
+- Art pipeline spike (the bottleneck you already named)
+- UI that does not look like a Spire with beards
+
+**Tune later, not blockers:** dice swing vs Grit, exact HP, Hunter as class 3.
 
 ## What “done” means
 
-If this file holds, next is a **content list**: Warrior starter with dice, ~12 named Grit cards, Runesmith starter, eight enemy intents, the door, the Ledger nodes and prices. Still not code.
+If this file holds, next is the **content list**. Still not code.
 
-If Grit or two-class Camp is wrong, edit this file first.
+If Grit, Might/Brace, or two-class Camp is wrong, edit this file first.
