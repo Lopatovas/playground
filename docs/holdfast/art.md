@@ -15,13 +15,16 @@
 
 Hard limits no tool removes: **consistency**, **hands / rune-glyphs**, **readable tiny icons**, **text in the image**. Do not generate words on cards.
 
-## Decision
+## Locked
 
-1. **Lock a style with 4–5 hero shots** (Hold, Warrior, Runesmith, one enemy). Done in `art-spike/`.
-2. Treat those as the bible. Later images are img2img / reference off that set, same prompt stem.
-3. **Portraits only in the PNG.** Frame, energy, `{dice}` string, keywords — Phaser.
-4. When the bible is boringly consistent, train a tiny LoRA (Scenario or local) on it. Not before.
-5. Icons: simple painted shapes or engine-drawn, not a new AI roll per icon.
+These four plates **are** the look. Do not regenerate them. Do not overwrite them.
+
+Canonical copies: [`assets/holdfast/art-bible/`](../../assets/holdfast/art-bible/)
+
+1. Later images are img2img / reference off that set, same prompt stem.
+2. **Portraits only in the PNG.** Frame, energy, `{dice}` string, keywords — engine-drawn.
+3. When new plates already match this bible, train a tiny LoRA. Not before.
+4. Icons: simple painted shapes or engine-drawn, not a new AI roll per icon.
 
 Prompt stem for the spike (reuse it):
 
@@ -31,13 +34,13 @@ Prompt stem for the spike (reuse it):
 
 Tried, not theorized. Four plates, same stem, no hired artist.
 
-| File | Role | What we learned |
-| ---- | ---- | --------------- |
-| `art-spike/holdfast-hold-hearth.jpg` | Camp | Hearth + rope-winch + door. More CG-lit stone than brush. Outlier. |
-| `art-spike/holdfast-warrior.jpg` | Warrior face | Painterly, braids, mail. Closest to the stem. |
-| `art-spike/holdfast-runesmith.jpg` | Runesmith face | Same torch + brush family. Hair-runes and crystal chisel read. Hands still a risk. |
-| `art-spike/holdfast-enemy-knuckle.jpg` | Enemy face | Pale knuckle-thing in a tunnel. Same paint, different anatomy. Fine as a bible plate. |
+| File | Role |
+| ---- | ---- |
+| `art-bible/hold-hearth.jpg` | Camp. Hearth, rope-winch, door. |
+| `art-bible/warrior.jpg` | Warrior. |
+| `art-bible/runesmith.jpg` | Runesmith. |
+| `art-bible/enemy-knuckle.jpg` | Enemy. |
 
-Portraits share a world. The hearth plate does not — next Hold shot should be img2img *from the Warrior/Runesmith paint*, not a new lit-3D prompt. Faces will still drift on a fresh text-only batch. That is the known hole.
+Warm torchlight, wet stone, painterly dwarf-hold. New art matches this. Faces will still drift on a fresh text-only batch — that is why new plates start from these files, not from a blank prompt.
 
 Commercial ship later: keep license notes per batch. Playground spike is for look, not a store page.
