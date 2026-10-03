@@ -1,0 +1,10 @@
+{
+  "id": "spit",
+  "name": "Spit",
+  "hp": 11,
+  "portrait": "knuckle",
+  "intents": [
+    { "kind": "Attack", "dice": "1d6", "weight": 2 },
+    { "kind": "Block", "dice": "1d4+2", "weight": 1 }
+  ]
+}

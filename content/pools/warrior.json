@@ -1,0 +1,7 @@
+[
+  { "id": "w_cleave", "name": "Cleave", "type": "Attack", "cost": 2, "dice": "2d4", "text": "Deal {dice} damage." },
+  { "id": "w_bash", "name": "Bash", "type": "Attack", "cost": 1, "dice": "1d4", "text": "Deal {dice} and gain 1 Grit.", "effect": { "kind": "gainGrit", "amount": 1 } },
+  { "id": "w_plate", "name": "Plate", "type": "Skill", "cost": 2, "dice": "1d4+6", "text": "Gain {dice} Block." },
+  { "id": "w_grit_payoff_1", "name": "Dead Nerve", "type": "Skill", "cost": 1, "dice": null, "text": "Gain 3 Grit.", "effect": { "kind": "gainGrit", "amount": 3 } },
+  { "id": "w_flex_2", "name": "Hunch", "type": "Skill", "cost": 1, "dice": null, "text": "Gain 3 Might.", "effect": { "kind": "gainMight", "amount": 3 } }
+]

@@ -3,7 +3,7 @@
   "cards": [
     { "id": "w_strike", "count": 4, "name": "Hew", "type": "Attack", "cost": 1, "dice": "1d6", "text": "Deal {dice} damage." },
     { "id": "w_guard", "count": 4, "name": "Raise", "type": "Skill", "cost": 1, "dice": "1d4+2", "text": "Gain {dice} Block." },
-    { "id": "w_numb", "count": 1, "name": "Numb", "type": "Skill", "cost": 1, "dice": null, "text": "Gain 2 Grit." },
-    { "id": "w_flex", "count": 1, "name": "Set Shoulder", "type": "Skill", "cost": 1, "dice": null, "text": "Gain 2 Might this fight." }
+    { "id": "w_numb", "count": 1, "name": "Numb", "type": "Skill", "cost": 1, "dice": null, "text": "Gain 2 Grit.", "effect": { "kind": "gainGrit", "amount": 2 } },
+    { "id": "w_flex", "count": 1, "name": "Set Shoulder", "type": "Skill", "cost": 1, "dice": null, "text": "Gain 2 Might this fight.", "effect": { "kind": "gainMight", "amount": 2 } }
   ]
 }

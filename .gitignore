@@ -1,0 +1,6 @@
+**/bin/
+**/obj/
+**/.godot/
+apps/holdfast/dist/
+*.user
+.DS_Store
