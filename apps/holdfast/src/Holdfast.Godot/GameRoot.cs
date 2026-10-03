@@ -245,6 +245,7 @@ public partial class GameRoot : Control
         var result = _combat.Play(fight, handIndex, 0, _rng);
         _banner = string.Join("  ", result.Events.Select(e => e.Text));
         ShowFight();
+        _fightView.AfterPlay(card);
     }
 
     private void EndTurn()
@@ -259,6 +260,10 @@ public partial class GameRoot : Control
         var ev = _combat.EndTurn(fight, _rng);
         _banner = string.Join("  ", ev.Select(e => e.Text));
         ShowFight();
+        if (fight.Status == EncounterStatus.Fighting)
+        {
+            _fightView.AfterEnemy();
+        }
     }
 
     private void AfterFightWin()
