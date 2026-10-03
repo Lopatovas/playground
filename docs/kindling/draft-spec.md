@@ -378,4 +378,12 @@ Candidate directions (pick, mix, or throw out):
 
 7. **Hold cut into elemental strata** (unpicked mix). Safe-hold + extraction from 5. The “outside” is fire galleries, drowned halls, living stone, howling shafts. Classes are hold guilds with exclusive verbs, not generic adventurers. Not locked.
 
+**From this pass (agent pitches, unpicked):**
+
+8. **The Beached God.** A leviathan on the sand. Town in the mouth. You cut toward the eye to open a way to the other shore. Extraction is a hook and a line. Classes are organ-cults (bone, bile, lung, blood) — exclusive verbs, not “I am fire.”
+9. **The Tide Town.** The town exists at low tide. You walk the seafloor for a dry road to the next town. Miss the water-line and they drag you home. Classes: harpoon, wreck-priest, cartographer, salt-diver.
+10. **The Rib-Foundry.** Village in the chest of a dead machine. You crawl the organs for a spark that opens a door. Extraction by chain. Classes: welder, spark-thief, oil-saint, scribe.
+11. **The Last Office.** You are a post-runner. The country ate the roads. Camp is the last working post. Death is “letter returned, postage due.” Classes are route-guilds, not elements.
+12. **The Ashfair.** A market that appears in ash and leaves. You hunt a lost stall / a way to stay. Stewards dump you at the gate by morning. Classes are stall bloodlines (glass, ink, bone, meat).
+
 Do not write lore, names of gods, or a plot until one of these is the picture.
