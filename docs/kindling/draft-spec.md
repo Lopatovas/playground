@@ -1,10 +1,10 @@
 # Kindling — draft spec
 
-Working title. Setting and art come later. This is the mechanical core only.
+Working title. Mechanics are far enough that theme is blocking imagination. Setting is now in play; not locked.
 
 Challenge anything. Numbers are draft targets, not balance.
 
-**Status:** Slay the Spire fight with dice on damage and Block. Roguelite character. Slots/tags/TFT shop are cut. Still a draft, not code.
+**Status:** Slay the Spire fight with dice on damage and Block. Roguelite career. Slots/tags/TFT shop are cut. Class-vs-grind is an open issue. Theme is next. Still a draft, not code.
 
 ## What this is
 
@@ -335,3 +335,45 @@ Engine and art pipeline are not in this spec.
 If this card lock, dice-on-numbers, Camp/Ledger, and Brand ladder hold, next is a thin content list: starter deck with dice expressions, eight enemy intents, the boss twist, the 12 Ledger nodes, Brand 1–5 rules. Not code. Not setting.
 
 If the RPG career is wrong after all, edit this file first.
+
+## Open issues (do not solve in passing)
+
+Parked. Theme next. Do not lock a class model until we can picture who these people are.
+
+1. **Classes vs the grind.** StS classes are real engines (Ironclad ≠ Silent: own starter, pool, relics, verb). If each engine is also its own RPG character, picking a new one means grinding Camp from zero. That will suck. Options on the table, not picked: (a) no classes, only in-run decks; (b) shared Camp / exclusive engines; (c) StS-style full kits and a thinner RPG; (d) subclass nodes on one person. (a) is not a class. (d) muddies exclusive gimmicks.
+
+2. **Dice swing vs puzzle.** Both sides roll. A bad pair of rolls can ignore a correct play. How much of a run is allowed to die to variance before it feels cheap?
+
+3. **Look-and-feel clone.** Same fight structure. If the screen also looks like StS, we are a knockoff even with dice. Theme and UI have to carry difference.
+
+4. **First-slice power curve.** Boss tuned for a mid-Ledger climber. Easy to miss and make run 1 hopeless or run 6 trivial.
+
+5. **Art pipeline.** Still a later spike. Theme will decide what we even need to generate.
+
+## Theme (scratch, not locked)
+
+Mechanics first left us unable to picture the Camp, the climb, or a second class. Setting is now in the way of design, not after it.
+
+What the theme has to wear:
+
+- one person who dies and sits down at a Camp
+- a Ledger they spend into
+- Kindling as currency
+- cards, and dice on the numbers
+- a short branchy climb
+- Brands as a finite harder ladder
+- later: more than one exclusive engine (if we keep classes)
+
+Not a Spire. Not their characters. Working title Kindling is a placeholder; it can die with the theme.
+
+Candidate directions (pick, mix, or throw out):
+
+1. **The last fire.** Camp is a hearth. Kindling is fuel. Death is the fire going out. You walk back and feed it. Classes are different ways of keeping it (ember, smoke, coal). Dice are whether the flame catches.
+
+2. **The Ledger.** You owe. Each death is a line in the book. The climb is a collection run. Dice are the creditor’s whim. Classes are different debts or different collectors.
+
+3. **The table.** Camp is a game table. The mountain is a night of hands. Brands are higher stakes. Classes are different games. Dice are literal.
+
+4. **Not up.** A road, a coast, a mine, a wound in the ground, a city you cannot leave. Same loop. Avoids “another tower.”
+
+Do not write lore, names of gods, or a plot until one of these (or a fifth) is the picture.
