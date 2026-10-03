@@ -33,7 +33,13 @@ project/assembly_name="Holdfast.Godot"
 
 pointing/emulate_touch_from_mouse=true
 
+[gui]
+
+theme/default_font_antialiasing=1
+theme/default_font_hinting=1
+
 [rendering]
 
 renderer/rendering_method="mobile"
 textures/vram_compression/import_etc2_astc=true
+environment/defaults/default_clear_color=Color(0.05, 0.04, 0.03, 1)

@@ -43,13 +43,18 @@ public sealed class Encounter
     {
         if (Status != EncounterStatus.Fighting)
         {
-            throw new InvalidOperationException("Fight is over.");
+            return new PlayResult([], "none");
+        }
+
+        if (handIndex < 0 || handIndex >= Dwarf.Deck.Hand.Count)
+        {
+            return new PlayResult([], "none");
         }
 
         var card = Dwarf.Deck.Hand[handIndex];
         if (card.Cost > Dwarf.Energy)
         {
-            throw new InvalidOperationException("Not enough energy.");
+            return new PlayResult([], "none");
         }
 
         var targets = PickTargets(card, targetIndex);
