@@ -60,16 +60,13 @@ public partial class ActorPlate : Control
         AddChild(_name);
         AddChild(bar);
         AddChild(_hp);
-        Reseat();
-        StartIdle();
+        CallDeferred(MethodName.BootMotion);
     }
 
-    public override void _Notification(int what)
+    private void BootMotion()
     {
-        if (what == NotificationResized)
-        {
-            Reseat();
-        }
+        Reseat();
+        StartIdle();
     }
 
     public void Bind(Actor actor, string bodyPath, string? intent, bool facesRight)
@@ -83,14 +80,16 @@ public partial class ActorPlate : Control
         _hpFill.AnchorRight = Mathf.Clamp(ratio, 0, 1);
         _hp.Text = actor.Block > 0 ? $"{actor.Hp} / {actor.MaxHp}   Block {actor.Block}" : $"{actor.Hp} / {actor.MaxHp}";
         Modulate = actor.IsDead ? new Color(0.45f, 0.4f, 0.38f) : Colors.White;
-        Reseat();
-        StartIdle();
+        if (_rest == Vector2.Zero)
+        {
+            Reseat();
+            StartIdle();
+        }
     }
 
     public void StartIdle()
     {
         _idle?.Kill();
-        Reseat();
         _idle = CreateTween().SetLoops();
         _idle.TweenProperty(_sprite, "position:y", _rest.Y - 10, 0.9f)
             .SetTrans(Tween.TransitionType.Sine)
@@ -125,7 +124,6 @@ public partial class ActorPlate : Control
     private void Burst(float x, float outTime, float backTime)
     {
         _idle?.Kill();
-        Reseat();
         var tw = CreateTween();
         tw.TweenProperty(_sprite, "position:x", _rest.X + x, outTime).SetTrans(Tween.TransitionType.Back);
         tw.TweenProperty(_sprite, "position:x", _rest.X, backTime).SetTrans(Tween.TransitionType.Sine);
