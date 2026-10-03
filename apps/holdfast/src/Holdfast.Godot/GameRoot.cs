@@ -6,7 +6,6 @@ using Holdfast.Application.Run;
 using Holdfast.Application.Save;
 using Holdfast.Application.Settings;
 using Holdfast.Domain.Actors;
-using Holdfast.Domain.Cards;
 using Holdfast.Domain.Combat;
 using Holdfast.Domain.Dice;
 using Holdfast.Domain.Hold;
@@ -17,10 +16,6 @@ namespace Holdfast.GodotGame;
 
 public partial class GameRoot : Control
 {
-    private static readonly Color Gold = new(0.91f, 0.84f, 0.64f);
-    private static readonly Color Muted = new(0.77f, 0.71f, 0.54f);
-    private static readonly Color Ink = new(0.05f, 0.04f, 0.03f);
-
     private ContentService _content = null!;
     private HoldService _hold = null!;
     private SaveService _save = null!;
@@ -29,41 +24,19 @@ public partial class GameRoot : Control
     private readonly CombatService _combat = new();
     private readonly IRandom _rng = new SystemRandom();
     private string _banner = "";
-    private VBoxContainer _stack = null!;
-    private FontFile _font = null!;
-    private FontFile _bold = null!;
     private bool _busy;
     private Action? _pendingTap;
+
+    private HoldView _holdView = null!;
+    private FightView _fightView = null!;
+    private SheetView _sheet = null!;
 
     public override void _Ready()
     {
         SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
         MouseFilter = MouseFilterEnum.Stop;
-        _font = GD.Load<FontFile>("res://fonts/LiberationSans-Regular.ttf")
-            ?? throw new InvalidOperationException("Missing LiberationSans-Regular.ttf");
-        _bold = GD.Load<FontFile>("res://fonts/LiberationSans-Bold.ttf") ?? _font;
-        WarmFont(_font);
-        WarmFont(_bold);
-        var theme = new Theme();
-        theme.DefaultFont = _font;
-        theme.DefaultFontSize = 18;
-        theme.SetFont("font", "Button", _font);
-        theme.SetFontSize("font_size", "Button", 18);
-        theme.SetFont("font", "Label", _font);
-        theme.SetFontSize("font_size", "Label", 18);
-        theme.SetColor("font_color", "Button", Gold);
-        theme.SetColor("font_hover_color", "Button", Gold);
-        theme.SetColor("font_pressed_color", "Button", Gold);
-        theme.SetColor("font_disabled_color", "Button", Muted);
-        Theme = theme;
-
-        var bg = new ColorRect
-        {
-            Color = Ink,
-            MouseFilter = MouseFilterEnum.Ignore
-        };
-        bg.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-        AddChild(bg);
+        UiChrome.Ensure();
+        Theme = UiChrome.GameTheme();
 
         var user = OS.GetUserDataDir();
         _content = new ContentService(new GodotContentSource());
@@ -74,47 +47,28 @@ public partial class GameRoot : Control
         _settings = new SettingsService(new FileSettingsStore(Path.Combine(user, "settings.json")));
         _runs = new RunService(_content.Catalog, progress, _rng);
 
-        var scroll = new ScrollContainer
+        _holdView = GD.Load<PackedScene>("res://scenes/hold/HoldView.tscn").Instantiate<HoldView>();
+        _fightView = GD.Load<PackedScene>("res://scenes/fight/FightView.tscn").Instantiate<FightView>();
+        _sheet = GD.Load<PackedScene>("res://scenes/hold/SheetView.tscn").Instantiate<SheetView>();
+        foreach (var view in new Control[] { _holdView, _fightView, _sheet })
         {
-            HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled,
-            SizeFlagsHorizontal = SizeFlags.ExpandFill,
-            SizeFlagsVertical = SizeFlags.ExpandFill
-        };
-        scroll.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-        _stack = new VBoxContainer
+            view.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+            AddChild(view);
+            view.Hide();
+        }
+
+        _holdView.Walk += cls => Tap(() => Begin(cls));
+        _holdView.Buy += id => Tap(() =>
         {
-            SizeFlagsHorizontal = SizeFlags.ExpandFill,
-            SizeFlagsVertical = SizeFlags.ShrinkBegin
-        };
-        _stack.AddThemeConstantOverride("separation", 12);
-        var pad = new MarginContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill };
-        pad.AddThemeConstantOverride("margin_left", 18);
-        pad.AddThemeConstantOverride("margin_right", 18);
-        pad.AddThemeConstantOverride("margin_top", 20);
-        pad.AddThemeConstantOverride("margin_bottom", 28);
-        pad.AddChild(_stack);
-        scroll.AddChild(pad);
-        AddChild(scroll);
+            _hold.Buy(id);
+            _save.WriteHold(_hold.Progress);
+            ShowHold();
+        });
+        _holdView.Peek += () => Tap(ShowPeek);
+        _fightView.PlayCard += idx => Tap(() => PlayCard(idx));
+        _fightView.EndTurn += () => Tap(EndTurn);
+
         ShowHold();
-    }
-
-    private void Rebuild(Action<VBoxContainer> fill)
-    {
-        var next = new VBoxContainer
-        {
-            SizeFlagsHorizontal = SizeFlags.ExpandFill,
-            SizeFlagsVertical = SizeFlags.ShrinkBegin
-        };
-        next.AddThemeConstantOverride("separation", 12);
-        fill(next);
-
-        var parent = _stack.GetParent();
-        var index = _stack.GetIndex();
-        parent.RemoveChild(_stack);
-        _stack.QueueFree();
-        parent.AddChild(next);
-        parent.MoveChild(next, index);
-        _stack = next;
     }
 
     private void Tap(Action action)
@@ -141,14 +95,7 @@ public partial class GameRoot : Control
         {
             _banner = "The hold holds. Try that again.";
             GD.PushWarning(ex.ToString());
-            try
-            {
-                ShowHold();
-            }
-            catch (Exception fallback)
-            {
-                GD.PushWarning(fallback.ToString());
-            }
+            ShowHold();
         }
         finally
         {
@@ -156,34 +103,17 @@ public partial class GameRoot : Control
         }
     }
 
+    private void ShowOnly(Control view)
+    {
+        _holdView.Visible = view == _holdView;
+        _fightView.Visible = view == _fightView;
+        _sheet.Visible = view == _sheet;
+    }
+
     private void ShowHold()
     {
-        Rebuild(box =>
-        {
-            box.AddChild(Portrait("res://art-bible/hold-hearth.jpg", 390, 160));
-            box.AddChild(Title("HOLDFAST"));
-            box.AddChild(Line($"Runestones {_hold.Progress.Runestones} · Brand {_hold.Progress.Brand[ClassId.Warrior]}"));
-            box.AddChild(Line("sideload 0.1.1"));
-            box.AddChild(Btn("Walk as Warrior", () => Tap(() => Begin(ClassId.Warrior))));
-            if (_hold.Progress.Unlocked.Contains(ClassId.Runesmith))
-            {
-                box.AddChild(Btn("Walk as Runesmith", () => Tap(() => Begin(ClassId.Runesmith))));
-            }
-
-            box.AddChild(Section("Ledger"));
-            foreach (var node in _hold.Available())
-            {
-                var id = node.Id;
-                box.AddChild(Btn($"{node.Name}  ·  {node.Cost} stones", () => Tap(() =>
-                {
-                    _hold.Buy(id);
-                    _save.WriteHold(_hold.Progress);
-                    ShowHold();
-                })));
-            }
-
-            box.AddChild(Btn("Peek", () => Tap(ShowPeek)));
-        });
+        ShowOnly(_holdView);
+        _holdView.Bind(_hold);
     }
 
     private void Begin(ClassId cls)
@@ -210,12 +140,12 @@ public partial class GameRoot : Control
             case NodeKind.Rest:
                 _runs.Rest();
                 _banner = "You rest. The rope-crews keep the fire.";
-                ShowMessage(() => Tap(ShowMap));
+                ShowMessage("The Hold remembers", _banner, () => Tap(ShowMap));
                 break;
             case NodeKind.Event:
             case NodeKind.Treasure:
                 _banner = node.Kind == NodeKind.Treasure ? "Old gold in the dark." : "Something in the stone.";
-                ShowMessage(() => Tap(() =>
+                ShowMessage("The Hold remembers", _banner, () => Tap(() =>
                 {
                     _runs.FinishNode();
                     ShowMap();
@@ -234,34 +164,36 @@ public partial class GameRoot : Control
         }
 
         var here = run.Map.Get(run.CurrentId);
-        Rebuild(box =>
+        var actions = new List<(string, Action)>();
+        if (!here.Cleared)
         {
-            box.AddChild(Title("The dark"));
-            box.AddChild(Line($"{run.Dwarf.Name}  {run.Dwarf.Hp} / {run.Dwarf.MaxHp}"));
-            box.AddChild(Line($"{run.Gold} gold"));
-            box.AddChild(Line($"Here: {here.Kind}"));
-            if (!here.Cleared)
-            {
-                box.AddChild(Btn("Enter", () => Tap(OpenNode)));
-                return;
-            }
-
+            actions.Add(("Enter", () => Tap(OpenNode)));
+        }
+        else
+        {
             foreach (var id in here.Next)
             {
-                var n = run.Map.Get(id);
                 var dest = id;
-                box.AddChild(Btn($"{n.Kind}", () => Tap(() =>
+                var kind = run.Map.Get(id).Kind.ToString();
+                actions.Add((kind, () => Tap(() =>
                 {
                     _runs.WalkTo(dest);
                     OpenNode();
                 })));
             }
+        }
 
-            if (here.Next.Count == 0)
-            {
-                box.AddChild(Line("No path left."));
-            }
-        });
+        if (actions.Count == 0)
+        {
+            actions.Add(("Hold", () => Tap(ShowHold)));
+        }
+
+        ShowOnly(_sheet);
+        _sheet.ShowSheet(
+            "The dark",
+            $"{run.Dwarf.Name}  {run.Dwarf.Hp} / {run.Dwarf.MaxHp}\n{run.Gold} gold\nHere: {here.Kind}",
+            "res://art/fight-cavern.jpg",
+            actions);
     }
 
     private void ShowFight()
@@ -286,62 +218,9 @@ public partial class GameRoot : Control
             return;
         }
 
-        Rebuild(box =>
-        {
-            box.AddChild(Title("Fight"));
-            foreach (var enemy in fight.Enemies)
-            {
-                var e = enemy;
-                box.AddChild(Line(e.IsDead
-                    ? $"{e.Name} is down"
-                    : $"{e.Name}   {e.Hp} / {e.MaxHp}"));
-                if (!e.IsDead)
-                {
-                    box.AddChild(Line($"Intent: {e.Intent?.Label ?? "-"}"));
-                }
-            }
-
-            var faces = new HBoxContainer
-            {
-                Alignment = BoxContainer.AlignmentMode.Center,
-                SizeFlagsHorizontal = SizeFlags.ExpandFill
-            };
-            faces.AddThemeConstantOverride("separation", 16);
-            faces.AddChild(Portrait(
-                run.Class == ClassId.Warrior ? "res://art-bible/warrior.jpg" : "res://art-bible/runesmith.jpg",
-                140, 140));
-            faces.AddChild(Portrait("res://art-bible/enemy-knuckle.jpg", 140, 140));
-            box.AddChild(faces);
-
-            box.AddChild(Line($"{run.Dwarf.Name}   {run.Dwarf.Hp} / {run.Dwarf.MaxHp}"));
-            box.AddChild(Line($"Block {run.Dwarf.Block}   Energy {run.Dwarf.Energy}   Grit {run.Dwarf.Grit}   Might {run.Dwarf.Might}"));
-            if (!string.IsNullOrEmpty(_banner))
-            {
-                box.AddChild(Line(_banner));
-            }
-
-            for (var i = 0; i < fight.Dwarf.Deck.Hand.Count; i++)
-            {
-                var card = fight.Dwarf.Deck.Hand[i];
-                var idx = i;
-                var dice = DiceText(card);
-                var body = string.IsNullOrEmpty(dice) ? card.Text : card.Text.Replace("{dice}", dice);
-                var label = $"{card.Name}  ·  {card.Cost} energy\n{body}";
-                var can = card.Cost <= fight.Dwarf.Energy;
-                box.AddChild(Btn(label, () => Tap(() => PlayCard(idx)), can));
-            }
-
-            box.AddChild(Btn("End turn", () => Tap(EndTurn)));
-        });
+        ShowOnly(_fightView);
+        _fightView.Bind(run, fight, _banner);
     }
-
-    private static string DiceText(Card card) =>
-        card switch
-        {
-            AttackCard a => a.Damage.Printed,
-            SkillCard { Block: not null } s => s.Block.Printed,
-            _ => ""
-        };
 
     private void PlayCard(int handIndex)
     {
@@ -399,64 +278,47 @@ public partial class GameRoot : Control
     private void ShowReward()
     {
         var run = _runs.Current!;
-        Rebuild(box =>
-        {
-            box.AddChild(Title("Take a card"));
-            for (var i = 0; i < run.RewardChoices.Count; i++)
+        var actions = run.RewardChoices
+            .Select((c, i) => (c.Name, (Action)(() => Tap(() =>
             {
-                var idx = i;
-                var c = run.RewardChoices[i];
-                box.AddChild(Btn($"{c.Name}   {c.Text}", () => Tap(() =>
-                {
-                    _runs.PickReward(idx);
-                    _runs.FinishNode();
-                    ShowMap();
-                })));
-            }
-
-            box.AddChild(Btn("Skip", () => Tap(() =>
-            {
-                run.RewardChoices.Clear();
+                _runs.PickReward(i);
                 _runs.FinishNode();
                 ShowMap();
-            })));
-        });
+            }))))
+            .ToList();
+        actions.Add(("Skip", () => Tap(() =>
+        {
+            run.RewardChoices.Clear();
+            _runs.FinishNode();
+            ShowMap();
+        })));
+        ShowOnly(_sheet);
+        _sheet.ShowSheet("Take a card", "The dark leaves something in your hand.", "res://art-bible/hold-hearth.jpg", actions);
     }
 
     private void ShowShop()
     {
         var run = _runs.Current!;
-        Rebuild(box =>
+        var actions = run.ShopStock
+            .Select((c, i) => ($"{c.Name}  ·  50 gold", (Action)(() => Tap(() =>
+            {
+                _runs.BuyShop(i);
+                ShowShop();
+            }))))
+            .ToList();
+        actions.Add(("Leave", () => Tap(() =>
         {
-            box.AddChild(Title("Shop"));
-            box.AddChild(Line($"{run.Gold} gold"));
-            for (var i = 0; i < run.ShopStock.Count; i++)
-            {
-                var idx = i;
-                var c = run.ShopStock[i];
-                box.AddChild(Btn($"{c.Name}   50 gold", () => Tap(() =>
-                {
-                    _runs.BuyShop(idx);
-                    ShowShop();
-                }), run.Gold >= 50));
-            }
-
-            box.AddChild(Btn("Leave", () => Tap(() =>
-            {
-                _runs.FinishNode();
-                ShowMap();
-            })));
-        });
+            _runs.FinishNode();
+            ShowMap();
+        })));
+        ShowOnly(_sheet);
+        _sheet.ShowSheet("Shop", $"{run.Gold} gold", "res://art-bible/hold-hearth.jpg", actions);
     }
 
-    private void ShowMessage(Action next)
+    private void ShowMessage(string title, string body, Action next)
     {
-        Rebuild(box =>
-        {
-            box.AddChild(Title("The Hold remembers"));
-            box.AddChild(Line(_banner));
-            box.AddChild(Btn("Onward", next));
-        });
+        ShowOnly(_sheet);
+        _sheet.ShowSheet(title, body, "res://art-bible/hold-hearth.jpg", [("Onward", next)]);
     }
 
     private void Rope()
@@ -465,13 +327,12 @@ public partial class GameRoot : Control
         _hold.GrantRunestones(stones);
         _save.WriteHold(_hold.Progress);
         _runs.Die();
-        Rebuild(box =>
-        {
-            box.AddChild(Portrait("res://art-bible/hold-hearth.jpg", 390, 150));
-            box.AddChild(Title("The rope"));
-            box.AddChild(Line($"They haul you home. +{stones} Runestones."));
-            box.AddChild(Btn("Hold", () => Tap(ShowHold)));
-        });
+        ShowOnly(_sheet);
+        _sheet.ShowSheet(
+            "The rope",
+            $"They haul you home. +{stones} Runestones.",
+            "res://art-bible/hold-hearth.jpg",
+            [("Hold", () => Tap(ShowHold))]);
     }
 
     private void ShowWin()
@@ -479,120 +340,21 @@ public partial class GameRoot : Control
         var stones = _runs.PayoutRunestones();
         _hold.GrantRunestones(stones);
         _save.WriteHold(_hold.Progress);
-        Rebuild(box =>
-        {
-            box.AddChild(Title("The door"));
-            box.AddChild(Line($"You cut a way out. +{stones} Runestones."));
-            box.AddChild(Btn("Hold", () => Tap(ShowHold)));
-        });
+        ShowOnly(_sheet);
+        _sheet.ShowSheet(
+            "The door",
+            $"You cut a way out. +{stones} Runestones.",
+            "res://art-bible/hold-hearth.jpg",
+            [("Hold", () => Tap(ShowHold))]);
     }
 
     private void ShowPeek()
     {
-        Rebuild(box =>
-        {
-            box.AddChild(Title("Peek"));
-            box.AddChild(Line("Style bible and a canned Hew."));
-            var row = new HBoxContainer { Alignment = BoxContainer.AlignmentMode.Center, SizeFlagsHorizontal = SizeFlags.ExpandFill };
-            row.AddThemeConstantOverride("separation", 10);
-            row.AddChild(Portrait("res://art-bible/warrior.jpg", 110, 110));
-            row.AddChild(Portrait("res://art-bible/runesmith.jpg", 110, 110));
-            row.AddChild(Portrait("res://art-bible/enemy-knuckle.jpg", 110, 110));
-            box.AddChild(row);
-            var hew = _content.Catalog.StarterCards(ClassId.Warrior).First(c => c is AttackCard);
-            var dwarf = new Dwarf(ClassId.Warrior, 40, 3, [hew]);
-            var enemy = _content.Catalog.Enemies[0].Spawn();
-            var enc = _combat.Start(dwarf, [enemy], _content.Catalog.Tuning, new FixedRandom(6, 1, 1, 1, 1, 1, 6));
-            if (enc.Dwarf.Deck.Hand.Count > 0)
-            {
-                var r = _combat.Play(enc, 0, 0, new FixedRandom(6));
-                box.AddChild(Line(string.Join("  ", r.Events.Select(e => e.Text))));
-            }
-
-            box.AddChild(Btn("Back", () => Tap(ShowHold)));
-        });
-    }
-
-    private Label Title(string text)
-    {
-        var l = new Label
-        {
-            Text = text,
-            HorizontalAlignment = HorizontalAlignment.Center,
-            AutowrapMode = TextServer.AutowrapMode.Off,
-            SizeFlagsHorizontal = SizeFlags.ExpandFill
-        };
-        l.AddThemeFontOverride("font", _bold);
-        l.AddThemeFontSizeOverride("font_size", 30);
-        l.AddThemeColorOverride("font_color", Gold);
-        return l;
-    }
-
-    private Label Line(string text)
-    {
-        var l = new Label
-        {
-            Text = text,
-            AutowrapMode = TextServer.AutowrapMode.Word,
-            SizeFlagsHorizontal = SizeFlags.ExpandFill
-        };
-        l.AddThemeFontOverride("font", _font);
-        l.AddThemeFontSizeOverride("font_size", 17);
-        l.AddThemeColorOverride("font_color", Muted);
-        return l;
-    }
-
-    private Label Section(string text)
-    {
-        var l = new Label
-        {
-            Text = text,
-            SizeFlagsHorizontal = SizeFlags.ExpandFill
-        };
-        l.AddThemeFontOverride("font", _bold);
-        l.AddThemeFontSizeOverride("font_size", 20);
-        l.AddThemeColorOverride("font_color", Gold);
-        return l;
-    }
-
-    private Button Btn(string text, Action onPressed, bool enabled = true)
-    {
-        var b = new Button
-        {
-            Text = text,
-            Disabled = !enabled,
-            AutowrapMode = TextServer.AutowrapMode.WordSmart,
-            ClipText = false,
-            TextOverrunBehavior = TextServer.OverrunBehavior.NoTrimming,
-            CustomMinimumSize = new Vector2(0, 62),
-            SizeFlagsHorizontal = SizeFlags.ExpandFill
-        };
-        b.AddThemeFontOverride("font", _font);
-        b.AddThemeFontSizeOverride("font_size", 18);
-        b.Pressed += onPressed;
-        return b;
-    }
-
-    private static void WarmFont(FontFile font)
-    {
-        const string sample = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789/-·+";
-        foreach (var size in new[] { 17, 18, 20, 30 })
-        {
-            font.GetStringSize(sample, HorizontalAlignment.Left, -1, size);
-        }
-    }
-
-    private static TextureRect Portrait(string path, int width, int height)
-    {
-        var tex = GD.Load<Texture2D>(path);
-        return new TextureRect
-        {
-            Texture = tex,
-            ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
-            StretchMode = TextureRect.StretchModeEnum.KeepAspectCovered,
-            CustomMinimumSize = new Vector2(width, height),
-            SizeFlagsHorizontal = SizeFlags.ShrinkCenter,
-            SizeFlagsVertical = SizeFlags.ShrinkCenter
-        };
+        ShowOnly(_sheet);
+        _sheet.ShowSheet(
+            "Peek",
+            "Hearth, Warrior, and the first knuckle. The fight is the cavern.",
+            "res://art-bible/hold-hearth.jpg",
+            [("Hold", () => Tap(ShowHold))]);
     }
 }
