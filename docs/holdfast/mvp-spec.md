@@ -316,6 +316,8 @@ Phone first. Desktop should work. Big targets. Inspect ≠ play.
 - Eight enemy intents, one elite, the door (same JSON shape as starters)
 - The rest of each Spark branch
 
+**Building shape:** [architecture/](../../architecture/), [quality/](../../quality/), [stories/](../../stories/).
+
 **Still a building job, not this spec:**
 
 - Godot project that *reads* the JSON (no hardcoded Hew `1d6`)
