@@ -22,7 +22,7 @@ Final output of the experiment is a playable POC. This doc is the first artifact
 
 - One playable character. Not a guild, not a TFT board of champions.
 - Combat is an **untimed card puzzle**. No APM. No real-time dodging. A turn waits forever. Inspect a card without playing it. Undo nothing mid-resolution — play is immediate — but there is no clock.
-- Combat is honest. Enemy intents are visible before you act. Dice are printed on the card (`2d4+1`). You see the range before you play. You do not see the result until it resolves.
+- Combat is honest. Enemy intents are visible before you act. Dice are printed on the card **and** on the intent (`2d4+1`, range shown). You see the band before anyone rolls. You do not see the result until it resolves.
 - You play the fight. Not watch-and-hope autobattle.
 - Branching path, Slay the Spire style.
 - Die, then go again. No endless mode in the first slice.
@@ -32,7 +32,7 @@ Final output of the experiment is a playable POC. This doc is the first artifact
 - The game is **beatable**. First win is Brand 0. After that, a finite **Brand** ladder (StS Ascension shape) is why you come back. Each Brand is a named rule, not +10% HP. Beating the top Brand is beating Kindling. No endless number climb.
 - No slots. No tags. No stoke-for-set-bonus. Run build is cards + relics + gold, like StS.
 
-**Combat decision (this draft):** hand, energy, draw pile, discard, Block, intents. Damage and Block are dice, not flat numbers. No board. No stepping.
+**Combat decision (this draft):** hand, energy, draw pile, discard, Block, intents. Damage and Block are dice on **both** sides, not flat numbers. No board. No stepping.
 
 Rejected: Hades / Brotato / Vampire Survivors (APM). Peglin (physics). Guildrun spectate-combat. The 7-tile rewrite-the-hit fight (movement management). Dicey Dungeons (dice as the *whole* toy — allocate rolls to equipment). Wildfrost’s unit board. Three slots and TFT tags on one hero. StS’s fully flat damage/Block.
 
@@ -80,11 +80,11 @@ One hero. One or more enemies. No positions.
 
 At the start of your turn: energy is set to the base (draft: 3), you draw up (draft: 5), start-of-turn effects fire.
 
-You play cards. They happen now. Energy cards cost energy. Then you end the turn. Unplayed cards discard. Enemies act exactly as their intents showed.
+You play cards. They happen now. Energy cards cost energy. Then you end the turn. Unplayed cards discard. Enemies do what they telegraphed, and **their** damage and Block roll too.
 
-**Intents** are public: attack for N, block, buff, wait. **Enemy numbers stay exact.** You know what is coming. Your answer is the swingy part.
+**Intents** are public: attack, block, buff, wait. Attack and Block intents show a dice expression and a range (`2d4+1`, 3–9), not a single N. Buff and wait stay exact (“gain 1 Strength”). No hidden “what will they do.” The unknown is this roll, not the action.
 
-**Block** absorbs incoming attack damage this turn, then falls off. The turn is still “answer the hit or spend HP to set up,” except you might roll under.
+**Block** absorbs incoming attack damage this turn, then falls off. The turn is “cover their *band*, or gamble the low end, or spend HP to set up.” Both sides can roll under.
 
 **Powers** stay in play for the rest of the fight. They are how a deck becomes a machine.
 
@@ -94,18 +94,18 @@ Inspect never plays. Fat finger on a phone must not spend the card.
 
 StS is a calculator: they hit 9, Guard gives 8, you take 1. Kindling is a calculator with a roll.
 
-- Attack and Block cards print a **dice expression**, not a flat number. Draft faces: `1d4`, `1d6`, `2d4`, plus a small flat (`1d6+2`).
-- The card also shows the range (`3–8`). You may stare at that forever.
-- When the card resolves, the dice roll. That is the number. No hidden modifier after the roll.
-- Flat bonuses (a Power that says +2 to Attacks) add **after** the roll.
-- Energy, draw, and “gain a Power” do not roll unless the card says so.
-- Bands stay tight. No `1d20` on a starter Strike. Wide dice are a rare-card identity, not the default.
+- Attack and Block print a **dice expression**, not a flat number — on your cards and on their intents. Draft faces: `1d4`, `1d6`, `2d4`, plus a small flat (`1d6+2`).
+- The card or intent also shows the range (`3–8`). You may stare at that forever.
+- When it resolves, the dice roll. That is the number. No hidden modifier after the roll.
+- Flat bonuses (a Power that says +2 to Attacks, their Strength) add **after** the roll.
+- Energy, draw, “gain a Power,” and “gain Strength” do not roll unless the text says so.
+- Bands stay tight. No `1d20` on a starter Strike or a floor-1 jab. Wide dice are a rare-card or boss identity, not the default.
 
-Some cards may still be flat (`Block 6`) so “safe” vs “swingy” is a deck choice.
+Some of your cards may still be flat (`Block 6`) so “safe” vs “swingy” is a deck choice. Early enemies stay on small dice. Bosses may use more dice or a wider band.
 
-**Example.** They intend 9. You play `Guard — 2d4+2` (range 4–10). You might cover, you might eat 5. You can still play a second Block if you have the energy. That is the new decision: spend more to buy less variance, or gamble the rest of the turn.
+**Example.** They intend `2d6` (2–12). You play `Guard — 2d4+2` (4–10). You are not covering the top. You can spend a second Block to push your band over theirs, or take the bet that they roll mid. Both roll. Maybe you live for free. Maybe you eat 8. That is the new decision: buy out of the overlap, or gamble it.
 
-Relics can later reroll, bump a face, or set a minimum. First slice can live without those.
+Relics can later reroll (yours or theirs), bump a face, or set a minimum. First slice can live without those.
 
 ## What you collect (this run)
 
@@ -139,9 +139,9 @@ About ten nodes. Types visible. Exact enemies and shop stock hidden. Pick a figh
 
 ### You enter a fight
 
-Two enemies. One intends 9. One intends to buff. You have 3 energy and 5 cards. You may stare.
+Two enemies. One intends `2d6` (2–12). One intends to buff. You have 3 energy and 5 cards. You may stare.
 
-They intend 9. You play `2d4+2` Block and a `1d6` Strike. The Block comes up 6. You take 3, or you spend the last energy on a second Block. Cards resolve when played, dice and all. You end the turn. They do the 9 they showed.
+You play `2d4+2` Block and a `1d6` Strike. Your Block comes up 7. You end the turn. They roll `2d6` and hit 9. You take 2. Next time you might over-block the band, or stab the buffer and pray they roll low.
 
 A few turns later the fight is over.
 
@@ -281,7 +281,7 @@ No infinite +1 damage every run. No “I have 400 HP and the act is a corridor.�
 | Thing              | Draft count | Notes                                      |
 | ------------------ | ----------- | ------------------------------------------ |
 | Playable character | 1           | One identity, 2–3 viable directions        |
-| Starter cards      | 8–10        | Weak, complete. Tuned for a *naked* climber |
+| Starter cards      | 8–10        | Weak, complete, dice on Attack/Block. Tuned for a *naked* climber |
 | Card pool          | ~18–24      | Several locked behind Spark                |
 | Relics             | ~8          | At least 2 change a rule, not a stat       |
 | Enemies            | ~8          | Early floors must be able to kill a newbie |
