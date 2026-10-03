@@ -35,6 +35,7 @@ public partial class GameRoot : Control
     {
         SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
         MouseFilter = MouseFilterEnum.Stop;
+        ClipContents = false;
         UiChrome.Ensure();
         Theme = UiChrome.GameTheme();
 

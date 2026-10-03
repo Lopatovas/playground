@@ -22,6 +22,7 @@ public partial class FightView : Control
     {
         SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
         MouseFilter = MouseFilterEnum.Stop;
+        ClipContents = false;
         _cardScene = GD.Load<PackedScene>("res://scenes/fight/CardPlate.tscn");
 
         var bg = new TextureRect
@@ -36,18 +37,18 @@ public partial class FightView : Control
 
         _dwarf = new ActorPlate();
         _dwarf.SetAnchorsPreset(LayoutPreset.BottomLeft);
-        _dwarf.OffsetLeft = 8;
-        _dwarf.OffsetTop = -640;
-        _dwarf.OffsetRight = 430;
-        _dwarf.OffsetBottom = -200;
+        _dwarf.OffsetLeft = 0;
+        _dwarf.OffsetTop = -700;
+        _dwarf.OffsetRight = 520;
+        _dwarf.OffsetBottom = -188;
         AddChild(_dwarf);
 
         _enemy = new ActorPlate();
         _enemy.SetAnchorsPreset(LayoutPreset.BottomRight);
-        _enemy.OffsetLeft = -430;
-        _enemy.OffsetTop = -640;
-        _enemy.OffsetRight = -8;
-        _enemy.OffsetBottom = -200;
+        _enemy.OffsetLeft = -520;
+        _enemy.OffsetTop = -700;
+        _enemy.OffsetRight = 0;
+        _enemy.OffsetBottom = -188;
         AddChild(_enemy);
 
         _vitals = UiChrome.Text("", 16, UiChrome.Bold, UiChrome.Gold);

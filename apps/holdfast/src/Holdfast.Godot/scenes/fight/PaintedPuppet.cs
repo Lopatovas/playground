@@ -77,7 +77,7 @@ public partial class PaintedPuppet : Node2D
             Attach(_armNear, "res://art/puppets/e-reach.png", 280, 40);
         }
 
-        Scale = new Vector2(0.34f, 0.34f);
+        Scale = new Vector2(0.30f, 0.30f);
         StartIdle();
     }
 

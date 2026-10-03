@@ -16,6 +16,7 @@ public partial class ActorPlate : Control
     public override void _Ready()
     {
         MouseFilter = MouseFilterEnum.Ignore;
+        ClipContents = false;
 
         _intent = UiChrome.Text("", 16, UiChrome.Bold, UiChrome.Gold);
         _intent.HorizontalAlignment = HorizontalAlignment.Center;
