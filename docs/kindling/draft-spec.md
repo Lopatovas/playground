@@ -4,7 +4,7 @@ Working title. Setting and art come later. This is the mechanical core only.
 
 Challenge anything. Numbers are draft targets, not balance.
 
-**Status:** Slay the Spire fight, roguelite character. Shop/slots/tags are extras. The meta is the thing we are changing on purpose. Still a draft, not code.
+**Status:** Slay the Spire fight, roguelite character. Slots/tags/TFT shop are cut — they were a weak copy of a team game. The meta is the bolt-on that stays. Still a draft, not code.
 
 ## What this is
 
@@ -13,6 +13,8 @@ A one-hero card roguelike in the Slay the Spire family, with an RPG spine betwee
 The fight is still StS: hand, energy, Block, intents. A 10-second clip is a StS clip. Call that a clone.
 
 The thing we will not clone is StS’s meta. StS lets a player who knows the game boot a fresh file and win. Kindling is tuned so a new climber usually dies around floor 4, comes home with currency, and the *character* is visibly further on than last time. Same person. Die, spend, go again. Hades / Rogue Legacy shape, not “unlock a card you might see in twenty runs.”
+
+We tried to bolt TFT onto one body (3 slots, tag breakpoints). That is not TFT. TFT is mix-and-match units. Three holes plus a Flow trait that feeds draw and energy is extra rules everyone slams. Cut.
 
 Final output of the experiment is a playable POC. This doc is the first artifact.
 
@@ -28,10 +30,11 @@ Final output of the experiment is a playable POC. This doc is the first artifact
 - First slice is one short climb, end to end, easy to expand. A naked character is **not** expected to finish it.
 - Between runs, this same character grows at a **Camp**. Every run pays, including a floor-4 death. Growth is a mix of tools, access, and a little body. Not an infinite +damage stick.
 - The game is **beatable**. First win is Brand 0. After that, a finite **Brand** ladder (StS Ascension shape) is why you come back. Each Brand is a named rule, not +10% HP. Beating the top Brand is beating Kindling. No endless number climb.
+- No slots. No tags. No stoke-for-set-bonus. Run build is cards + relics + gold, like StS.
 
 **Combat decision (this draft):** hand, energy, draw pile, discard, Block, intents. No board. No stepping. No push-the-enemy-off-the-tile.
 
-Rejected: Hades / Brotato / Vampire Survivors (APM). Peglin (physics). Guildrun spectate-combat. The 7-tile rewrite-the-hit fight (movement management). Dice as the main toy. Wildfrost’s unit board.
+Rejected: Hades / Brotato / Vampire Survivors (APM). Peglin (physics). Guildrun spectate-combat. The 7-tile rewrite-the-hit fight (movement management). Dice as the main toy. Wildfrost’s unit board. Three slots and TFT tags on one hero.
 
 ## One-sentence pitch
 
@@ -43,9 +46,8 @@ You are one climber. Each fight you spend a small hand of cards against visible 
 pick a path node
   → fight, event, shop, rest, or elite
   → if fight: draw, spend energy, answer intents, end turn
-  → reward: card and/or gold and/or slot item
-  → sometimes a shop (reroll, lock, combine)
-  → tags may cross a breakpoint and change the rules
+  → reward: card and/or gold
+  → sometimes a shop (cards, remove, relic, later reroll)
   → next node, harder
   → boss, win or die
   → return to Camp with Kindling
@@ -58,19 +60,19 @@ A good run ends with a specialist. A bad run dies as a generalist who never comm
 
 ## Two progressions
 
-**Run progression** — this climb only. Cards in the deck, gold, relics, slot items you found, tags you stoked. HP. When the run ends, this is gone (except Kindling earned). Next run the deck is the starter again.
+**Run progression** — this climb only. Cards in the deck, gold, relics, HP. When the run ends, this is gone (except Kindling earned). Next run the deck is the starter again.
 
-**Character progression** — this person, forever. The Ledger, unlocked slots and shop tools, cards that can *appear* in future runs, max HP from Frame, which Brands you may pick. Death does not take this.
+**Character progression** — this person, forever. The Ledger, shop tools, cards that can *appear* in future runs, max HP from Frame, which Brands you may pick. Death does not take this.
 
 You lose the build. You keep the climber.
 
 ## Why a clone, and what the extras are for
 
-Cards won because sequencing a hand is the fun we want: this Attack now, this setup now, this Block because they are swinging 14. The line fight was more original and less fun. So we took the clone.
+Cards won because sequencing a hand is the fun we want. The line fight was more original and less fun. TFT-on-one-body was a costume. So: StS fight, RPG career.
 
 We do not steal names, card text, or art. That is the only authenticity claim that holds.
 
-Shop, slots, and tags are still *run seasoning*. The meta is not. If the Camp does not make a floor-4 death feel like the character grew, it has failed.
+If the Camp does not make a floor-4 death feel like the character grew, it has failed.
 
 ## Combat
 
@@ -82,64 +84,37 @@ You play cards. They happen now. Energy cards cost energy. Then you end the turn
 
 **Intents** are public: attack for N, block, buff, wait. Prefer exact numbers. No hidden “what will they do.”
 
-**Block** absorbs incoming attack damage this turn, then falls off. The turn is still “answer the hit or spend HP to set up.” That is the card game. We are not ashamed of it.
+**Block** absorbs incoming attack damage this turn, then falls off. The turn is “answer the hit or spend HP to set up.”
 
 **Powers** stay in play for the rest of the fight. They are how a deck becomes a machine.
 
-Slots trigger on their printed conditions (start of turn, when you gain Block, when you play an Attack, when you Stoke). You do not play items from hand.
-
 Inspect never plays. Fat finger on a phone must not spend the card.
 
-## What you collect
+## What you collect (this run)
 
-### Cards (primary)
+### Cards
 
 Starter deck: 8–10 cards. Weak, complete. Mostly cheap Attacks and Blocks, plus one identity card.
 
 After most fights: pick 1 of 3 cards, or skip. Shops sell cards. Rest or shop can remove.
 
-Cards have a cost, a type (Attack / Skill / Power), and zero or more **tags**. Some Skills are Stokes: they put an ember on you.
-
-### Slot items
-
-Three slots. Buy or find. Auto-trigger. Carry tags. Rearrange after you see the next fight’s enemies, not mid-fight.
+Cards have a cost and a type (Attack / Skill / Power). Synergy lives in the cards, the way it does in StS — poison-like, block-like, draw-like as *deck* directions, not as a HUD set bonus you socket.
 
 ### Relics
 
-Run-long rule rewrites. Not slotted. Extra energy, keep leftover Block, first card each fight is free — change a rule, not just a number.
+Run-long rule rewrites. Extra energy, keep leftover Block, first card each fight is free — change a rule, not just a number.
 
 ### Gold
 
 Spend in shops. No leftover-gold punishment.
 
-## Tags
-
-Burn, Guard, Flow.
-
-Count for a fight =
-
-- embers you Stoked this fight (play a Stoke, or an item that Stokes)
-- plus one per slotted item that has that tag
-
-Deck contents do **not** count. You have to light it or buy it.
-
-HUD always shows `Burn 1/2` and the next threshold. Embers reset when the fight ends. Slot pieces stay.
-
-| Tag   | 2 pieces                         | 4 pieces                           |
-| ----- | -------------------------------- | ---------------------------------- |
-| Burn  | Your Attacks apply 1 Burn        | Burn ticks twice                   |
-| Guard | +2 Block whenever you gain Block | When you gain Block, deal 2        |
-| Flow  | Draw 1 when you play 3 cards     | The third card each turn costs 0   |
-
-A live tag should change the next hand, not just add a number.
-
 ## Player flow (one run, phone in hand)
 
 ### You open the game
 
-The **Camp**. One climber by a fire. You see their Ledger (the skill tree), current HP max, how many slots they have unlocked, Kindling in the purse.
+The **Camp**. One climber by a fire. Ledger, max HP, Kindling.
 
-First boot: the Ledger is almost empty. One slot. Thin starter deck. You are not ready for the boss. Begin the climb anyway.
+First boot: Ledger almost empty. Thin starter deck. You are not ready for the boss. Begin the climb anyway.
 
 ### You look at the map
 
@@ -149,13 +124,13 @@ About ten nodes. Types visible. Exact enemies and shop stock hidden. Pick a figh
 
 Two enemies. One intends 9. One intends to buff. You have 3 energy and 5 cards. You may stare.
 
-You Block 8 and Strike the buffer, or you Stoke Burn and take the 9 because you want the engine. Cards resolve when played. You end the turn. They do what they showed.
+You Block 8 and Strike the buffer, or you play a setup and eat 9 because the next turns pay it back. Cards resolve when played. You end the turn. They do what they showed.
 
-A few turns later the fight is over. Not a fifteen-minute exam.
+A few turns later the fight is over.
 
 ### You take a reward
 
-1 of 3 cards, gold, or a slot component — or skip. Socket Burn. HUD says Burn 1/2. Nothing ignited yet.
+1 of 3 cards, or gold, or skip. You are thinking about the deck, not a trait meter.
 
 ### You choose a path
 
@@ -163,31 +138,27 @@ Safe fight left. Elite then shop right. Still generic. That choice is the map’
 
 ### You hit the shop
 
-Cards, slot parts, maybe a relic, a remove, a reroll, a lock.
-
-You lock a Guard component, reroll, buy a second Burn piece, socket it. Next fight you only need one Stoke to hit Burn 2. You bought that. You did not draw it.
+A merchant. Cards, a remove, sometimes a relic. Once the Ledger has unlocked it: a reroll.
 
 Leave leftover gold. No punishment.
 
 ### The run changes shape
 
-Deck gets weirder. Slots fill. You path toward the elite for a rule-relic, or toward rest because you took too many “stoke and eat it” turns.
-
-See the next enemies. Swap slots. Draw the opening hand.
+Deck gets weirder. You path toward the elite for a rule-relic, or toward rest because you are low.
 
 ### Elite, rest, boss
 
 Elite: a hand-puzzle that punishes a mushy deck. Relic that rewrites a rule.
 
-Rest: heal or upgrade one card.
+Rest: heal. Upgrade-a-card unlocks on the Ledger.
 
-Boss: honest intents plus a twist (second phase, they punish Powers, they invert a tag). Commit or die.
+Boss: honest intents plus a twist (second phase, they punish Powers). Commit or die.
 
 ### You go again
 
-HP 0 ends the run. Recap: floors cleared, Kindling earned. Back to Camp. The Ledger has something you can afford — a bit of HP, a second slot, three cards added to the pool, shop reroll. You buy it. The climber looks different. You go again.
+HP 0 ends the run. Recap: floors cleared, Kindling earned. Back to Camp. Buy a Ledger node — a bit of HP, cards into the pool, shop reroll, rest upgrades. The climber looks different. You go again.
 
-A new player is supposed to die around floor 4 the first time and still do this loop. A player who already “knows StS” should still be underbuilt for the boss until the Ledger has a few nodes. The mountain is tuned for a grown character, not a theorycrafter on a blank file.
+A new player is supposed to die around floor 4 the first time and still do this loop. A player who already “knows StS” should still be underbuilt for the boss until the Ledger has a few nodes.
 
 After the first win you pick a Brand at Camp and climb the same map under extra rules. That is the comeback loop. It has a top.
 
@@ -195,19 +166,19 @@ After the first win you pick a Brand at Camp and climb the same map under extra 
 
 One act. ~10 nodes. 2–3 branches most rows. Fight, elite, shop, rest, event, treasure, boss.
 
-See types ahead. See exact enemies when you enter a fight, and may still swap slots before the first turn.
+See types ahead. See exact enemies when you enter a fight.
 
 ## The shop
 
-The other half of the game.
+A merchant, not a TFT board.
 
-Stock: cards, slot items / components, sometimes a relic, a remove, reroll, lock (holds one offer across rerolls; shops are one visit).
+Stock: cards, a remove, sometimes a relic. **Reroll** once Hearth has unlocked it. One visit.
 
-**Combine:** two matching components become a stronger item in that family.
+No components, no combine, no lock-for-traits. If reroll is not enough spice, we add it later. We do not add slots to save it.
 
 ## Failure and retry
 
-HP is the run. Hit 0, over. No rewind. You keep Kindling from the attempt. That is the point.
+HP is the run. Hit 0, over. No rewind. You keep Kindling from the attempt.
 
 Save on leaving a node, opening a menu, or sitting at Camp.
 
@@ -230,33 +201,35 @@ A floor-4 death must buy **at least one** Ledger node. If it does not, the numbe
 
 ### The Ledger
 
-A small tree on this one character. First slice: about **12 nodes**, four columns. You buy from the left. Some nodes require a neighbor.
+A small tree on this one character. First slice: about **12 nodes**. You buy from the left. Some nodes require a neighbor.
 
 **Spark (tools)**  
-Cards enter the *run pool*. A starter card replaces one Strike. A Stoke is added to the opening kit.
+Cards enter the *run pool*. A starter card replaces one Strike.
 
 **Frame (body)**  
 Small, capped: +HP, starting gold. Two or three nodes total in the first slice. Enough that floor 4 stops being a coin flip. Not enough that floor 1 is a joke forever.
 
 **Hearth (access)**  
-This is most of the feel. You do **not** start with the full game.
+You do **not** start with the full game.
 
-- Slot 2, then slot 3
-- Shop reroll, then combine
-- The rest site’s upgrade action
+- Shop reroll
+- Rest site’s upgrade action
 - One extra event type
+- A second remove per run, or a cheaper remove
+
+No slot unlocks. There are no slots.
 
 **Brand (mastery)**  
 Not a shop column you buy with Kindling. It is the post-win ladder. See below.
 
 ### How the first hours are supposed to feel
 
-| Session        | Character                         | Typical end        |
-| -------------- | --------------------------------- | ------------------ |
-| Run 1          | 1 slot, no reroll, thin pool, low HP | Die ~floor 4    |
-| Runs 2–4       | Second slot, a bit of HP, a few pool cards | Floor 6–8    |
-| Mid Ledger     | 3 slots, shop toys, starter swap  | Boss is in reach   |
-| First win      | Ledger mostly done. Brand 1 unlocks | You beat the game once |
+| Session        | Character                            | Typical end        |
+| -------------- | ------------------------------------ | ------------------ |
+| Run 1          | Thin pool, no reroll, no upgrades, low HP | Die ~floor 4  |
+| Runs 2–4       | A bit of HP, a few pool cards        | Floor 6–8          |
+| Mid Ledger     | Shop reroll, rest upgrade, starter swap | Boss is in reach |
+| First win      | Ledger mostly done. Brand 1 unlocks  | You beat the game once |
 
 The climb does not get longer. The climber gets closer to being allowed to finish it. That is campaign one.
 
@@ -276,7 +249,7 @@ Each rung is a **named rule**, not “enemies have 8% more HP” as the only jok
 | 2 | Rest heals less. |
 | 3 | Enemies gain a small start-of-fight buff. |
 | 4 | One extra curse-like dead card in the starter deck. |
-| 5 | Boss takes a second phase, or inverts a tag you leaned on. |
+| 5 | Boss takes a second phase, or punishes the deck type you leaned on. |
 
 Later rungs can stack. Playing Brand 5 means 1–5 are all on.
 
@@ -293,19 +266,17 @@ No infinite +1 damage every run. No “I have 400 HP and the act is a corridor.�
 | Playable character | 1           | One identity, 2–3 viable directions        |
 | Starter cards      | 8–10        | Weak, complete. Tuned for a *naked* climber |
 | Card pool          | ~18–24      | Several locked behind Spark                |
-| Slot items         | ~8          | 3 families. Slots 2–3 locked behind Hearth |
 | Relics             | ~8          | At least 2 change a rule, not a stat       |
 | Enemies            | ~8          | Early floors must be able to kill a newbie |
 | Elites             | 1           | Tests whether you specialized              |
 | Boss               | 1           | Tuned for a mid-Ledger character           |
 | Events             | 2           | One may be locked                          |
-| Tags               | 3           | Burn, Guard, Flow                          |
 | Ledger nodes       | ~12         | Spark / Frame / Hearth                     |
 | Brands             | 0 + 1–5     | Finite. Expand later. Named rules          |
 
 Win: beat the boss at the Brand you chose. Brand 0 is a real win. Beating the top Brand is beating the game. Lose: HP 0, keep Kindling. Another run after a Camp spend.
 
-A safest-path generalist with an empty Ledger should not see the boss. A committed tag on a grown Ledger should feel different by node 6.
+A safest-path generalist with an empty Ledger should not see the boss. A committed deck on a grown Ledger should feel different by node 6.
 
 ## Non-goals (first slice)
 
@@ -314,6 +285,7 @@ A safest-path generalist with an empty Ledger should not see the boss. A committ
 - Party / hex grid / summoned team as the main toy
 - Movement combat, a line of tiles, push-to-dodge
 - Queue-and-watch combat
+- Slots, tag breakpoints, stoke-for-set-bonus
 - Endless mode, infinite stat climb, daily run, leaderboards
 - PvP, accounts, live ops
 - Infinite meta stat sticks (a capped Frame column is allowed)
@@ -345,4 +317,4 @@ Engine and art pipeline are not in this spec.
 
 If this card lock, Camp/Ledger, and Brand ladder hold, next is a thin content list: starter deck, eight enemy intents, the boss twist, the 12 Ledger nodes, Brand 1–5 rules. Not code. Not setting.
 
-If cards-plus-shop is wrong after all, edit this file first.
+If the RPG career is wrong after all, edit this file first.
