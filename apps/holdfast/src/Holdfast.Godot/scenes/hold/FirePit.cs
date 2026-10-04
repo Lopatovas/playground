@@ -24,8 +24,7 @@ public partial class FirePit : Node3D
         AddChild(HoldGeom.Box(new Vector3(0.4f, 0.1f, 0.14f), new Vector3(0.22f, 0.3f, -0.18f), wood, new Vector3(12, 40, 6)));
 
         AddChild(MakeFlames());
-        AddChild(MakeBurst("fire", 48, 0.85f, new Color(1f, 0.45f, 0.08f), 0.09f, 1.6f, 0.1f));
-        AddChild(MakeBurst("smoke", 16, 2.2f, new Color(0.12f, 0.1f, 0.09f, 0.28f), 0.18f, 0.45f, 0.2f, true));
+        AddChild(MakeBurst("fire", 36, 0.7f, new Color(1f, 0.42f, 0.08f), 0.07f, 1.35f, 0.08f));
         AddChild(MakeSparks());
 
         _light = new OmniLight3D

@@ -86,8 +86,8 @@ public partial class HoldHall : Node3D
     public override void _Process(double delta)
     {
         _t += (float)delta;
-        var look = new Vector3(-0.2f + Mathf.Sin(_t * 0.18f) * 0.08f, 1.25f, -5.2f);
-        var pos = new Vector3(2.4f + Mathf.Sin(_t * 0.15f) * 0.05f, 1.82f, 5.6f);
+        var look = new Vector3(0.1f + Mathf.Sin(_t * 0.16f) * 0.06f, 1.45f, -7.2f);
+        var pos = new Vector3(0.35f + Mathf.Sin(_t * 0.13f) * 0.04f, 1.78f, 6.4f);
         _cam.Position = pos;
         _cam.LookAt(look);
     }
@@ -118,9 +118,11 @@ public partial class HoldHall : Node3D
 
     private void AddDoor(Material wood, Material brass, Material stone)
     {
-        AddChild(HoldGeom.Box(new Vector3(3.6f, 4.4f, 0.28f), new Vector3(0, 2.15f, -8.05f), stone));
-        AddChild(HoldGeom.Box(new Vector3(1.45f, 3.5f, 0.16f), new Vector3(-0.78f, 1.85f, -7.86f), wood));
-        AddChild(HoldGeom.Box(new Vector3(1.45f, 3.5f, 0.16f), new Vector3(0.78f, 1.85f, -7.86f), wood));
+        var oak = HoldMats.Stone(new Color(0.42f, 0.26f, 0.12f), 0.1f);
+        AddChild(HoldGeom.Box(new Vector3(4.2f, 4.8f, 0.36f), new Vector3(0, 2.3f, -8.08f), stone));
+        AddChild(HoldGeom.Box(new Vector3(1.55f, 3.7f, 0.18f), new Vector3(-0.82f, 1.95f, -7.84f), oak));
+        AddChild(HoldGeom.Box(new Vector3(1.55f, 3.7f, 0.18f), new Vector3(0.82f, 1.95f, -7.84f), oak));
+        AddChild(HoldGeom.Box(new Vector3(3.3f, 0.08f, 0.04f), new Vector3(0, 0.22f, -7.7f), HoldMats.Emit(new Color(1f, 0.7f, 0.25f), 2.4f)));
         for (var y = 0.7f; y <= 3.1f; y += 1.15f)
         {
             AddChild(HoldGeom.Box(new Vector3(3.05f, 0.08f, 0.05f), new Vector3(0, y, -7.76f), brass));
