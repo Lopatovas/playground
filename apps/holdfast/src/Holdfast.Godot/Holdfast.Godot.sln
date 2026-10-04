@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Holdfast.Godot", "Holdfast.Godot.csproj", "{979D78EF-41B3-41D8-AC41-DA73FDB2AC7F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Holdfast.Domain", "..\Holdfast.Domain\Holdfast.Domain.csproj", "{E861D33F-F69E-49E6-B706-F896A73A98FA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Holdfast.Application", "..\Holdfast.Application\Holdfast.Application.csproj", "{34294638-859C-48AF-ACA3-C41ACF5D4CD1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Holdfast.Infrastructure", "..\Holdfast.Infrastructure\Holdfast.Infrastructure.csproj", "{70898844-25CD-48AB-9E11-ABD3B1C46565}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{979D78EF-41B3-41D8-AC41-DA73FDB2AC7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{979D78EF-41B3-41D8-AC41-DA73FDB2AC7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{979D78EF-41B3-41D8-AC41-DA73FDB2AC7F}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{979D78EF-41B3-41D8-AC41-DA73FDB2AC7F}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{E861D33F-F69E-49E6-B706-F896A73A98FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E861D33F-F69E-49E6-B706-F896A73A98FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E861D33F-F69E-49E6-B706-F896A73A98FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E861D33F-F69E-49E6-B706-F896A73A98FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34294638-859C-48AF-ACA3-C41ACF5D4CD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34294638-859C-48AF-ACA3-C41ACF5D4CD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34294638-859C-48AF-ACA3-C41ACF5D4CD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34294638-859C-48AF-ACA3-C41ACF5D4CD1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70898844-25CD-48AB-9E11-ABD3B1C46565}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70898844-25CD-48AB-9E11-ABD3B1C46565}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70898844-25CD-48AB-9E11-ABD3B1C46565}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70898844-25CD-48AB-9E11-ABD3B1C46565}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

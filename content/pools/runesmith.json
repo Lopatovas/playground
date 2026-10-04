@@ -1,0 +1,7 @@
+[
+  { "id": "r_score", "name": "Score", "type": "Attack", "cost": 2, "dice": "2d4", "text": "Deal {dice} damage." },
+  { "id": "r_etch", "name": "Etch", "type": "Power", "cost": 1, "dice": null, "text": "Inscribe +1d4 next Attack.", "effect": { "kind": "inscribeNextAttack", "dice": "1d4" } },
+  { "id": "r_rune_payoff_1", "name": "Deep Cut", "type": "Power", "cost": 2, "dice": null, "text": "Inscribe +1d6 next Attack.", "effect": { "kind": "inscribeNextAttack", "dice": "1d6" } },
+  { "id": "r_veil", "name": "Veil", "type": "Skill", "cost": 1, "dice": "2d4", "text": "Gain {dice} Block." },
+  { "id": "r_brace_2", "name": "Set In", "type": "Skill", "cost": 1, "dice": null, "text": "Gain 3 Brace.", "effect": { "kind": "gainBrace", "amount": 3 } }
+]

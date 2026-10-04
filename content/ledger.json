@@ -1,0 +1,22 @@
+{
+  "frame": [
+    { "id": "hp_1", "name": "Thicker hide", "cost": 6, "effect": { "startingHp": 8 } },
+    { "id": "hp_2", "name": "Scar plate", "cost": 10, "requires": ["hp_1"], "effect": { "startingHp": 8 } },
+    { "id": "gold_1", "name": "Pouch", "cost": 6, "effect": { "startingGold": 25 } }
+  ],
+  "hearth": [
+    { "id": "shop_reroll", "name": "Haggle", "cost": 8, "effect": { "shopReroll": true } },
+    { "id": "rest_upgrade", "name": "Whetstone", "cost": 8, "effect": { "restUpgrade": true } },
+    { "id": "extra_remove", "name": "Second cut", "cost": 8, "effect": { "extraRemove": true } },
+    { "id": "unlock_runesmith", "name": "Open the rune-hall", "cost": 10, "effect": { "unlockClass": "runesmith" } }
+  ],
+  "spark": {
+    "warrior": [
+      { "id": "w_pool_1", "name": "More grit in the pile", "cost": 6, "effect": { "unlockCards": ["w_grit_payoff_1"] } },
+      { "id": "w_starter_swap", "name": "Numb from the first step", "cost": 8, "requires": ["w_pool_1"], "effect": { "replaceStarter": { "remove": "w_strike", "add": "w_numb" } } }
+    ],
+    "runesmith": [
+      { "id": "r_pool_1", "name": "More cuts in the pile", "cost": 6, "effect": { "unlockCards": ["r_rune_payoff_1"] } }
+    ]
+  }
+}

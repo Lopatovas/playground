@@ -1,0 +1,10 @@
+{
+  "id": "brute",
+  "name": "Brute",
+  "hp": 18,
+  "portrait": "knuckle",
+  "intents": [
+    { "kind": "Attack", "dice": "1d6+1", "weight": 3 },
+    { "kind": "BuffMight", "amount": 1, "weight": 1 }
+  ]
+}
