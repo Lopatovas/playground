@@ -9,9 +9,9 @@ public partial class HoldHall : Node3D
 
     public override void _Ready()
     {
-        var stone = HoldMats.Stone(new Color(0.22f, 0.18f, 0.14f));
-        var dark = HoldMats.Stone(new Color(0.10f, 0.08f, 0.07f), 0.12f);
-        var floor = HoldMats.Stone(new Color(0.18f, 0.14f, 0.10f), 0.28f);
+        var stone = HoldMats.Stone(new Color(0.38f, 0.30f, 0.22f));
+        var dark = HoldMats.Stone(new Color(0.16f, 0.12f, 0.10f), 0.12f);
+        var floor = HoldMats.Stone(new Color(0.28f, 0.22f, 0.16f), 0.28f);
         var wood = HoldMats.Wood();
         var brass = HoldMats.Brass();
 
@@ -23,15 +23,12 @@ public partial class HoldHall : Node3D
                 BackgroundColor = new Color(0.015f, 0.012f, 0.01f),
                 AmbientLightSource = Godot.Environment.AmbientSource.Color,
                 AmbientLightColor = new Color(0.18f, 0.12f, 0.08f),
-                AmbientLightEnergy = 0.22f,
+                AmbientLightEnergy = 0.55f,
                 FogEnabled = true,
-                FogLightColor = new Color(0.45f, 0.22f, 0.08f),
-                FogDensity = 0.018f,
-                FogAerialPerspective = 0.4f,
-                GlowEnabled = true,
-                GlowIntensity = 0.85f,
-                GlowStrength = 0.9f,
-                GlowBloom = 0.15f,
+                FogLightColor = new Color(0.16f, 0.1f, 0.06f),
+                FogDensity = 0.004f,
+                FogAerialPerspective = 0.15f,
+                GlowEnabled = false,
                 TonemapMode = Godot.Environment.ToneMapper.Filmic,
                 AdjustmentEnabled = true,
                 AdjustmentSaturation = 1.08f
@@ -39,6 +36,8 @@ public partial class HoldHall : Node3D
         });
 
         AddChild(HoldGeom.Box(new Vector3(16, 0.35f, 18), new Vector3(0, -0.18f, 0), floor));
+        AddChild(HoldGeom.Cylinder(new Vector3(4.6f, 0.06f, 4.6f), new Vector3(0, 0.02f, 0.2f), dark, 24));
+        AddChild(HoldGeom.Cylinder(new Vector3(3.4f, 0.05f, 3.4f), new Vector3(0, 0.04f, 0.2f), stone, 24));
         AddChild(HoldGeom.Box(new Vector3(16, 5.2f, 0.5f), new Vector3(0, 2.4f, -8.4f), stone));
         AddChild(HoldGeom.Box(new Vector3(16, 5.2f, 0.5f), new Vector3(0, 2.4f, 8.4f), dark));
         AddChild(HoldGeom.Box(new Vector3(0.5f, 5.2f, 17), new Vector3(-7.8f, 2.4f, 0), stone));
@@ -67,21 +66,19 @@ public partial class HoldHall : Node3D
 
         var fire = new FirePit { Position = new Vector3(0, 0, 0.2f) };
         AddChild(fire);
-        AddChild(HoldGeom.Hit("fire", new Vector3(2.2f, 1.6f, 2.2f), new Vector3(0, 0.6f, 0.2f)));
+        AddChild(HoldGeom.Hit("fire", new Vector3(1.4f, 1.2f, 1.4f), new Vector3(0, 0.5f, 0.2f)));
 
         _cam = new Camera3D
         {
-            Position = new Vector3(0.15f, 1.62f, 6.35f),
-            Fov = 52,
+            Fov = 58,
             Current = true
         };
-        _cam.LookAt(new Vector3(0, 1.05f, -1.2f));
         AddChild(_cam);
 
         AddChild(new DirectionalLight3D
         {
             LightColor = new Color(0.15f, 0.18f, 0.28f),
-            LightEnergy = 0.12f,
+            LightEnergy = 0.35f,
             RotationDegrees = new Vector3(-40, 30, 0)
         });
     }
@@ -89,8 +86,8 @@ public partial class HoldHall : Node3D
     public override void _Process(double delta)
     {
         _t += (float)delta;
-        var look = new Vector3(Mathf.Sin(_t * 0.22f) * 0.12f, 1.05f + Mathf.Sin(_t * 0.31f) * 0.04f, -1.2f);
-        var pos = new Vector3(0.15f + Mathf.Sin(_t * 0.17f) * 0.04f, 1.62f + Mathf.Sin(_t * 0.4f) * 0.015f, 6.35f);
+        var look = new Vector3(-0.2f + Mathf.Sin(_t * 0.18f) * 0.08f, 1.25f, -5.2f);
+        var pos = new Vector3(2.4f + Mathf.Sin(_t * 0.15f) * 0.05f, 1.82f, 5.6f);
         _cam.Position = pos;
         _cam.LookAt(look);
     }
@@ -153,7 +150,7 @@ public partial class HoldHall : Node3D
         book.AddChild(HoldGeom.Box(new Vector3(0.38f, 0.05f, 0.52f), new Vector3(0, 0.04f, 0), HoldMats.Stone(new Color(0.62f, 0.5f, 0.32f), 0.05f)));
         book.AddChild(HoldGeom.Box(new Vector3(0.06f, 0.02f, 0.12f), new Vector3(0.14f, 0.06f, 0.16f), brass));
         AddChild(book);
-        AddChild(HoldGeom.Hit("book", new Vector3(0.8f, 0.5f, 0.9f), new Vector3(1.15f, 0.3f, 1.45f)));
+        AddChild(HoldGeom.Hit("book", new Vector3(1.1f, 0.7f, 1.2f), new Vector3(1.15f, 0.35f, 1.45f)));
     }
 
     private void AddStairs(Material stone)

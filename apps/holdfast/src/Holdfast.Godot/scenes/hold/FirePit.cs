@@ -17,30 +17,30 @@ public partial class FirePit : Node3D
 
         AddChild(HoldGeom.Cylinder(new Vector3(1.55f, 0.28f, 1.55f), new Vector3(0, 0.12f, 0), stone, 16));
         AddChild(HoldGeom.Cylinder(new Vector3(1.22f, 0.16f, 1.22f), new Vector3(0, 0.22f, 0), soot, 16));
-        AddChild(HoldGeom.Disk(1.05f, new Vector3(0, 0.18f, 0), ember));
+        AddChild(HoldGeom.Disk(0.42f, new Vector3(0, 0.19f, 0), ember));
 
         AddChild(HoldGeom.Box(new Vector3(0.85f, 0.12f, 0.18f), new Vector3(0.08f, 0.28f, 0.06f), wood, new Vector3(0, 18, 12)));
         AddChild(HoldGeom.Box(new Vector3(0.72f, 0.11f, 0.16f), new Vector3(-0.12f, 0.32f, -0.1f), wood, new Vector3(0, -28, -8)));
         AddChild(HoldGeom.Box(new Vector3(0.4f, 0.1f, 0.14f), new Vector3(0.22f, 0.3f, -0.18f), wood, new Vector3(12, 40, 6)));
 
         AddChild(MakeFlames());
-        AddChild(MakeBurst("fire", 90, 1.15f, new Color(1f, 0.55f, 0.12f), 0.22f, 2.4f, 0.12f));
-        AddChild(MakeBurst("smoke", 28, 2.6f, new Color(0.12f, 0.1f, 0.09f, 0.35f), 0.35f, 0.7f, 0.55f, true));
+        AddChild(MakeBurst("fire", 48, 0.85f, new Color(1f, 0.45f, 0.08f), 0.09f, 1.6f, 0.1f));
+        AddChild(MakeBurst("smoke", 16, 2.2f, new Color(0.12f, 0.1f, 0.09f, 0.28f), 0.18f, 0.45f, 0.2f, true));
         AddChild(MakeSparks());
 
         _light = new OmniLight3D
         {
             LightColor = new Color(1f, 0.58f, 0.22f),
-            LightEnergy = 6.4f,
-            OmniRange = 14,
+            LightEnergy = 2.3f,
+            OmniRange = 9,
             ShadowEnabled = true,
             Position = new Vector3(0, 1.15f, 0)
         };
         _fill = new OmniLight3D
         {
             LightColor = new Color(1f, 0.32f, 0.08f),
-            LightEnergy = 1.8f,
-            OmniRange = 5.5f,
+            LightEnergy = 0.7f,
+            OmniRange = 3.2f,
             Position = new Vector3(0.15f, 0.45f, 0.1f)
         };
         AddChild(_light);
@@ -51,7 +51,7 @@ public partial class FirePit : Node3D
     {
         _t += (float)delta;
         var flicker = 1f + 0.18f * Mathf.Sin(_t * 17.3f) + 0.11f * Mathf.Sin(_t * 29.1f) + 0.07f * Mathf.Sin(_t * 41.7f);
-        _light.LightEnergy = 6.2f * flicker;
+        _light.LightEnergy = 2.15f * flicker;
         _light.Position = new Vector3(Mathf.Sin(_t * 6.2f) * 0.08f, 1.1f + Mathf.Sin(_t * 11.4f) * 0.06f, Mathf.Cos(_t * 5.1f) * 0.07f);
         _fill.LightEnergy = 1.5f + 0.45f * Mathf.Sin(_t * 13.8f);
     }

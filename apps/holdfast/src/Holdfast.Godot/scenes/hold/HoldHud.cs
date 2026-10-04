@@ -119,10 +119,10 @@ public partial class HoldHud : Control
     {
         var text = hit switch
         {
-            "door" => "WALK   ·   Warrior",
-            "book" => "OPEN   ·   Ledger",
-            "winch" => "LOOK   ·   The dark",
-            "fire" => "The hearth holds",
+            "door" => "Walk as Warrior",
+            "book" => "Open the Ledger",
+            "winch" => "Look into the dark",
+            "fire" => "The hearth",
             _ => ""
         };
         _prompt.Visible = text.Length > 0 && !_journal.Visible;
