@@ -65,7 +65,7 @@ public partial class GameRoot : Control
             _save.WriteHold(_hold.Progress);
             ShowHold();
         });
-        _holdView.Peek += () => Tap(ShowPeek);
+        _holdView.Peek += () => { };
         _fightView.PlayCard += idx => Tap(() => PlayCard(idx));
         _fightView.EndTurn += () => Tap(EndTurn);
 
